@@ -1,6 +1,10 @@
-# Melvor Idle Combat Simulator Reloaded
+# [Myth] Combat Simulator
 
-A [mod.io](https://mod.io/g/melvoridle/m/combat-simulator-reloaded) extension for the game [Melvor Idle](http://www.melvoridle.com/).
+This is a re-branded and updated version of Combat Simulator Reloaded.
+
+This has been updated to work with v1.2
+
+A [mod.io](https://mod.io/g/melvoridle/m/myth-combat-simulator) extension for the game [Melvor Idle](http://www.melvoridle.com/).
 
 The latest fork in a line of great but no longer maintained forks by [coolrox95](https://github.com/coolrox95/Melvor-Idle-Combat-Simulator), and [visua0](https://github.com/visua0/Melvor-Idle-Combat-Simulator-Reloaded).
 
@@ -8,7 +12,7 @@ The latest fork in a line of great but no longer maintained forks by [coolrox95]
 - Create a backup of your save file before using this extension, in particular after a recent game or extension update.
 
 ## Bug reports
-Raise an [issue](/../../issues) here on GitHub, or visit the [#mod-bug-reports](https://discord.com/channels/625838709203271680/1029950790254731334) channel on the [official Melvor Idle Discord](https://discord.gg/melvoridle).  
+Raise an [issue](/../../issues) here on GitHub, or visit the [#mod-bug-reports](https://discord.com/channels/625838709203271680/1029950790254731334) channel on the [official Melvor Idle Discord](https://discord.gg/melvoridle).
 When reporting bugs please include:
 - any required reproduction steps (e.g. a settings export, the monster you simulated, etc.)
 - any console errors
@@ -166,7 +170,7 @@ The stat card shows combat stats out of combat, i.e. before the combat triangle 
  - "Simulate Selected" runs the simulator only for the currently selected entity, i.e. it simulates one monster, one dungeon, or one auto slayer tier.
  - The button can be pressed again to cancel a simulation early. Simulations of monsters that were already sent to the web workers will still be completed.
 </details>
- 
+
 ### 4 Data card
 <details>
   <summary>4.1 XP [WIP]</summary>

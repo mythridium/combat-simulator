@@ -55,7 +55,7 @@ class Loot {
         this.convertShards = false;
 
         // ids of god dungeons
-        this.godDungeonIDs = [8, 9, 10, 11];
+        this.godDungeonIDs = ["melvorF:Air_God_Dungeon", "melvorF:Water_God_Dungeon", "melvorF:Earth_God_Dungeon", "melvorF:Fire_God_Dungeon"];
 
         // alchemy settings
         this.alchHighValueItems = false;
@@ -170,21 +170,59 @@ class Loot {
             const boneQty =
                 this.micsr.monsters.getObjectByID(monsterID)!.bones?.quantity ??
                 1;
-            const shardID = this.micsr.monsters.getObjectByID(monsterID)!.bones;
+            const shard = this.micsr.monsters.getObjectByID(monsterID)!.bones;
+
             if (this.convertShards) {
-                // @ts-expect-error TS(2304): Cannot find name 'items'.
-                const chestID = items[shardID].trimmedItemID;
-                gpPerKill +=
-                    ((boneQty * this.lootBonus) /
-                        // @ts-expect-error TS(2304): Cannot find name 'items'.
-                        items[chestID].itemsRequired[0][1]) *
-                    this.computeChestOpenValue(chestID);
-            } else {
-                gpPerKill +=
-                    boneQty * this.lootBonus * this.getItemValue(shardID);
+                if (shard) {
+                    const shardItem = game.items.getObjectByID(shard.item.id);
+
+                    if (shardItem) {
+                        const itemUpgrades = game.bank.itemUpgrades.get(shardItem);
+
+                        if (itemUpgrades?.length && itemUpgrades[0]) {
+                            const itemUpgrade = itemUpgrades[0];
+                            const chest = itemUpgrade.upgradedItem as OpenableItem;
+                            const required = itemUpgrade.itemCosts[0]?.quantity;
+
+                            if (chest) {
+                                gpPerKill += ((boneQty * this.lootBonus) / required) * this.computeChestOpenValue(chest);
+                            }
+                        }
+                    }
+                }
+            } else if (shard) {
+                gpPerKill += boneQty * this.lootBonus * this.getItemValue(shard.item);
             }
         }
         return gpPerKill;
+    }
+
+     /**
+      * Computes the value of the contents of a chest respecting the loot sell settings
+      * @param {number} chestID
+      * @return {number}
+      */
+     computeChestOpenValue(chest: OpenableItem) {
+        let gpWeight = 0;
+        let totWeight = 0;
+        let avgQty;
+
+        for (let i = 0; i < chest.dropTable.sortedDropsArray.length; i++) {
+            const drop = chest.dropTable.sortedDropsArray[i];
+
+            if (drop) {
+                const range = Array.from({ length: drop.maxQuantity - drop.minQuantity + 1 }, (_, i) => drop.minQuantity + i);
+                const sum = range.reduce((a, b) => a + b, 0);
+                avgQty = (sum / range.length) || 0;
+            } else {
+                avgQty = 1;
+            }
+
+            gpWeight += avgQty * this.getItemValue(drop.item) * drop.weight;
+            totWeight += drop.weight;
+        }
+
+        return gpWeight / totWeight;
     }
 
     /**
@@ -207,16 +245,27 @@ class Loot {
         // Shards
         if (this.godDungeonIDs.includes(dungeonID)) {
             let shardCount = 0;
-            const shard = dungeon.monsters[0].bones.item;
+            const shard = dungeon.monsters[0].bones?.item;
             dungeon.monsters.forEach((monster: any) => {
-                shardCount += monster.boneQty;
+                shardCount += monster.bones.quantity;
             });
             shardCount *= this.lootBonus;
-            if (this.convertShards) {
-                const chest = shard.trimmedItemID;
-                dungeonValue +=
-                    (shardCount / chest.itemsRequired[0][1]) *
-                    this.computeDropTableValue(chest.dropTable);
+            if (this.convertShards && shard) {
+                const shardItem = game.items.getObjectByID(shard.id);
+
+                if (shardItem) {
+                    const itemUpgrades = game.bank.itemUpgrades.get(shardItem);
+
+                    if (itemUpgrades?.length && itemUpgrades[0]) {
+                        const itemUpgrade = itemUpgrades[0];
+                        const chest = itemUpgrade.upgradedItem as OpenableItem;
+                        const required = itemUpgrade.itemCosts[0]?.quantity;
+
+                        if (chest) {
+                            dungeonValue += (shardCount / required) * this.computeDropTableValue(chest.dropTable);
+                        }
+                    }
+                }
             } else {
                 dungeonValue += shardCount * this.getItemValue(shard);
             }

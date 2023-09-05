@@ -201,9 +201,9 @@ class Import {
                 .map((pet) => pet.id),
             // objects
             styles: {
-                magic: this.actualPlayer.attackStyles.magic.id,
-                melee: this.actualPlayer.attackStyles.melee.id,
-                ranged: this.actualPlayer.attackStyles.ranged.id,
+                magic: this.actualPlayer['attackStyles'].magic.id,
+                melee: this.actualPlayer['attackStyles'].melee.id,
+                ranged: this.actualPlayer['attackStyles'].ranged.id,
             },
             spells: {
                 ancient: equipmentSet.spellSelection.ancient?.id || "",
@@ -221,8 +221,8 @@ class Import {
             healAfterDeath: this.simPlayer.healAfterDeath,
             isManualEating: this.simPlayer.isManualEating,
             isSlayerTask: this.simPlayer.isSlayerTask,
-            pillarID: actualGame.agility.builtPassivePillar?.id || "",
-            pillarEliteID: actualGame.agility.builtElitePassivePillar?.id || "",
+            pillarID: actualGame.agility['builtPassivePillar']?.id || "",
+            pillarEliteID: actualGame.agility['builtElitePassivePillar']?.id || "",
             potionID: potionID,
             prayerSelected: Array.from(equipmentSet.prayerSelection).map(
                 (p) => p.id
@@ -257,9 +257,9 @@ class Import {
             petUnlocked: this.simPlayer.petUnlocked.map((pet) => pet.id),
             // objects
             styles: {
-                magic: this.simPlayer.attackStyles.magic.id,
-                melee: this.simPlayer.attackStyles.melee.id,
-                ranged: this.simPlayer.attackStyles.ranged.id,
+                magic: this.simPlayer['attackStyles'].magic.id,
+                melee: this.simPlayer['attackStyles'].melee.id,
+                ranged: this.simPlayer['attackStyles'].ranged.id,
             },
             prayerSelected: Array.from(this.simPlayer.activePrayers).map(
                 (p) => p.id
@@ -340,12 +340,12 @@ class Import {
         // clear previous items
         this.simPlayer.equipment.unequipAll();
         for (const slot in this.micsr.equipmentSlotData) {
-            const slotID = this.micsr.equipmentSlotData[slot].id;
+            const slotID = (<any>this.micsr.equipmentSlotData)[slot].id;
             this.app.setEquipmentImage(slotID);
         }
         // load new items
         for (const slot in this.micsr.equipmentSlotData) {
-            const slotID = this.micsr.equipmentSlotData[slot].id;
+            const slotID = (<any>this.micsr.equipmentSlotData)[slot].id;
             const itemID = equipment[slotID];
             if (itemID === "melvorD:Empty_Equipment") {
                 continue;

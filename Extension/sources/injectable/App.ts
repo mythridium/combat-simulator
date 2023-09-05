@@ -67,7 +67,7 @@ class App {
     plotter!: Plotter;
     potionTier: number;
     potionSelectCard!: Card;
-    prayerSelectCard!: Card;
+    prayerSelectCard!: TabCard;
     savedSimulations: ISimSave[];
     selectedBar: any;
     selectedTime: any;
@@ -243,6 +243,7 @@ class App {
             combat: "assets/media/skills/combat/combat.png",
             slayer: "assets/media/skills/slayer/slayer.png",
             prayer: "assets/media/skills/prayer/prayer.svg",
+            unholy: "assets/media/skills/prayer/unholy_prayer.svg",
             spellbook: "assets/media/skills/combat/spellbook.svg",
             curse: "assets/media/skills/combat/curses.svg",
             aurora: "assets/media/skills/combat/auroras.svg",
@@ -305,7 +306,7 @@ class App {
         this.equipmentSubsets = [];
         /** @type {number[]} */
         for (const slot in this.micsr.equipmentSlotData) {
-            const slotId = this.micsr.equipmentSlotData[slot].id;
+            const slotId = (<any>this.micsr.equipmentSlotData)[slot].id;
             this.equipmentSubsets.push([this.micsr.emptyItem]);
             this.micsr.items
                 .filter((item: any) => item.validSlots)
@@ -336,7 +337,7 @@ class App {
         });
         // Sort equipment subsets
         for (const slot in this.micsr.equipmentSlotData) {
-            const slotId = this.micsr.equipmentSlotData[slot].id;
+            const slotId = (<any>this.micsr.equipmentSlotData)[slot].id;
             this.equipmentSubsets[slotId].sort(
                 (a: any, b: any) =>
                     this.getItemLevelReq(a, this.micsr.skillIDs.Attack) -
@@ -393,11 +394,11 @@ class App {
         };
 
         const feedbackDiv = document.createElement("div");
-        let message = `<div>`;
+        let message = `<div class="pl-4 mb-2">`;
         if (this.micsr.wrongVersion) {
             message += `<span style="color:red">These values are for reference only! Since you are using a beta version they are not guaranteed to be accurate and you may experience different results in the actual game.&nbsp;</span>`;
         }
-        message += `Please submit any issues/feedback using <a href="https://github.com/broderickhyman/Melvor-Idle-Combat-Simulator-Reloaded/issues" target="_blank">GitHub issues</a>.</div>`;
+        message += `Please submit any issues/feedback using <a href="https://github.com/mythridium/combat-simulator/issues" target="_blank">GitHub issues</a>.</div>`;
         feedbackDiv.innerHTML = message;
 
         // Create the top container for the sim
@@ -428,7 +429,7 @@ class App {
         // Add Cards to the tab card
         this.createLevelSelectCard();
         this.createSpellSelectCards();
-        this.createPrayerSelectCard();
+        this.createPrayerSelectCards();
         this.createPotionSelectCard();
         this.createPetSelectCard();
         this.createAgilitySelectCard();
@@ -629,7 +630,8 @@ class App {
                 EquipmentSlots.Platebody,
                 EquipmentSlots.Shield,
             ],
-            [EquipmentSlots.Platelegs],
+            // @ts-ignore
+            cloudManager.hasAoDEntitlement ? [EquipmentSlots.Gem, EquipmentSlots.Platelegs] : [EquipmentSlots.Platelegs],
             [EquipmentSlots.Gloves, EquipmentSlots.Boots, EquipmentSlots.Ring],
             [EquipmentSlots.Summon1, EquipmentSlots.Summon2],
         ];
@@ -641,7 +643,7 @@ class App {
             row.forEach((slotID) => {
                 rowSources.push(
                     `assets/media/bank/${
-                        this.micsr.equipmentSlotData[EquipmentSlots[slotID]]
+                        (<any>this.micsr.equipmentSlotData)[EquipmentSlots[slotID]]
                             .emptyMedia
                     }.png`
                 );
@@ -1232,36 +1234,78 @@ class App {
         return newCard;
     }
 
-    createPrayerSelectCard() {
-        this.prayerSelectCard = this.mainTabCard.addTab(
+    createPrayerSelectCards() {
+        this.prayerSelectCard = this.mainTabCard.addPremadeTab(
             "Prayers",
             this.media.prayer,
+            new TabCard(
+                this.micsr,
+                "",
+                false,
+                this.mainTabCard.tabContainer,
+                "100%",
+                "150px"
+            )
+        ) as TabCard;
+        this.prayerSelectCard.addSectionTitle("Prayers");
+        // add tab menu, it was not yet created in the constructor
+        this.prayerSelectCard.addTabMenu();
+
+        const prayers = this.micsr.prayers.allObjects.sort((a, b) => a.level - b.level);
+
+        this.prayerSelectCard.addPremadeTab(
+            "Standard Prayers",
+            this.media.prayer,
+            this.createPrayerSelectCard(
+                "Standard Prayers",
+                prayers.filter(prayer => !(<any>prayer).isUnholy),
+                combatMenus.prayer
+            )
+        );
+        this.prayerSelectCard.addPremadeTab(
+            "Unholy Prayers",
+            this.media.unholy,
+            this.createPrayerSelectCard(
+                "Unholy Prayers",
+                prayers.filter(prayer => (<any>prayer).isUnholy),
+                combatMenus.prayer
+            )
+        );
+    }
+
+    /**
+     * Creates a card for selecting spells
+     * @param {string} title The title of the card
+     * @param {string} spellType The type of spells to generate the select menu for
+     * @return {Card} The created spell select card
+     */
+    createPrayerSelectCard(
+        title: string,
+        prayers: ActivePrayer[],
+        prayerMenu: PrayerMenu
+    ) {
+
+        const newCard = new Card(
+            this.micsr,
+            this.prayerSelectCard.container,
             "",
             "100px"
         );
-        this.prayerSelectCard.addSectionTitle("Prayers");
-        const prayerSources: any = [];
-        const prayerNames: any = [];
-        const prayerCallbacks: any = [];
-        const tooltips: any = [];
-        this.micsr.prayers.allObjects
-            .sort((a, b) => a.level - b.level)
-            .forEach((prayer) => {
-            prayerSources.push(prayer.media);
-            prayerNames.push(this.getPrayerName(prayer));
-            prayerCallbacks.push((e: any) =>
-                this.prayerButtonOnClick(e, prayer)
-            );
-            // @ts-expect-error
-            tooltips.push(combatMenus.prayer.getUnlockedTooltipHTML(prayer));
-        });
-        this.prayerSelectCard.addImageButtons(
-            prayerSources,
+
+        newCard.addSectionTitle(title);
+        const prayerImages = prayers.map(prayer => prayer.media);
+        const prayerNames = prayers.map(prayer => this.getPrayerName(prayer));
+        const prayerCallbacks = prayers.map(prayer => (event: any) => this.prayerButtonOnClick(event, prayer));
+        const tooltips = prayers.map(prayer => prayerMenu['getUnlockedTooltipHTML'](prayer));
+        newCard.addImageButtons(
+            prayerImages,
             prayerNames,
             "Medium",
             prayerCallbacks,
             tooltips
         );
+
+        return newCard;
     }
 
     createPotionSelectCard() {
@@ -1679,7 +1723,7 @@ class App {
             // apply undiscovered filter
             if (this.dropListFilters.onlyUndiscovered) {
                 const item = this.micsr.items.getObjectByID(itemID);
-                if (this.micsr.actualGame.stats.itemFindCount(item) === 0) {
+                if (this.micsr.actualGame.stats.itemFindCount(item!) === 0) {
                     lootList.push(itemID);
                 }
             } else {
@@ -2358,6 +2402,14 @@ class App {
                 (item: any) => this.filterCombatSummon(item, false),
                 (x) => this.getItemLevelReq(x, this.micsr.skillIDs.Summoning)
             );
+        } else if (equipmentSlot === 15) {
+            equipmentSelectCard.addSectionTitle("Gem");
+            this.addEquipmentMultiButton(
+                equipmentSelectCard,
+                equipmentSlot,
+                (item: any) => item.type === 'Gem',
+                (x) => x.name
+            );
         } else {
             throw Error(`Invalid equipmentSlot: ${equipmentSlot}`);
         }
@@ -2377,11 +2429,11 @@ class App {
      * Equips an item to an equipment slot
      */
     equipItem(slotID: any, item: any, updateStats = true) {
-        let slot = EquipmentSlots[slotID];
+        let slot = EquipmentSlots[slotID] as SlotTypes;
         // determine equipment slot
         if (item.occupiesSlots && item.occupiesSlots.includes(slot)) {
             slot = item.validSlots[0];
-            slotID = this.micsr.equipmentSlotData[slot].id;
+            slotID = (<any>this.micsr.equipmentSlotData)[slot].id;
         }
         // clear previous item
         let slots = [slot];
@@ -2390,15 +2442,15 @@ class App {
         }
         slots.forEach((slotToOccupy) => {
             const equipment = this.player.equipment;
-            const prevSlot = equipment.getRootSlot(slotToOccupy);
+            const prevSlot = equipment['getRootSlot'](slotToOccupy) as SlotTypes;
             equipment.slots[prevSlot].occupies.forEach((occupied: any) => {
                 this.setEquipmentImage(
-                    this.micsr.equipmentSlotData[occupied].id
+                    (<any>this.micsr.equipmentSlotData)[occupied].id
                 );
             });
             //@ts-expect-error
             this.player.unequipItem(0, prevSlot);
-            this.setEquipmentImage(this.micsr.equipmentSlotData[prevSlot].id);
+            this.setEquipmentImage((<any>this.micsr.equipmentSlotData)[prevSlot].id);
         });
         // equip new item
         this.player.equipItem(item, 0, slot);
@@ -2419,7 +2471,7 @@ class App {
      * Change the equipment image
      */
     setEquipmentImage(equipmentSlot: any, occupy = true) {
-        const slotKey = EquipmentSlots[equipmentSlot];
+        const slotKey = EquipmentSlots[equipmentSlot] as SlotTypes;
         const img = document.getElementById(`MCS ${slotKey} Image`);
         const slot = this.player.equipment.slots[slotKey];
         let imgSrc = `assets/media/bank/${this.micsr.equipmentSlotData[slotKey].emptyMedia}.png`;
@@ -2434,7 +2486,7 @@ class App {
         if (occupy && slot.item.occupiesSlots) {
             slot.item.occupiesSlots.forEach((slot: any) =>
                 this.setEquipmentImage(
-                    this.micsr.equipmentSlotData[slot].id,
+                    (<any>this.micsr.equipmentSlotData)[slot].id,
                     false
                 )
             );
@@ -2449,7 +2501,7 @@ class App {
      * @returns {string} The tooltip content
      */
     getEquipmentTooltip(equipmentSlot: any, item: any) {
-        if (!item) {
+        if (!item || item.localID === 'Empty_Equipment') {
             return EquipmentSlots[equipmentSlot];
         }
 
@@ -2636,7 +2688,7 @@ class App {
         if (this.player.attackType === "ranged") {
             idx += 5;
         }
-        this.player.setAttackStyle(
+        this.player['setAttackStyle'](
             combatType,
             this.micsr.game.attackStyles.allObjects[idx]
         );
@@ -2665,6 +2717,31 @@ class App {
             );
             return;
         }
+        let isCurrentUnholy = false;
+        for (const prayer of this.player.activePrayers) {
+            if ((<any>prayer).isUnholy) {
+                isCurrentUnholy = true;
+                break;
+            }
+        }
+
+        if (this.player.activePrayers.size > 0 && isCurrentUnholy !== (<any>prayer).isUnholy) {
+            this.micsr.imageNotify(
+                isCurrentUnholy ? this.media.unholy : this.media.prayer,
+                (<any>prayer) ? 'You cannot use Unholy Prayers with Standard Prayers!' : 'You cannot use Standard Prayers with Unholy Prayers!',
+                "danger"
+            );
+            return;
+        }
+        if ((<any>prayer).isUnholy && (<any>this.player.modifiers).allowUnholyPrayerUse < 2) {
+            this.micsr.imageNotify(
+                this.media.unholy,
+                "You don't have enough items equipped that allow you to use Unholy Prayers!",
+                "danger"
+            );
+            return;
+        }
+
         let prayerChanged = false;
         if (this.player.activePrayers.has(prayer)) {
             this.player.activePrayers.delete(prayer);
@@ -2677,12 +2754,13 @@ class App {
                 prayerChanged = true;
             } else {
                 this.micsr.imageNotify(
-                    this.media.prayer,
+                    isCurrentUnholy ? this.media.unholy : this.media.prayer,
                     "You can only have 2 prayers active at once.",
                     "danger"
                 );
             }
         }
+
         if (prayerChanged) {
             this.updateCombatStats();
         }
@@ -2963,18 +3041,6 @@ class App {
             this.selectButton(event.currentTarget);
         }
         this.updateCombatStats();
-    }
-
-    // Callback Functions for the Sim Options Card
-    /**
-     * Callback for when the max actions input is changed
-     * @param {Event} event The change event for an input
-     */
-    maxActionsInputOnChange(event: any) {
-        const newMaxActions = parseInt(event.currentTarget.value);
-        if (newMaxActions > 0) {
-            this.micsr.maxActions = newMaxActions;
-        }
     }
 
     /**
@@ -3600,7 +3666,7 @@ class App {
                 let monsterID;
                 let dungeonID;
                 if (this.isViewingDungeon) {
-                    dungeonID = this.viewedDungeonID;
+                    dungeonID = this.viewedDungeonID!;
                     monsterID = this.getSelectedDungeonMonsterID();
                 } else {
                     monsterID = this.barMonsterIDs[this.selectedBar];
@@ -3612,6 +3678,7 @@ class App {
                     this.simulator.monsterSimData[
                         this.simulator.simID(
                             monsterID,
+                            // @ts-ignore
                             dungeonID >= this.micsr.dungeonCount
                                 ? undefined
                                 : dungeonID
@@ -3673,7 +3740,7 @@ class App {
      * Updates the list of options in the spell menus, based on if the player can use it
      */
     updateSpellOptions() {
-        this.player.computeAttackType();
+        this.player['computeAttackType']();
         this.player.checkMagicUsage();
         this.checkForSpellLevel();
         this.checkForSpellItem();
@@ -3822,7 +3889,7 @@ class App {
                     attackSpeed.toLocaleString();
             } else {
                 document.getElementById(`MCS ${key} CS Output`)!.textContent =
-                    this.combatData.combatStats[key].toLocaleString();
+                    (<any>this.combatData.combatStats)[key].toLocaleString();
             }
         });
         this.setSummoningSynergyText();
@@ -3927,7 +3994,7 @@ class App {
             this.removeBarhighlight(this.selectedBar);
         }
         this.barSelected = true;
-        const barID = this.dungeonBarIDs[this.viewedDungeonID];
+        const barID = this.dungeonBarIDs[this.viewedDungeonID!];
         this.selectedBar = barID;
         this.setBarHighlight(barID);
         this.plotter.inspectButton.style.display = "";

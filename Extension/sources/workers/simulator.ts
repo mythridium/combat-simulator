@@ -37,7 +37,24 @@
     // spoof $ so we get useful information regarding where the bugs are
     const $ = (...args: any[]) => console.log(...args);
 
-    importScripts("https://steam.melvoridle.com/assets/js/pako.min.js");
+    (<any>self).TODO_REPLACE_MEDIA = 'assets/media/main/missing_artwork.png';
+
+    try {
+        importScripts(
+                `${location.origin}/assets/js/fflate.min.js`,
+                `${location.origin}/assets/js/mitt.min.js`,
+                `${location.origin}/assets/js/pixi.min.js`,
+                `${location.origin}/assets/js/built/utils.js`,
+                `${location.origin}/assets/js/built/effectRenderer.js`,
+                `${location.origin}/assets/js/built/attacks.js`
+            );
+    } catch(exception) {
+        console.error('Failed to download resources.', exception);
+    }
+
+    try {
+        importScripts("https://steam.melvoridle.com/assets/js/pako.min.js");
+    } catch {}
 
     // Fake globals
     const combatMenus = {
@@ -147,6 +164,25 @@
                     eval(event.data.classes[name]);
                 });
 
+                (<any>cloudManager).isBirthdayEvent2023Active = () => false;
+
+                (<any>self).flatHexOrient = {
+                    // @ts-ignore
+                    forward: [[3 / 2, 0], [HexCoords.SQRT3 / 2, HexCoords.SQRT3], ],
+                    // @ts-ignore
+                    inverse: [[2 / 3, 0], [-1 / 3, HexCoords.SQRT3 / 3], ],
+                };
+
+                // @ts-ignore
+                Cartography.BASE_SURVEY_XP = 1;
+                // @ts-ignore
+                Cartography.SURVEY_XP_PER_LEVEL = [0, 24, 108, 264, 504, 864];
+                // @ts-ignore
+                HexCoords.axialDirVectors = [new HexCoords(1,0), new HexCoords(1,-1), new HexCoords(0,-1), new HexCoords(-1,0), new HexCoords(-1,1), new HexCoords(0,1), ];
+                // @ts-ignore
+                HexCoords.PI_3 = Math.PI / 3;
+                // @ts-ignore
+                HexCoords.SQRT3 = Math.sqrt(3);
                 // create instances
                 // restore data
                 const cloneData = new CloneData();
@@ -157,8 +193,11 @@
                 self.exp = new ExperienceCalculator();
                 const full = event.data.dataPackage.Full;
                 const toth = event.data.dataPackage.TotH;
+                const aod = event.data.dataPackage.AoD;
                 // @ts-expect-error
                 cloudManager.hasTotHEntitlement = !!toth;
+                // @ts-ignore
+                cloudManager.hasAodEntitlement = !!aod;
                 // @ts-expect-error
                 cloudManager.hasFullVersionEntitlement = !!full;
 
@@ -172,10 +211,14 @@
                 if (cloudManager.hasTotHEntitlement) {
                     micsr.cleanupDataPackage("TotH");
                 }
+                // @ts-ignore
+                if (cloudManager.hasAoDEntitlement) {
+                    micsr.cleanupDataPackage("AoD");
+                }
 
                 // @ts-expect-error
                 Summoning.markLevels = event.data.SummoningMarkLevels;
-
+                (<any>self).game = simGame;
                 await micsr.initialize(simGame, simGame as any);
 
                 // @ts-expect-error

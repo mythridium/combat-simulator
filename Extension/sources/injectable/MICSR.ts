@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-type PackageTypes = "Demo" | "Full" | "TotH";
+type PackageTypes = "Demo" | "Full" | "TotH" | "AoD";
 
 type IDataPackage = {
     [packageName in PackageTypes]?: any;
@@ -84,16 +84,16 @@ class MICSR {
         this.isVerbose = false;
         this.wrongVersion = false;
         // combat sim name
-        this.name = "Melvor Idle Combat Simulator Reloaded";
+        this.name = "[Myth] Combat Simulator";
         this.shortName = "Combat Simulator";
 
         // compatible game version
-        this.gameVersion = "v1.0";
+        this.gameVersion = "v1.2";
 
         // combat sim version
         this.majorVersion = 2;
-        this.minorVersion = 0;
-        this.patchVersion = 13;
+        this.minorVersion = 1;
+        this.patchVersion = 0;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -133,6 +133,8 @@ class MICSR {
             // "Agility",
             // "Astrology",
             "Township",
+            //"Archaeology",
+            //"Cartography"
         ];
     }
 
@@ -170,6 +172,13 @@ class MICSR {
                 `/assets/data/melvorTotH.json?${this.DATA_VERSION}`
             );
         }
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            await this.fetchDataPackage(
+                "AoD",
+                `/assets/data/melvorExpansion2.json?${this.DATA_VERSION}`
+            );
+        }
     }
 
     async initialize(game: SimGame, actualGame: Game) {
@@ -179,6 +188,10 @@ class MICSR {
         }
         if (cloudManager.hasTotHEntitlement) {
             game.registerDataPackage(this.dataPackage["TotH"]);
+        }
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            game.registerDataPackage(this.dataPackage["AoD"]);
         }
         game.postDataRegistration();
         this.setupGame(game, actualGame);
@@ -267,6 +280,12 @@ class MICSR {
             (skill) =>
                 !this.bannedSkills
                     .map((bannedSkill: string) => `melvorD:${bannedSkill}`)
+                    .includes(skill.skillID)
+        );
+        skillData = skillData.filter(
+            (skill) =>
+                !this.bannedSkills
+                    .map((bannedSkill: string) => `melvorAoD:${bannedSkill}`)
                     .includes(skill.skillID)
         );
         const magicSkillData = skillData.find(

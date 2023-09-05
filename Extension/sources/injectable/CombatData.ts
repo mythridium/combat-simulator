@@ -166,8 +166,8 @@ class CombatData {
         this.combatStats.damageReduction = this.player.stats.damageReduction;
 
         // Max Hitpoints
-        this.combatStats.baseMaxHitpoints = this.player.levels.Hitpoints;
-        this.combatStats.baseMaxHitpoints +=
+        this.combatStats.maxHitpoints = this.player.levels.Hitpoints;
+        this.combatStats.maxHitpoints +=
             this.micsr.showModifiersInstance.getModifierValue(
                 modifiers,
                 "MaxHitpoints"
@@ -199,7 +199,7 @@ class CombatData {
     }
 
     playerAttackSpeed() {
-        let attackSpeed = this.combatStats.attackSpeed;
+        let attackSpeed = this.combatStats.attackInterval;
         attackSpeed -= this.decreasedAttackSpeed();
         return attackSpeed;
     }

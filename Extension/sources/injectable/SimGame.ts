@@ -140,6 +140,7 @@ class SimGame extends Game {
             "True",
             false
         );
+        let aodNamespace: DataNamespace;
         const demoNamespace = this.registeredNamespaces.registerNamespace(
             "melvorD",
             "Demo",
@@ -161,6 +162,14 @@ class SimGame extends Game {
                 "Throne of the Herald",
                 false
             );
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            aodNamespace = this.registeredNamespaces.registerNamespace(
+                "melvorAoD",
+                "Atlas of Discovery",
+                false
+            );
+        }
         this.normalAttack = new SpecialAttack(
             demoNamespace,
             {
@@ -326,6 +335,14 @@ class SimGame extends Game {
         this.summoning = this.registerSkill(demoNamespace, Summoning);
         this.astrology = this.registerSkill(demoNamespace, Astrology);
         this.township = this.registerSkill(demoNamespace, Township);
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            // @ts-ignore
+            this.archaeology = this.registerSkill(aodNamespace, Archaeology);
+            // @ts-ignore
+            this.cartography = this.registerSkill(aodNamespace, Cartography);
+        }
+
         // Fix SimPlayer object to match replaced Player object
         // TODO: Re-enable this when we manage pets directly
         // this.combat.player.registerStatProvider(this.petManager);
@@ -399,7 +416,7 @@ class SimGame extends Game {
             area.monsters.forEach((monster) =>
                 this.monsterAreas.set(monster, area)
             );
-            const slayerLevelReq = area.entryRequirements.find((req) => {
+            const slayerLevelReq = area.entryRequirements.find((req: AnyRequirement) => {
                 return req.type === "SkillLevel" && req.skill === this.slayer;
             }) as SkillLevelRequirement;
             if (slayerLevelReq !== undefined)
@@ -545,6 +562,13 @@ class SimGame extends Game {
             case "Completion":
             case "DungeonCompletion":
             case "ShopPurchase":
+            case "ItemFound":
+            // @ts-ignore
+            case 'CartographyHexDiscovery':
+                // @ts-ignore
+            case "CartographyPOIDiscovery":
+                // @ts-ignore
+            case 'ArchaeologyItemsDonated':
                 return true;
         }
         return false;

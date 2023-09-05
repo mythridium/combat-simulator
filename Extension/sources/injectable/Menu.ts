@@ -38,7 +38,7 @@ class Menu {
 
         // create header
         const modalHeader =
-            $(`<div class="block block-themed block-transparent mb-0"><div class="block-header bg-primary-dark">
+            $(`<div class="block block-themed block-transparent mb-0"><div class="block-header bg-primary-dark pl-4 pb-1">
         <h3 class="block-title">${title}</h3>
         <div class="block-options"><button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
         <i class="fa fa-fw fa-times"></i></button></div></div></div>`);

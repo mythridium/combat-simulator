@@ -11,11 +11,11 @@ const { version } = require('./package.json');
 const manifest = JSON.parse(fs.readFileSync('manifest.json').toString());
 manifest.version = version
 fs.writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 4));
-fs.copyFileSync("../LICENSE", "dist/LICENSE");
-fs.copyFileSync("../ChangeLog.txt", "dist/ChangeLog.txt");
-fs.copyFileSync("../README.md", "dist/README.md");
+//fs.copyFileSync("../LICENSE", "dist/LICENSE");
+//fs.copyFileSync("../ChangeLog.txt", "dist/ChangeLog.txt");
+//fs.copyFileSync("../README.md", "dist/README.md");
 
-const zipName = path.join(__dirname, '.build', `MICSR-v${version}.zip`);
+const zipName = path.join(__dirname, '.build', `myth-combat-simulator-v${version}.zip`);
 console.log(zipName)
 fs.mkdirSync(path.dirname(zipName), { recursive: true });
 

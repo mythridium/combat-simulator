@@ -109,7 +109,7 @@ class ExportCheat extends Import {
         */
     }
 
-    importPets(petUnlocked: Pet[]) {}
+    importPets(petUnlocked: Pet[] | string[]) {}
 
     importStyle(styles: any): void {}
 

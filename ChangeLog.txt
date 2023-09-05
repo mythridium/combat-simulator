@@ -1,3 +1,13 @@
+v2.1.0
+    re-branded under [Myth] banner
+    added support for game version 1.2
+    fixed empty equipment slot tooltip text when importing item sets
+    added unholy prayers (should work, not extensively tested though)
+    fixed 'convert shards' loot option not working for god dungeons
+    cartography bonuses not currently supported
+    archaeology bonuses not currently supported
+    AoD gems are not currently supported, but show on the ui if you have AoD
+
 v2.0.0
     Overhaul for v1.1
 
@@ -370,7 +380,7 @@ v1.2.4
     - Add enemy combat passives
     - Various bug fixes
     - Loading: reduce console spam and improve race handling
-    
+
 
 v1.2.3
     Updated for Melvor Idle v0.18.2

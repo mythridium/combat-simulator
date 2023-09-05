@@ -233,6 +233,8 @@ class ShowModifiers {
                 'MinThievingGP',
             ],
             township: [],
+            cartography: [],
+            archaeology: [],
             woodcutting: [
                 'BirdNestDropRate',
             ],
@@ -460,6 +462,8 @@ class ShowModifiers {
                 'summoningSynergy_11_19',
             ],
             township: [],
+            cartography: [],
+            archaeology: [],
             woodcutting: [
                 'increasedTreeCutLimit',
                 'summoningSynergy_3_4',

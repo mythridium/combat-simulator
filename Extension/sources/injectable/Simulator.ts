@@ -185,6 +185,10 @@ class Simulator {
             { name: "currentSaveVersion", data: currentSaveVersion },
             { name: "gameVersion", data: gameVersion },
             { name: "enemyNoun", data: enemyNoun },
+            // @ts-ignore
+            { name: 'ArtefactWeightRange', data: ArtefactWeightRange, },
+            { name: 'TownshipResourceTypeID', data: TownshipResourceTypeID },
+            { name: 'AltMagicProductionID', data: AltMagicProductionID },
             // We need loadedLangJson for skill names (used with XP tracking)
             { name: "loadedLangJson", data: loadedLangJson },
             { name: "MAX_QUICK_EQUIP_ITEMS", data: MAX_QUICK_EQUIP_ITEMS },
@@ -198,6 +202,51 @@ class Simulator {
                     ...cloudManager,
                     formElements: undefined,
                     formInnerHTML: undefined,
+                    checkAuthentication: undefined,
+                    hidePageLoader: undefined,
+                    showPageLoader: undefined,
+                    showSignInContainer: undefined,
+                    showRegisterContainer: undefined,
+                    showForgotContainer: undefined,
+                    showLanguageSelection: undefined,
+                    initSilentSignIn: undefined,
+                    initChangePassword: undefined,
+                    performChanceEmail: undefined,
+                    playfabEventAPI: undefined,
+                    checkForPlayFabTokenRefresh: undefined,
+                    checkForPlayFabAutoSave: undefined,
+                    refreshPlayFabSaves: undefined,
+                    skipCloudAuthentication: undefined,
+                    log: undefined,
+                    setStatus: undefined,
+                    changePasswordToMelvorCloud: undefined,
+                    accessBaseGame: undefined,
+                    accessTestServer: undefined,
+                    connectToPatreon: undefined,
+                    getPlayFabSave: undefined,
+                    deletePlayFabSave: undefined,
+                    forceUpdatePlayFabSave: undefined,
+                    updateLastSaveTimestampText: undefined,
+                    disableForceSyncButton: undefined,
+                    enableForceSyncButton: undefined,
+                    updateUIForPlayFabSignIn: undefined,
+                    updateUIForMelvorCloudSignIn: undefined,
+                    updateUIForEntitlements: undefined,
+                    connectionSuccessMelvorCloud: undefined,
+                    connectionFailedMelvorCloud: undefined,
+                    logout: undefined,
+                    updateUIForAccountSteamLinkStatus: undefined,
+                    displaySteamLinkSwal: undefined,
+                    updateEntitlementsFromReceiptData: undefined,
+                    saveToSteamCloud: undefined,
+                    readFromSteamCloud: undefined,
+                    deleteFromSteamCloud: undefined,
+                    dismissExpansionNotOwned2: undefined,
+                    remindLaterExpansionNotOwned2: undefined,
+                    viewOtherExpansions: undefined,
+                    isBirthdayEvent2023Active: undefined,
+                    toggleDevMode: undefined,
+                    isDevModeEnabled: undefined
                 },
             },
             { name: "COMBAT_TRIANGLE_IDS", data: COMBAT_TRIANGLE_IDS },
@@ -301,7 +350,7 @@ class Simulator {
             "isSkillEntry",
             "clampValue",
             "roundToTickInterval",
-            "loadGameData",
+            //"loadGameData",
             "constructEffectFromData",
             "damageReducer",
             "rollPercentage",
@@ -312,6 +361,7 @@ class Simulator {
             "sortRecipesByCategoryAndLevel",
             "checkBooleanCondition",
             "checkValueCondition",
+            "selectFromWeightedArray"
         ].forEach((func: any) => {
             if (window[func] === undefined) {
                 this.micsr.error(`window[${func}] is undefined`);
@@ -339,8 +389,18 @@ class Simulator {
         // contains empty functions to make the classes work
         const emptyClass = class {
             rootItems: any;
-            constructor() {
+            constructor(public _namespace: DataNamespace, public _localID: string) {
                 this.rootItems = [];
+            }
+
+            get namespace() {
+                return this._namespace?.name;
+            }
+            get id() {
+                return `${this._namespace?.name}:${this._localID}`;
+            }
+            get localID() {
+                return this._localID;
             }
 
             addDummyItemOnLoad() {}
@@ -354,6 +414,14 @@ class Simulator {
             }
 
             setLevel() {}
+
+            encode() {}
+
+            decode() {}
+
+            registerSoftDependencies() {}
+
+            assignHandler() {}
         };
         [
             CombatQuickEquipMenu,
@@ -365,6 +433,8 @@ class Simulator {
 
             // RenderQueues
             SkillRenderQueue,
+            MasterySkillRenderQueue,
+            GatheringSkillRenderQueue,
             AltMagicRenderQueue,
             PrayerRenderQueue,
             ArtisanSkillRenderQueue,
@@ -383,9 +453,61 @@ class Simulator {
             TutorialRenderQueue,
             ShopRenderQueue,
 
+            FarmingHarvestActionEventMatcher,
+            FarmingPlantActionEventMatcher,
+            FiremakingActionEventMatcher,
+            FishingActionEventMatcher,
+            FletchingActionEventMatcher,
+            MiningActionEventMatcher,
+            ThievingActionEventMatcher,
+            WoodcuttingActionEventMatcher,
+            BonfireLitEventMatcher,
+            CookingActionEventMatcher,
+            CraftingActionEventMatcher,
+            RunecraftingActionEventMatcher,
+            SmithingActionEventMatcher,
+            // @ts-ignore
+            CartographyPaperMakingEventMatcher,
+            // @ts-ignore
+            CartographyMapUpgradeEventMatcher,
+            // @ts-ignore
+            CartographyMapRefinementEventMatcher,
+            // @ts-ignore
+            ArchaeologyActionEventMatcher,
+            // @ts-ignore
+            TownshipTaskCompletedEventMatcher,
+            // @ts-ignore
+            CartographySurveyEventMatcher,
+            // @ts-ignore
+            ArchaeologyTool,
+            // @ts-ignore
+            ArchaeologyMuseumReward,
+
             // Township
             TownshipTasks,
             TownshipData,
+            FarmingPlot,
+            ThievingNPC,
+            ThievingArea,
+            MiningRock,
+            WoodcuttingTree,
+            Fish,
+            FishingArea,
+            FiremakingLog,
+            CookingCategory,
+            CookingRecipe,
+            FarmingCategory,
+            FarmingRecipe,
+            FletchingRecipe,
+            TownshipTask,
+            TownshipTaskGoals,
+            TownshipTaskRewards,
+            // @ts-ignore
+            TownshipCasualTask,
+            TownshipBiome,
+            TownshipBuilding,
+            TownshipResource,
+            TownshipBuildingProvides,
 
             // Milestones
             CustomSkillMilestone,
@@ -402,7 +524,7 @@ class Simulator {
         ].forEach((clas: any) =>
             classNames.push({ name: clas.name, data: emptyClass })
         );
-        
+
         // these classes are copied from the game
         [
             // @ts-expect-error
@@ -419,7 +541,7 @@ class Simulator {
             NamespacedArray,
             ItemRegistry,
             CharacterStats,
-            NormalDamage,
+           // NormalDamage,
             Gamemode,
             Page,
             Skill,
@@ -454,20 +576,24 @@ class Simulator {
             Summoning,
             Astrology,
             Township,
+            // @ts-ignore
+            Cartography,
+            // @ts-ignore
+            Archaeology,
 
             // Attacks
             SpecialAttack,
 
             ItemEffectAttack,
             StackingEffect,
-            SlowEffect,
-            BurnEffect,
-            PoisonEffect,
+           // SlowEffect,
+           // BurnEffect,
+           // PoisonEffect,
             ItemEffect,
-            DeadlyPoisonEffect,
+           // DeadlyPoisonEffect,
             CurseEffect,
-            EndOfTurnEvasionEffect,
-            StickyWebs,
+           // EndOfTurnEvasionEffect,
+           // StickyWebs,
 
             // Items
             Item,
@@ -491,6 +617,8 @@ class Simulator {
             PlayerModifiers,
 
             // Main
+            // @ts-ignore
+            GameEventEmitter,
             MasteryAction,
             DummyMasteryAction,
             Lore,
@@ -523,10 +651,32 @@ class Simulator {
             SplashManager,
             BaseManager,
             CombatManager,
+            // @ts-ignore
+            DoublyLinkedList,
+            // @ts-ignore
+            LinkQueue,
+            // @ts-ignore
+            CharacterRenderQueue,
+            // @ts-ignore
+            EnemyRenderQueue,
+            // @ts-ignore
+            PlayerRenderQueue,
+            // @ts-ignore
+            CartographyRenderQueue,
+            // @ts-ignore
+            ArchaeologyRenderQueue,
+            // @ts-ignore
+            ArchaeologyMuseum,
             Character,
             Player,
             RaidPlayer,
             Enemy,
+            // @ts-ignore
+            ClueHunt,
+            // @ts-ignore
+            KeyboardInputManager,
+            // @ts-ignore
+            GameEventSystem,
             Game,
             Golbin,
             // @ts-expect-error TS(2304): Cannot find name 'GolbinRaidBank'.
@@ -567,19 +717,51 @@ class Simulator {
 
             // Events
             GameEvent,
-            PlayerAttackEvent,
-            EnemyAttackEvent,
-            PlayerHitpointRegenerationEvent,
+            // @ts-ignore
+            IntervaledGameEvent,
+            //PlayerAttackEvent,
+            //EnemyAttackEvent,
+            // @ts-ignore
+            CharacterAttackEvent,
+            // @ts-ignore
+            HitpointRegenerationEvent,
             CombatEvent,
             PlayerSummonAttackEvent,
             GameEventMatcher,
+            // @ts-ignore
+            NonRaidGameEventMatcher,
+            // @ts-ignore
+            CharacterGameEventMatcher,
+            SkillActionEvent,
             MonsterKilledEvent,
             MonsterDropEvent,
+            // @ts-ignore
+            MonsterSpawnedEvent,
+            // @ts-ignore
+            DungeonCompletedEvent,
+            // @ts-ignore
+            MonsterKilledWithEquipmentEvent,
+            // @ts-ignore
+            MonsterKilledWithPlayerRequirementsEvent,
             FoodEatenEvent,
             PotionUsedEvent,
             RuneConsumptionEvent,
             PrayerPointConsumptionEvent,
             SummonTabletUsedEvent,
+            // @ts-ignore
+            CartographyPaperMakingEvent,
+            // @ts-ignore
+            CartographyMapUpgradeEvent,
+            // @ts-ignore
+            CartographyMapRefinementEvent,
+            // @ts-ignore
+            ArchaeologyActionEvent,
+            // @ts-ignore
+            RandomTravelEvent,
+            // @ts-ignore
+            RequirementChangedEvent,
+            // @ts-ignore
+            TownshipTaskCompletedEvent,
 
             // Matchers
             SkillActionEventMatcher,
@@ -587,22 +769,24 @@ class Simulator {
             AgilityActionEventMatcher,
             AltMagicActionEventMatcher,
             AstrologyActionEventMatcher,
-            BonfireLitEventMatcher,
-            CookingActionEventMatcher,
-            CraftingActionEventMatcher,
+            //BonfireLitEventMatcher,
+            //CookingActionEventMatcher,
+            //CraftingActionEventMatcher,
             EnemyAttackEventMatcher,
-            FarmingHarvestActionEventMatcher,
-            FarmingPlantActionEventMatcher,
-            FiremakingActionEventMatcher,
-            FishingActionEventMatcher,
-            FletchingActionEventMatcher,
+            // FarmingHarvestActionEventMatcher,
+            // FarmingPlantActionEventMatcher,
+            // FiremakingActionEventMatcher,
+            // FishingActionEventMatcher,
+            // FletchingActionEventMatcher,
             FoodEatenEventMatcher,
             FoodEquippedEventMatcher,
             HerbloreActionEventMatcher,
             ItemEquippedEventMatcher,
-            MiningActionEventMatcher,
+            // MiningActionEventMatcher,
             MonsterDropEventMatcher,
             MonsterKilledEventMatcher,
+            // @ts-ignore
+            MonsterSpawnedEventMatcher,
             PlayerAttackEventMatcher,
             PlayerHitpointRegenerationMatcher,
             PlayerSummonAttackEventMatcher,
@@ -611,16 +795,17 @@ class Simulator {
             PotionUsedEventMatcher,
             PrayerPointConsumptionEventMatcher,
             RuneConsumptionEventMatcher,
-            RunecraftingActionEventMatcher,
+            //RunecraftingActionEventMatcher,
             ShopPurchaseMadeEventMatcher,
-            SmithingActionEventMatcher,
+            //SmithingActionEventMatcher,
             SummoningActionEventMatcher,
             SummonTabletUsedEventMatcher,
-            ThievingActionEventMatcher,
-            WoodcuttingActionEventMatcher,
+            //ThievingActionEventMatcher,
+            //WoodcuttingActionEventMatcher,
 
             BasicSkillRecipe,
             ArtisanSkillRecipe,
+            SingleProductRecipe,
             CategorizedArtisanRecipe,
             SingleProductArtisanSkillRecipe,
             // CookingRecipe,
@@ -630,6 +815,42 @@ class Simulator {
             SummoningRecipe,
             SummoningSynergy,
             AstrologyRecipe,
+            // @ts-ignore
+            ArchaeologyDigSite,
+            // @ts-ignore
+            DummyArchaeologyDigSite,
+            // @ts-ignore
+            WorldMap,
+            // @ts-ignore
+            DummyWorldMap,
+            // @ts-ignore
+            Point,
+            // @ts-ignore
+            HexCoords,
+            // @ts-ignore
+            Hex,
+            // @ts-ignore
+            DummyHex,
+            // @ts-ignore
+            FastTravelGroup,
+            // @ts-ignore
+            PointOfInterest,
+            // @ts-ignore
+            DigSitePOI,
+            // @ts-ignore
+            PortalPOI,
+            // @ts-ignore
+            MapFilterSettings,
+            // @ts-ignore
+            FixedCosts,
+            // @ts-ignore
+            PaperMakingRecipe,
+            // @ts-ignore
+            WorldMapMasteryBonus,
+            // @ts-ignore
+            AncientRelic,
+
+            UnregisteredConstructionError,
 
             // Combat sim classes
             MICSR,
