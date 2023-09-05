@@ -1,0 +1,15 @@
+Extension/node_modules
+*.rtf
+Extension/out
+Extension/.eslintrc.js
+Extension/web-ext-artifacts
+mainExperimental.js
+todolist.txt
+ReleaseChecklist.txt
+Extension/web-ext-config.js
+.idea/
+Data/
+GameFiles/
+Extension/dist
+Extension/.build
+.vs/

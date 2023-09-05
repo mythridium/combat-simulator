@@ -1,0 +1,3 @@
+[submodule "Extension/lib/Melvor-Typing-Project"]
+	path = Extension/lib/Melvor-Typing-Project
+	url = https://github.com/coolrox95/Melvor-Typing-Project.git

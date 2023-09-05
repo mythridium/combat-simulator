@@ -1,0 +1,11 @@
+{
+    "namespace": "micsr",
+    "manifest_version": 2,
+    "name": "Melvor Idle Combat Simulator Reloaded",
+    "description": "Adds a combat simulator to Melvor Idle",
+    "icons": {
+        "48": "icons/melvorSim-48.png"
+    },
+    "setup": "built/contentScript.js",
+    "load": [ "styles/mainStyle.css" ]
+}

@@ -1,0 +1,746 @@
+v2.0.0
+    Overhaul for v1.1
+
+v1.7.0
+    Migrate to typescript, WIP
+    Add 'unsafe-eval' to CSP in the manifest
+
+v1.6.10
+    Update for v1.0.5
+    Fix "Only Undiscovered" toggle in loot tab, #99
+    Skip load confirmation after successful load, #100
+
+v1.6.9
+    Update for v1.0.4
+
+v1.6.8
+    Fix conditional modifiers, #97
+    Fix tooltip capitalization
+    Add more tooltips to result card
+    Fix saved simulation import bugs
+    Refactor performPostSimAnalysis
+    Fix lingering results from previous runs
+    Display auto eat threshold in stats card
+
+v1.6.7
+    Fix Agility Import
+    Add Clear All Pets button to pets card
+    Simulate only selected monster in inspected dungeon
+    Fix aurora display
+    Fix Summoning Max Hit in stat card
+    Highlight highest hit taken and lowest hitpoints when risk of death
+    Add HP icon to max hitpoints
+
+v1.6.6
+    Add "Clear All Star Modifiers" button to astrology tab
+    Fix loot rate updates when consumable rates apply
+    Fix agility import order bug
+
+v1.6.5
+    Prevent crash when potion is undefined, #87
+    Fix high alchemy and loot settings display
+    Fix spell selection options, #94
+
+v1.6.4
+    Update for v1.0.3
+
+    Fix regular vs combination rune usage
+    Fix crashes during post-processing
+    Fix astrology import
+    Fix astrology standard vs unique totals
+    Fix various summoning issues
+    Fix Agility import when no pillar built
+    Fix astrology importing bug, #93
+    Update game mode settings
+    Fix rune changes
+    Update for tick-based summoning
+    Update for tick-based astrology
+    Update for tick-based agility
+    Add colour gradient to show death rate in bar plot
+    Separate Golbin Raid Exclusives in gear selection
+
+v1.6.3
+    Update for v1.0.2
+
+    Fix Summoning tablet use, #86
+    Fix Summoning consumables, #86
+    Update Show Modifiers to v0.2.10
+    Fix alt magic interval
+    Add "Has Runes" toggle
+    Replace herbloreItemData with Herblore.potions
+    Add ExportCheat
+    Refactor Import fields
+    Fix astrology skill modifier bug
+    Sort Prayers by unlock level
+    Fix Prayer xp rate, #81
+    Round base food healing amounts, #82
+    Add missing pet Bone, #84
+    Fix undefined effectMedia in worker, #85
+
+v1.6.2
+    Update for v1.0.1
+
+    Change tick limit to per trial
+    Improve tick limit warning
+
+v1.6.1
+    Fix perfect food heal amount, #69
+    Fix food heal amount display, #69
+    Fix Astrology Modifier display, #79
+    Fix tools menu creation on non-English Melvor Idle, #78
+    Add default astrology modifiers import
+    Specify "Out-of-"Combat Stats
+    Track non-ammo consumables
+    Fix missing consumables
+    Fix Throwing Power Glove
+
+1.6.0
+    Update for v1.0
+
+    Adds Astrology Tab
+
+v1.5.13
+    Update for v0.22
+
+v1.5.12
+    Fix slayer xp for v0.21?1111, #66
+    Fix potential consumables bug
+    Use getItemMedia to get item images
+    Fix kph in case of player deaths
+
+v1.5.11
+    Fix version warning on set import
+    Fix conditional modifier bug
+
+v1.5.10
+    Fix inverse kill time scaling, #60
+
+v1.5.9
+    Fix tab container bugs
+
+v1.5.8
+    Fix Consumables bugs, add storage of consumables data, #60
+    Update data when consumables setting change, #60
+    Update consumables view on setup change, #60
+    Add Consumables class to track resource consumption, #60
+    Refactor Loot.computeGP
+    Fix v1.5.7 version number
+    Fix dungeon gp drop bug, #64
+    Fix obstacle SkillModifiers bug, this resolves an issue in Melvor Obstacle Filter
+
+v1.5.7
+    Fix undefined exportOptionsCard bug
+
+v1.5.6
+    Cleanup simulation options card
+    Compute average rune breakdown
+    Fix simID bug for auto slayer monsters
+    Clear settings JSON import field
+    Fix gp bugs and add alchemy calculation, #62
+    Extract monsterID list
+    Fix spell bugs, #61
+    Rename simulation options
+    Add empty import to reset settings
+    Add default values for missing import data
+    Fix initial hp bug, #63
+    Add export/import for heal after death setting
+    Move heal after death button to sim options
+
+v1.5.5
+    Replace tsv data export with JSON data export
+
+v1.5.4
+    Add rune use breakdown
+    Fix bar footer destruction
+    Remove unused tooltip code
+    Fix undefined slayer area name in warning, #59
+
+v1.5.3
+    Add MICSR version to settings export
+    Fix history tracking bug
+    Fix combat stats in item tooltips
+
+v1.5.2
+    Fix equipment importing bug
+    Fix AgilityCourse.getObstacleTooltip performance issues
+
+v1.5.1
+    Fix version check
+    Fix auto eat import bug
+
+v1.5.0
+    Update for 0.21
+    Changes:
+    - The simulator now uses the offline combat code to simulate combat, as a result it is:
+      - a lot slower (sad)
+      - a lot more accurate (probably)
+      - a lot easier to maintain (yay)
+    - New option "Manual Eating": performs "smart" manual eating, limited to at most 1 foodstuff per tick, off by default
+    - New option "Heal After Death": eat food to heal to full HP after player dies, on by default
+    - Signet chance now uses the same time period as other statistics
+    - Dungeon simulations now simulate each monster in a dungeon context
+    - Default simulations per monster has been reduced to 1k (from 10k)
+    - Max Actions has been replaced by Max kiloticks (i.e. limit to the number of ticks to simulate, in multiples of 1000)
+    - Verbose logging has been removed
+
+v1.4.3
+    Changes:
+    - Fix ancient magick force hits
+    - Improve simulation failure messages
+    - Fix adventure mode combat triangle
+    - Reduce redundant stat recomputing
+    - Add pet Mark
+    - Fix undiscovered-items-filter bug in loot interface
+
+v1.4.2
+    Changes:
+    - Remove placeholder monsters from ITM, resolves #14
+    - Implement Ahrenia affliction, progresses #14
+    - Add "Simulate Selected" button, implements #47
+    - Show reason for simulation failure
+    - Remove "per item" loot sell options, resolves #45
+    - Remove superfluous plot options
+    - Add god dungeon shard drops to the loot interface, implements #48
+    - Fix loot dropdown sorting
+    - Fix Cloudburst staff max hit increase, fixes #49
+
+v1.4.1
+    Changes:
+    - Fix settings compatibility with v1.3.x
+
+v1.4.0
+    Update for 0.20
+    Changes:
+    - Add Summoning
+    - Add loot interface
+    - Rewrite Agility course interface
+    - Add new modifiers
+    - Implement various small balance changes
+    - Fix various bugs
+
+v1.3.14
+    Changes:
+    - Fix agility obstacle debuff halving again
+
+v1.3.13
+    Changes:
+    - Remove level input limit
+    - Fix agility obstacle debuff halving
+    - Fix auto slayer kill rates
+    - Add slayer coin display
+
+v1.3.12
+    Changes:
+    - Fix warlock amulet
+    - Fix rapid style bonus
+
+v1.3.11
+    Changes:
+    - Fix player attack speed
+    - Fix enemy special attack modifiers
+    - Fix enemy DR
+    - Fix decay bug, fixes #29
+    - Fix player evasion
+    - Fix player DR
+    - Fix slayer task setting json export/import
+    - Add sim setting/result saving - WIP
+    - Add verbose toggles
+    - Track individual kill times in verbose mode
+    - Track enemy accuracy in verbose mode
+
+v1.3.10
+    Changes:
+    - Add a toggle for applyEnemyStunSleepDamage
+
+v1.3.9
+    Update for 0.19.2
+    Changes:
+    - Refactor exportData and change export time to seconds, fixes #28
+    - Refactor and fix enemy damage modifiers
+    - Fix DamageTo modifiers
+    - Fix GlobalSkillXP modifiers
+    - Change default time unit to hours, #28
+
+v1.3.8
+    Changes:
+    - Disable dungeon/autoslayer sim on/off task, fixes #10
+    - Fix confetti crossbow, fixes #25
+    - Add additional debug logging
+    - Fix protection prayers, fixes #27
+    - Fix max hit auroras, fixes #26
+
+v1.3.7
+    Fix Rend (Sanguine Blade special)
+
+v1.3.6
+    Disable debugging
+
+v1.3.5
+    Changes:
+    - Fix ancients damage modifier bug, fixes #24
+    - Fix active buffs, fixes #22
+    - Fix non-modifier prayers, fixes #21
+
+v1.3.4
+    Changes:
+    - Implement and fix bleed specials, fixes #19
+    - Implement setHPDamageMinimum special, fixes #20
+    - Add notify on export, fixes #17
+    - Fix prayer multiple application bug
+    - Fix player accuracy bug, fixes #18
+    - Update Show Modifiers
+    - Implement ChanceToDoubleItemsGlobal modifiers
+
+v1.3.3
+    Changes:
+    - fix "always max hit" player special attacks
+    - fix unique weapon stats bug (stormsnap, slayer xbow, big ron)
+    - fix slayer area effects (probably)
+    - fix special attack rate (off-by-one error)
+
+v1.3.2
+    Update for 0.19.1
+    Changes:
+    - implement potion modifiers
+    - implement enemy special attack modifiers
+    - fix auto eat import
+    - fix stormsnap
+
+v1.3.1
+    Cleanup modifier display
+
+v1.3.0
+    Update for 0.19
+    Changes:
+    - implement modifiers (this might cause some bugs, some effects might be implemented in two ways now)
+    - add new pets
+    - add agility
+    - implement Redemption prayer effect
+
+v1.2.10
+    Extract TabCard class
+
+v1.2.9
+    Fix potion usage
+    Extract menu creation
+
+v1.2.8
+    Fix set 2 and 3 import
+
+v1.2.7
+    Changes:
+    - Optimize healing simulation
+    - Improve death rate display
+    - Show N/A results if sim failed or disabled
+    - Add simulation export / import
+    - Add combination rune usage
+    - Add no-food highlight
+    - Add potion usage
+
+    Fixes:
+    - Fix confusion curse multi attack bug
+    - Fix Marahute ammo preservation
+    - Fix slayer task inspect bug
+    - Fix undefined mastery bug for non-cooking food
+
+
+v1.2.6
+    Fixes:
+    - Fix guardian amulet incorrectly resetting between kills
+    - Fix manual eating with no food equipped
+    - Fix stun and sleep damage multipliers not applying to multi-attacks
+
+v1.2.5
+    Fixes:
+    - Fix enemy DR not resetting
+    - Fix kill times in case of player deaths
+    - Fix pet chance
+    - Fix dungeon monster export filter
+
+v1.2.4
+    This update adds player hitpoints simulation. This includes damage taken, and healing (auto eat, gear effects).
+    The simulation stops when the player dies. The "Manual eating" setting simply heals you back to full after every hit.
+    Food usage in manual eating setting is obtained as in earlier versions: it is the difference between damage taken and
+    damage healed (through non-food sources).
+
+    Other Changes:
+    - Add double Guardian Amulet passive effect below 50% HP
+    - Add Wasteful Ring passive effect
+    - Various code refactoring, e.g. method and class extraction
+    - Add enemy combat passives
+    - Various bug fixes
+    - Loading: reduce console spam and improve race handling
+    
+
+v1.2.3
+    Updated for Melvor Idle v0.18.2
+
+    Changes:
+    - Add Auto Slayer simulation
+    - Add Wandering Bard
+    - Add Dark Waters area effect
+
+    Fixes:
+    - Fix Signet Ring effect on Confetti Crossbow
+    - Fix Slayer Area requirements
+    - PARTIALLY Fix Guardian Amulet passive effect -> Only the base effect is implemented, not the doubled effect
+    - Fix Elder Crown bleed life steal passive effect
+
+v1.2.2
+    Fixes:
+    - Fix curses bugs
+
+v1.2.1
+    Fixes:
+    - Fix throwable item double counted stats bug
+    - Fix player max defense rolls
+    - Fix "no damage" special attack bug
+
+v1.2.0
+    - Refactor many things
+    - Implement v0.18 changes
+
+v1.1.3
+    Fixes:
+    - Surge's attack speed reduction wasn't applied to the first cast
+    - Surge's attack speed reduction wasn't shown in the combat stats
+
+v1.1.2
+    Fixes:
+    - Fixed a bug introduced in the previous version causing multi attack specials to make an enemy unkillable by normal attacks, greatly increasing the attacks required to kill an enemy with some weapons
+
+v1.1.1
+    Changes:
+    - Added runes used statistic
+
+    Fixes:
+    - The 1st hit of a multi-attack special can't kill a monster (This affects attacks/kill and most things based on that in some way)
+    - Implemented game bugfixes
+        - Prayer pet now only rolls when you receive prayer xp
+
+v1.1.0:
+    Updated for Melvor Idle v0.17
+
+    Changes:
+    - Moved equipment tab to its own card so it's always visible
+    - The bar with the highest value gets highlighted
+    - Added level requirements to equipment tooltips
+    - Reduced default max actions from 1000 to 300 to greatly speed up sims with lower damage
+
+    Fixes:
+    - Implemented v0.17 changes
+        - Slayer pet now rolls on every attack
+        - Passive Prayer XP has been removed
+        - Player special attack stun damage multiplier implemented (only affects Frostbite in v0.17)
+        - Player special attack stun damage multiplier bug implemented :^) (makes monsters unkillable when using certain melee weapons' special attacks while they are stunned by the Fighter Amulet)
+        - Cape of Completion has the same bonuses as the Max Skillcape
+    - Deadeye Amulet had a 75% instead of 25% crit chance for regular attacks
+    - When a Soul Split curse was selected its debuff was always active
+    - Curses were rolled for while still active, resetting their duration if successful
+    - Unequipping items (emptying a slot) didn't update stats
+    - In prayer tooltips the cost descriptions mixed up player and enemy attacks
+    - Skill levels were sometimes imported incorrectly
+    - Style issues
+
+    Known issues:
+    - Slayer's Crossbow should no longer activate against slayer task monsters inside dungeons.
+      Because Combat Simulator simulates every monster individually and does not simulate these 14 monsters again specifically for dungeons, it cannot both apply this bonus outside of dungeons and not apply it inside of dungeons.
+
+v1.0.0:
+    Changes:
+    - Renamed fork to Combat Simulator Reloaded
+    - Bars can now be selected by clicking above them instead of only on the bars themselves, and their tooltips will also appear even when you hover above them
+    - Inspecting a dungeon now shows all encountered monsters without combining the ones that appear multiple times in a row
+    - The spells tab automatically shows the tab of the currently selected spell after importing a gear set
+    - Remade tooltips in the same style as the game
+    - Style improvements
+
+    Fixes:
+    - The Sell Bones option no longer crashes because plants have no bones
+    - Exported data when set to "per kill" was very wrong
+
+v0.11.2:
+    Fixes:
+    - Moved Kills/s to the end to restore the export order
+
+v0.11.1:
+    Changes:
+    - Moved monster stats back to the bottom row
+    - Made the interface less tall
+    - Made the modal fit to the width of its contents
+
+v0.11.0:
+    Updated for Melvor Idle v0.16.3
+
+    Changes:
+    - Added Kills/s stat
+    - Moved the tools menu below the skills menu
+    - Placed the combat simulator in a modal
+    - Restyled elements to be more in line with the game
+
+    Fixes:
+    - Auroras now work in combination with Ancient Magicks
+    - Monsters in dungeons no longer count as slayer tasks for the Slayer's Crossbow
+    - Hiding skills no longer breaks the menu
+
+v0.10.1:
+    Melvor Combat Sim has been updated for game version Alpha v0.16.1
+    Change: Made ancient magick that guarantee hits only work when the player has > 20000 accuracy rating to match game change.
+    Change: Made fighter amulet only work when you are using melee attacks, and adjusted Proc. threshold to 70% of Max Hit to match game change.
+    Change: Adjusted how minimum hit works to match game change.
+    Fix: Fixed switching from Alt. Magic page to simulator would get Alt. Magic stuck
+    Fix: Fixed Import button importing levels that are one higher
+    Fix: Fixed Pet Calculation to use your (virtual level + 1) instead of (virtual level) to match game code
+    Fix: Fixed increased minimum hit not being reset when calculating combat stats.
+    Fix: Fixed pet chance not working for Attack/Strength and Defence.
+    Fix: Ancient MAgicks typo in spells menu
+
+v0.10.0:
+    Melvor Combat Sim has been updated for game version Alpha v0.16
+    New: The user interface has been overhauled significantly
+    The simulator has been moved to its own page instead of being an in game overlay
+    The options for selecting different simulation settings have been moved into a tab based system
+    Gear selection has been changed to a popup menu system, simply click on a gear icon and select what you want to equipment
+    The plot has been shrunk in size slightly to better fit lower resolution monitors
+    Plot type selection has been moved to the top of the plot
+    The simulate and export buttons have been moved from simulation settings so they are constantly visible
+    Several joint menus have been split into individual tabs
+    Rounded the sharp pointy corners
+    New: Implemented the Combat Triangle
+    New: Implemented Pets, which can be selected from the new Pets tab.
+    New: Implemented Auroras, Curses and Ancient Magicks, selectable from their indivdual tabs in the Spells tab.
+    New: Implemented new plot type: Pet Chance. Calculates the probability to receive the pet in the given time unit.
+    New: Implemented new special attack effects: Decreased Ranged Evasion, Stun that only has a chance to apply, Bleed that only has a chance to apply
+    New: Implemented maxHitpoints
+    Adjusted regeneration calculation, burn damage calculation to scale on max HP.
+    Implemented equipment and pets that can increase max HP.
+    New: Impemented Hardcore Mode:
+    A hardcore toggle has been added to Simulation settings, it disables regeneration and adjusts the combat triangle
+    New: Implemented minimum hit for standard magic spells
+    New: Added a 'per Kill' time unit to the existing time units.
+    New: Spells and Prayers now obey their basic unlock requirements
+    New: Player levels can now be set to virtual values higher than 99
+    This is used to calculate pet chances
+    Virtual levels do not contribute to combat stats
+    Change: Adjusted deadeye roll calculation to match in game change
+    Change: The standard spell select dropdown menu has been replaced with a tab in the Spells tab
+    Removed: The duplicated Gp per Kill plot option has been removed
+    Removed: The simulation time plot option has been removed
+
+v0.9.1:
+    Fixed a bug where incorrect player stats were being used for simulations when using Stormsnap, Slayer's Crossbow and Big Ol Ron.
+
+v0.9.0:
+    Updated Combat Sim for game version Alpha v0.15.4
+    New: The Combat simulator has now been multithreaded, and should now no longer freeze the game or tab when simulating.
+    - There may be a significant decrease in simulation time for those with mult-core CPUs, and it should be possible to run longer simulations
+    New: Added a Cancel Button for simulations that are currently running
+    New: Added Buttons for choosing which of your gear sets to import from the game
+    New: Added Buttons for toggling all monsters or dungeons
+    Change: Default number of trials has been changed to 10000
+    Change: Adjusted XP Calculations to account for xp rounding change
+    Change: Adjusted Magic Evasion Calculation to reflect game change
+    Fix: Changed Gold Emerald Ring Bonus to 7% from 10%
+
+v0.8.4:
+    Fix: Fixed Water Surge not recieving max hit bonus from Cloudburst Staff
+
+v0.8.3:
+    Updated Combat Sim for game version Alpha v0.15.3
+    Change: Adjusted Deadeye Amulet to match game change.
+    Change: Adjusted Implementation of Lucky Herb Potions to match game change.
+    Fix: Made it so attacks taken per second statistic actually shows up in the UI.
+    Fix: Bones will no longer contribute to gp calculations when the Bone Necklace is equipped.
+
+v0.8.2:
+    Updated Combat Sim for game version Alpha v0.15.2.1
+    No changes should have been made to simulator functionality, but the sources have been refactored to fit a style guide.
+
+v0.8.1:
+    Updated Combat Sim for game version Alpha v0.15.2
+    Change: Adjusted how Cloudburst functions to game implementation
+    Fix: Fixed Export Function not including Monsters in dungeons if they were disabled
+    Fix: Fixed a bug where monster images would stay crossed out on dungeon inspection
+
+v0.8.0:
+    Updated Combat Sim for game version Alpha v0.15.1
+    New: Added a Data export button. Clicking this button will copy a tab delimited version of the simulation results to your clipboard.
+    New: Added an Export Options Panel, which can be accessed by clicking Show Export Options, and hidden by clicking Hide Export Options.
+        -Export Dungeon Monsters? Toggles whether or not to export the results for individual monsters from dungeons
+        -Export Non-Simulated? Toggles whether or not to export monsters/dungeons that have been turned off as 0 fields.
+        -Data to Export: Toggles the simulation results that should be exported.
+    Fix: God Dungeon Boss special attacks are now assigned the correct chances.
+    Fix: Added space to Attacks made per X output option
+    Fix: Fixed a rounding issue on damage to enemies with player specials attacks that have damage multipliers.
+    Fix: Fixed HP Regen calculation, it was previously only adding the regen for one monster to all trials.
+    Fix: Equipping Bolts while having a bow equipped no longer unequips the bow.
+    Fix: Added a check for if ranged weapons have the right ammo equipped before simulation.
+
+v0.7.0:
+    Melvor Combat sim has been updated for game version Alpha v0.15
+    The simulation method has been completely rewritten this update to accomadate new combat mechanics.
+    Due to the increase in combat complexity, and the increase in the number of monsters simulations now tend to take longer.
+    As a result it is now possible to toggle the simulation of individual monsters or dungeons by clicking on their image under the plot.
+
+    New Features:
+    New: Player Special attacks are now accounted for
+    New: Stun and other enemy and player debuffs are now accounted for
+    New: Enemy bleed and player burn are now accounted for
+    New: Attacks made per X plot option added. This is the number of times the attackEnemy function is called per X. Useful for determining potion charge, ammunition and rune consumption.
+    New: The option to inspect the individual monsters of a dungeon has been added. To access this view, click on the bar of a succesful dungeon simulation, and then click inspect dungeon.
+        Note: The average time required for these monsters is the time to defeat the total quantity of that monster in the dungeon.
+    New: Implemented several new items with special effects: Firemaking Skillcape, Fighter Amulet, Warlock Amulet, Guardian Amulet, Deadeye Amulet, Cloudburst Staff, Confetti Crossbow, Stormsnap, Slayer Crossbow and Big Ron
+    New: Implemented damage reduction prayers.
+    New: Added a Convert Shards option for calculating gp rates. This toggles whether elemental shards from god dungeons should be converted into chests or not.
+    New: Added the ability to toggle which dungeons and monsters are simulated by clicking on their images.
+    Change: Adjusted Gold Sapphire ring to have a 2 second cooldown as per the in game change.
+
+    Fix: Topaz chance is no longer non-zero when simulating without Gold Topaz Ring equipped after previously simulating with it.
+    Fix: Damage calculations for dungeons are no longer divided by 10.
+
+    Known Issues:
+    Slayer crossbow applies its bonus strength to dungeons if the slayer task option is set to true.
+
+v0.6.4:
+    Updated for game version Alpha v0.14.2
+    No changes to combat mechanics.
+    Updated internal game version to remove notification for wrong version.
+
+v0.6.3:
+    Melvor Combat Sim has been updated for game version Alpha v0.14.1
+    New: Implemented Enemy Special Attacks.
+    New: Implemented Time Units for rate based results
+    Fix: Fixed monsters that deal magic damage with no defined spell causing simulations to fail.
+    Fix: Numbers no longer clip into the border of their boxes.
+    Change: Number formatting now attempts to fix the number to 4 digits.
+    Change: Prayer XP calculation changed to reflect nerf
+    Change: Protect from prayers changed to reflect nerf
+    Change: Magic Maximum Hit calculation changed to reflect buff
+
+v0.6.2:
+    Fix: Fixed Prayer Skillcape point cost calculation to be accurate. Previously it set the costs to 1 when prayers had a cost of 0.
+
+    New: Signet Ring Chance added. This is the probability to get at least 1 Signet Half B while farming for Signet Time (h) hours.
+    New: Currently selected potion is now imported when using Import From Game.
+
+v0.6.1:
+    Fix: Adjusted the way loot doubling effects to reflect in game hotfix.
+
+v0.6.0:
+    Melvor Combat Sim has been updated for game version Alpha v0.13
+    New: The divine potion has been implemented
+    New: The Lucky herb potion has been implemented
+    New: Potential herblore xp has been added. This is based on using lucky herb potions and crafting the most xp efficient potions.
+    New: Aorpheats Signet Ring has been implemented
+    New: Signet Ring part b has been added to gp calculations
+    New: Prayer magic damage bonus has been implemented
+
+    Fix: Slayer Areas show up in the simulator again
+
+v0.5.0:
+    Melvor Combat Sim has been updated for game version Alpha v0.12.2
+    New: The tools can now be hidden like combat or skills
+    New: Potions have been implemented
+    New: Hitpoints level has been added due to its impact on regen rate
+    New: Chapeau Noir is accounted for in GP calculations
+
+    Change: Default prayer bonuses adjusted to reflect game changes
+    Change: HP Regen calculation has been adjusted to reflect game changes
+
+    Fix: Removed console logging of internal objects on simulation
+    Fix: Simulator shows up in the sidebar again
+    Fix: Reflect damage is now only done when enemies do damage, not when they try to hit
+
+v0.4.2:
+    Fixed some bugs with simulator accuracy.
+    Fix: Magic evasion is now calculated properly.
+    Fix: Prayer cape is now accounted for
+    Fix: Slayer cape is now accounted for
+    Fix: Reflect damage is now accounted for
+    Fix: Damage reduction is now actually used in hp/s calculations instead of just being displayed
+
+v0.4.1:
+    Melvor Combat sim has been updated for game version Alpha v0.11.2
+    Change: Gp/s calculation now accounts for bones always dropping.
+
+v0.4.0:
+    Melvor Combat sim has been updated for game version Alpha v0.11.1
+    New: Prayer has been added to the simulator
+        -Prayers available for your prayer level can now be selected from the prayer menu
+        -Importing from the game will select your active prayers
+        -Prayer point use while fighting an enemy/dungeon is tracked.
+        -Prayer experience gains are now tracked.
+    New: Slayer has been added to the simulator
+        -Slayer experience gains are now tracked
+        -You can now select whether to calculate slayer xp/s as if it were a slayer task or not.
+        -Monsters which you cannot access due to insufficient slayer level or equipment are now highlighted as red.
+    New: Monster/Dungeon Inspection has been added. Simply click on a bar and see a summary of the simulation for the specific monster/dungeon.
+    New: Game version detection: The simulator will now detect the currently running game version and display a prompt if it does not match.
+
+    Change: Quick load has been removed, as the game does this by default.
+    Fix: Simulation calculations have been adjusted to account for the combat number adjustment
+    Fix: GP/s calculations now account for the internal changes in monster loot logic
+    Fix: Bar chart tick marks no longer prevent tooltip display.
+
+v0.3.1:
+    New: Added plot title.
+    New: Quick-load, the simulator now causes the game to display when it's done loading instead of after 5 seconds.
+    Change: The minimization tab is now part of the game's sidebar
+    Change: The simulator now starts minimized
+    Change: The simulator no longer displays on top of the sidebar.
+    Change: You can now scroll down to show content blocked by the simulator.
+    Change: The combat area labels are now angled, with brackets around the enemies.
+    Fix: Initial plot display is now set properly.
+
+v0.3.0:
+    New: Added GP/s and GP/kill options as simulation outputs
+        -Additional Options have been added for these calculations:
+        -Sell Bones: Sell or keep bone drops
+        -Sell Loot: All (Sells all loot), Subset (Sells the selected subset of loot), None (Keeps all items)
+        -Loot Subset Editing:
+            -Set Default sets to not selling items that are unique to combat
+            -Set Discovered sets to selling items that you have discovered in the item log
+            -Cancel, aborts changing the item subset
+            -Save, confirms changing the item subset
+            -You can also manually select whether to sell or keep each item that can be looted
+    New: Added Xp per Attack calculation for predicting arrow/rune costs
+    Change: Avg Hit Damage is now Damage per Attack.
+    Change: Gear dropdowns are now sorted by level requirements
+    Change: Combat sim will now load without a refresh
+    Change: HP loss per second is now reduced by passive HP regeneration.
+    Fixed: Bar Chart no longer bugs out when there is no simulation data
+    Fixed: Issue where combat sim wouldn't load.
+
+v0.2.1:
+    Fixed: Spell Dropdown displaying in wrong place
+    Fixed: Wavy menus
+    Fixed: Darkmode not setting properly on load
+
+v0.2.0
+    New: Added Darkmode. Darkmode uses the darkmode setting in game.
+    Fixed: Bar plot tooltips no longer display : when rounding.
+    Fixed: Combat Sim no longer displays on top of loading screen.
+
+    Dev Notes:
+    Removed mcsStatReadout class in favour of mcsCard
+    Removed mcsSimPlotOptions class in favour of mcsCard
+    Most HTML elements now have a class assigned from mainStyle.css
+    mcsCCContainer now uses flex to align its contents
+
+v0.1.2
+    Fixed combat styles not importing from game
+    Fixed spells not updating correctly when importing from game.
+    Fixed attack speed not updating with ranged styles.
+    Fixed combat tab container preventing interaction with game.
+    Fixed y-axis labels displaying on top of bar chart.
+
+    Dev Notes:
+    Created mcsCard class to serve as baseclass for other cards
+    Added mainStyle.css to contain classes for HTML elements
+    Removed mcsGearSelecter class in favour of mcsCard
+    Removed tab container element as it was not needed
+
+v0.1.1
+    Fixed Elements of Melvor UI appearing on top of combat simulator.
+    Added Scrolling capabilities for small windows.
+    Added Additional Labels to interface.
