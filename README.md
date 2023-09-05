@@ -6,7 +6,7 @@ This has been updated to work with v1.2
 
 A [mod.io](https://mod.io/g/melvoridle/m/myth-combat-simulator) extension for the game [Melvor Idle](http://www.melvoridle.com/).
 
-The latest fork in a line of great but no longer maintained forks by [coolrox95](https://github.com/coolrox95/Melvor-Idle-Combat-Simulator), and [visua0](https://github.com/visua0/Melvor-Idle-Combat-Simulator-Reloaded).
+The latest fork in a line of great but no longer maintained forks by [broderickhyman](https://github.com/broderickhyman/Melvor-Idle-Combat-Simulator-Reloaded), and [coolrox95](https://github.com/coolrox95/Melvor-Idle-Combat-Simulator), and [visua0](https://github.com/visua0/Melvor-Idle-Combat-Simulator-Reloaded).
 
 ## Before you start
 - Create a backup of your save file before using this extension, in particular after a recent game or extension update.
