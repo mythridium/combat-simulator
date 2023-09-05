@@ -2,8 +2,6 @@
 
 This is a re-branded and updated version of Combat Simulator Reloaded.
 
-This has been updated to work with v1.2
-
 A [mod.io](https://mod.io/g/melvoridle/m/myth-combat-simulator) extension for the game [Melvor Idle](http://www.melvoridle.com/).
 
 The latest fork in a line of great but no longer maintained forks by [broderickhyman](https://github.com/broderickhyman/Melvor-Idle-Combat-Simulator-Reloaded), and [coolrox95](https://github.com/coolrox95/Melvor-Idle-Combat-Simulator), and [visua0](https://github.com/visua0/Melvor-Idle-Combat-Simulator-Reloaded).
@@ -12,14 +10,11 @@ The latest fork in a line of great but no longer maintained forks by [broderickh
 - Create a backup of your save file before using this extension, in particular after a recent game or extension update.
 
 ## Bug reports
-Raise an [issue](/../../issues) here on GitHub, or visit the [#mod-bug-reports](https://discord.com/channels/625838709203271680/1029950790254731334) channel on the [official Melvor Idle Discord](https://discord.gg/melvoridle).
-When reporting bugs please include:
-- any required reproduction steps (e.g. a settings export, the monster you simulated, etc.)
-- any console errors
+Raise an [issue](https://github.com/mythridium/combat-simulator/issues) here on GitHub
 
 ## Installation
 ### Mod Manager:
-Install via the in-game mod manager or by going to the [mod.io](https://mod.io/g/melvoridle/m/combat-simulator-reloaded) mod page and subscribing.
+Install via the in-game mod manager or by going to the [mod.io](https://mod.io/g/melvoridle/m/myth-combat-simulator) mod page and subscribing.
 
 ## Quick Guide
 The combat simulator allows you to configure a combat setup and simulate monsters, dungeons, and auto-slayer.
