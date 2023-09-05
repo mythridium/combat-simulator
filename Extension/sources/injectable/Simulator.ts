@@ -878,6 +878,28 @@ class Simulator {
                 .replace("combatManager", "this.manager");
             classes[clas.name] = `self['${clas.name}'] = ${s}`;
         });
+
+        // Stringify and store both namespaces and gamemodes to pass to the webWorkers
+        const namespaces: { [key: string]: string } = {};
+        const gamemodes: { [key: string]: string } = {};
+
+        game.registeredNamespaces.forEach((ns: DataNamespace) => {
+            if (ns.isModded) {
+                namespaces[ns.name] = JSON.stringify(ns);
+            }
+        });
+
+        game.gamemodes.forEach((gm: Gamemode) => {
+            if (gm.isModded) {
+                const gmNamespace: string = gm.namespace;
+                const gmName: string = gm.name;
+                const gmIsModded: boolean = gm.isModded;
+                const gmData: GamemodeData = this.micsr.gamemodeToData(gm);
+
+                gamemodes[gm.id] = JSON.stringify([{ name: gmNamespace, displayName: gmName, isModded: gmIsModded }, gmData]);
+            }
+        });
+
         // worker
         worker.onmessage = (event: any) => this.processWorkerMessage(event, i);
         worker.onerror = (event: any) => {
@@ -900,6 +922,9 @@ class Simulator {
             slayerTaskData: SlayerTask.data,
             dataPackage: this.micsr.dataPackage,
             SummoningMarkLevels: Summoning.markLevels,
+            // Extra gamemode stuff
+            namespaces: namespaces,
+            gamemodes: gamemodes
         });
     }
 

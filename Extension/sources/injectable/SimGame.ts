@@ -35,7 +35,7 @@ class SimGame extends Game {
         decode(reader: SaveWriter, version: number): void;
     };
 
-    constructor(micsr: MICSR, isWebWorker: boolean) {
+    constructor(micsr: MICSR, isWebWorker: boolean, game: Game) {
         super();
         this.micsr = micsr;
         this.isWebWorker = isWebWorker;
@@ -170,6 +170,17 @@ class SimGame extends Game {
                 false
             );
         }
+
+        game.registeredNamespaces.forEach((ns: DataNamespace) => {
+            if (ns.isModded && this.registeredNamespaces.getNamespace(ns.name) === undefined) // Only register modded namespaces that aren't already registered
+                this.registeredNamespaces.registerNamespace(ns.name, ns.displayName, ns.isModded)
+        })
+
+        game.gamemodes.forEach(gm => {
+            if (gm.isModded)
+                this.gamemodes.registerObject(new Gamemode({ name: gm.namespace, displayName: gm.name, isModded: gm.isModded }, micsr.gamemodeToData(gm), game))
+        })
+
         this.normalAttack = new SpecialAttack(
             demoNamespace,
             {

@@ -59,7 +59,9 @@ export function setup(setupContext: Modding.ModContext) {
         false &&
         // @ts-expect-error
         cloudManager.accountInfo.TitleInfo.DisplayName === "MyPickle";
-    loadScripts(setupContext);
+
+    setupContext.onModsLoaded(() => loadScripts(setupContext));
+
     let general: any = null;
     // Hide settings for now until we have some real settings
     if (isDeveloper) {
@@ -125,7 +127,7 @@ export function setup(setupContext: Modding.ModContext) {
                 const saveString = game.generateSaveString();
                 const reader = new SaveWriter("Read", 1);
                 const saveVersion = reader.setDataFromSaveString(saveString);
-                const simGame = new SimGame(micsr, false);
+                const simGame = new SimGame(micsr, false, game);
 
                 await micsr.fetchData();
                 await micsr.initialize(simGame, game);

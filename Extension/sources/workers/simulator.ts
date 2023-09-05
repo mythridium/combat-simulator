@@ -201,8 +201,27 @@
                 // @ts-expect-error
                 cloudManager.hasFullVersionEntitlement = !!full;
 
+                // @ts-expect-error I'm muting these errors because that seems to be the approach taken above
+                self.game = new Game();
+
+                // Minor workaround to easily use Object.values with Typescript. See https://stackoverflow.com/questions/42966362/how-to-use-object-values-with-typescript
+                const importedNamespaces = Object.keys(event.data.namespaces).map(key => event.data.namespaces[key]);
+                const impotedGamemodes = Object.keys(event.data.gamemodes).map(key => event.data.gamemodes[key]);
+
+                importedNamespaces.forEach((stringifiedNamespace: string) => {
+                    const namespace = JSON.parse(stringifiedNamespace);
+                    // @ts-expect-error
+                    self.game.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
+                })
+
+                impotedGamemodes.forEach((stringifiedGamemode: string) => {
+                    const [namespaceData, gamemodeData] = JSON.parse(stringifiedGamemode);
+                    // @ts-expect-error
+                    self.game.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
+                })
+
                 const micsr = new MICSR();
-                const simGame = new SimGame(micsr, true);
+                const simGame = new SimGame(micsr, true, (<any>self).game);
                 micsr.dataPackage = event.data.dataPackage;
                 micsr.cleanupDataPackage("Demo");
                 if (cloudManager.hasFullVersionEntitlement) {

@@ -93,7 +93,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 0;
+        this.patchVersion = 1;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -295,6 +295,51 @@ class MICSR {
             magicSkillData.data.altSpells = [];
         }
         this.dataPackage[id].data.skillData = skillData;
+    }
+
+    gamemodeToData = (gm: Gamemode): GamemodeData => {
+        let playerModifierArray: Array<[keyof PlayerModifierObject, PlayerModifierObject]> = Object.entries(gm.playerModifiers) as Array<[keyof PlayerModifierObject, PlayerModifierObject]>; // For reasons I don't really understand, Typescript cannot guarantee the type of Object.keys() so we have to cast it. https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript
+        let playerModifierObj: PlayerModifierData = {};
+
+        playerModifierArray.forEach((modifierPair: [keyof PlayerModifierObject, PlayerModifierObject]) => {
+            // @ts-ignore
+            if (modifierPair[1] instanceof Array<SkillModifierData>) { // Check for modifiers like decreasedSkillIntervalPercent which affect multiple skills and are an array.
+                playerModifierObj[modifierPair[0]] = modifierPair[1].map((skillModifier: SkillModifier) => (
+                    { skillID: skillModifier.skill.id, value: skillModifier.value }
+                )) as SkillModifierData[] & number // I don't understand why I've had to typecast this, but I have done so to shut the compiler up. I don't know how to guarantee the type is Array & number
+            }
+        });
+
+        return {
+            //@ts-ignore Ignore warning about accessing private variables. I don't think there's any workaround for this since we *need* to access these private version of these specific variables (for initalisation purposes) and not the getter version that's publically available
+            name: gm._name,
+            //@ts-ignore
+            id: gm._localID,
+            //@ts-ignore
+            description: gm._description,
+            //@ts-ignore
+            rules: gm._rules,
+            //@ts-ignore
+            media: gm._media,
+            textClass: gm.textClass,
+            btnClass: gm.btnClass,
+            isPermaDeath: gm.isPermaDeath,
+            isEvent: gm.isEvent,
+            startDate: gm.startDate,
+            endDate: gm.endDate,
+            //@ts-ignore
+            combatTriangle: Object.entries(COMBAT_TRIANGLE_IDS).filter(x => x[1] == gm._combatTriangle)[0][0],
+            hitpointMultiplier: gm.hitpointMultiplier,
+            hasRegen: gm.hasRegen,
+            capNonCombatSkillLevels: gm.capNonCombatSkillLevels,
+            startingPage: 'melvorD:ActiveSkill',
+            startingItems: [],
+            allowSkillUnlock: gm.allowSkillUnlock,
+            skillUnlockCost: gm.skillUnlockCost,
+            playerModifiers: playerModifierObj,
+            enemyModifiers: gm.enemyModifiers,
+            hasTutorial: gm.hasTutorial,
+        }
     }
 
     // any setup that requires a game object

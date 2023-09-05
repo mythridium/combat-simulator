@@ -1,3 +1,6 @@
+v2.1.1
+    added support for custom gamemodes
+
 v2.1.0
     re-branded under [Myth] banner
     added support for game version 1.2
