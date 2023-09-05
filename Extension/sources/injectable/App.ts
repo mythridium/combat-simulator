@@ -2472,6 +2472,12 @@ class App {
      */
     setEquipmentImage(equipmentSlot: any, occupy = true) {
         const slotKey = EquipmentSlots[equipmentSlot] as SlotTypes;
+
+        // @ts-ignore
+        if (!cloudManager.hasAoDEntitlement && slotKey === 'Gem') {
+            return;
+        }
+
         const img = document.getElementById(`MCS ${slotKey} Image`);
         const slot = this.player.equipment.slots[slotKey];
         let imgSrc = `assets/media/bank/${this.micsr.equipmentSlotData[slotKey].emptyMedia}.png`;

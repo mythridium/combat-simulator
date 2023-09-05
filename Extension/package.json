@@ -1,6 +1,6 @@
 {
   "name": "micsr",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A browser extension to simulate combat in the game Melvor Idle",
   "scripts": {
     "test": "cd ./dist && web-ext lint",
@@ -10,9 +10,9 @@
   },
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/visua0/Melvor-Idle-Combat-Simulator-Reloaded/issues"
+    "url": "https://github.com/mythridium/combat-simulator/issues"
   },
-  "homepage": "https://github.com/visua0/Melvor-Idle-Combat-Simulator-Reloaded",
+  "homepage": "https://github.com/mythridium/combat-simulator",
   "devDependencies": {
     "@types/jquery": "^3.5.16",
     "archiver": "^5.3.1",
