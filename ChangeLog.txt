@@ -1,3 +1,9 @@
+v2.1.4
+    fixed 'unassigner' error message
+    fixed 'DummyAstrologyRecipe' error message (I couldn't reproduce this one, but hopefully it's fixed now)
+    removed some erroneous warning messages after running the simulation
+    fixed console error when switching potion tiers
+
 v2.1.3
     fixed pets from mods breaking import
 

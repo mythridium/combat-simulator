@@ -421,7 +421,9 @@ class Simulator {
 
             registerSoftDependencies() {}
 
-            assignHandler() {}
+            assignHandler() {
+                return () => {};
+            }
         };
         [
             CombatQuickEquipMenu,
@@ -815,6 +817,7 @@ class Simulator {
             SummoningRecipe,
             SummoningSynergy,
             AstrologyRecipe,
+            DummyAstrologyRecipe,
             // @ts-ignore
             ArchaeologyDigSite,
             // @ts-ignore

@@ -169,7 +169,7 @@ class Consumables {
 
     setConsumableSeconds(id: string, seconds: any) {
         if (this.consumables[id] === undefined) {
-            this.micsr.warn(`Unknown consumable id ${id} in Consumables.setConsumableSeconds`);
+            // this.micsr.warn(`Unknown consumable id ${id} in Consumables.setConsumableSeconds`);
             return;
         }
         if (this.consumables[id].seconds === seconds) {
@@ -240,7 +240,7 @@ class Consumables {
         }
         const consumable = this.consumables[id];
         if (consumable === undefined) {
-            this.micsr.warn(`Unknown consumable id ${id} in Consumables.getConsumableCostInSeconds`);
+            // this.micsr.warn(`Unknown consumable id ${id} in Consumables.getConsumableCostInSeconds`);
             return 0;
         }
         if (consumable.seconds !== undefined) {

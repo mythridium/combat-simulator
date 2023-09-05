@@ -4036,10 +4036,10 @@ class App {
      */
     getPotionHtmlId(potion: PotionItem) {
         return this.replaceApostrophe(potion.name)
-            .replace(" IV", "")
-            .replace(" III", "")
-            .replace(" II", "")
-            .replace(" I", "");
+            .replace(/ IV$/, "")
+            .replace(/ III$/, "")
+            .replace(/ II$/, "")
+            .replace(/ I$/, "");
     }
 
     /**
