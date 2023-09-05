@@ -482,6 +482,11 @@ class Import {
         // Import pets
         petUnlocked.forEach((petID) => {
             const pet = this.app.game.pets.getObjectByID(petID)!;
+
+            if (!pet) {
+                return;
+            }
+
             this.simPlayer.petUnlocked.push(pet);
             this.app.selectButton(
                 this.document.getElementById(`MCS ${pet.name} Button`)

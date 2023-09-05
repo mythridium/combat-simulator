@@ -93,7 +93,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 2;
+        this.patchVersion = 3;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -346,10 +346,10 @@ class MICSR {
     setupGame(game: SimGame, actualGame: Game) {
         this.actualGame = actualGame;
         this.game = game;
-        let namespace = this.game.registeredNamespaces.getNamespace("micsr");
+        let namespace = this.game.registeredNamespaces.getNamespace("mythCombatSimulator");
         if (namespace === undefined) {
             namespace = this.game.registeredNamespaces.registerNamespace(
-                "micsr",
+                "mythCombatSimulator",
                 "Combat Simulator",
                 true
             );

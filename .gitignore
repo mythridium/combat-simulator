@@ -11,5 +11,5 @@ Extension/web-ext-config.js
 Data/
 GameFiles/
 Extension/dist
-Extension/.build
+Extension/build
 .vs/

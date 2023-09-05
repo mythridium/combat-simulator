@@ -212,13 +212,13 @@
                     const namespace = JSON.parse(stringifiedNamespace);
                     // @ts-expect-error
                     self.game.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
-                })
+                });
 
                 impotedGamemodes.forEach((stringifiedGamemode: string) => {
                     const [namespaceData, gamemodeData] = JSON.parse(stringifiedGamemode);
                     // @ts-expect-error
                     self.game.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
-                })
+                });
 
                 const micsr = new MICSR();
                 const simGame = new SimGame(micsr, true, (<any>self).game);
@@ -237,7 +237,6 @@
 
                 // @ts-expect-error
                 Summoning.markLevels = event.data.SummoningMarkLevels;
-                (<any>self).game = simGame;
                 await micsr.initialize(simGame, simGame as any);
 
                 // @ts-expect-error

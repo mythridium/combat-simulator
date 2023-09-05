@@ -172,13 +172,15 @@ class SimGame extends Game {
         }
 
         game.registeredNamespaces.forEach((ns: DataNamespace) => {
-            if (ns.isModded && this.registeredNamespaces.getNamespace(ns.name) === undefined) // Only register modded namespaces that aren't already registered
-                this.registeredNamespaces.registerNamespace(ns.name, ns.displayName, ns.isModded)
-        })
+            if (ns.isModded && this.registeredNamespaces.getNamespace(ns.name) === undefined) { // Only register modded namespaces that aren't already registered
+                this.registeredNamespaces.registerNamespace(ns.name, ns.displayName, ns.isModded);
+            }
+        });
 
         game.gamemodes.forEach(gm => {
-            if (gm.isModded)
-                this.gamemodes.registerObject(new Gamemode({ name: gm.namespace, displayName: gm.name, isModded: gm.isModded }, micsr.gamemodeToData(gm), game))
+            if (gm.isModded) {
+                this.gamemodes.registerObject(new Gamemode({ name: gm.namespace, displayName: gm.name, isModded: gm.isModded }, micsr.gamemodeToData(gm), game));
+            }
         })
 
         this.normalAttack = new SpecialAttack(
