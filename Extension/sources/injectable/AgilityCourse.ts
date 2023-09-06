@@ -71,7 +71,7 @@ class AgilityCourse {
         };
 
         // Copy obstacles
-        this.agilityCategories = this.parent.actualGame.agility.maxObstacles;
+        this.agilityCategories = this.parent.game.agility.maxObstacles;
         const noObstacle: IObstacle = {
             category: -1,
             index: -1,
@@ -84,7 +84,7 @@ class AgilityCourse {
         };
         this.agilityObstacles = [
             noObstacle,
-            ...this.parent.actualGame.agility.actions.allObjects.map(
+            ...this.parent.game.agility.actions.allObjects.map(
                 (x, index) => {
                     const obstacle: IObstacle = {
                         category: x.category,
@@ -110,7 +110,7 @@ class AgilityCourse {
         ];
         this.agilityPillars = [
             noObstacle,
-            ...this.parent.actualGame.agility.pillars.allObjects.map(
+            ...this.parent.game.agility.pillars.allObjects.map(
                 (x, index) => {
                     const pillar: IObstacle = {
                         category: -1,
@@ -141,7 +141,7 @@ class AgilityCourse {
         ];
         this.eliteAgilityPillars = [
             noObstacle,
-            ...this.parent.actualGame.agility.elitePillars.allObjects.map(
+            ...this.parent.game.agility.elitePillars.allObjects.map(
                 (x, index) => {
                     const pillar: IObstacle = {
                         category: -1,

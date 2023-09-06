@@ -23,6 +23,9 @@ class SimGame extends Game {
     isWebWorker: boolean;
     autoEatTiers: string[];
     telemetry: any;
+    agilityObstacles: [string, AgilityObstacle][] = [];
+    agilityPillars: [string, AgilityPillar][] = [];
+    agilityElitePillars: [string, AgilityPillar][] = [];
 
     // @ts-expect-error Force shop type
     shop: {
@@ -53,7 +56,7 @@ class SimGame extends Game {
         // this.previousTickTime = performance.now();
         // this.enableRendering = true;
         // this.maxOfflineTicks = 20 * 60 * 60 * 24;
-        this.registeredNamespaces = new NamespaceMap();
+        //this.registeredNamespaces = new NamespaceMap();
         // @ts-expect-error
         this.dummyNamespaces = new NamespaceMap();
         // this.tickTimestamp = Date.now();
@@ -130,44 +133,10 @@ class SimGame extends Game {
         // @ts-expect-error
         this.softDataRegQueue = [];
         this.bank = new Bank(this as any, 12, 12);
-        this.registeredNamespaces.registerNamespace(
-            "melvorBaseGame",
-            "Base Game",
-            false
-        );
-        this.registeredNamespaces.registerNamespace(
-            "melvorTrue",
-            "True",
-            false
-        );
-        let aodNamespace: DataNamespace;
-        const demoNamespace = this.registeredNamespaces.registerNamespace(
-            "melvorD",
-            "Demo",
-            false
-        );
+        const demoNamespace = this.registeredNamespaces.getNamespace('melvorD')!;
         if (cloudManager.hasFullVersionEntitlement) {
-            const fullNamespace = this.registeredNamespaces.registerNamespace(
-                "melvorF",
-                "Full Version",
-                false
-            );
             this.combatPassives.registerObject(
-                new ControlledAffliction(fullNamespace, this as any)
-            );
-        }
-        if (cloudManager.hasTotHEntitlement)
-            this.registeredNamespaces.registerNamespace(
-                "melvorTotH",
-                "Throne of the Herald",
-                false
-            );
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
-            aodNamespace = this.registeredNamespaces.registerNamespace(
-                "melvorAoD",
-                "Atlas of Discovery",
-                false
+                new ControlledAffliction(this.registeredNamespaces.getNamespace('melvorF')!, this as any)
             );
         }
 
@@ -181,7 +150,11 @@ class SimGame extends Game {
             if (gm.isModded) {
                 this.gamemodes.registerObject(new Gamemode({ name: gm.namespace, displayName: gm.name, isModded: gm.isModded }, micsr.gamemodeToData(gm), game));
             }
-        })
+        });
+
+        this.agilityObstacles = Array.from(game.agility.actions['registeredObjects']);
+        this.agilityPillars = Array.from(game.agility.pillars['registeredObjects']);
+        this.agilityElitePillars = Array.from(game.agility.elitePillars['registeredObjects']);
 
         this.normalAttack = new SpecialAttack(
             demoNamespace,
@@ -348,12 +321,13 @@ class SimGame extends Game {
         this.summoning = this.registerSkill(demoNamespace, Summoning);
         this.astrology = this.registerSkill(demoNamespace, Astrology);
         this.township = this.registerSkill(demoNamespace, Township);
+
         // @ts-ignore
         if (cloudManager.hasAoDEntitlement) {
             // @ts-ignore
-            this.archaeology = this.registerSkill(aodNamespace, Archaeology);
+            this.archaeology = this.registerSkill(this.registeredNamespaces.getNamespace('melvorAoD')!, Archaeology);
             // @ts-ignore
-            this.cartography = this.registerSkill(aodNamespace, Cartography);
+            this.cartography = this.registerSkill(this.registeredNamespaces.getNamespace('melvorAoD')!, Cartography);
         }
 
         // Fix SimPlayer object to match replaced Player object
@@ -443,6 +417,26 @@ class SimGame extends Game {
         this.combat.postDataRegistration();
         // @ts-expect-error
         this._passiveTickers = this.passiveActions.allObjects;
+
+        (<any>this).unholyMarkEffect = this.stackingEffects.getObjectByID(`melvorAoD:UnholyMark`);
+
+        this.agilityObstacles.map(action => action[1]).forEach(action => {
+            if (action.isModded) {
+                this.agility.actions.registerObject(new AgilityObstacle({ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.obstacleToData(action), game));
+            }
+        });
+
+        this.agilityPillars.map(action => action[1]).forEach(action => {
+            if (action.isModded) {
+                this.agility.pillars.registerObject(new AgilityPillar({ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.pillarToData(action), game));
+            }
+        });
+
+        this.agilityElitePillars.map(action => action[1]).forEach(action => {
+            if (action.isModded) {
+                this.agility.elitePillars.registerObject(new AgilityPillar({ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.pillarToData(action), game));
+            }
+        });
         // this.pages.forEach((page) => {
         //   if (page.action !== undefined) this.actionPageMap.set(page.action, page);
         //   if (page.skills !== undefined) {

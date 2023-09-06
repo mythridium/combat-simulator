@@ -183,6 +183,61 @@
                 HexCoords.PI_3 = Math.PI / 3;
                 // @ts-ignore
                 HexCoords.SQRT3 = Math.sqrt(3);
+
+                // @ts-ignore
+                DigSiteMap.tiers = [{
+                    index: 0,
+                    get name() {
+                        // @ts-ignore
+                        return getLangString('MAP_TIER_NAME_POOR');
+                    },
+                    upgradeActions: 0,
+                    refinementSlots: 1,
+                }, {
+                    index: 1,
+                    get name() {
+                        // @ts-ignore
+                        return getLangString('MAP_TIER_NAME_FINE');
+                    },
+                    upgradeActions: 1920,
+                    refinementSlots: 2,
+                }, {
+                    index: 2,
+                    get name() {
+                        // @ts-ignore
+                        return getLangString('MAP_TIER_NAME_EXCELLENT');
+                    },
+                    upgradeActions: 3840,
+                    refinementSlots: 3,
+                }, {
+                    index: 3,
+                    get name() {
+                        // @ts-ignore
+                        return getLangString('MAP_TIER_NAME_PERFECT');
+                    },
+                    upgradeActions: 5760,
+                    refinementSlots: 6,
+                }, ];
+                // @ts-ignore
+                DigSiteMap.CHARGES_PER_TIER = {
+                    min: 2000,
+                    max: 4000,
+                };
+                // @ts-ignore
+                DigSiteMap.ARTEFACT_VALUE_PER_TIER = {
+                    min: 13,
+                    max: 23,
+                };
+                // @ts-ignore
+                DigSiteMap.BASE_ARTEFACT_VALUES = {
+                    tiny: 69,
+                    small: 69,
+                    medium: 69,
+                    large: 69,
+                };
+                // @ts-ignore
+                DigSiteMap.REFINEMENT_SELECTION_COUNT = 3;
+
                 // create instances
                 // restore data
                 const cloneData = new CloneData();
@@ -207,17 +262,14 @@
                 // Minor workaround to easily use Object.values with Typescript. See https://stackoverflow.com/questions/42966362/how-to-use-object-values-with-typescript
                 const importedNamespaces = Object.keys(event.data.namespaces).map(key => event.data.namespaces[key]);
                 const impotedGamemodes = Object.keys(event.data.gamemodes).map(key => event.data.gamemodes[key]);
+                const importedAgilityActions = Object.keys(event.data.agilityActions).map(key => event.data.agilityActions[key]);
+                const importedAgilityPillars = Object.keys(event.data.agilityPillars).map(key => event.data.agilityPillars[key]);
+                const importedAgilityElitePillars = Object.keys(event.data.agilityElitePillars).map(key => event.data.agilityElitePillars[key]);
 
                 importedNamespaces.forEach((stringifiedNamespace: string) => {
                     const namespace = JSON.parse(stringifiedNamespace);
                     // @ts-expect-error
                     self.game.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
-                });
-
-                impotedGamemodes.forEach((stringifiedGamemode: string) => {
-                    const [namespaceData, gamemodeData] = JSON.parse(stringifiedGamemode);
-                    // @ts-expect-error
-                    self.game.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
                 });
 
                 const micsr = new MICSR();
@@ -238,6 +290,30 @@
                 // @ts-expect-error
                 Summoning.markLevels = event.data.SummoningMarkLevels;
                 await micsr.initialize(simGame, simGame as any);
+
+                impotedGamemodes.forEach((stringifiedGamemode: string) => {
+                    const [namespaceData, gamemodeData] = JSON.parse(stringifiedGamemode);
+                    // @ts-expect-error
+                    self.game.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
+                });
+
+                importedAgilityActions.forEach((stringifiedAction: string) => {
+                    const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
+                    // @ts-expect-error
+                    simGame.agility.actions.registerObject(new AgilityObstacle(namespaceData, obstacleData, self.game));
+                });
+
+                importedAgilityPillars.forEach((stringifiedAction: string) => {
+                    const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
+                    // @ts-expect-error
+                    simGame.agility.pillars.registerObject(new AgilityPillar(namespaceData, obstacleData, self.game));
+                });
+
+                importedAgilityElitePillars.forEach((stringifiedAction: string) => {
+                    const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
+                    // @ts-expect-error
+                    simGame.agility.elitePillars.registerObject(new AgilityPillar(namespaceData, obstacleData, self.game));
+                });
 
                 // @ts-expect-error
                 self.firstSkillAction = true;

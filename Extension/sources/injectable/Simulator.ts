@@ -361,7 +361,8 @@ class Simulator {
             "sortRecipesByCategoryAndLevel",
             "checkBooleanCondition",
             "checkValueCondition",
-            "selectFromWeightedArray"
+            "selectFromWeightedArray",
+            "getItemSpecialAttackInformation"
         ].forEach((func: any) => {
             if (window[func] === undefined) {
                 this.micsr.error(`window[${func}] is undefined`);
@@ -841,6 +842,8 @@ class Simulator {
             // @ts-ignore
             DigSitePOI,
             // @ts-ignore
+            DigSiteMap,
+            // @ts-ignore
             PortalPOI,
             // @ts-ignore
             MapFilterSettings,
@@ -885,6 +888,9 @@ class Simulator {
         // Stringify and store both namespaces and gamemodes to pass to the webWorkers
         const namespaces: { [key: string]: string } = {};
         const gamemodes: { [key: string]: string } = {};
+        const agilityActions: { [key: string]: string } = {};
+        const agilityPillars: { [key: string]: string } = {};
+        const agilityElitePillars: { [key: string]: string } = {};
 
         game.registeredNamespaces.forEach((ns: DataNamespace) => {
             if (ns.isModded) {
@@ -900,6 +906,24 @@ class Simulator {
                 const gmData: GamemodeData = this.micsr.gamemodeToData(gm);
 
                 gamemodes[gm.id] = JSON.stringify([{ name: gmNamespace, displayName: gmName, isModded: gmIsModded }, gmData]);
+            }
+        });
+
+        game.agility.actions.forEach(action => {
+            if (action.isModded) {
+                agilityActions[action.id] = JSON.stringify([{ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.obstacleToData(action)]);
+            }
+        });
+
+        game.agility.pillars.forEach(action => {
+            if (action.isModded) {
+                agilityPillars[action.id] = JSON.stringify([{ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.pillarToData(action)]);
+            }
+        });
+
+        game.agility.elitePillars.forEach(action => {
+            if (action.isModded) {
+                agilityElitePillars[action.id] = JSON.stringify([{ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.pillarToData(action)]);
             }
         });
 
@@ -926,8 +950,11 @@ class Simulator {
             dataPackage: this.micsr.dataPackage,
             SummoningMarkLevels: Summoning.markLevels,
             // Extra gamemode stuff
-            namespaces: namespaces,
-            gamemodes: gamemodes
+            namespaces,
+            gamemodes,
+            agilityActions,
+            agilityPillars,
+            agilityElitePillars
         });
     }
 

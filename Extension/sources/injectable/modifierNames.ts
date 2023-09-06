@@ -536,7 +536,7 @@ class ShowModifiers {
                 this.micsr.skillIDs.Hitpoints,
                 this.micsr.skillIDs.Prayer,
                 this.micsr.skillIDs.Slayer,
-                this.micsr.skillIDs.Summoning,
+                this.micsr.skillIDs.Summoning
             ],
         );
 

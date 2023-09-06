@@ -1,3 +1,14 @@
+v2.1.5
+    added support for AoD gems
+    added support for unholy prayers
+    fixed unholy prayers showing without AoD purchased
+    item tooltips now show passive effects
+    fixed item tooltips not showing special attacks
+    added the ability to toggle the solar eclipse township season effect
+    added support for 'bypass agility costs' mod
+
+Please note, if you change settings in the 'bypass agility costs' mod such as enable/disable negative modifiers and merged obstacles you need to refresh the game for combat sim to pick up the changes. I'll review this at a later stage to see if I can improve this.
+
 v2.1.4
     fixed 'unassigner' error message
     fixed 'DummyAstrologyRecipe' error message (I couldn't reproduce this one, but hopefully it's fixed now)

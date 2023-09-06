@@ -93,7 +93,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 4;
+        this.patchVersion = 5;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -340,6 +340,71 @@ class MICSR {
             enemyModifiers: gm.enemyModifiers,
             hasTutorial: gm.hasTutorial,
         }
+    }
+
+    obstacleToData(obstacle: AgilityObstacle): AgilityObstacleData {
+        let modifiers: MappedModifiers = obstacle.modifiers as any;
+
+        if (!(obstacle.modifiers instanceof MappedModifiers)) {
+            modifiers = game.agility.getObstacleModifiers(obstacle);
+        }
+
+        return {
+            // @ts-ignore
+            name: obstacle._name,
+            // @ts-ignore
+            id: obstacle._localID,
+            baseExperience: obstacle.baseExperience,
+            baseInterval: obstacle.baseInterval,
+            category: obstacle.category,
+            gpCost: obstacle.gpCost,
+            gpReward: obstacle.gpReward,
+            skillRequirements: [],
+            itemCosts: [],
+            itemRewards: [],
+            scCost: 0,
+            scReward: 0,
+            // @ts-ignore
+            modifiers: this.cloneSafeModifiers(modifiers),
+            // @ts-ignore
+            media: obstacle._media
+        };
+    }
+
+    pillarToData(obstacle: AgilityPillar): BaseAgilityObjectData {
+        let modifiers: MappedModifiers = obstacle.modifiers as any;
+
+        if (!(obstacle.modifiers instanceof MappedModifiers)) {
+            modifiers = game.agility.getPillarModifiers(obstacle);
+        }
+
+        return {
+            // @ts-ignore
+            name: obstacle._name,
+            // @ts-ignore
+            id: obstacle._localID,
+            gpCost: obstacle.gpCost,
+            itemCosts: [],
+            scCost: 0,
+            // @ts-ignore
+            modifiers: this.cloneSafeModifiers(modifiers),
+            // @ts-ignore
+            media: obstacle._media
+        };
+    }
+
+    cloneSafeModifiers(modifiers: MappedModifiers) {
+        const clonedModifiers: any = {};
+
+        for (const modifier of modifiers.skillModifiers) {
+            clonedModifiers[modifier[0]] = Array.from(modifier[1]).map(mod => ({ skillID: mod[0].id, value: mod[1] }));
+        }
+
+        for (const modifier of modifiers.standardModifiers) {
+            clonedModifiers[modifier[0]] = modifier[1];
+        }
+
+        return clonedModifiers;
     }
 
     // any setup that requires a game object

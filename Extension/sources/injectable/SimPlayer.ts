@@ -42,6 +42,7 @@ class SimPlayer extends Player {
     healAfterDeath: boolean;
     highestDamageTaken: any;
     isManualEating: any;
+    isSolarEclipse: boolean;
     isSlayerTask: boolean;
     lowestHitpoints: any;
     petRolls: any;
@@ -92,6 +93,7 @@ class SimPlayer extends Player {
         this.healAfterDeath = true;
         this.isSlayerTask = false;
         this.isManualEating = false;
+        this.isSolarEclipse = false;
         // runes in bank
         this.hasRunes = true;
 
@@ -127,14 +129,16 @@ class SimPlayer extends Player {
                 "useCombinationRunesFlag",
                 "healAfterDeath",
                 "isManualEating",
+                "isSolarEclipse",
                 "isSlayerTask",
                 "hasRunes",
             ],
-            numbers: [
+            numbers: [],
+            strings: [
+                "currentGamemodeID",
                 "pillarID",
                 "pillarEliteID",
             ],
-            strings: ["currentGamemodeID"],
         };
     }
 
@@ -487,6 +491,9 @@ class SimPlayer extends Player {
         // Custom
         this.addPetModifiers();
         this.addAgilityModifiers();
+        if (this.isSolarEclipse) {
+            this.modifiers.addModifiers({ decreasedMonsterRespawnTimer: 1000 });
+        }
         // this.addAstrologyModifiers();
     }
 
@@ -513,24 +520,23 @@ class SimPlayer extends Player {
                 fullCourse = false;
                 break;
             }
-            const obstacle = this.game.agility.actions.allObjects.find(
+            const obstacle = this.micsr.actualGame.agility.actions.allObjects.find(
                 (_, i) => i === this.course[obstacleIndex]
             )!;
-            this.modifiers.addModifiers(
-                obstacle.modifiers,
-                this.courseMastery[obstacleIndex] ? 0.5 : 1
-            );
+
+            const modifiers = this.game.agility.getObstacleModifiers(obstacle);
+            this.modifiers.addMappedModifiers(modifiers);
         }
         if (fullCourse && this.pillarID) {
             this.modifiers.addModifiers(
-                this.game.agility.pillars.allObjects.find(
+                this.micsr.actualGame.agility.pillars.allObjects.find(
                     (p) => p.id === this.pillarID
                 )!.modifiers
             );
         }
         if (fullCourse && this.pillarEliteID) {
             this.modifiers.addModifiers(
-                this.game.agility.elitePillars.allObjects.find(
+                this.micsr.actualGame.agility.elitePillars.allObjects.find(
                     (p) => p.id === this.pillarEliteID
                 )!.modifiers
             );

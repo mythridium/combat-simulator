@@ -741,6 +741,17 @@ class App {
             ],
             1
         );
+
+        this.equipmentSelectCard.addToggleRadio(
+            "Solar Eclipse",
+            "isSolarEclipse",
+            this.player,
+            "isSolarEclipse",
+            (<any>this.player).isSolarEclipse,
+            25,
+            () => this.player.computeModifiers()
+        );
+
         // game mode
         const gameModeNames: any[] = [];
         const gameModeValues: number[] = [];
@@ -1262,15 +1273,18 @@ class App {
                 combatMenus.prayer
             )
         );
-        this.prayerSelectCard.addPremadeTab(
-            "Unholy Prayers",
-            this.media.unholy,
-            this.createPrayerSelectCard(
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            this.prayerSelectCard.addPremadeTab(
                 "Unholy Prayers",
-                prayers.filter(prayer => (<any>prayer).isUnholy),
-                combatMenus.prayer
-            )
-        );
+                this.media.unholy,
+                this.createPrayerSelectCard(
+                    "Unholy Prayers",
+                    prayers.filter(prayer => (<any>prayer).isUnholy),
+                    combatMenus.prayer
+                )
+            );
+        }
     }
 
     /**
@@ -2407,7 +2421,7 @@ class App {
             this.addEquipmentMultiButton(
                 equipmentSelectCard,
                 equipmentSlot,
-                (item: any) => item.type === 'Gem',
+                (item: any) => this.returnTrue(),
                 (x) => x.name
             );
         } else {
@@ -2429,12 +2443,14 @@ class App {
      * Equips an item to an equipment slot
      */
     equipItem(slotID: any, item: any, updateStats = true) {
+        const activePrayers = new Set(this.player.activePrayers);
         let slot = EquipmentSlots[slotID] as SlotTypes;
         // determine equipment slot
         if (item.occupiesSlots && item.occupiesSlots.includes(slot)) {
             slot = item.validSlots[0];
             slotID = (<any>this.micsr.equipmentSlotData)[slot].id;
         }
+
         // clear previous item
         let slots = [slot];
         if (item.occupiesSlots) {
@@ -2458,6 +2474,23 @@ class App {
         // update stats
         if (updateStats) {
             this.updateEquipmentStats();
+        }
+
+        let isCurrentUnholy = false;
+        for (const prayer of activePrayers) {
+            if ((<any>prayer).isUnholy) {
+                isCurrentUnholy = true;
+                break;
+            }
+        }
+
+        if (activePrayers.size > 0 && isCurrentUnholy && (<any>this.player.modifiers).allowUnholyPrayerUse < 2) {
+            for (const prayer of activePrayers) {
+                const button = document.getElementById(`MCS ${this.getPrayerName(prayer)} Button`);
+                if (button) {
+                    this.unselectButton(button);
+                }
+            }
         }
     }
 
@@ -2513,17 +2546,10 @@ class App {
 
         let tooltip = `<div class="text-center">${item.name}<br><small>`;
 
-        if (item.hasSpecialAttack) {
-            for (let special of item.specialAttacks) {
-                tooltip += `<span class='text-danger'>${special.name} (${
-                    special.defaultChance
-                    // @ts-expect-error TS(2304): Cannot find name 'describeAttack'.
-                }%): </span><span class='text-warning'>${describeAttack(
-                    special,
-                    youNoun,
-                    enemyNoun
-                )}</span><br>`;
-            }
+        tooltip += getItemSpecialAttackInformation(item);
+
+        if (item.hasDescription && !item.equipmentStats?.length) {
+            tooltip += `<span class="text-info">${item.description}</span>`;
         }
 
         const pushBonus = (list: any, header = "", footer = "") => {
@@ -2546,7 +2572,7 @@ class App {
             });
             if (statBonuses.length > 0) {
                 tooltip += header;
-                tooltip += statBonuses.join(", ");
+                tooltip += statBonuses.map((stat: any) => `<div>${stat}</div>`).join("");
                 tooltip += footer;
             }
         };

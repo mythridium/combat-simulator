@@ -71,6 +71,7 @@ interface IImportSettings {
     version: string;
     // lists
     astrologyModifiers: Map<string, IImportAstrology>;
+    season: any;
     course: number[];
     courseMastery: boolean[];
     equipment: string[];
@@ -91,6 +92,7 @@ interface IImportSettings {
     foodSelected: string;
     healAfterDeath: boolean;
     isManualEating: boolean;
+    isSolarEclipse: boolean;
     isSlayerTask: boolean;
     pillarID: string;
     pillarEliteID: string;
@@ -181,6 +183,7 @@ class Import {
 
         const equipmentSet = this.actualPlayer.equipmentSets[setID];
         const equipment = equipmentSet.equipment;
+        const season = (<any>this.app.actualGame.township.townData).season;
 
         // create settings object
         const settings: IImportSettings = {
@@ -189,6 +192,7 @@ class Import {
             astrologyModifiers: astrologyModifiers,
             course: chosenAgilityObstacles,
             courseMastery: courseMastery,
+            season: season,
             equipment: equipment.slotArray.map((x) => x.item.id),
             levels: new Map(
                 actualGame.skills.allObjects.map((skill) => [
@@ -220,6 +224,7 @@ class Import {
             foodSelected: foodSelected.id,
             healAfterDeath: this.simPlayer.healAfterDeath,
             isManualEating: this.simPlayer.isManualEating,
+            isSolarEclipse: this.simPlayer.isSolarEclipse,
             isSlayerTask: this.simPlayer.isSlayerTask,
             pillarID: actualGame.agility['builtPassivePillar']?.id || "",
             pillarEliteID: actualGame.agility['builtElitePassivePillar']?.id || "",
@@ -250,6 +255,7 @@ class Import {
             astrologyModifiers: this.getAstrologyFromGame(simGame),
             course: this.simPlayer.course,
             courseMastery: courseMastery,
+            season: (<any>this.simPlayer.game.township.townData).season,
             equipment: this.simPlayer.equipment.slotArray.map(
                 (x: any) => x.item.id
             ),
@@ -279,6 +285,7 @@ class Import {
             foodSelected: this.simPlayer.food.currentSlot.item.id,
             healAfterDeath: this.simPlayer.healAfterDeath,
             isManualEating: this.simPlayer.isManualEating,
+            isSolarEclipse: this.simPlayer.isSolarEclipse,
             isSlayerTask: this.simPlayer.isSlayerTask,
             pillarID: this.simPlayer.pillarID,
             pillarEliteID: this.simPlayer.pillarEliteID,
@@ -328,6 +335,7 @@ class Import {
             settings.pillarEliteID
         );
         this.importAstrology(settings.astrologyModifiers);
+        this.importTownship(settings.season);
 
         // update and compute values
         this.app.updateUi();
@@ -590,6 +598,12 @@ class Import {
         });
         // @ts-expect-error
         this.app.game.astrology.computeProvidedStats(false);
+    }
+
+    importTownship(season: any) {
+        this.app.player.isSolarEclipse = season.id === 'melvorF:SolarEclipse';
+        this.app.player.computeModifiers();
+        this.checkRadio("MCS Solar Eclipse", this.app.player.isSolarEclipse);
     }
 
     getAstrologyFromGame(game: Game | SimGame) {
