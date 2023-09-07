@@ -1,3 +1,7 @@
+v2.1.8
+    fixed 'DummySummoningRecipe' error (couldn't reproduce, let me know if still an issue)
+    improved item tooltips to be more accurate
+
 v2.1.7
     fixed bone doubling modifiers not working
     fixed slayer coins not scaling with any modifiers

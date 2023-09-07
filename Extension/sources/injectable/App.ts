@@ -1337,7 +1337,9 @@ class App {
             const tooltips = relics.map(relic => {
                 let tooltip = `<div class="text-center mb-1">${relic.relic.name}</div>`;
 
+                tooltip += '<div class="font-size-xs">'
                 tooltip += describeModifierData(relic.relic.modifiers);
+                tooltip += '</div>';
 
                 return tooltip;
             });
@@ -2763,10 +2765,6 @@ class App {
 
         tooltip += getItemSpecialAttackInformation(item);
 
-        if (item.hasDescription && !item.equipmentStats?.length) {
-            tooltip += `<span class="text-info">${item.description}</span>`;
-        }
-
         const pushBonus = (list: any, header = "", footer = "") => {
             const statBonuses: any = [];
             if (item.equipmentStats === undefined) {
@@ -2790,9 +2788,11 @@ class App {
                 tooltip += statBonuses.map((stat: any) => `<div>${stat}</div>`).join("");
                 tooltip += footer;
             }
+
+            return statBonuses.length > 0;
         };
 
-        pushBonus(
+        const offensiveStats = pushBonus(
             [
                 ["Attack Speed", "attackSpeed"],
                 ["Melee Strength", "meleeStrengthBonus"],
@@ -2808,7 +2808,7 @@ class App {
             "</span>"
         );
 
-        pushBonus(
+        const defensiveStats = pushBonus(
             [
                 ["Damage Reduction", "damageReduction", "%"],
                 ["Melee Defence", "defenceBonus"],
@@ -2819,19 +2819,8 @@ class App {
             "</span>"
         );
 
-        if (item.modifiers) {
-            const printedModifiers = this.printRelevantModifiers(
-                item.modifiers,
-                {
-                    headerTag: "div",
-                    header: "Combat Modifiers:",
-                    tag: "div",
-                    style: "white-space: nowrap;",
-                }
-            );
-            if (printedModifiers.passives.length > 0) {
-                tooltip += printedModifiers.header + printedModifiers.passives;
-            }
+        if (!defensiveStats && !offensiveStats && item.hasDescription) {
+            tooltip += `<span class="text-info">${item.description}</span>`;
         }
 
         if (item.equipRequirements) {
