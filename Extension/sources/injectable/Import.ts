@@ -100,6 +100,9 @@ interface IImportSettings {
     prayerSelected: string[];
     ancientRelicsSelected: [string, string[]][]
     useCombinationRunes: boolean;
+    cartographyWorldMap: string;
+    cartographyPointOfInterest: string;
+    cartographyMasteredHexes: number;
 }
 
 /**
@@ -237,6 +240,12 @@ class Import {
                 return [skill.localID, Array.from((<any>skill).ancientRelicsFound).map((relic: any) => relic[0].localID)];
             }),
             useCombinationRunes: actualGame.settings.useCombinationRunes,
+            // @ts-ignore
+            cartographyWorldMap: cloudManager.hasAoDEntitlement ? (<any>actualGame).cartography.activeMap?.id : '',
+            // @ts-ignore
+            cartographyPointOfInterest: cloudManager.hasAoDEntitlement ? (<any>actualGame).cartography.activeMap?.playerPosition?.pointOfInterest?.id : '',
+            // @ts-ignore
+            cartographyMasteredHexes: cloudManager.hasAoDEntitlement ? (<any>actualGame).cartography.activeMap?.masteredHexes : 0
         };
 
         // import settings
@@ -298,6 +307,12 @@ class Import {
             pillarEliteID: this.simPlayer.pillarEliteID,
             potionID: this.simPlayer.potion?.id,
             useCombinationRunes: this.simPlayer.useCombinationRunes,
+            // @ts-ignore
+            cartographyWorldMap: cloudManager.hasAoDEntitlement ? (<any>this.simPlayer.game).cartography.activeMap?.id : '',
+            // @ts-ignore
+            cartographyPointOfInterest: cloudManager.hasAoDEntitlement ? (<any>this.simPlayer.game).cartography.activeMap?.playerPosition?.pointOfInterest?.id : '',
+            // @ts-ignore
+            cartographyMasteredHexes: cloudManager.hasAoDEntitlement ? (<any>this.simPlayer.game).cartography.activeMap?.masteredHexes : 0,
         };
     }
 
@@ -344,6 +359,10 @@ class Import {
         );
         this.importAstrology(settings.astrologyModifiers);
         this.importTownship(settings.season);
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            this.importCartography(settings.cartographyWorldMap, settings.cartographyPointOfInterest, settings.cartographyMasteredHexes);
+        }
 
         // update and compute values
         this.app.updateUi();
@@ -526,6 +545,7 @@ class Import {
 
     importPets(petUnlocked: string[]) {
         this.simPlayer.petUnlocked = [];
+        this.app.game.petManager['unlocked'].clear();
         this.app.game.pets.forEach((pet) => {
             this.app.unselectButton(
                 this.document.getElementById(`MCS ${pet.name} Button`)
@@ -539,6 +559,7 @@ class Import {
                 return;
             }
 
+            this.app.game.petManager['unlocked'].add(pet);
             this.simPlayer.petUnlocked.push(pet);
             this.app.selectButton(
                 this.document.getElementById(`MCS ${pet.name} Button`)
@@ -648,6 +669,65 @@ class Import {
         this.app.player.isSolarEclipse = season.id === 'melvorF:SolarEclipse';
         this.app.player.computeModifiers();
         this.checkRadio("MCS Solar Eclipse", this.app.player.isSolarEclipse);
+    }
+
+    importCartography(worldMapId: string, pointOfInterestId: string, masteredHexes: number) {
+        const cartography = (<any>this.app.game).cartography;
+        const worldMap = cartography.worldMaps.getObjectByID(worldMapId);
+        const pointOfInterest = worldMap.pointsOfInterest.find((poi: any) => poi.id === pointOfInterestId);
+
+        cartography.worldMaps.forEach((map: any) => {
+            const button = this.document.getElementById(`MCS ${map.playerPosition?.pointOfInterest?.localID} Button`);
+
+            if (button) {
+                this.app.unselectButton(button);
+            }
+        });
+
+        let didUpdate = false;
+
+        if (worldMap) {
+            worldMap.masteredHexes = masteredHexes;
+            didUpdate = true;
+
+            worldMap.sortedMasteryBonuses.forEach((masteryBonus: any) => {
+                const button = document.getElementById(`MCS ${masteryBonus?.localID} Hexes Button`);
+
+                if (button) {
+                    if (masteryBonus.masteredHexes <= worldMap.masteredHexes) {
+                        masteryBonus.awarded = true;
+                        this.app.selectButton(button);
+                    } else {
+                        masteryBonus.awarded = false;
+                        this.app.unselectButton(button);
+                    }
+                }
+            });
+        }
+
+        if (worldMap && pointOfInterest) {
+            worldMap.setPlayerPosition(pointOfInterest.hex);
+            cartography.activeMap = worldMap;
+
+            didUpdate = true;
+
+            const button = this.document.getElementById(`MCS ${pointOfInterest.localID} Button`);
+
+            if (button) {
+                this.app.selectButton(button);
+            }
+        } else {
+            const firstNonActive = cartography.activeMap.pointsOfInterest.find((poi: any) => !poi.activeModifiers);
+
+            if (firstNonActive) {
+                cartography.activeMap.setPlayerPosition(firstNonActive.hex);
+                didUpdate = true;
+            }
+        }
+
+        if (didUpdate) {
+            cartography.computeProvidedStats(false);
+        }
     }
 
     getAstrologyFromGame(game: Game | SimGame) {

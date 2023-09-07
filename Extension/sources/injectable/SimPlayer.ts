@@ -496,6 +496,10 @@ class SimPlayer extends Player {
             this.modifiers.addModifiers({ decreasedMonsterRespawnTimer: 1000 });
         }
         this.game.astrology['computeProvidedStats'](false);
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            (<any>this.game).cartography.computeProvidedStats(false);
+        }
         // this.addAstrologyModifiers();
     }
 

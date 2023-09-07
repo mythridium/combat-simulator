@@ -363,7 +363,8 @@ class Simulator {
             "checkValueCondition",
             "selectFromWeightedArray",
             "getItemSpecialAttackInformation",
-            "describeModifierData"
+            "describeModifierData",
+            "getSpansFromModifierObject"
         ].forEach((func: any) => {
             if (window[func] === undefined) {
                 this.micsr.error(`window[${func}] is undefined`);

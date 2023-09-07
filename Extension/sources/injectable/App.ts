@@ -63,6 +63,7 @@ class App {
     media: any;
     monsterToggleState: any;
     petSelectCard!: Card;
+    cartographySelectCard!: TabCard;
     plotTypes: any;
     plotter!: Plotter;
     potionTier: number;
@@ -261,6 +262,7 @@ class App {
             hitpoints: "assets/media/skills/hitpoints/hitpoints.svg",
             emptyFood: "assets/media/skills/combat/food_empty.svg",
             agility: "assets/media/skills/agility/agility.svg",
+            cartography: "assets/media/skills/cartography/cartography.svg",
             mastery: "assets/media/main/mastery_header.png",
             statistics: "assets/media/main/statistics_header.svg",
             loot: "assets/media/bank/chapeau_noir.png",
@@ -434,8 +436,12 @@ class App {
         this.createPrayerSelectCards();
         // @ts-ignore
         if (cloudManager.hasAoDEntitlement) {
-            this.createAncientRelicSelectCards();
+            if ((<any>this.game.currentGamemode).allowAncientRelicDrops) {
+                this.createAncientRelicSelectCards();
+            }
+            this.createCartographySelectCards();
         }
+
         this.createPotionSelectCard();
         this.createPetSelectCard();
         this.createAgilitySelectCard();
@@ -770,10 +776,11 @@ class App {
             gameModeValues,
             "MCS Game Mode Dropdown",
             (event: any) => {
-                this.player.currentGamemodeID =
-                    this.micsr.gamemodes[
-                        parseInt(event.currentTarget.selectedOptions[0].value)
-                    ].id;
+                const gamemode = this.micsr.gamemodes[
+                    parseInt(event.currentTarget.selectedOptions[0].value)
+                ];
+
+                this.player.currentGamemodeID = gamemode.id;
             }
         );
         const gameModeContainer = this.equipmentSelectCard.createCCContainer();
@@ -1461,6 +1468,155 @@ class App {
             100,
             "MCS Rock"
         ).style.display = "none";
+    }
+
+    createCartographySelectCards() {
+        const data: { [key: string]: string[] } = {};
+        // @ts-ignore
+        const maps: any[] = this.game.cartography.worldMaps.filter(map => map.pointsOfInterest.some(poi => poi.activeModifiers));
+
+        maps.forEach(map => {
+            data[map.localID] = [];
+
+            map.pointsOfInterest.forEach((poi: any) => {
+                if (poi.activeModifiers) {
+                    data[map.localID].push(poi);
+                }
+            });
+        });
+
+        this.cartographySelectCard = this.mainTabCard.addPremadeTab(
+            "Cartography",
+            this.media.cartography,
+            new TabCard(
+                this.micsr,
+                "",
+                false,
+                this.mainTabCard.tabContainer,
+                "100%",
+                "150px"
+            )
+        ) as TabCard;
+        this.cartographySelectCard.addSectionTitle("Cartography");
+
+        if (Object.keys(data).length > 1) {
+            // add tab menu, it was not yet created in the constructor
+            this.cartographySelectCard.addTabMenu();
+
+            maps.forEach(map => {
+                const newCard = new Card(
+                    this.micsr,
+                    this.cartographySelectCard.container,
+                    "",
+                    "100px"
+                );
+
+                newCard.addSectionTitle(map.name);
+
+                this.createHexMasterySelectCard(newCard, map);
+
+                this.createCartographySelectCard(
+                    newCard,
+                    data[map.localID],
+                );
+
+                this.cartographySelectCard.addPremadeTab(
+                    map.name,
+                    this.media.cartography,
+                    newCard
+                );
+            });
+        } else {
+            maps.forEach(map => {
+                const newCard = new Card(
+                    this.micsr,
+                    this.cartographySelectCard.container,
+                    "",
+                    "100px"
+                );
+
+                this.createHexMasterySelectCard(newCard, map);
+
+                this.createCartographySelectCard(
+                    newCard,
+                    data[map.localID],
+                )
+            });
+        }
+    }
+
+    createHexMasterySelectCard(card: Card, map: any) {
+        const masteryBonuses = Array.from<any>(map.masteryBonuses.registeredObjects.values());
+
+        const images = masteryBonuses.map(() => this.media.cartography);
+        const names = masteryBonuses.map(bonus => `${bonus.localID} Hexes`);
+        const callbacks = masteryBonuses.map(bonus => (event: any) => this.cartographyHexMasteryButtonOnClick(event, bonus, map));
+        const tooltips = masteryBonuses.map(bonus => {
+            let tooltip = `<div class="text-center mb-1">${bonus.localID} Hexes</div>`;
+
+            if (bonus.modifiers) {
+                const descriptions = getSpansFromModifierObject(bonus.modifiers);
+
+                tooltip += '<div class="justify-vertical-center font-size-xs text-center">';
+
+                descriptions.forEach(description => {
+                    tooltip += description.outerHTML;
+                });
+            }
+
+            tooltip += '</div>';
+
+            return tooltip;
+        });
+
+        card.addImageButtons(
+            images,
+            names,
+            "Medium",
+            callbacks,
+            tooltips,
+            '300px'
+        );
+
+        return card;
+    }
+
+    createCartographySelectCard(
+        card: Card,
+        pointsOfInterest: any[]
+    ) {
+        const poiImages = pointsOfInterest.map(poi => poi.media);
+        const poiNames = pointsOfInterest.map(poi => poi.localID);
+        const poiCallbacks = pointsOfInterest.map(poi => (event: any) => this.cartographyImageButtonOnClick(event, poi));
+        const tooltips = pointsOfInterest.map(poi => {
+            let tooltip = `<div class="text-center mb-1">${poi.name}</div>`;
+
+            const posMult = (<any>this.game).cartography.hasCarthuluPet ? 2 : 1;
+
+            const descriptions = getSpansFromModifierObject(poi.activeModifiers, 1, posMult);
+
+            tooltip += '<div class="justify-vertical-center font-size-xs text-center">';
+
+            descriptions.forEach(description => {
+                tooltip += description.outerHTML;
+            });
+
+            tooltip += '</div>';
+
+            return tooltip;
+        });
+
+        card.addImageButtons(
+            poiImages,
+            poiNames,
+            "Medium",
+            poiCallbacks,
+            tooltips,
+            '300px',
+            'mt-3'
+        );
+
+        return card;
     }
 
     createAgilitySelectCard() {
@@ -2854,6 +3010,79 @@ class App {
         }
     }
 
+    cartographyHexMasteryButtonOnClick(event: any, mastery: any, map: any) {
+        const cartography = (<any>this.micsr.game).cartography;
+        const bonus = map.sortedMasteryBonuses.find((bonus: any) => bonus.id === mastery.id);
+
+        if (bonus.masteredHexes === map.masteredHexes) {
+            map.masteredHexes = 0;
+
+            map.sortedMasteryBonuses.forEach((masteryBonus: any) => {
+                const button = document.getElementById(`MCS ${masteryBonus?.localID} Hexes Button`);
+
+                if (button) {
+                    masteryBonus.awarded = false;
+                    this.unselectButton(button);
+                }
+            });
+        } else {
+            map.masteredHexes = bonus.masteredHexes;
+
+            map.sortedMasteryBonuses.forEach((masteryBonus: any) => {
+                const button = document.getElementById(`MCS ${masteryBonus?.localID} Hexes Button`);
+
+                if (button) {
+                    if (masteryBonus.masteredHexes <= map.masteredHexes) {
+                        masteryBonus.awarded = true;
+                        this.selectButton(button);
+                    } else {
+                        masteryBonus.awarded = false;
+                        this.unselectButton(button);
+                    }
+                }
+            });
+        }
+
+        cartography.computeProvidedStats(false);
+        this.updateCombatStats();
+    }
+
+    cartographyImageButtonOnClick(event: any, poi: any) {
+        const cartography = (<any>this.micsr.game).cartography;
+        const map = cartography.worldMaps.getObjectByID(poi.hex.map.id);
+        poi = map.pointsOfInterest.getObjectByID(poi.id);
+
+        cartography.worldMaps.forEach((worldMap: any) => {
+            const currentPoi = worldMap.playerPosition?.pointOfInterest;
+            const button = document.getElementById(`MCS ${currentPoi?.localID} Button`);
+
+            if (currentPoi && button) {
+                this.unselectButton(button);
+            }
+        });
+
+        const currentPoi = poi.hex.map?.playerPosition?.pointOfInterest;
+
+        // deselect
+        if (currentPoi?.localID === poi.localID) {
+            const firstNonActive = map.pointsOfInterest.find((poi: any) => !poi.activeModifiers);
+
+            if (firstNonActive) {
+                map.setPlayerPosition(firstNonActive.hex);
+                cartography.activeMap = map;
+            }
+
+            this.unselectButton(event.currentTarget);
+        } else {
+            map.setPlayerPosition(poi.hex);
+            cartography.activeMap = map;
+            this.selectButton(event.currentTarget);
+        }
+
+        cartography.computeProvidedStats(false);
+        this.updateCombatStats();
+    }
+
     // Callback Functions for the Prayer Select Card
     /**
      * Callback for when a prayer image button is clicked
@@ -3190,12 +3419,16 @@ class App {
      * @param {Pet} pet
      */
     petButtonOnClick(event: any, pet: Pet) {
+        const realPet = this.actualGame.pets.getObjectByID(pet.id);
+
         if (this.player.petUnlocked.includes(pet)) {
+            this.game.petManager['unlocked'].delete(realPet);
             this.player.petUnlocked = this.player.petUnlocked.filter(
                 (unlockedPet) => unlockedPet !== pet
             );
             this.unselectButton(event.currentTarget);
         } else {
+            this.game.petManager['unlocked'].add(realPet);
             this.player.petUnlocked.push(pet);
             this.selectButton(event.currentTarget);
         }
@@ -4039,6 +4272,11 @@ class App {
     updateCombatStats() {
         // debugger;
         // first update the values
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            (<any>this.micsr.game).cartography.computeProvidedStats(false);
+        }
+
         this.combatData.updateCombatStats();
         // second update the view
         this.combatStatKeys.forEach((key: any) => {

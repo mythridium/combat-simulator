@@ -383,6 +383,8 @@ class SimGame extends Game {
             this.combat.player.gp += amount;
         };
         this.slayerCoins.add = (amount) => {
+            const modifier = this.combat.player.modifiers.increasedSlayerCoins - this.combat.player.modifiers.decreasedSlayerCoins;
+            amount = applyModifier(amount, modifier, 0);
             // Store sc on the SimPlayer
             this.combat.player.slayercoins += amount;
         };
@@ -468,6 +470,10 @@ class SimGame extends Game {
         //   });
         // @ts-expect-error
         this.astrology.computeProvidedStats(false);
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            (<any>this).cartography.computeProvidedStats(false);
+        }
 
         // this.completion.onLoad();
         // this.bank.onLoad();
@@ -641,6 +647,10 @@ class SimGame extends Game {
             skill.encode(writer);
             writer.stopMarkingWriteRegion();
         });
+
+        const masteredHexes = (<any>this).cartography?.activeMap?.masteredHexes ?? 0;
+
+        writer.writeUint32(masteredHexes);
         // mod.encode(writer);
         // this.completion.encode(writer);
         return writer;
@@ -666,6 +676,11 @@ class SimGame extends Game {
         if (typeof gamemode === "string")
             throw new Error("Error loading save. Gamemode is not registered.");
         this.currentGamemode = gamemode;
+
+        if ((<any>this).cartography?.activeMap) {
+            (<any>this).cartography.activeMap.masteredHexes = 0;
+        }
+
         // this.characterName = reader.getString();
         // this.bank.decode(reader, version);
         this.combat.decode(reader, version);
@@ -694,6 +709,12 @@ class SimGame extends Game {
                 skill.decode(reader, version);
             }
         }
+
+        const masteredHexes = reader.getUint32();
+        if ((<any>this).cartography?.activeMap) {
+            (<any>this).cartography.activeMap.masteredHexes = masteredHexes;
+        }
+
         // mod.decode(reader, version);
         // if (version >= 26) this.completion.decode(reader, version);
         // if (resetPaused) {

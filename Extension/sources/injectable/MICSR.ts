@@ -107,7 +107,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 6;
+        this.patchVersion = 7;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -453,6 +453,11 @@ class MICSR {
         });
         // pets array
         this.pets = this.game.pets;
+
+        if ((<any>self).game) {
+            (<any>self).game.pets = this.pets;
+        }
+
         // dg array
         this.dungeons = this.game.dungeons;
         this.dungeonIDs = this.dungeons.allObjects.map(

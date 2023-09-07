@@ -167,10 +167,11 @@ class Card {
             ev: MouseEvent
         ) => any)[],
         tooltips: any,
-        containerWidth?: string
+        containerWidth?: string,
+        additionalClasses?: string
     ) {
         const newCCContainer = document.createElement("div");
-        newCCContainer.className = "mcsMultiImageButtonContainer";
+        newCCContainer.className = additionalClasses ? `mcsMultiImageButtonContainer ${additionalClasses}` : 'mcsMultiImageButtonContainer';
         for (let i = 0; i < sources.length; i++) {
             const newButton = this.createImageButton(
                 sources[i],
