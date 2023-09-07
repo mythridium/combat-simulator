@@ -488,12 +488,14 @@ class SimPlayer extends Player {
 
     computeModifiers() {
         super.computeModifiers();
+
         // Custom
         this.addPetModifiers();
         this.addAgilityModifiers();
         if (this.isSolarEclipse) {
             this.modifiers.addModifiers({ decreasedMonsterRespawnTimer: 1000 });
         }
+        this.game.astrology['computeProvidedStats'](false);
         // this.addAstrologyModifiers();
     }
 

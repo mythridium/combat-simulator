@@ -1,3 +1,6 @@
+v2.1.6
+    added support for ancient relics
+
 v2.1.5
     added support for AoD gems
     added support for unholy prayers

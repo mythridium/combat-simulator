@@ -68,6 +68,7 @@ class App {
     potionTier: number;
     potionSelectCard!: Card;
     prayerSelectCard!: TabCard;
+    ancientRelicSelectCard!: Card;
     savedSimulations: ISimSave[];
     selectedBar: any;
     selectedTime: any;
@@ -268,6 +269,7 @@ class App {
             synergyLock: "assets/media/skills/summoning/synergy_locked.svg",
             stamina: "assets/media/main/stamina.png",
             question: "assets/media/main/question.svg",
+            ancientRelics: "assets/media/main/gamemode_ancient_relic.png",
             airRune:
                 this.micsr.game.items.getObjectByID("melvorD:Air_Rune")!.media,
             mistRune:
@@ -430,6 +432,10 @@ class App {
         this.createLevelSelectCard();
         this.createSpellSelectCards();
         this.createPrayerSelectCards();
+        // @ts-ignore
+        if (cloudManager.hasAoDEntitlement) {
+            this.createAncientRelicSelectCards();
+        }
         this.createPotionSelectCard();
         this.createPetSelectCard();
         this.createAgilitySelectCard();
@@ -1285,6 +1291,59 @@ class App {
                 )
             );
         }
+    }
+
+    createAncientRelicSelectCards() {
+        this.ancientRelicSelectCard = this.mainTabCard.addPremadeTab(
+            "Ancient Relics",
+            this.media.ancientRelics,
+            new TabCard(
+                this.micsr,
+                "",
+                false,
+                this.mainTabCard.tabContainer,
+                "100%",
+                "150px"
+            )
+        ) as TabCard;
+        this.ancientRelicSelectCard.addSectionTitle("Ancient Relics");
+
+        const newCard = new Card(
+            this.micsr,
+            this.ancientRelicSelectCard.container,
+            "",
+            "100px"
+        );
+
+        this.game.skills.filter(skill => this.micsr.ancientRelicSkillKeys.includes(skill.localID)).forEach((skill: any) => {
+            const relics = [...skill.ancientRelics, { relic: skill.completedAncientRelic }];
+
+            const relicNames = relics.map(relic => relic.relic.localID);
+            const relicImages = relics.map(relic => {
+                if (relic.relic.id === skill.completedAncientRelic.id) {
+                    return this.media.ancientRelics;
+                }
+
+                return skill.media;
+            });
+            const relicCallbacks = relics.map(relic => (event: any) => this.relicButtonOnClick(event, relic.relic, skill));
+            const tooltips = relics.map(relic => {
+                let tooltip = `<div class="text-center mb-1">${relic.relic.name}</div>`;
+
+                tooltip += describeModifierData(relic.relic.modifiers);
+
+                return tooltip;
+            });
+
+            newCard.addImageButtons(
+                relicImages,
+                relicNames,
+                "Medium",
+                relicCallbacks,
+                tooltips,
+                "300px"
+            );
+        });
     }
 
     /**
@@ -2725,6 +2784,74 @@ class App {
             this.micsr.game.attackStyles.allObjects[idx]
         );
         this.updateCombatStats();
+    }
+
+    relicButtonOnClick(event: any, relic: any, skill: any) {
+        let relicChanged = false;
+
+        const isMasterRelic = skill.completedAncientRelic.id === relic.id;
+
+        const updateMasterRelic = () => {
+            const button = document.getElementById(`MCS ${skill.completedAncientRelic.localID} Button`);
+
+            if (skill.ancientRelicsFound.size === skill.ancientRelics.length) {
+                if (button) {
+                    this.selectButton(button);
+                }
+            } else {
+                if (button) {
+                    this.unselectButton(button);
+                }
+            }
+        };
+
+        if (isMasterRelic) {
+            if (skill.ancientRelicsFound.size === skill.ancientRelics.length) {
+                skill.ancientRelicsFound.clear();
+
+                skill.ancientRelics.forEach((relic: any) => {
+                    const button = document.getElementById(`MCS ${relic.relic.localID} Button`);
+
+                    if (button) {
+                        this.unselectButton(button);
+                    }
+                });
+
+                updateMasterRelic();
+            } else {
+                skill.ancientRelicsFound.clear();
+
+                skill.ancientRelics.forEach((relic: any) => {
+                    skill.ancientRelicsFound.set(relic.relic, 1);
+
+                    const button = document.getElementById(`MCS ${relic.relic.localID} Button`);
+
+                    if (button) {
+                        this.selectButton(button);
+                    }
+                });
+
+                updateMasterRelic();
+            }
+
+            relicChanged = true;
+        } else {
+            if (skill.ancientRelicsFound.has(relic)) {
+                skill.ancientRelicsFound.delete(relic);
+                this.unselectButton(event.currentTarget);
+                relicChanged = true;
+            } else {
+                skill.ancientRelicsFound.set(relic, 1);
+                this.selectButton(event.currentTarget);
+                relicChanged = true;
+            }
+
+            updateMasterRelic();
+        }
+
+        if (relicChanged) {
+            this.updateCombatStats();
+        }
     }
 
     // Callback Functions for the Prayer Select Card

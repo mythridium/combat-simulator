@@ -362,7 +362,8 @@ class Simulator {
             "checkBooleanCondition",
             "checkValueCondition",
             "selectFromWeightedArray",
-            "getItemSpecialAttackInformation"
+            "getItemSpecialAttackInformation",
+            "describeModifierData"
         ].forEach((func: any) => {
             if (window[func] === undefined) {
                 this.micsr.error(`window[${func}] is undefined`);
@@ -496,9 +497,6 @@ class Simulator {
             WoodcuttingTree,
             Fish,
             FishingArea,
-            FiremakingLog,
-            CookingCategory,
-            CookingRecipe,
             FarmingCategory,
             FarmingRecipe,
             FletchingRecipe,
@@ -813,12 +811,15 @@ class Simulator {
             SingleProductArtisanSkillRecipe,
             // CookingRecipe,
             SkillCategory,
+            CookingCategory,
             // CookingCategory,
             HerbloreRecipe,
             SummoningRecipe,
             SummoningSynergy,
             AstrologyRecipe,
             DummyAstrologyRecipe,
+            CookingRecipe,
+            FiremakingLog,
             // @ts-ignore
             ArchaeologyDigSite,
             // @ts-ignore

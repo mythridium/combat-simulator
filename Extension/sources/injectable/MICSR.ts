@@ -79,6 +79,20 @@ class MICSR {
     showModifiersInstance!: ShowModifiers;
     bannedSkills: string[];
 
+    ancientRelicSkillKeys = [
+        "Attack",
+        "Strength",
+        "Defence",
+        "Hitpoints",
+        "Ranged",
+        "Magic",
+        "Prayer",
+        "Slayer",
+        'Firemaking',
+        'Cooking',
+        'Smithing'
+    ];
+
     constructor(isDev = false) {
         this.isDev = isDev;
         this.isVerbose = false;
@@ -93,7 +107,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 5;
+        this.patchVersion = 6;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -118,11 +132,11 @@ class MICSR {
 
         this.bannedSkills = [
             "Woodcutting",
-            "Firemaking",
+            //"Firemaking",
             "Fishing",
             "Mining",
-            "Cooking",
-            "Smithing",
+            //"Cooking",
+            //"Smithing",
             "Farming",
             // "Summoning", // Need for summoning xp calculation
             "Thieving",

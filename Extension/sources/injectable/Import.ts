@@ -98,6 +98,7 @@ interface IImportSettings {
     pillarEliteID: string;
     potionID?: string;
     prayerSelected: string[];
+    ancientRelicsSelected: [string, string[]][]
     useCombinationRunes: boolean;
 }
 
@@ -232,6 +233,9 @@ class Import {
             prayerSelected: Array.from(equipmentSet.prayerSelection).map(
                 (p) => p.id
             ),
+            ancientRelicsSelected: actualGame.skills.filter(skill => this.micsr.ancientRelicSkillKeys.includes(skill.localID)).map(skill => {
+                return [skill.localID, Array.from((<any>skill).ancientRelicsFound).map((relic: any) => relic[0].localID)];
+            }),
             useCombinationRunes: actualGame.settings.useCombinationRunes,
         };
 
@@ -270,6 +274,9 @@ class Import {
             prayerSelected: Array.from(this.simPlayer.activePrayers).map(
                 (p) => p.id
             ),
+            ancientRelicsSelected: this.app.game.skills.filter(skill => this.micsr.ancientRelicSkillKeys.includes(skill.localID)).map(skill => {
+                return [skill.localID, Array.from((<any>skill).ancientRelicsFound).map((relic: any) => relic[0].localID)];
+            }),
             spells: {
                 ancient: this.simPlayer.spellSelection.ancient?.id || "",
                 archaic: this.simPlayer.spellSelection.archaic?.id || "",
@@ -314,6 +321,7 @@ class Import {
         this.importEquipment(settings.equipment);
         this.importStyle(settings.styles);
         this.importSpells(settings.spells);
+        this.importAncientRelics(settings.ancientRelicsSelected);
         this.importPrayers(settings.prayerSelected);
         this.importPotion(settings.potionID);
         this.importPets(settings.petUnlocked);
@@ -431,6 +439,42 @@ class Import {
         if (newSpell) {
             this.app.enableSpell(spellType, newSpell);
         }
+    }
+
+    importAncientRelics(ancientRelicsSelected: [string, string[]][]) {
+        const skills = this.micsr.game.skills.filter(skill => this.micsr.ancientRelicSkillKeys.includes(skill.localID));
+
+        skills.forEach((skill: any) => {
+            skill.ancientRelicsFound.clear();
+        });
+
+        skills.forEach((skill: any) => {
+            skill.ancientRelics.forEach((relic: any) => {
+                const button = this.document.getElementById(`MCS ${relic.relic.localID} Button`);
+                const skillData = ancientRelicsSelected.find(data => data[0] === skill.localID);
+
+                if (button && skillData) {
+                    if (skillData[1].includes(relic.relic.localID)) {
+                        this.app.selectButton(button);
+                        skill.ancientRelicsFound.set(relic.relic, 1);
+                    } else {
+                        this.app.unselectButton(button);
+                    }
+                }
+            });
+
+            if (skill.completedAncientRelic) {
+                const masterButton = this.document.getElementById(`MCS ${skill.completedAncientRelic.localID} Button`);
+
+                if (masterButton) {
+                    if (skill.ancientRelicsFound.size === skill.ancientRelics.length) {
+                        this.app.selectButton(masterButton);
+                    } else {
+                        this.app.unselectButton(masterButton);
+                    }
+                }
+            }
+        });
     }
 
     importPrayers(prayerSelected: string[]) {

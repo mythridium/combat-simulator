@@ -511,6 +511,11 @@ class SimGame extends Game {
             constellation.standardModsBought.fill(0);
             constellation.uniqueModsBought.fill(0);
         });
+
+        this.skills.filter(skill => this.micsr.ancientRelicSkillKeys.includes(skill.localID)).forEach(skill => {
+            (<any>skill).ancientRelicsFound.clear();
+        });
+
         // @ts-expect-error
         this.astrology.computeProvidedStats(false);
 
