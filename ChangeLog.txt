@@ -1,10 +1,10 @@
 v2.1.7
     fixed bone doubling modifiers not working
+    fixed slayer coins not scaling with any modifiers
+    fixed ancient relic tab showing outside of ancient relic game mode
     added support for cartography hex mastery
     added support for cartography pet
     added support for cartography points of interest
-    fixed ancient relic tab showing outside of ancient relic game mode
-    fixed slayer coins not scaling with any modifiers
 
 v2.1.6
     added support for ancient relics
