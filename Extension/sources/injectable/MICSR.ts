@@ -107,7 +107,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 10;
+        this.patchVersion = 11;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -438,6 +438,10 @@ class MICSR {
         this.gamemodes = this.game.gamemodes.allObjects.filter(
             (x: any) => x.id !== "melvorD:Unset"
         );
+
+        this.gamemodes.forEach(gamemode => {
+            (<any>gamemode).overrideLevelCap = undefined;
+        });
 
         // empty items
         this.emptyItem = this.game.emptyEquipmentItem;
