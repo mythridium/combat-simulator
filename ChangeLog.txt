@@ -1,3 +1,8 @@
+v2.1.14
+    fixed magic spells not updating as expected based on magic level
+    fixed 'skillNav' error when simulating a dungeon that you haven't completed before in ancient relics gamemode
+    fixed enemy target modifiers being applied to the player instead of... well, the enemy...
+
 v2.1.13
     fixed 'reading get' error
     fixed error when using 'bypass agility cost' with mod skill modifiers

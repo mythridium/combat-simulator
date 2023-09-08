@@ -359,6 +359,8 @@ class SimManager extends CombatManager {
 
     dropEnemyBones() {}
 
+    awardSkillLevelCapIncreaseForDungeonCompletion() {}
+
     // dropEnemyLoot() {
     // }
 
@@ -470,9 +472,6 @@ class SimManager extends CombatManager {
         let failMessage = "";
         if (success) {
             this.selectMonster(monster, areaData);
-            this.fightInProgress = true;
-            this.player.computeModifiers();
-            this['uniqueUpdatesOnEnemySpawn']();
 
             this.micsr.log("Fighting:", monster?.name, areaData.name);
             while (

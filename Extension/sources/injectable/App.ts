@@ -1238,7 +1238,7 @@ class App {
                 // spell.getMediaURL(spell.media)
                 spell.media
         );
-        const spellNames = spells.map((spell) => spell.id);
+        const spellNames = spells.map((spell) => spell.localID);
         const spellCallbacks = spells.map(
             (spell) => (event: any) =>
                 this.spellButtonOnClick(event, spell, spellType)
@@ -3231,7 +3231,7 @@ class App {
             return;
         }
         // unselect spell
-        const button = document.getElementById(`MCS ${spell.id} Button`);
+        const button = document.getElementById(`MCS ${spell.localID} Button`);
         if (button) {
             this.unselectButton(button);
         }
@@ -3294,7 +3294,7 @@ class App {
             );
         }
         // select spell
-        const button = document.getElementById(`MCS ${spell.id} Button`);
+        const button = document.getElementById(`MCS ${spell.localID} Button`);
         if (button) {
             this.selectButton(button);
         }
@@ -4135,13 +4135,13 @@ class App {
      * Checks if magic level required for spell is met
      */
     checkForSpellLevel() {
-        const magicLevel =
-            this.micsr.game.skills.getObjectByID("melvorD:Magic")?.level || 0;
+        const magicLevel = this.player.skillLevel.get(this.micsr.skillIDs.Magic)!;
+
         const setSpellsPerLevel = (
             spell: CombatSpell,
             spellType: CombatSpellBook
         ) => {
-            const id = `MCS ${spell.id} Button Image`;
+            const id = `MCS ${spell.localID} Button Image`;
             const elt = document.getElementById(id);
             if (magicLevel < spell.level) {
                 (elt as any).src = this.media.question;
@@ -4191,7 +4191,7 @@ class App {
             if (this.checkRequiredItem(spell)) {
                 (
                     document.getElementById(
-                        `MCS ${spell.id} Button Image`
+                        `MCS ${spell.localID} Button Image`
                     ) as any
                 ).src = this.media.question;
                 this.disableSpell(
@@ -4222,9 +4222,8 @@ class App {
      * Updates the prayers that display in the prayer selection card, based on if the player can use it
      */
     updatePrayerOptions() {
-        const prayerLevel = this.player.skillLevel.get(
-            this.micsr.skillIDs.Prayer
-        )!;
+        const prayerLevel = this.player.skillLevel.get(this.micsr.skillIDs.Prayer)!;
+
         this.micsr.prayers.forEach((prayer: any) => {
             const prayerName = this.getPrayerName(prayer);
             if (prayer.prayerLevel > prayerLevel) {
