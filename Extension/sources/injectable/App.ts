@@ -2761,9 +2761,19 @@ class App {
             return EquipmentSlots[equipmentSlot];
         }
 
-        let tooltip = `<div class="text-center">${item.name}<br><small>`;
+        let tooltip = `<div class="text-center mt-1 mb-1"><span class="text-warning">${item.name}</span><br><small>`;
 
         tooltip += getItemSpecialAttackInformation(item);
+
+        if (item.hasDescription) {
+            let description = item.description;
+
+            try {
+                description = item.modifiedDescription;
+            } catch {}
+
+            tooltip += `<span class="text-info mt-1 mb-1">${description}</span>`;
+        }
 
         const pushBonus = (list: any, header = "", footer = "") => {
             const statBonuses: any = [];
@@ -2788,11 +2798,9 @@ class App {
                 tooltip += statBonuses.map((stat: any) => `<div>${stat}</div>`).join("");
                 tooltip += footer;
             }
-
-            return statBonuses.length > 0;
         };
 
-        const offensiveStats = pushBonus(
+        pushBonus(
             [
                 ["Attack Speed", "attackSpeed"],
                 ["Melee Strength", "meleeStrengthBonus"],
@@ -2804,24 +2812,20 @@ class App {
                 ["Magic Damage", "magicDamageBonus", "%"],
                 ["Magic Attack", "magicAttackBonus"],
             ],
-            `<div>Offence:</div><span>`,
+            `<div class="mt-1">Offence:</div><span class="mb-1">`,
             "</span>"
         );
 
-        const defensiveStats = pushBonus(
+        pushBonus(
             [
                 ["Damage Reduction", "damageReduction", "%"],
                 ["Melee Defence", "defenceBonus"],
                 ["Ranged Defence", "rangedDefenceBonus"],
                 ["Magic Defence", "magicDefenceBonus"],
             ],
-            `<div>Defence:</div><span>`,
+            `<div class="mt-1">Defence:</div><span class="mb-1">`,
             "</span>"
         );
-
-        if (!defensiveStats && !offensiveStats && item.hasDescription) {
-            tooltip += `<span class="text-info">${item.description}</span>`;
-        }
 
         if (item.equipRequirements) {
             const requirements: any = [];

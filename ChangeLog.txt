@@ -1,3 +1,6 @@
+v2.1.10
+    further tooltip improvements
+
 v2.1.9
     fixed 'ModifierID' error
 
