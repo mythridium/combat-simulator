@@ -1,3 +1,6 @@
+v2.1.9
+    fixed 'ModifierID' error
+
 v2.1.8
     fixed 'DummySummoningRecipe' error (couldn't reproduce, let me know if still an issue)
     improved item tooltips to be more accurate

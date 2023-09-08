@@ -285,6 +285,8 @@ class Simulator {
                 data: this.cloner.equipmentSlotData(),
             },
             { name: "modifierData", data: this.cloner.modifierData() },
+            { name: "ModifierID", data: ModifierID, },
+            { name: 'setLang', data: setLang },
             { name: "SlayerTierID", data: SlayerTierID },
             { name: "AttackTypeID", data: AttackTypeID },
             { name: "ArchaicSpellTypeID", data: ArchaicSpellTypeID },
@@ -364,7 +366,13 @@ class Simulator {
             "selectFromWeightedArray",
             "getItemSpecialAttackInformation",
             "describeModifierData",
-            "getSpansFromModifierObject"
+            "getSpansFromModifierObject",
+            "getModifierDataSpans",
+            "isSkillKey",
+            "formatModifiers",
+            "printPlayerModifier",
+            "disableModifierPass",
+            "isDisabledModifier"
         ].forEach((func: any) => {
             if (window[func] === undefined) {
                 this.micsr.error(`window[${func}] is undefined`);
