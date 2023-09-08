@@ -1,3 +1,8 @@
+v2.1.13
+    fixed 'reading get' error
+    fixed error when using 'bypass agility cost' with mod skill modifiers
+    fixed active modifier modal showing undefined as the title
+
 v2.1.12
     skill locked state no longer stops the sim from calculating xp gains
 

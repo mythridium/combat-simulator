@@ -587,8 +587,7 @@ class App {
             options
         );
         Swal.fire({
-            // @ts-expect-error TS(2551): Property 'headers' does not exist on type '{ heade... Remove this comment to see the full error message
-            html: printedModifiers.headers + printedModifiers.passives,
+            html: printedModifiers.header + printedModifiers.passives,
         });
     }
 
@@ -817,7 +816,7 @@ class App {
             this.equipmentSelectCard.addButton("Show Modifiers", () =>
                 this.showRelevantModifiers(
                     this.player.modifiers,
-                    "Active modifiers"
+                    "Active Modifiers"
                 )
             )
         );

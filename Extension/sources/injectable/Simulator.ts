@@ -438,7 +438,6 @@ class Simulator {
         };
         [
             CombatQuickEquipMenu,
-            Completion,
             Minibar,
             Settings,
             MasteryLevelUnlock,
@@ -545,6 +544,9 @@ class Simulator {
 
             SparseNumericMap,
             CompletionMap,
+            CompletionRenderQueue,
+            CompletionProgress,
+            Completion,
             NamespaceMap,
             NamespaceRegistry,
             NamespacedObject,

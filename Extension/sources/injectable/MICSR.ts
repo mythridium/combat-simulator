@@ -107,7 +107,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 11;
+        this.patchVersion = 13;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -411,7 +411,9 @@ class MICSR {
         const clonedModifiers: any = {};
 
         for (const modifier of modifiers.skillModifiers) {
-            clonedModifiers[modifier[0]] = Array.from(modifier[1]).map(mod => ({ skillID: mod[0].id, value: mod[1] }));
+            clonedModifiers[modifier[0]] = Array.from(modifier[1])
+                .filter(mod => !mod[0].isModded)
+                .map(mod => ({ skillID: mod[0].id, value: mod[1] }));
         }
 
         for (const modifier of modifiers.standardModifiers) {
