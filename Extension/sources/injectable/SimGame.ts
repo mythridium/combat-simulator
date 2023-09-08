@@ -704,10 +704,11 @@ class SimGame extends Game {
             const skill = reader.getNamespacedObject(this.skills);
             const skillDataSize = reader.getUint32();
             if (typeof skill === "string")
-            reader.getFixedLengthBuffer(skillDataSize);
+                reader.getFixedLengthBuffer(skillDataSize);
             else {
                 skill.decode(reader, version);
             }
+            (<any>skill)._unlocked = true;
         }
 
         const masteredHexes = reader.getUint32();

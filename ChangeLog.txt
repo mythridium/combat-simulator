@@ -1,3 +1,6 @@
+v2.1.12
+    skill locked state no longer stops the sim from calculating xp gains
+
 v2.1.11
     gamemode skill level caps are now ignored, xp gains will now show how much xp you would gain regardless if you are at a cap or not
 
