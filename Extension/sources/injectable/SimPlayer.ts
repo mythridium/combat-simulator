@@ -58,6 +58,7 @@ class SimPlayer extends Player {
     usedPotions: number;
     usedPrayerPoints: number;
     usedRunes: { [index: string]: number };
+    monsterSpawnTimer: number;
 
     // @ts-expect-error Force SimGame type
     game!: SimGame;
@@ -111,6 +112,7 @@ class SimPlayer extends Player {
             Summon2: 0,
         };
         this.highestDamageTaken = 0;
+        this.monsterSpawnTimer = this.baseSpawnInterval;
         // remove standard spell selection
         this.spellSelection.standard = undefined;
         // overwrite food consumption
@@ -133,7 +135,7 @@ class SimPlayer extends Player {
                 "isSlayerTask",
                 "hasRunes",
             ],
-            numbers: [],
+            numbers: ["monsterSpawnTimer"],
             strings: [
                 "currentGamemodeID",
                 "pillarID",
@@ -500,7 +502,6 @@ class SimPlayer extends Player {
         if (cloudManager.hasAoDEntitlement) {
             (<any>this.game).cartography.computeProvidedStats(false);
         }
-        // this.addAstrologyModifiers();
     }
 
     addPetModifiers() {
@@ -547,10 +548,6 @@ class SimPlayer extends Player {
                 )!.modifiers
             );
         }
-    }
-
-    addAstrologyModifiers() {
-
     }
 
     equipmentID(slotID: EquipmentSlots) {
@@ -642,6 +639,14 @@ class SimPlayer extends Player {
         this.equipment.unequipItem(slot);
         this.updateForEquipmentChange();
         return true;
+    }
+
+    getMonsterSpawnTime() {
+        if (!this.manager.game.isWebWorker) {
+            return super.getMonsterSpawnTime();
+        }
+
+        return this.monsterSpawnTimer;
     }
 
     // don't disable selected spells
@@ -736,6 +741,9 @@ class SimPlayer extends Player {
     encode(writer: SaveWriter) {
         // debugger;
         super.encode(writer);
+
+        this.monsterSpawnTimer = this.getMonsterSpawnTime();
+
         this.dataNames.booleanArrays.forEach((x: PropertyKey) => {
             if (this.hasKey(this, x)) {
                 this.micsr.logVerbose("encode boolean array", x, this[x]);

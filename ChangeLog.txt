@@ -1,3 +1,6 @@
+v2.1.15
+    added support for mods that modify the monster respawn time
+
 v2.1.14
     fixed magic spells not updating as expected based on magic level
     fixed 'skillNav' error when simulating a dungeon that you haven't completed before in ancient relics gamemode
