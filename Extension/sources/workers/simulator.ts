@@ -39,23 +39,6 @@
 
     (<any>self).TODO_REPLACE_MEDIA = 'assets/media/main/missing_artwork.png';
 
-    try {
-        importScripts(
-                `${location.origin}/assets/js/fflate.min.js`,
-                `${location.origin}/assets/js/mitt.min.js`,
-                `${location.origin}/assets/js/pixi.min.js`,
-                `${location.origin}/assets/js/built/utils.js`,
-                `${location.origin}/assets/js/built/effectRenderer.js`,
-                `${location.origin}/assets/js/built/attacks.js`
-            );
-    } catch(exception) {
-        console.error('Failed to download resources.', exception);
-    }
-
-    try {
-        importScripts("https://steam.melvoridle.com/assets/js/pako.min.js");
-    } catch {}
-
     // Fake globals
     const combatMenus = {
         eventMenu: {
@@ -143,6 +126,31 @@
     }
      */
         switch (event.data.action) {
+            case "SCRIPTS":
+                let error: any;
+
+                self.checkFileVersion = () => true;
+
+                try {
+                    importScripts(
+                            `${location.origin}/assets/js/fflate.min.js${event.data.gameFileVersion}`,
+                            `${location.origin}/assets/js/mitt.min.js${event.data.gameFileVersion}`,
+                            `${location.origin}/assets/js/pixi.min.js${event.data.gameFileVersion}`,
+                            `${location.origin}/assets/js/built/utils.js${event.data.gameFileVersion}`,
+                            `${location.origin}/assets/js/built/effectRenderer.js${event.data.gameFileVersion}`,
+                            `${location.origin}/assets/js/built/attacks.js${event.data.gameFileVersion}`
+                        );
+                } catch(exception: any) {
+                    error = exception?.message ?? 'exception is blank, but loading files broke';
+                    console.error('Failed to download resources.', exception);
+                }
+
+                try {
+                    importScripts(`https://steam.melvoridle.com/assets/js/pako.min.js${event.data.gameFileVersion}`);
+                } catch {}
+
+                postMessage({ action: "SCRIPTS_DONE", error });
+                break;
             case "RECEIVE_GAMEDATA":
                 // debugger;
 
@@ -327,8 +335,7 @@
                 const startTime = performance.now();
                 //settings
                 // run the simulation
-                combatSimulator
-                    .simulateMonster(
+                combatSimulator.simulateMonster(
                         event.data.saveString,
                         event.data.monsterID,
                         event.data.dungeonID,

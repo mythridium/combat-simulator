@@ -1,3 +1,6 @@
+v2.1.16
+    fixed file version check failure
+
 v2.1.15
     added support for mods that modify the monster respawn time
 

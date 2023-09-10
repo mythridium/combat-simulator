@@ -31,6 +31,9 @@ interface ISimSave {
     slayerSimData: { [index: string]: ISimData };
 }
 
+declare var gameFileVersion: string;
+declare function checkFileVersion(version: string): boolean;
+
 /**
  * Simulator class, used for all simulation work, and storing simulation results and settings
  */
@@ -150,6 +153,7 @@ class Simulator {
     async createWorkers() {
         for (let i = 0; i < this.maxThreads; i++) {
             const worker = await this.createWorker();
+            await this.sendScripts(worker, i);
             this.intializeWorker(worker, i);
             const newWorker = {
                 worker: worker,
@@ -166,6 +170,22 @@ class Simulator {
      */
     async createWorker(): Promise<Worker> {
         return new Worker(this.workerURL);
+    }
+
+    sendScripts(worker: Worker, i: number) {
+        return new Promise<void>(resolve => {
+            // worker
+            worker.onmessage = (event: any) => this.processWorkerMessage(event, i, resolve);
+            worker.onerror = (event: any) => {
+                this.micsr.log("An error occurred in a simulation worker");
+                this.micsr.log(event);
+            };
+
+            worker.postMessage({
+                action: "SCRIPTS",
+                gameFileVersion
+            });
+        });
     }
 
     // TODO: refactor intializeWorker
@@ -372,7 +392,8 @@ class Simulator {
             "formatModifiers",
             "printPlayerModifier",
             "disableModifierPass",
-            "isDisabledModifier"
+            "isDisabledModifier",
+            "checkFileVersion"
         ].forEach((func: any) => {
             if (window[func] === undefined) {
                 this.micsr.error(`window[${func}] is undefined`);
@@ -940,12 +961,6 @@ class Simulator {
             }
         });
 
-        // worker
-        worker.onmessage = (event: any) => this.processWorkerMessage(event, i);
-        worker.onerror = (event: any) => {
-            this.micsr.log("An error occurred in a simulation worker");
-            this.micsr.log(event);
-        };
         // debugger;
         worker.postMessage({
             action: "RECEIVE_GAMEDATA",
@@ -1481,12 +1496,18 @@ class Simulator {
      * @param {MessageEvent} event The event data of the worker
      * @param {number} workerID The ID of the worker that sent the message
      */
-    processWorkerMessage(event: any, workerID: any) {
+    processWorkerMessage(event: any, workerID: any, resolve: (result?: any) => void) {
         // this.micsr.log(`Received Message ${event.data.action} from worker: ${workerID}`);
-        if (!event.data.simResult.simSuccess) {
+        if (event.data.simResult?.simSuccess === false) {
             this.micsr.log({ ...event.data.simResult });
         }
         switch (event.data.action) {
+            case "SCRIPTS_DONE":
+                if (event.data.error) {
+                    this.micsr.error(event.data.error);
+                }
+                resolve();
+                break;
             case "FINISHED_SIM":
                 // Send next job in queue to worker
                 this.simulationWorkers[workerID].inUse = false;
