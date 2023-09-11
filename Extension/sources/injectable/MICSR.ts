@@ -90,7 +90,9 @@ class MICSR {
         "Slayer",
         'Firemaking',
         'Cooking',
-        'Smithing'
+        'Smithing',
+        "Agility",
+        "Astrology"
     ];
 
     constructor(isDev = false) {

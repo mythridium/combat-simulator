@@ -1660,36 +1660,35 @@ class App {
         this.astrologySelectCard.addSectionTitle("Astrology");
         this.astrologySelectCard.addSectionTitle("(Improvements coming soon™)");
         const card = this.astrologySelectCard;
-        this.game.astrology.actions.allObjects.forEach(
-            (constellation, index) => {
+        this.game.astrology.actions.allObjects
+            .filter((constellation, index) => !this.skipConstellations.includes(index))
+            .sort((a, b) => a.level - b.level)
+            .forEach(constellation => {
                 // create constellation container
-                if (this.skipConstellations.includes(index)) {
-                } else {
-                    const cc = card.createCCContainer();
-                    cc.className = "mcsEquipmentImageContainer";
-                    // constellation symbol and skills
-                    const constellationImage = card.createImage(
-                        constellation.media,
-                        40
-                    );
-                    cc.appendChild(
-                        card.createLabel(
-                            `${constellation.name} (${constellation.level})`
-                        )
-                    );
-                    cc.appendChild(constellationImage);
-                    card.container.appendChild(cc);
-                    this.createAstrologyModifiers(
-                        card,
-                        constellation,
-                        "standard"
-                    );
-                    this.createAstrologyModifiers(
-                        card,
-                        constellation,
-                        "unique"
-                    );
-                }
+                const cc = card.createCCContainer();
+                cc.className = "mcsEquipmentImageContainer";
+                // constellation symbol and skills
+                const constellationImage = card.createImage(
+                    constellation.media,
+                    40
+                );
+                cc.appendChild(
+                    card.createLabel(
+                        `${constellation.name} (${constellation.level})`
+                    )
+                );
+                cc.appendChild(constellationImage);
+                card.container.appendChild(cc);
+                this.createAstrologyModifiers(
+                    card,
+                    constellation,
+                    "standard"
+                );
+                this.createAstrologyModifiers(
+                    card,
+                    constellation,
+                    "unique"
+                );
             }
         );
         this.astrologySelectCard.addButton("Clear All Star Modifiers", () =>
@@ -4263,10 +4262,16 @@ class App {
     updateCombatStats() {
         // debugger;
         // first update the values
+        // needed so ancient relics update
+        this.player.computeAllStats();
+
         // @ts-ignore
         if (cloudManager.hasAoDEntitlement) {
-            (<any>this.micsr.game).cartography.computeProvidedStats(false);
+            (<any>this.game).cartography.computeProvidedStats(false);
         }
+
+        // @ts-expect-error
+        this.game.astrology.computeProvidedStats(false)
 
         this.combatData.updateCombatStats();
         // second update the view

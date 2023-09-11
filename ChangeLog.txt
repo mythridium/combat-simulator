@@ -1,3 +1,8 @@
+v2.1.17
+    added agility and astrology ancient relics to ui as these affect combat
+    fixed ancient relics not updating modifiers when first toggled
+    fixed astrology constellation order
+
 v2.1.16
     fixed file version check failure
 
