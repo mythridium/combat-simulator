@@ -458,7 +458,6 @@ class SimGame extends Game {
     // Override to prevent saving
     clearActiveAction(save?: boolean): void {
         if (!this.disableClearOffline) {
-            firstSkillAction = true;
             this.activeAction = undefined;
         }
     }
