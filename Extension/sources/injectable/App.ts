@@ -1828,7 +1828,7 @@ class App {
             this.combatData.dropSelected = "micsr:none";
             this.updatePlotForLoot();
         }
-        const dropdown = this.lootSelectCard.addDropdown(
+        const { dropdown } = this.lootSelectCard.addDropdown(
             "Choose Item",
             droppedItems.map((itemID) =>
                 itemID === "micsr:none"

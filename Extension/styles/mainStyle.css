@@ -536,3 +536,7 @@
 .darkMode .form-control {
     border-color: #343a40;
 }
+
+.MCS.Platelegs.Image.Container {
+    margin-right: 52px;
+}

@@ -184,6 +184,7 @@ class Import {
                 }
             }
         );
+        this.app.agilityCourse.updateBlueprints(this.app.actualGame.agility.blueprints);
 
         const equipmentSet = this.actualPlayer.equipmentSets[setID];
         const equipment = equipmentSet.equipment;

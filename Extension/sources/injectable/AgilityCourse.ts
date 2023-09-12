@@ -51,6 +51,8 @@ class AgilityCourse {
     parent: App;
     tmpModifiers: any;
     micsr: MICSR;
+    blueprints?: AgilityBlueprints;
+    blueprintDropdown?: HTMLDivElement;
 
     constructor(parent: App, player: SimPlayer, filters: IAgilityFilter[]) {
         this.parent = parent;
@@ -172,9 +174,64 @@ class AgilityCourse {
         ];
     }
 
+    updateBlueprints(blueprints: AgilityBlueprints) {
+        this.blueprints = new Map(blueprints);
+        this.createBlueprints();
+    }
+
+    selectBlueprint(event: Event) {
+        const blueprint = this.blueprints?.get(parseInt((<any>event.target)!.value));
+
+        if (!blueprint) {
+            return;
+        }
+
+        const chosenAgilityObstacles = new Array(this.parent.agilityCourse.agilityCategories).fill(-1);
+        const courseMastery = new Array(this.parent.agilityCourse.agilityCategories).fill(false);
+
+        const builtObstacles = Array.from(blueprint.obstacles.values());
+
+        this.parent.actualGame.agility.actions.allObjects.forEach(
+            (obstacle, i) => {
+                const builtObstacle = builtObstacles.find(builtObstacle => builtObstacle.id === obstacle.id);
+                if (builtObstacle) {
+                    chosenAgilityObstacles[obstacle.category] = i;
+
+                    if (this.parent.actualGame.agility.getMasteryLevel(obstacle) >= 99) {
+                        courseMastery[obstacle.category] = true;
+                    }
+                }
+            }
+        );
+
+        this.importAgilityCourse(chosenAgilityObstacles, courseMastery, blueprint.pillar?.id ?? '', blueprint.elitePillar?.id ?? '');
+        this.parent.agilityCourseCallback();
+    }
+
+    createBlueprints() {
+        if (this.blueprintDropdown) {
+            this.blueprintDropdown.remove();
+            this.blueprintDropdown = undefined;
+        }
+
+        const text = this.blueprints ? Array.from(this.blueprints.values()).map(val => val.name) : ['Empty'];
+        const values = this.blueprints ? Array.from(this.blueprints.keys()).map(id => id) : ['Empty'];
+
+        this.blueprintDropdown = this.parent.agilitySelectCard.addDropdown(
+            "Blueprints",
+            text,
+            values,
+            (event: any) => this.selectBlueprint(event)
+        ).container;
+
+        this.parent.agilitySelectCard.container.firstChild.after(this.blueprintDropdown);
+    }
+
     createAgilityCourseContainer(card: Card, filter: IAgilityFilter) {
         this.filter = filter;
         card.addSectionTitle("Agility Course");
+
+        this.createBlueprints();
 
         for (let i = 0; i < this.agilityCategories + 2; i++) {
             let category: number | "pillar" | "elite" = i;
@@ -448,7 +505,7 @@ class AgilityCourse {
             }
         });
         this.player.pillarID = pillarID;
-        if (pillarID) {
+        if (pillarID !== undefined) {
             this.selectObstacle(
                 "pillar",
                 this.agilityPillars[
@@ -459,7 +516,7 @@ class AgilityCourse {
             );
         }
         this.player.pillarEliteID = elitePillarID;
-        if (elitePillarID) {
+        if (elitePillarID !== undefined) {
             this.selectObstacle(
                 "elite",
                 this.eliteAgilityPillars[

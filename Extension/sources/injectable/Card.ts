@@ -238,6 +238,7 @@ class Card {
             const containerDiv = document.createElement("div");
             containerDiv.style.position = "relative";
             containerDiv.style.cursor = "pointer";
+            containerDiv.className = elIds[i] + ' Container';
             const newImage = document.createElement("img");
             newImage.id = elIds[i];
             newImage.src = sources[i];
@@ -282,7 +283,8 @@ class Card {
         );
         newCCContainer.appendChild(newDropdown);
         this.container.appendChild(newCCContainer);
-        return newDropdown;
+
+        return { container: newCCContainer, dropdown: newDropdown};
     }
 
     /**

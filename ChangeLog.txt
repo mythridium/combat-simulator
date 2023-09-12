@@ -1,3 +1,8 @@
+v2.1.19
+    fixed gem and leg item slot alignment
+    fixed agility pillars not clearing if set and importing when you don't actually have any pillars built
+    added agility blueprints, these are loaded when importing equipment sets and changing the dropdown will load that blueprints course
+
 v2.1.18
     fixed 'firstSkillAction' error when loading a save that was training cartography while offline
 
