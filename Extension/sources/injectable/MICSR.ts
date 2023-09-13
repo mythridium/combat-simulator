@@ -109,7 +109,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 20;
+        this.patchVersion = 21;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -263,12 +263,17 @@ class MICSR {
     async fetchDataPackage(id: PackageTypes, url: string) {
         const headers = new Headers();
         headers.append("Content-Type", "application/json");
-        const response = await fetch(url, {
+
+        const href = location.href
+            .replace('/index_game.php', '')
+            .replace('/index_mobile.php', '');
+
+        const response = await fetch(`${href}${url}`, {
             method: "GET",
             headers,
         });
         if (!response.ok)
-            throw new Error(`Could not fetch data package with URL: ${url}`);
+            throw new Error(`Could not fetch data package with URL: ${href}${url}`);
         this.dataPackage[id] = await response.json();
         // this.cleanupDataPackage(id);
     }

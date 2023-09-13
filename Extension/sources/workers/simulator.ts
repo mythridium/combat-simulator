@@ -133,12 +133,12 @@
 
                 try {
                     importScripts(
-                            `${location.origin}/assets/js/fflate.min.js${event.data.gameFileVersion}`,
-                            `${location.origin}/assets/js/mitt.min.js${event.data.gameFileVersion}`,
-                            `${location.origin}/assets/js/pixi.min.js${event.data.gameFileVersion}`,
-                            `${location.origin}/assets/js/built/utils.js${event.data.gameFileVersion}`,
-                            `${location.origin}/assets/js/built/effectRenderer.js${event.data.gameFileVersion}`,
-                            `${location.origin}/assets/js/built/attacks.js${event.data.gameFileVersion}`
+                            `${event.data.href}/assets/js/fflate.min.js${event.data.gameFileVersion}`,
+                            `${event.data.href}/assets/js/mitt.min.js${event.data.gameFileVersion}`,
+                            `${event.data.href}/assets/js/pixi.min.js${event.data.gameFileVersion}`,
+                            `${event.data.href}/assets/js/built/utils.js${event.data.gameFileVersion}`,
+                            `${event.data.href}/assets/js/built/effectRenderer.js${event.data.gameFileVersion}`,
+                            `${event.data.href}/assets/js/built/attacks.js${event.data.gameFileVersion}`
                         );
                 } catch(exception: any) {
                     error = exception?.message ?? 'exception is blank, but loading files broke';

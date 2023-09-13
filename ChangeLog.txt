@@ -1,3 +1,6 @@
+v2.1.21
+    minor code cleanup, no functional change
+
 v2.1.20
     fixed custom gamemodes (HCCO for example) not working
 

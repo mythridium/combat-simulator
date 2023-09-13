@@ -181,9 +181,14 @@ class Simulator {
                 this.micsr.log(event);
             };
 
+            const href = location.href
+                .replace('/index_game.php', '')
+                .replace('/index_mobile.php', '');
+
             worker.postMessage({
                 action: "SCRIPTS",
-                gameFileVersion
+                gameFileVersion,
+                href
             });
         });
     }
