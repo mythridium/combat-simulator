@@ -1,3 +1,6 @@
+v2.1.20
+    fixed custom gamemodes (HCCO for example) not working
+
 v2.1.19
     fixed gem and leg item slot alignment
     fixed agility pillars not clearing if set and importing when you don't actually have any pillars built

@@ -140,18 +140,6 @@ class SimGame extends Game {
             );
         }
 
-        game.registeredNamespaces.forEach((ns: DataNamespace) => {
-            if (ns.isModded && this.registeredNamespaces.getNamespace(ns.name) === undefined) { // Only register modded namespaces that aren't already registered
-                this.registeredNamespaces.registerNamespace(ns.name, ns.displayName, ns.isModded);
-            }
-        });
-
-        game.gamemodes.forEach(gm => {
-            if (gm.isModded) {
-                this.gamemodes.registerObject(new Gamemode({ name: gm.namespace, displayName: gm.name, isModded: gm.isModded }, micsr.gamemodeToData(gm), game));
-            }
-        });
-
         this.agilityObstacles = Array.from(game.agility.actions['registeredObjects']);
         this.agilityPillars = Array.from(game.agility.pillars['registeredObjects']);
         this.agilityElitePillars = Array.from(game.agility.elitePillars['registeredObjects']);
@@ -422,6 +410,18 @@ class SimGame extends Game {
 
         (<any>this).unholyMarkEffect = this.stackingEffects.getObjectByID(`melvorAoD:UnholyMark`);
 
+        game.registeredNamespaces.forEach((ns: DataNamespace) => {
+            if (ns.isModded && this.registeredNamespaces.getNamespace(ns.name) === undefined) { // Only register modded namespaces that aren't already registered
+                this.registeredNamespaces.registerNamespace(ns.name, ns.displayName, ns.isModded);
+            }
+        });
+
+        game.gamemodes.forEach(gm => {
+            if (gm.isModded) {
+                this.gamemodes.registerObject(new Gamemode({ name: gm.namespace, displayName: gm.name, isModded: gm.isModded }, this.micsr.gamemodeToData(gm), game));
+            }
+        });
+
         this.agilityObstacles.map(action => action[1]).forEach(action => {
             if (action.isModded) {
                 this.agility.actions.registerObject(new AgilityObstacle({ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.obstacleToData(action), game));
@@ -439,6 +439,7 @@ class SimGame extends Game {
                 this.agility.elitePillars.registerObject(new AgilityPillar({ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.pillarToData(action), game));
             }
         });
+
         // this.pages.forEach((page) => {
         //   if (page.action !== undefined) this.actionPageMap.set(page.action, page);
         //   if (page.skills !== undefined) {
@@ -672,8 +673,10 @@ class SimGame extends Game {
         // this._isPaused = reader.getBoolean();
         this.merchantsPermitRead = reader.getBoolean();
         const gamemode = reader.getNamespacedObject(this.gamemodes);
-        if (typeof gamemode === "string")
+        if (typeof gamemode === "string") {
             throw new Error("Error loading save. Gamemode is not registered.");
+        }
+
         this.currentGamemode = gamemode;
 
         if ((<any>this).cartography?.activeMap) {

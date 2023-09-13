@@ -302,7 +302,7 @@
                 impotedGamemodes.forEach((stringifiedGamemode: string) => {
                     const [namespaceData, gamemodeData] = JSON.parse(stringifiedGamemode);
                     // @ts-expect-error
-                    self.game.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
+                    simGame.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
                 });
 
                 importedAgilityActions.forEach((stringifiedAction: string) => {
