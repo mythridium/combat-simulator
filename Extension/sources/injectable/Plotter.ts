@@ -127,50 +127,46 @@ class Plotter {
 
         this.plotHeader = document.createElement("div");
         this.plotHeader.className = "mcsPlotHeader";
-        this.plotContainer.appendChild(this.plotHeader);
+        this.parent.plotHeaderContent = this.plotHeader;
 
         const plotHeaderSelects = document.createElement("div");
         plotHeaderSelects.className = "d-flex mr-auto";
         this.plotHeader.appendChild(plotHeaderSelects);
 
-        // Use a dropdown menu for the plot title
-        const skillTypeSelect = document.createElement("select");
-        skillTypeSelect.className = "form-control";
-        this.parent.skillKeys.forEach((skillName) => {
-            const newOption = document.createElement("option");
-            newOption.textContent = skillName;
-            newOption.value = skillName;
-            newOption.id = `MCS ${skillName} Option`;
-            skillTypeSelect.appendChild(newOption);
-        });
-        skillTypeSelect.onchange = (event) =>
-            this.parent.petSkillDropdownOnChange(event);
-        plotHeaderSelects.appendChild(skillTypeSelect);
+        const test = new Card(
+            this.micsr,
+            plotHeaderSelects,
+            "",
+            "150px",
+            false,
+            '',
+            'plot-type-header-container'
+        );
+
+        const { dropdown: skillTypeSelect } = test.addDropdown(
+            "Pets",
+            this.parent.skillKeys,
+            this.parent.skillKeys,
+            (event: any) => this.parent.petSkillDropdownOnChange(event)
+        );
+
         this.petSkillDropdown = skillTypeSelect;
 
-        const plotTypeSelect = document.createElement("select");
-        plotTypeSelect.className = "form-control";
-        this.parent.plotTypes.forEach((plotType: any) => {
-            const newOption = document.createElement("option");
-            newOption.textContent = plotType.option;
-            newOption.value = plotType.value;
-            plotTypeSelect.appendChild(newOption);
-        });
-        plotTypeSelect.onchange = (event) =>
-            this.parent.plottypeDropdownOnChange(event);
-        plotHeaderSelects.appendChild(plotTypeSelect);
+        const { dropdown: plotTypeSelect } = test.addDropdown(
+            "PlotType",
+            this.parent.plotTypes.map((t: any) => t.option),
+            this.parent.plotTypes.map((t: any)=> t.value),
+            (event: any) => this.parent.plottypeDropdownOnChange(event)
+        );
 
-        this.timeDropdown = document.createElement("select");
-        this.timeDropdown.className = "form-control";
-        this.parent.timeOptions.forEach((value: any, index: any) => {
-            const newOption = document.createElement("option");
-            newOption.textContent = value;
-            newOption.value = this.parent.timeMultipliers[index];
-            this.timeDropdown.appendChild(newOption);
-        });
-        this.timeDropdown.onchange = (event: any) =>
-            this.parent.timeUnitDropdownOnChange(event);
-        plotHeaderSelects.appendChild(this.timeDropdown);
+        const { dropdown: timeDropdown } = test.addDropdown(
+            "Time",
+            this.parent.timeOptions.map((t: any) => t),
+            this.parent.timeOptions.map((t: any, index: number) => this.parent.timeMultipliers[index]),
+            (event: any) => this.parent.timeUnitDropdownOnChange(event)
+        );
+
+        this.timeDropdown = timeDropdown;
 
         this.plotTopContainer = document.createElement("div");
         this.plotTopContainer.className = "mcsPlotTopContainer";

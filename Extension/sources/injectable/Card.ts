@@ -42,20 +42,22 @@ class Card {
         parentElement: any,
         height: any,
         inputWidth: any,
-        outer: boolean = false
+        outer: boolean = false,
+        outerClasses = '',
+        containerClasses = ''
     ) {
         this.micsr = micsr;
         this.outerContainer = document.createElement("div");
         this.outerContainer.className = `mcsCardContainer${
             outer
-                ? " mcsOuter block block-rounded border-top border-combat border-4x bg-combat-inner-dark"
-                : ""
+                ? ` mcsOuter block block-rounded border-top border-combat border-4x bg-combat-inner-dark ${outerClasses}`
+                : ` ${outerClasses}`
         }`;
         if (height !== "") {
             this.outerContainer.style.height = height;
         }
         this.container = document.createElement("div");
-        this.container.className = "mcsCardContentContainer";
+        this.container.className = `mcsCardContentContainer ${containerClasses}`;
         this.outerContainer.appendChild(this.container);
         parentElement.appendChild(this.outerContainer);
         this.inputWidth = inputWidth;
@@ -267,7 +269,7 @@ class Card {
         labelText: any,
         optionText: any,
         optionValues: any,
-        onChangeCallback: (this: HTMLSelectElement, ev: Event) => any
+        onChangeCallback: (this: HTMLElement, ev: Event) => any
     ) {
         const dropDownID = `MCS ${labelText} Dropdown`;
         const newCCContainer = this.createCCContainer();
@@ -299,20 +301,69 @@ class Card {
         optionText: any,
         optionValues: any,
         dropDownID: any,
-        onChangeCallback: (this: HTMLSelectElement, ev: Event) => any
+        onChangeCallback: (this: HTMLElement, ev: Event) => any
     ) {
-        const newDropdown = document.createElement("select");
-        newDropdown.className = "form-control mb-1";
-        newDropdown.id = dropDownID;
+        const button = createElement('button', {
+            id: `${dropDownID} Button`,
+            classList: ['btn', `btn-primary`, 'dropdown-toggle', 'font-size-sm'],
+            attributes: [['type', 'button'], ['data-toggle', 'dropdown'], ['aria-haspopup', 'true'], ['aria-expanded', 'false'], ],
+        });
+
+        button.addEventListener('click', () => {
+            const option = options[0];
+
+            if (option) {
+                setTimeout(() => {
+                    option.focus();
+                    option.blur();
+                });
+            }
+        });
+
+        const options: any[] = [];
         for (let i = 0; i < optionText.length; i++) {
-            const newOption = document.createElement("option");
-            newOption.text = optionText[i];
-            newOption.value = optionValues[i];
-            newDropdown.add(newOption);
+            const opt = createElement('button', {
+                classList: ['dropdown-item', 'pointer-enabled'],
+                children: [optionText[i]],
+            });
+            opt.value = optionValues[i];
+            (<any>opt).index = i;
+            opt.addEventListener('click', (event: Event) =>{
+                button.innerHTML = optionText[i];
+                (<any>dropdown).index = (<any>button).index = (<any>opt).index;
+
+                onChangeCallback.call(opt, event);
+            });
+
+            if (i == 0) {
+                button.innerHTML = opt.innerHTML;
+                (<any>button).index = 0;
+            }
+
+            options.push(opt);
         }
-        newDropdown.addEventListener("change", onChangeCallback);
-        this.dropDowns.push(newDropdown);
-        return newDropdown;
+
+        const dropdownMenu = createElement('div', {
+            classList: ['dropdown-menu', 'font-size-sm'],
+            attributes: [['aria-labelledby', dropDownID], ['style', 'max-height: 500px; overflow: auto;']],
+            children: options,
+        });
+        const dropdown = createElement('div', {
+            classList: ['dropdown'],
+            children: [button, dropdownMenu],
+            id: dropDownID
+        });
+
+        (<any>dropdown).index = 0;
+        (<any>dropdown).selectOption = (index: number) => {
+            const option = options[index];
+
+            if (option) {
+                option.click();
+            }
+        };
+
+        return dropdown;
     }
 
     /**

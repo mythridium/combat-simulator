@@ -412,9 +412,7 @@ class Import {
             const index = this.micsr.attackStylesIdx[attackStyle.id];
             // @ts-expect-error
             this.simPlayer.setAttackStyle(cbStyle, attackStyle);
-            this.document.getElementById(
-                `MCS ${cbStyle} Style Dropdown`
-            ).selectedIndex = index % 3;
+            this.document.getElementById(`MCS ${cbStyle} Style Dropdown`).selectOption(index % 3);
         });
     }
 
@@ -578,9 +576,7 @@ class Import {
     ) {
         // Import Food Settings
         this.simPlayer.game.setAutoEatTier(autoEatTier);
-        this.document.getElementById(
-            "MCS Auto Eat Tier Dropdown"
-        ).selectedIndex = autoEatTier + 1;
+        this.document.getElementById("MCS Auto Eat Tier Dropdown").selectOption(autoEatTier + 1);
         this.app.equipFood(foodSelected);
         this.checkRadio("MCS 95% Cooking Pool", cookingPool);
         this.simPlayer.cookingPool = cookingPool;
@@ -610,8 +606,7 @@ class Import {
         const index = this.micsr.gamemodes.findIndex(
             (x) => x.id === gamemodeID
         );
-        this.document.getElementById("MCS Game Mode Dropdown").selectedIndex =
-            index;
+        this.document.getElementById("MCS Game Mode Dropdown").selectOption(index);
     }
 
     importUseCombinationRunes(useCombinationRunes: boolean) {

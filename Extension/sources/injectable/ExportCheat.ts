@@ -131,7 +131,7 @@ class ExportCheat extends Import {
             addShopPurchase('General', this.autoEatTiers[i]);
         }
         // equip food
-        this.player.food.selectedIndex = 0;
+        this.player.food.index = 0;
         this.player.food.unequipSelected();
         // @ts-expect-error TS(2304): Cannot find name 'items'.
         if (items[foodSelected] !== undefined) {

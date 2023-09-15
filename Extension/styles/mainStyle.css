@@ -94,7 +94,7 @@
 
 .mcsPlotTopContainer {
     position: relative;
-    margin-top: 0.25rem;
+    margin-top: 20px;
     margin-right: 0.25rem;
     flex-grow: 1;
     border-color: inherit;
@@ -539,4 +539,10 @@
 
 .MCS.Platelegs.Image.Container {
     margin-right: 52px;
+}
+
+.plot-type-header-container {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 2px;
 }

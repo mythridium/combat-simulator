@@ -109,7 +109,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 1;
-        this.patchVersion = 21;
+        this.patchVersion = 22;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -264,9 +264,11 @@ class MICSR {
         const headers = new Headers();
         headers.append("Content-Type", "application/json");
 
-        const href = location.href
-            .replace('/index_game.php', '')
-            .replace('/index_mobile.php', '');
+        let href = location.origin;
+
+        if (cloudManager.isTest) {
+            href += '/lemvorIdle';
+        }
 
         const response = await fetch(`${href}${url}`, {
             method: "GET",
@@ -360,6 +362,12 @@ class MICSR {
             playerModifiers: playerModifierObj,
             enemyModifiers: gm.enemyModifiers,
             hasTutorial: gm.hasTutorial,
+            // @ts-ignore
+            allowAncientRelicDrops: gm.allowAncientRelicDrops,
+            // @ts-ignore
+            allowDungeonLevelCapIncrease: gm.allowDungeonLevelCapIncrease,
+            // @ts-ignore
+            allowXPOverLevelCap: gm.allowXPOverLevelCap
         }
     }
 

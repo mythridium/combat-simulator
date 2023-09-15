@@ -1,3 +1,8 @@
+v2.1.22
+    fixed ancient relics not showing in custom ancient relic gamemodes
+    fixed 'unexpected token' error
+    fixed dropdowns not working on mobile devices, you'll notice they look a little different now
+
 v2.1.21
     minor code cleanup, no functional change
 

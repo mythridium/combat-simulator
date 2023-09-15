@@ -90,6 +90,8 @@ class App {
     tippyOptions: any;
     tippySingleton: any;
     topContent: any;
+    modalContent: any;
+    plotHeaderContent: any;
     trackHistory: any;
     viewedDungeonID?: string;
     zoneInfoCard!: Card;
@@ -496,10 +498,11 @@ class App {
         this.viewedDungeonID = undefined;
 
         // Now that everything is done we add the menu and modal to the document
-        const modalContent = $(modal).find(".modal-content");
-        modalContent.append(feedbackDiv);
-        modalContent.append(this.topContent);
-        modalContent.append(this.botContent);
+        this.modalContent = $(modal).find(".modal-content");
+        this.modalContent.append(feedbackDiv);
+        this.modalContent.append(this.topContent);
+        this.modalContent.append(this.plotHeaderContent);
+        this.modalContent.append(this.botContent);
 
         // Finalize tooltips
         // @ts-expect-error TS(2304): Cannot find name 'tippy'.
@@ -516,9 +519,9 @@ class App {
         }
 
         // Setup the default state of the UI
-        this.plotter.timeDropdown.selectedIndex = this.initialTimeUnitIndex;
+        this.plotter.timeDropdown.selectOption(this.initialTimeUnitIndex);
         this.subInfoCard.container.style.display = "none";
-        this.plotter.petSkillDropdown.style.display = "none";
+        this.plotter.petSkillDropdown.parentElement.style.display = "none";
         document.getElementById(
             `MCS  Pet (%)/${
                 this.timeShorthand[this.initialTimeUnitIndex]
@@ -775,9 +778,7 @@ class App {
             gameModeValues,
             "MCS Game Mode Dropdown",
             (event: any) => {
-                const gamemode = this.micsr.gamemodes[
-                    parseInt(event.currentTarget.selectedOptions[0].value)
-                ];
+                const gamemode = this.micsr.gamemodes[parseInt(event.currentTarget.value)];
 
                 this.player.currentGamemodeID = gamemode.id;
             }
@@ -904,8 +905,7 @@ class App {
             (event) => {
                 this.game.setAutoEatTier(
                     parseInt(
-                        (event.currentTarget! as HTMLSelectElement)
-                            .selectedOptions[0].value
+                        (event.currentTarget! as HTMLSelectElement).value
                     )
                 );
                 this.updateCombatStats();
@@ -1838,7 +1838,9 @@ class App {
             droppedItems,
             (event: any) => this.dropChanceOnChange(event)
         );
-        dropdown.selectedIndex = index;
+        if ((<any>dropdown).index !== index) {
+            (<any>dropdown).selectOption(index);
+        }
 
         // gp options
         this.lootSelectCard.addSectionTitle("");
@@ -1972,8 +1974,7 @@ class App {
     }
 
     dropChanceOnChange(event: any) {
-        this.combatData.dropSelected =
-            event.currentTarget.selectedOptions[0].value;
+        this.combatData.dropSelected = event.currentTarget.value;
         this.updatePlotForLoot();
     }
 
@@ -2919,7 +2920,7 @@ class App {
      * @param {string} combatType The key of styles to change
      */
     styleDropdownOnChange(event: any, combatType: any) {
-        let idx = parseInt(event.currentTarget.selectedOptions[0].value);
+        let idx = parseInt(event.currentTarget.value);
         if (this.player.attackType === "magic") {
             idx += 3;
         }
@@ -3150,9 +3151,7 @@ class App {
      * @param {Event} event The change event for a dropdown
      */
     potionTierDropDownOnChange(event: any) {
-        const potionTier = parseInt(
-            event.currentTarget.selectedOptions[0].value
-        );
+        const potionTier = parseInt(event.currentTarget.value);
         if (this.player.potion) {
             const recipe = this.game.herblore.actions.find((r) =>
                 r.potions.includes(this.player.potion!)
@@ -3464,20 +3463,20 @@ class App {
      */
     plottypeDropdownOnChange(event: any) {
         this.plotter.plotType = event.currentTarget.value;
-        this.plotter.plotID = event.currentTarget.selectedIndex;
+        this.plotter.plotID = event.currentTarget.index;
         this.simulator.selectedPlotIsTime =
-            this.plotTypes[event.currentTarget.selectedIndex].isTime;
+            this.plotTypes[event.currentTarget.index].isTime;
         this.simulator.selectedPlotScales =
-            this.plotTypes[event.currentTarget.selectedIndex].scale;
+            this.plotTypes[event.currentTarget.index].scale;
         if (this.simulator.selectedPlotIsTime) {
             this.plotter.timeDropdown.style.display = "";
         } else {
             this.plotter.timeDropdown.style.display = "none";
         }
         if (this.plotter.plotType === "petChance") {
-            this.plotter.petSkillDropdown.style.display = "";
+            this.plotter.petSkillDropdown.parentElement.style.display = "";
         } else {
-            this.plotter.petSkillDropdown.style.display = "none";
+            this.plotter.petSkillDropdown.parentElement.style.display = "none";
         }
         this.updatePlotData();
     }
@@ -3623,14 +3622,14 @@ class App {
      */
     timeUnitDropdownOnChange(event: any) {
         this.timeMultiplier =
-            this.timeMultipliers[event.currentTarget.selectedIndex];
+            this.timeMultipliers[event.currentTarget.index];
         this.simulator.selectedPlotIsTime =
             this.plotTypes[this.plotter.plotID].isTime;
         this.simulator.selectedPlotScales =
             this.plotTypes[this.plotter.plotID].scale;
-        this.selectedTime = this.timeOptions[event.currentTarget.selectedIndex];
+        this.selectedTime = this.timeOptions[event.currentTarget.index];
         this.selectedTimeShorthand =
-            this.timeShorthand[event.currentTarget.selectedIndex];
+            this.timeShorthand[event.currentTarget.index];
         // Updated Signet chance
         this.loot.updateSignetChance();
         // Update pet chance
@@ -4326,11 +4325,7 @@ class App {
      */
     updatePotionTier(potionTier: number) {
         this.potionTier = potionTier;
-        (
-            document.getElementById(
-                "MCS Potion Tier Dropdown"
-            )! as unknown as HTMLOptionsCollection
-        ).selectedIndex = potionTier;
+        (<any>document.getElementById("MCS Potion Tier Dropdown")).selectOption(potionTier);
         this.combatPotionRecipes.forEach((recipe: HerbloreRecipe) => {
             const potion = recipe.potions[potionTier];
             const img = document.getElementById(

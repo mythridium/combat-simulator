@@ -181,9 +181,11 @@ class Simulator {
                 this.micsr.log(event);
             };
 
-            const href = location.href
-                .replace('/index_game.php', '')
-                .replace('/index_mobile.php', '');
+            let href = location.origin;
+
+            if (cloudManager.isTest) {
+                href += '/lemvorIdle';
+            }
 
             worker.postMessage({
                 action: "SCRIPTS",
