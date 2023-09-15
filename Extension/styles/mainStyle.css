@@ -525,9 +525,9 @@
     border-color: #3e4856;
 }
 
-    .darkMode .mcsTabButton:hover {
-        background-color: #252A33;
-    }
+.darkMode .mcsTabButton:hover {
+    background-color: #252A33;
+}
 
 .darkMode .mcsTabContainer {
     border-color: #3e4856;
@@ -541,8 +541,43 @@
     margin-right: 52px;
 }
 
+.mcsCCContainer .heal-amount-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 5px !important;
+    min-width: 55px;
+}
+
+.mcsCCContainer .dropdown {
+    width: 100%;
+    margin: 5px 0;
+}
+
+.darkMode .mcsCCContainer .dropdown > button:hover {
+    background: #464e5b !important;
+}
+
+.darkMode .mcsCCContainer .dropdown > button,
+.darkMode .mcsCCContainer .show.dropdown > button {
+    background: #2d3542 !important;
+    border-color: #3a3b49 !important;
+}
+
+.mcsCCContainer .dropdown > button,
+.mcsCCContainer .show.dropdown > button {
+    font-weight: normal;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mcsCCContainer .dropdown-toggle::after {
+    margin-left: 8px;
+}
+
 .plot-type-header-container {
     display: flex;
-    margin-top: 10px;
-    margin-bottom: 2px;
+    margin-top: 5px;
 }

@@ -224,8 +224,6 @@ class AgilityCourse {
             (event: any) => this.selectBlueprint(event)
         ).container;
 
-        this.blueprintDropdown.style.justifyContent = 'center';
-
         this.parent.agilitySelectCard.container.firstChild.after(this.blueprintDropdown);
     }
 

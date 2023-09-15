@@ -882,9 +882,10 @@ class App {
         const image = document.createElement("img");
         image.className = "skill-icon-xs mr-1";
         image.src = this.media.hitpoints;
+        image.style.marginLeft = '5px';
         const wrapper = document.createElement("h5");
         wrapper.className =
-            "font-w400 font-size-sm text-left text-combat-smoke m-1 mb-2";
+            "font-w400 font-size-sm text-left text-combat-smoke m-1 mb-2 heal-amount-wrapper";
         wrapper.appendChild(image);
         wrapper.appendChild(label);
         this.foodCCContainer.appendChild(wrapper);
@@ -3521,9 +3522,9 @@ class App {
         this.simulator.selectedPlotScales =
             this.plotTypes[event.currentTarget.index].scale;
         if (this.simulator.selectedPlotIsTime) {
-            this.plotter.timeDropdown.style.display = "";
+            this.plotter.timeDropdown.parentElement.style.display = "";
         } else {
-            this.plotter.timeDropdown.style.display = "none";
+            this.plotter.timeDropdown.parentElement.style.display = "none";
         }
         if (this.plotter.plotType === "petChance") {
             this.plotter.petSkillDropdown.parentElement.style.display = "";
