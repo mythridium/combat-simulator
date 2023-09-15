@@ -796,7 +796,7 @@ class SimPlayer extends Player {
             (value, writer) => writer.writeUint32(value)
         );
         this.micsr.logVerbose("encode skillLevel", this.skillLevel);
-        writer.writeString(this.potion?.id || "");
+        //writer.writeString(this.potion?.id || "");
         this.micsr.logVerbose("encode potion id", this.potion?.id);
         writer.writeArray(this.petUnlocked, (p, w) =>
             w.writeNamespacedObject(p)
@@ -814,6 +814,9 @@ class SimPlayer extends Player {
         this.skillXP = new Map(
             this.game.skills.allObjects.map((skill) => [skill.id, skill.xp])
         );
+
+        // clear all existing active potions making sure the event handlers are cleared up.
+        this.game.potions['activePotions'].forEach(() => this.game.potions.removePotion(this.manager));
         // debugger;
         super.decode(reader, version);
         // We don't have these extra values when creating the SimGame on the game side
@@ -870,11 +873,6 @@ class SimPlayer extends Player {
             (reader) => reader.getUint32()
         );
         this.micsr.logVerbose("decode skillLevel", this.skillLevel);
-        const potionId = reader.getString();
-        if (potionId) {
-            this.setPotion(this.game.items.potions.getObjectByID(potionId));
-        }
-        this.micsr.logVerbose("decode potion id", potionId);
         this.petUnlocked = reader.getArray(
             (r) => r.getNamespacedObject(this.game.pets) as Pet
         );

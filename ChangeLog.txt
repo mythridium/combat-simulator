@@ -1,3 +1,8 @@
+v2.1.23
+    fixed blueprints dropdown being left aligned instead of center aligned
+    fixed deselecting a potion throwing an error after having a potion previously activated
+    added missing non-herblore potions to the potions tab
+
 v2.1.22
     fixed ancient relics not showing in custom ancient relic gamemodes
     fixed 'unexpected token' error

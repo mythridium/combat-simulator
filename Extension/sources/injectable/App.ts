@@ -1417,7 +1417,7 @@ class App {
                 potionCallbacks.push((e: any) =>
                     this.potionImageButtonOnClick(e, herblorePotionRecipe)
                 );
-                tooltips.push(this.getPotionTooltip(herblorePotionRecipe));
+                tooltips.push(this.getPotionTooltip(herblorePotionRecipe.potions[this.potionTier]));
                 this.combatPotionRecipes.push(herblorePotionRecipe);
             }
         });
@@ -1427,6 +1427,29 @@ class App {
             "Medium",
             potionCallbacks,
             tooltips
+        );
+
+        const otherPotionSources: string[] = [];
+        const otherPotionNames: string[] = [];
+        const otherPotionCallbacks: { (e: any): void }[] = [];
+        const otherPotionTooltips: string[] = [];
+
+        this.potionSelectCard.addSectionTitle("Other Potions");
+        const otherPotions = this.micsr.items.filter(i => i.type =='Potion' && i.category !== 'Herblore') as PotionItem[];
+
+        otherPotions.forEach(potion => {
+            otherPotionSources.push(potion.media);
+            otherPotionNames.push(potion.name);
+            otherPotionCallbacks.push(e => this.otherPotionImageButtonOnClick(e, potion));
+            otherPotionTooltips.push(this.getPotionTooltip(potion));
+        });
+
+        this.potionSelectCard.addImageButtons(
+            otherPotionSources,
+            otherPotionNames,
+            "Medium",
+            otherPotionCallbacks,
+            otherPotionTooltips
         );
     }
 
@@ -3152,10 +3175,8 @@ class App {
      */
     potionTierDropDownOnChange(event: any) {
         const potionTier = parseInt(event.currentTarget.value);
-        if (this.player.potion) {
-            const recipe = this.game.herblore.actions.find((r) =>
-                r.potions.includes(this.player.potion!)
-            );
+        if (this.player.potion?.category === 'Herblore') {
+            const recipe = this.game.herblore.actions.find(r => r.potions.includes(this.player.potion!));
             if (!recipe) {
                 throw new Error("Could not find recipe.");
             }
@@ -3192,6 +3213,37 @@ class App {
                 }
             }
             newPotion = clickedPotion;
+            this.selectButton(event.currentTarget);
+        }
+        this.player.setPotion(newPotion);
+        this.updateCombatStats();
+    }
+
+    /**
+     * Callback for when a potion button is clicked
+     * @param {MouseEvent} event The onclick event for a button
+     * @param {HerbloreRecipe} recipe
+     */
+    otherPotionImageButtonOnClick(event: any, potion: PotionItem) {
+        // Resolve recipe to the SimGame instance
+        potion = this.micsr.game.items.getObjectByID(potion.id)! as PotionItem;
+        let newPotion: PotionItem | undefined = undefined;
+
+        if (this.player.potion === potion) {
+            // Deselect Potion
+            newPotion = undefined;
+            this.unselectButton(event.currentTarget);
+        } else {
+            if (this.player.potion) {
+                // Change Potion
+                const button = document.getElementById(
+                    `MCS ${this.getPotionHtmlId(this.player.potion)} Button`
+                );
+                if (button) {
+                    this.unselectButton(button);
+                }
+            }
+            newPotion = potion;
             this.selectButton(event.currentTarget);
         }
         this.player.setPotion(newPotion);
@@ -4332,7 +4384,7 @@ class App {
                 `MCS ${this.getPotionHtmlId(potion)} Button Image`
             ) as HTMLImageElement;
             img.src = potion.media;
-            this.setTooltip(img.parentElement, this.getPotionTooltip(recipe));
+            this.setTooltip(img.parentElement, this.getPotionTooltip(recipe.potions[this.potionTier]));
         });
     }
 
@@ -4341,8 +4393,7 @@ class App {
      * @param recipe
      * @returns {string} The tooltip content
      */
-    getPotionTooltip(recipe: HerbloreRecipe) {
-        const potion = recipe.potions[this.potionTier];
+    getPotionTooltip(potion: PotionItem) {
         return (
             `<div class="text-center">${potion.name}<small>` +
             `<br><span class='text-info'>${potion.description.replace(
