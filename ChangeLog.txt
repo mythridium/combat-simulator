@@ -1,3 +1,6 @@
+v2.1.26
+    fixed manually eating skipping some logic resulting in incorrect results
+
 v2.1.25
     fixed inspect dungeon button being displayed for slayer tasks
     improved equipment popup close detection

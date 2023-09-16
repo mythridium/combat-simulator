@@ -395,7 +395,7 @@ class SimPlayer extends Player {
             return;
         }
         // don't eat outside combat
-        if (!this.manager.paused) {
+        if (this.manager.paused) {
             return;
         }
         // check dotDamage
@@ -419,8 +419,7 @@ class SimPlayer extends Player {
         }
         // max hit of the enemy attack + max dotDamage
         // TODO: this could be handled more efficiently, consider when the different attacks will hit
-        const maxDamage =
-            enemy.getAttackMaxDamage(enemy.nextAttack) + dotDamage;
+        const maxDamage = enemy.getAttackMaxDamage(enemy.nextAttack) + dotDamage;
         // number of ticks required to heal to safety
         const healsReq = Math.ceil((maxDamage + 1 - this.hitpoints) / healAmt);
         // don't eat until we have to
