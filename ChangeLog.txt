@@ -1,3 +1,9 @@
+v2.1.25
+    fixed inspect dungeon button being displayed for slayer tasks
+    improved equipment popup close detection
+    tooltips can now be closed by tapping on them on mobile devices and opened by long pressing an item
+    tooltips now close when selecting an item and opening the equipment selection popup
+
 v2.1.24
     adjusted styling on dropdowns
 

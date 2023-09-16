@@ -120,7 +120,13 @@ class App {
         this.tippyOptions = {
             allowHTML: true,
             animation: false,
-            hideOnClick: false,
+            hideOnClick: true,
+            onCreate(instance: TippyTooltip) {
+                instance.popper.classList.add('micsr')
+                instance.popper.addEventListener('touchstart', (event: Event) => {
+                    event.preventDefault();
+                });
+            }
         };
         this.tippyNoSingletonInstances = [];
         // Plot Type Options
@@ -2201,7 +2207,10 @@ class App {
         const buttonMedia = menuItems.map((item: any) => item.media);
         const buttonIds = menuItems.map((item: any) => item.name);
         const buttonCallbacks = menuItems.map(
-            (item: any) => () => this.equipItem(equipmentSlot, item)
+            (item: any) => () => {
+                tippy.hideAll({ duration: 0 });
+                return this.equipItem(equipmentSlot, item);
+            }
         );
         const tooltips = menuItems.map((item: any) =>
             this.getEquipmentTooltip(equipmentSlot, item)
@@ -3795,7 +3804,8 @@ class App {
         if (
             this.barSelected &&
             !this.isViewingDungeon &&
-            !this.barIsMonster(barID)
+            !this.barIsMonster(barID) &&
+            !this.barIsTask(barID)
         ) {
             this.plotter.inspectButton.style.display = "";
         } else {

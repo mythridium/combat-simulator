@@ -1,6 +1,6 @@
 {
   "name": "micsr",
-  "version": "2.1.24",
+  "version": "2.1.25",
   "description": "A browser extension to simulate combat in the game Melvor Idle",
   "scripts": {
     "test": "cd ./dist && web-ext lint",

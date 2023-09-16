@@ -198,12 +198,15 @@ class Card {
     registerPopupMenu(showElement: any, popupMenuElement: any) {
         showElement.addEventListener("click", () => {
             let firstClick = true;
+            tippy.hideAll({ duration: 0 });
             if (popupMenuElement.style.display === "none") {
                 const outsideClickListener = (event: any) => {
-                    if (firstClick) {
+                    const ignoreElement = $.contains(popupMenuElement, event.target) && !['MSC', 'Button'].some((name: string) => event.target.id.includes(name));
+                    if (firstClick || ignoreElement) {
                         firstClick = false;
                         return;
                     }
+                    tippy.hideAll({ duration: 0 });
                     if (popupMenuElement.style.display === "") {
                         popupMenuElement.style.display = "none";
                         document.body.removeEventListener(
