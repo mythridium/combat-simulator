@@ -13,3 +13,5 @@ GameFiles/
 Extension/dist
 Extension/build
 .vs/
+node_modules
+build

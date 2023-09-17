@@ -1,0 +1,5 @@
+{
+    "namespace": "mythCombatSimulator",
+    "setup": "setup.mjs",
+    "icon": "assets/logo.png"
+}

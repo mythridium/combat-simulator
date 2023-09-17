@@ -1,0 +1,32 @@
+{
+    "name": "myth-combat-simulator",
+    "version": "3.0.0",
+    "description": "Melvor Idle mod that adds a combat simulator",
+    "scripts": {
+        "zip": "ts-node-esm -P tsconfig.node.json tools/zip.mts",
+        "build": "webpack && npm run zip"
+    },
+    "author": "Mythridium",
+    "main": "manifest.json",
+    "license": "GPL-3.0",
+    "bugs": {
+        "url": "https://github.com/mythridium/combat-simulator/issues"
+    },
+    "homepage": "https://github.com/mythridium/combat-simulator",
+    "devDependencies": {
+        "@types/archiver": "5.3.2",
+        "archiver": "6.0.1",
+        "copy-webpack-plugin": "11.0.0",
+        "del": "7.1.0",
+        "melvor-types": "https://github.com/GamesByMalcsPtyLtd/Melvor-Typing-Project/tarball/bd5611f",
+        "terser-webpack-plugin": "5.3.9",
+        "ts-loader": "9.4.4",
+        "ts-node": "10.9.1",
+        "typescript": "5.2.2",
+        "webpack": "5.88.2",
+        "webpack-cli": "5.1.4"
+    },
+    "dependencies": {
+        "domino": "2.1.6"
+    }
+}
