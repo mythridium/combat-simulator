@@ -464,14 +464,22 @@ class AgilityCourse {
     }
 
     agilityMasteryOnClick(event: MouseEvent, category: number) {
+        const obstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === this.parent.player.course[category])!;
+
         // toggle
         if (this.player.courseMastery[category]) {
             this.player.courseMastery[category] = false;
+            if (obstacle) {
+                this.parent.game.agility['actionMastery'].delete(obstacle);
+            }
             this.parent.unselectButton(
                 event.currentTarget as HTMLButtonElement
             );
         } else {
             this.player.courseMastery[category] = true;
+            if(obstacle) {
+                this.parent.game.agility['actionMastery'].set(obstacle, { level: 99, xp: 1 });
+            }
             this.parent.selectButton(event.currentTarget as HTMLButtonElement);
         }
         // update tool tips
