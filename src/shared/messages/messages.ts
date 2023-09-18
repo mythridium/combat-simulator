@@ -1,92 +1,116 @@
-import { Logger } from 'src/shared/logger';
-import { MessageData, MessageAction } from './message-data';
-import { AcknowledgeMessageData } from './messages/acknowledge';
+import { Logger } from '../logger';
+import {
+    MessageRequest,
+    MessageReturn,
+    MessageAction,
+    RequestData,
+    MessageCallback,
+    MessageRequestWithId,
+    AcknowledgeResponse,
+    AcknowledgeError
+} from './message';
+
+export interface Messages {
+    send(message: MessageRequest<MessageAction.Init>): Promise<MessageReturn<MessageAction.Init>>;
+    send(message: MessageRequest<MessageAction.Simulate>): Promise<MessageReturn<MessageAction.Simulate>>;
+}
 
 export class Messages {
-    private static id = 0;
+    public static id = -1;
+
     private readonly messages = new Map<number, [Function, Function]>();
+    private readonly registrations = new Map<MessageAction, MessageCallback<any>>();
 
-    constructor(private readonly self: Window | Worker, private readonly logger: Logger) {}
+    constructor(private readonly self: Window | Worker, private readonly logger: Logger) {
+        this.listen();
+    }
 
-    public async send(data: Omit<MessageData, 'id'>) {
-        this.logger.verbose(`Sending message`, data);
+    public async send<K extends MessageAction>(message: MessageRequest<K>): Promise<MessageReturn<K>> {
+        this.logger.verbose('Sending message', message);
 
         return new Promise((resolve, reject) => {
             this.messages.set(++Messages.id, [resolve, reject]);
-            this.self.postMessage({ id: Messages.id, ...data });
+            this.self.postMessage({ id: Messages.id, ...message });
         });
     }
 
-    public on(callback: (data: MessageData) => Promise<void>) {
-        this.self.onmessage = async (event: MessageEvent<MessageData>) => {
-            this.logger.verbose(`Received message`, event.data);
+    public async on<K extends MessageAction>(action: K, callback: (data: RequestData[K]) => Promise<MessageReturn<K>>) {
+        if (this.registrations.has(action)) {
+            throw new Error(
+                `Listener for '${action}' has already been registered. Only one listener per action is allowed.`
+            );
+        }
 
-            if (event.data.action === MessageAction.Acknowledge) {
+        this.registrations.set(action, callback);
+    }
+
+    private listen() {
+        this.self.onmessage = async (event: MessageEvent<MessageRequestWithId<any>>) => {
+            this.logger.verbose('Received message', event.data);
+
+            if (this.isAcknowledgement(event.data)) {
                 this.onAcknowledge(event.data);
                 return;
             }
 
-            await this.onMessage(callback, event.data);
+            await this.onMessage(event.data);
         };
     }
 
-    private acknowledge(message: AcknowledgeMessageData) {
-        const response: AcknowledgeMessageData = {
-            action: MessageAction.Acknowledge,
-            id: message.id,
-            data: {
-                isSuccess: message.data.isSuccess
-            }
-        };
-
-        if (message.data.error) {
-            response.data.error = message.data.error;
-        }
-
-        this.logger.verbose(`Acknowledged message`, response);
-        this.self.postMessage(response);
-    }
-
-    private onAcknowledge(message: AcknowledgeMessageData) {
-        const [resolve, reject] = this.messages.get(message.id);
-
-        if (!resolve || !reject) {
-            this.logger.error(`Received acknowledgement for a message that does not exist`, '\n\n', message);
+    private onAcknowledge(message: AcknowledgeResponse<unknown>) {
+        if (!this.messages.has(message.id)) {
+            this.logger.error(`[ID] Received acknowledgement for a message that does not exist`, '\n\n', message);
             return;
         }
 
-        if (message.data.isSuccess) {
-            resolve(message.data);
+        const [resolve, reject] = this.messages.get(message.id);
+
+        if (!resolve || !reject) {
+            this.logger.error(`[R/R] Received acknowledgement for a message that does not exist`, '\n\n', message);
+            return;
+        }
+
+        this.messages.delete(message.id);
+
+        if (!message.error) {
+            resolve(message.result);
         } else {
-            reject(message.data.error ?? `An unknown error occurred`);
+            reject(message.error.message ?? `An unknown error occurred`);
         }
     }
 
-    private async onMessage(callback: (data: MessageData) => Promise<void>, message: MessageData) {
-        let isSuccess: boolean;
-        let error: any;
+    private async onMessage<K extends MessageAction>(message: MessageRequestWithId<K>) {
+        let result: RequestData[K];
+        let error: AcknowledgeError;
 
         try {
-            await callback(message);
-            isSuccess = true;
+            const registration = this.registrations.get(message.action);
+            result = await registration(message.data);
         } catch (exception) {
-            isSuccess = false;
-            error = exception?.message ?? `An unknown error occurred`;
+            error = { message: exception?.message ?? `An unknown error occurred` };
             this.logger.error(message, '\n\n', exception);
         } finally {
-            const response: AcknowledgeMessageData = {
-                id: message.id,
-                action: MessageAction.Acknowledge,
-                data: {
-                    isSuccess
-                }
+            const response: AcknowledgeResponse<RequestData[K]> = {
+                isAcknowledge: true,
+                id: message.id
             };
 
-            if (error) {
-                response.data.error = error;
+            if (result) {
+                response.result = result;
             }
 
-            this.acknowledge(response);
+            if (error) {
+                response.error = error;
+            }
+
+            this.logger.verbose(`Acknowledged message`, response);
+            this.self.postMessage(response);
         }
+    }
+
+    private isAcknowledgement<K extends MessageAction>(
+        message: MessageRequestWithId<K> | AcknowledgeResponse<unknown>
+    ): message is AcknowledgeResponse<unknown> {
+        return (<AcknowledgeResponse<unknown>>message).isAcknowledge !== undefined;
     }
 }

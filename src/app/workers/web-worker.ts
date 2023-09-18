@@ -1,5 +1,5 @@
 import { Logger } from 'src/shared/logger';
-import { MessageData } from 'src/shared/messages/message-data';
+import { MessageAction, MessageRequest } from 'src/shared/messages/message';
 import { Messages } from 'src/shared/messages/messages';
 
 export class WebWorker {
@@ -9,14 +9,9 @@ export class WebWorker {
     constructor(private readonly url: string, private readonly logger: Logger) {
         this.worker = new Worker(this.url);
         this.messages = new Messages(this.worker, this.logger);
-        this.messages.on(data => this.handler(data));
     }
 
-    public async send(data: Omit<MessageData, 'id'>) {
+    public async send<K extends MessageAction>(data: MessageRequest<K>) {
         return this.messages.send(data);
-    }
-
-    private async handler(data: MessageData) {
-        // this.logger.log(data);
     }
 }

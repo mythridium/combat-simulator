@@ -1,34 +1,39 @@
 import 'src/shared/constants';
 import { Color, Logger } from 'src/shared/logger';
 import { Scripts } from './scripts';
-import { MessageAction } from 'src/shared/messages/message-data';
-import { WebWorker } from './web-worker';
+import { Workers } from './workers/workers';
+import { MessageAction } from 'src/shared/messages/message';
 
 export class App {
     private readonly logger = new Logger('Client', Color.Green);
-    private readonly url: string;
 
-    private worker: WebWorker;
+    private workers: Workers;
 
     constructor(private readonly context: Modding.ModContext) {
-        this.url = this.context.getResourceUrl('src/worker.mjs');
-
         this.context.onInterfaceReady(async () => {
             this.logger.log('Client Loaded');
 
-            this.worker = new WebWorker(this.url, this.logger);
+            this.workers = new Workers(this.context, this.logger);
 
             await this.init();
         });
     }
 
     private async init() {
-        await this.sendScripts();
-    }
+        let origin = location.origin;
 
-    private async sendScripts() {
-        const scripts = Scripts.getScriptsForWorker();
+        if (cloudManager.isTest) {
+            origin += '/lemvorIdle';
+        }
 
-        return this.worker.send({ action: MessageAction.Scripts, data: { scripts, workerId: 0 } });
+        await this.workers.init({
+            scripts: Scripts.getScriptsForWorker(),
+            origin,
+            entitlements: {
+                full: cloudManager.hasFullVersionEntitlement,
+                toth: cloudManager.hasTotHEntitlement,
+                aod: cloudManager.hasAoDEntitlement
+            }
+        });
     }
 }

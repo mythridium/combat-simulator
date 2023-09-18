@@ -2,7 +2,8 @@ export abstract class Scripts {
     private static include = ['melvor', 'cdnjs', 'polyfill'];
     private static exclude = [
         'oneui',
-        'ion',
+        'ion.rangeSlider',
+        'animations',
         'jquery',
         'pixi',
         'basis',
@@ -10,7 +11,8 @@ export abstract class Scripts {
         'cloud.js',
         'cloudManager',
         'cartographyMenu',
-        'sidebar'
+        'sidebar',
+        'minibar'
     ];
 
     public static getScriptsForWorker() {
