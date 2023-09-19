@@ -1,3 +1,6 @@
+v2.1.30
+    fixed plotter tooltips flickering when hovering over the tooltip
+
 v2.1.29
     added ability to filter drop chance items by text in the dropdown
 

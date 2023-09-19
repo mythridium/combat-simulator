@@ -122,10 +122,16 @@ class App {
             animation: false,
             hideOnClick: true,
             onCreate(instance: TippyTooltip) {
-                instance.popper.classList.add('micsr')
                 instance.popper.addEventListener('touchstart', (event: Event) => {
                     event.preventDefault();
                 });
+            },
+            onTrigger(instance: TippyTooltip, event: MouseEvent) {
+                const element = (<HTMLElement>event.target);
+
+                if (element.id.includes('Image') && !element.classList.contains('micsr')) {
+                    instance.popper.classList.add('micsr');
+                }
             }
         };
         this.tippyNoSingletonInstances = [];

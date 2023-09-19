@@ -141,7 +141,9 @@ class Card {
         newButton.id = `MCS ${idText} Button`;
         newButton.className = "btn btn-outline-dark";
         newButton.onclick = onclickCallback;
-        if (tooltip) newButton.dataset.tippyContent = tooltip;
+        if (tooltip) {
+            newButton.dataset.tippyContent = tooltip;
+        }
         const newImage = document.createElement("img");
         newImage.className = `mcsButtonImage mcsImage${size}`;
         newImage.id = `MCS ${idText} Button Image`;
