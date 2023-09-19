@@ -417,9 +417,27 @@ class AgilityCourse {
         } else if (category === "elite") {
             this.player.pillarEliteID = obstacle.id;
         } else {
+            const existingObstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === this.player.course[category])!;
+
             if (obstacle.category === -1) {
+                // deselecting, remove from mastery regardless of being enabled
+                if (existingObstacle) {
+                    this.parent.game.agility['actionMastery'].delete(existingObstacle);
+                }
                 this.player.course[category] = -1;
             } else {
+                // remove any existing obstacle
+                if (existingObstacle) {
+                    this.parent.game.agility['actionMastery'].delete(existingObstacle);
+                }
+
+                const realObstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === obstacle.index)!;
+
+                // add obstacle to mastery if enabled
+                if (this.player.courseMastery[category] && realObstacle) {
+                    this.parent.game.agility['actionMastery'].set(realObstacle, { level: 99, xp: 1 });
+                }
+
                 this.player.course[category] = obstacle.index;
             }
         }

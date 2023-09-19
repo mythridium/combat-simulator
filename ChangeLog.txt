@@ -1,3 +1,6 @@
+v2.1.28
+    fixed agility mastery not working as intended when switching obstacles after turning on/off the mastery
+
 v2.1.27
     fixed agility mastery not halving negative modifiers
 
