@@ -1,12 +1,12 @@
 import { Logger } from 'src/shared/logger';
 import { Messages } from 'src/shared/messages/messages';
 import { WorkerMock } from './mock';
-import { Environment } from './environment';
+import { Environment } from './simulator/environment';
 import { MessageAction } from 'src/shared/messages/message';
 
 export class WebWorker {
     public isPrimary: boolean = false;
-    public workerId = -1;
+    public workerId: number;
     public environment = new Environment();
 
     private readonly messages: Messages;
@@ -15,6 +15,7 @@ export class WebWorker {
         WorkerMock.mock(this.worker);
 
         this.messages = new Messages(this.worker, this.logger);
+
         this.messages.on(MessageAction.Init, async data => {
             this.workerId = data.workerId;
             this.isPrimary = data.workerId === 0;

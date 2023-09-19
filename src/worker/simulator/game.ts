@@ -5,4 +5,8 @@ export class SimGame extends Game {
         // @ts-ignore
         this.telemetry.ENABLE_TELEMETRY = false;
     }
+
+    public render() {
+        // how about no.
+    }
 }

@@ -22,12 +22,38 @@ export class Workers {
     }
 
     public async init(payload: Omit<InitRequest, 'workerId'>) {
-        const requests = this.workers.map(async (worker, index) => {
-            const data: InitRequest = { workerId: index + 1, ...payload };
-            return worker.send({ action: MessageAction.Init, data });
-        });
+        let isSuccess = false;
 
-        await Promise.all(requests);
+        try {
+            const requests = this.workers.map(async (worker, index) => {
+                const data: InitRequest = { workerId: index + 1, ...payload };
+                return worker.send({ action: MessageAction.Init, data });
+            });
+
+            await Promise.all(requests);
+            isSuccess = true;
+        } catch (exception) {
+            this.logger.error(exception);
+
+            addModalToQueue({
+                title: `[Myth] Combat Simulator`,
+                html: `
+                    <h5 class="font-w400 text-combat-smoke font-size-sm mb-1">Oops! An error occurred during startup.</h5>
+                    <h5 class="font-w600 text-combat-smoke font-size-sm mt-3 mb-1">Please copy the following information and create a new issue</h5>
+                    <h5 class="font-w600 text-combat-smoke font-size-sm mt-2"><a href="https://github.com/mythridium/combat-simulator/issues" target="_blank">GitHub <span class="font-size-xs">(opens in new tab)</span></a></h5>
+                    <div class="form-group">
+                        <textarea class="text-danger form-control" id="combat-simulator-init-exception" rows="12" onclick="this.select();">
+Mod Version: ${this.context.version}
+
+${exception.stack}</textarea>
+                    </div>
+                    `,
+                allowOutsideClick: false,
+                showCancelButton: false
+            });
+        }
+
+        return isSuccess;
     }
 
     public async send<K extends MessageAction>(message: MessageRequest<K>) {

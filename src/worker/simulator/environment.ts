@@ -20,10 +20,9 @@ export class Environment {
             loadedLangJson = {};
         `);
 
-        const { SimGame } = await import(/* webpackMode: "eager" */ 'src/worker/game');
-        this.game = new SimGame();
+        const { SimGame } = await import(/* webpackMode: "eager" */ 'src/worker/simulator/game');
 
-        (<any>self).game = this.game;
+        (<any>self).game = this.game = new SimGame();
 
         this.evalGlobal(`game = self.game;`);
 
@@ -48,6 +47,10 @@ export class Environment {
         }
     }
 
+    /**
+     * When calling eval in a module, eval executes in scope of the modal, by calling eval indirectly,
+     * it shifts the scope to the global object.
+     */
     private evalGlobal(script: string) {
         // @ts-ignore - needed to bind these to global scope and not the module
         (1, eval)(script);

@@ -35,6 +35,7 @@ export type MessageCallback<K extends MessageAction> = (data: RequestData[K]) =>
 
 export interface AcknowledgeError {
     message: string;
+    stack: string;
 }
 
 export type AcknowledgeResponse<TResult> = {

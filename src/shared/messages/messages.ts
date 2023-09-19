@@ -75,7 +75,7 @@ export class Messages {
         if (!message.error) {
             resolve(message.result);
         } else {
-            reject(message.error.message ?? `An unknown error occurred`);
+            reject(message.error ?? { message: `An unknown error occurred` });
         }
     }
 
@@ -87,7 +87,7 @@ export class Messages {
             const registration = this.registrations.get(message.action);
             result = await registration(message.data);
         } catch (exception) {
-            error = { message: exception?.message ?? `An unknown error occurred` };
+            error = { message: exception?.message ?? `An unknown error occurred`, stack: exception?.stack };
             this.logger.error(message, '\n\n', exception);
         } finally {
             const response: AcknowledgeResponse<RequestData[K]> = {
