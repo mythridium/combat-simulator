@@ -272,7 +272,8 @@ class Card {
         labelText: any,
         optionText: any,
         optionValues: any,
-        onChangeCallback: (this: HTMLElement, ev: Event) => any
+        onChangeCallback: (this: HTMLElement, ev: Event) => any,
+        withSearch = false
     ) {
         const dropDownID = `MCS ${labelText} Dropdown`;
         const newCCContainer = this.createCCContainer();
@@ -284,7 +285,8 @@ class Card {
             optionText,
             optionValues,
             dropDownID,
-            onChangeCallback
+            onChangeCallback,
+            withSearch
         );
         newCCContainer.appendChild(newDropdown);
         this.container.appendChild(newCCContainer);
@@ -304,7 +306,8 @@ class Card {
         optionText: any,
         optionValues: any,
         dropDownID: any,
-        onChangeCallback: (this: HTMLElement, ev: Event) => any
+        onChangeCallback: (this: HTMLElement, ev: Event) => any,
+        withSearch = false
     ) {
         const button = createElement('button', {
             id: `${dropDownID} Button`,
@@ -313,6 +316,14 @@ class Card {
         });
 
         button.addEventListener('click', () => {
+            if (withSearch) {
+                setTimeout(() => {
+                    searchInput.focus();
+                });
+
+                return;
+            }
+
             const option = options[0];
 
             if (option) {
@@ -322,6 +333,49 @@ class Card {
                 });
             }
         });
+
+        let search: HTMLDivElement | undefined = undefined;
+        let divider: HTMLDivElement | undefined = undefined;
+        let searchInput: HTMLInputElement;
+
+        if (withSearch) {
+            searchInput = createElement('input', {
+                classList: ['form-control', 'msc-dropdown-content-search'],
+                attributes: [['type', 'text'], ['name', 'mcs-dropdown-content-search'], ['placeholder', 'Search']]
+            });
+
+            searchInput.addEventListener('input', (event: any) => {
+                const search = event.target.value;
+
+                for (const [index, text] of optionText.entries()) {
+                    const option = options.find(option => option.index === index);
+
+                    if (!option) {
+                        return;
+                    }
+
+                    if (!text.toLowerCase().includes(search.toLowerCase()) && text !== 'None') {
+                        option.style.display = 'none';
+                    } else {
+                        option.style.display = 'block';
+                    }
+                }
+            });
+
+            divider = createElement('div', {
+                classList: ['dropdown-divider'],
+                attributes: [['role', 'separator']]
+            });
+
+            search = createElement('div', {
+                classList: ['mx-2', 'form-group', 'mb-0'],
+                attributes: [['onsubmit', 'return false']],
+                children: [searchInput]
+            });
+
+           // <div class="dropdown-divider" role="separator"></div>
+           // <div class="mx-2 form-group mb-0" onsubmit="return false"><label for="dropdown-content-custom-amount-0">Custom Amount:</label><input class="form-control" type="number" name="dropdown-content-custom-amount-0" placeholder="100" min="1" max="4294967295" id="dropdown-content-custom-amount-0"></div>
+        }
 
         const options: any[] = [];
         for (let i = 0; i < optionText.length; i++) {
@@ -349,7 +403,7 @@ class Card {
         const dropdownMenu = createElement('div', {
             classList: ['dropdown-menu', 'font-size-sm'],
             attributes: [['aria-labelledby', dropDownID], ['style', 'max-height: 500px; overflow: auto;']],
-            children: options,
+            children: withSearch && search && divider ? [search, divider, ...options] : options,
         });
         const dropdown = createElement('div', {
             classList: ['dropdown'],

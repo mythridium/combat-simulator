@@ -1866,7 +1866,8 @@ class App {
                     : this.micsr.items.getObjectByID(itemID)!.name
             ),
             droppedItems,
-            (event: any) => this.dropChanceOnChange(event)
+            (event: any) => this.dropChanceOnChange(event),
+            true
         );
         if ((<any>dropdown).index !== index) {
             (<any>dropdown).selectOption(index);

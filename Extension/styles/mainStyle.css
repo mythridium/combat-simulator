@@ -585,3 +585,7 @@
 .micsr[data-tippy-root] {
     pointer-events: initial !important;
 }
+
+.msc-dropdown-content-search {
+    width: 100% !important;
+}

@@ -1,3 +1,6 @@
+v2.1.29
+    added ability to filter drop chance items by text in the dropdown
+
 v2.1.28
     fixed agility mastery not working as intended when switching obstacles after turning on/off the mastery
 
