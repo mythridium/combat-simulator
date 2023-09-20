@@ -406,9 +406,14 @@ class Import {
 
     importStyle(styles: any) {
         ["melee", "ranged", "magic"].forEach((cbStyle) => {
-            const attackStyle = this.micsr.game.attackStyles.getObjectByID(
+            let attackStyle = this.micsr.game.attackStyles.getObjectByID(
                 styles[cbStyle]
             )!;
+
+            if (!attackStyle) {
+                attackStyle = this.micsr.game.attackStyles.filter(style => style.attackType === cbStyle)[0];
+            }
+
             const index = this.micsr.attackStylesIdx[attackStyle.id];
             // @ts-expect-error
             this.simPlayer.setAttackStyle(cbStyle, attackStyle);

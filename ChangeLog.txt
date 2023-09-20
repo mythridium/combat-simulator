@@ -1,3 +1,6 @@
+v2.1.31
+    added workaround for import errors when using mods that add custom attack styles
+
 v2.1.30
     fixed plotter tooltips flickering when hovering over the tooltip
 
