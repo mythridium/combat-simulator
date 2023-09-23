@@ -10,7 +10,9 @@ export class Environment {
             hasFullVersionEntitlement: data.entitlements.full,
             hasTotHEntitlement: data.entitlements.toth,
             hasAoDEntitlement: data.entitlements.aod,
-            isTest: false
+            isTest: false,
+            log: () => {},
+            setStatus: () => {}
         };
 
         self.cloudManager = cloudManager;
@@ -27,6 +29,23 @@ export class Environment {
         this.evalGlobal(`game = self.game;`);
 
         await this.loadData(data.origin);
+
+        for (const [namespace, dataPackage] of data.modDataPackages) {
+            try {
+                if (!this.game.registeredNamespaces.hasNamespace(namespace.name)) {
+                    this.game.registeredNamespaces.registerNamespace(
+                        namespace.name,
+                        namespace.displayName,
+                        namespace.isModded
+                    );
+                }
+
+                this.game.registerDataPackage(dataPackage);
+            } catch (exception) {
+                exception.message = `Failed to load data package from: '${namespace.displayName}'\n\n${exception.message}`;
+                throw exception;
+            }
+        }
     }
 
     private async loadData(origin: string) {

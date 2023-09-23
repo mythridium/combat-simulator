@@ -4,6 +4,7 @@ import { InitRequest } from 'src/shared/messages/message-type/init';
 import { MessageAction, MessageRequest } from 'src/shared/messages/message';
 import { GameState } from 'src/app/state/game';
 import { Source } from 'src/shared/stores/sync.store';
+import { ModalQueue } from 'src/app/interface/modal-queue';
 
 export class Workers {
     public get primary() {
@@ -16,6 +17,7 @@ export class Workers {
     constructor(
         private readonly context: Modding.ModContext,
         private readonly logger: Logger,
+        private readonly modalQueue: ModalQueue,
         private readonly state: GameState
     ) {
         this.url = this.context.getResourceUrl('src/worker.mjs');
@@ -44,23 +46,7 @@ export class Workers {
             isSuccess = true;
         } catch (exception) {
             this.logger.error(exception);
-
-            addModalToQueue({
-                title: `[Myth] Combat Simulator`,
-                html: `
-                    <h5 class="font-w400 text-combat-smoke font-size-sm mb-1">Oops! An error occurred during startup.</h5>
-                    <h5 class="font-w600 text-combat-smoke font-size-sm mt-3 mb-1">Please copy the following information and create a new issue</h5>
-                    <h5 class="font-w600 text-combat-smoke font-size-sm mt-2"><a href="https://github.com/mythridium/combat-simulator/issues" target="_blank">GitHub <span class="font-size-xs">(opens in new tab)</span></a></h5>
-                    <div class="form-group">
-                        <textarea class="text-danger form-control" id="combat-simulator-init-exception" rows="12" onclick="this.select();">
-Mod Version: ${this.context.version}
-
-${exception.stack}</textarea>
-                    </div>
-                    `,
-                allowOutsideClick: false,
-                showCancelButton: false
-            });
+            this.modalQueue.add(exception);
         }
 
         return isSuccess;

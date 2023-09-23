@@ -12,7 +12,8 @@ export abstract class Scripts {
         'cloudManager',
         'cartographyMenu',
         'sidebar',
-        'minibar'
+        'minibar',
+        'ifvisible'
     ];
 
     public static getScriptsForWorker() {

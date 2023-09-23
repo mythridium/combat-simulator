@@ -7,6 +7,7 @@ declare global {
         MouseEvent: MouseEvent;
         HTMLElement: HTMLElement;
         checkFileVersion: (version: string) => boolean;
+        playFabManager: any;
     }
 }
 
@@ -45,6 +46,21 @@ export abstract class WorkerMock {
         worker.window = domino.createWindow('<div></div>', `https://melvoridle.com/index_game.php`);
         worker.document = worker.window.document;
 
+        const _createElement = worker.document.createElement;
+
+        worker.document.createElement = function (tagName: string, options?: ElementCreationOptions) {
+            const element: any = _createElement(tagName, options);
+
+            element.append = element.appendChild;
+            element.style = {};
+            element.ownerDocument = window.document;
+            Object.defineProperty(element, 'insertBefore', {
+                value: () => {}
+            });
+
+            return element;
+        };
+
         const window = <any>worker.window;
         const sself = <any>self;
 
@@ -61,6 +77,7 @@ export abstract class WorkerMock {
 
     private static mockMelvor(worker: Worker) {
         worker.checkFileVersion = () => true;
+        worker.playFabManager = { retrieve: async () => {} };
     }
 
     private static mockJQuery() {
