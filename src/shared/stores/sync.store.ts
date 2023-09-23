@@ -1,0 +1,73 @@
+import { BaseStore, Subscription } from './base.store';
+
+export enum Source {
+    Default = 'default',
+    Interface = 'interface',
+    Worker = 'worker',
+    Unknown = 'unknown'
+}
+
+export interface SyncState {
+    source: Source;
+}
+
+/**
+ * This store is specialised for handling a source on the state and for filtering
+ * subscriptions based on a source. Useful for keeping models in bi directional sync.
+ */
+export class SyncStore<TState extends SyncState> extends BaseStore<TState> {
+    public raw() {
+        const state = { ...super.raw() };
+
+        // remove the source, it's unimportant for sending to workers.
+        delete state.source;
+
+        return state;
+    }
+
+    public setState(state: TState): void;
+    public setState(source: Source, state: Omit<Partial<TState>, 'source'>): void;
+    public setState(sourceOrState: Source | TState, state?: Omit<Partial<TState>, 'source'>): void {
+        let update: TState = { ...this.state };
+
+        if (this.isSource(sourceOrState)) {
+            update = { source: sourceOrState, ...state } as TState;
+        } else {
+            update = { ...sourceOrState };
+        }
+
+        super.setState(update);
+    }
+
+    public when(...source: [Source, ...Source[]]) {
+        const subscription = new SyncSubscription<TState>();
+
+        this.subscriptions.add(subscription);
+
+        return subscription.when(...source);
+    }
+
+    private isSource(sourceOrState: Source | TState): sourceOrState is Source {
+        return Object.values<string>(Source).includes(<Source>sourceOrState);
+    }
+}
+
+export class SyncSubscription<TState extends SyncState> extends Subscription<TState> {
+    protected source: Source[];
+
+    public emit(state: TState) {
+        if (this.source.length && !this.source.includes(state.source)) {
+            return;
+        }
+
+        super.emit(state);
+    }
+
+    public when(...source: [Source, ...Source[]]) {
+        this.source = source;
+
+        return {
+            subscribe: (callback: (state: TState) => void) => this.subscribe(callback)
+        };
+    }
+}

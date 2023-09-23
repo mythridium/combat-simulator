@@ -25,5 +25,9 @@ export class WebWorker {
 
             this.logger.log(`Worker Loaded`);
         });
+
+        this.messages.on(MessageAction.State, async data => {
+            console.log(data.player);
+        });
     }
 }

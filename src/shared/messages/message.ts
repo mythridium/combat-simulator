@@ -1,17 +1,21 @@
 import { InitRequest } from './message-type/init';
+import { StateRequest } from './message-type/state';
 
 export enum MessageAction {
     Init = 'init',
+    State = 'state',
     Simulate = 'simulate'
 }
 
 export interface RequestData {
     [MessageAction.Init]: InitRequest;
+    [MessageAction.State]: StateRequest;
     [MessageAction.Simulate]: void;
 }
 
 export interface ResponseData {
     [MessageAction.Init]: void;
+    [MessageAction.State]: void;
     [MessageAction.Simulate]: void;
 }
 

@@ -8,14 +8,14 @@ export class Interface {
     private readonly modalElementId = 'myth-combat-simulator-modal';
     private modal: Modal;
 
-    constructor(private readonly state: GameState) {}
+    constructor(private readonly state: GameState, private readonly game: Game) {}
 
     public init() {
         this.addSidebarItem();
 
         this.modal = new Modal(this.modalElementId);
 
-        const player = new PlayerComponent(this.state);
+        const player = new PlayerComponent(this.state, this.game);
 
         this.modal.append(player.construct());
 

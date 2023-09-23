@@ -11,14 +11,14 @@ export class App {
     private workers: Workers;
     private interface: Interface;
 
-    constructor(private readonly context: Modding.ModContext) {
+    constructor(private readonly context: Modding.ModContext, private readonly game: Game) {
         this.context.onInterfaceReady(async () => {
             this.logger.log('Client Loaded');
 
             const state = new GameState();
 
-            this.workers = new Workers(this.context, this.logger);
-            this.interface = new Interface(state);
+            this.workers = new Workers(this.context, this.logger, state);
+            this.interface = new Interface(state, this.game);
 
             await this.init();
         });
