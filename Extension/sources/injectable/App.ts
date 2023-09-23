@@ -2210,7 +2210,9 @@ class App {
             const x = sortFunction(item);
             return x ? x : 0;
         };
-        menuItems.sort((a: any, b: any) => sortKey(a) - sortKey(b));
+
+        const sortFunc = sortByOrder<any, any>(this.actualGame.bank['defaultSortOrder'], 'item');
+        menuItems.sort((a: any, b: any) => (sortKey(a) - sortKey(b)) || sortFunc({ item: this.actualGame.items.getObjectByID(a.id) }, { item: this.actualGame.items.getObjectByID(b.id) }));
         const buttonMedia = menuItems.map((item: any) => item.media);
         const buttonIds = menuItems.map((item: any) => item.name);
         const buttonCallbacks = menuItems.map(
@@ -2485,7 +2487,7 @@ class App {
                 equipmentSlot,
                 (item: any) =>
                     this.filterIfHasLevelReq(item, this.micsr.skillIDs.Defence),
-                (x) => this.filterIfHasLevelReq(x, this.micsr.skillIDs.Defence)
+                (x) => this.getItemLevelReq(x, this.micsr.skillIDs.Defence)
             );
             equipmentSelectCard.addSectionTitle("Ranged");
             this.addEquipmentMultiButton(
@@ -2493,7 +2495,7 @@ class App {
                 equipmentSlot,
                 (item: any) =>
                     this.filterIfHasLevelReq(item, this.micsr.skillIDs.Ranged),
-                (x) => this.filterIfHasLevelReq(x, this.micsr.skillIDs.Ranged)
+                (x) => this.getItemLevelReq(x, this.micsr.skillIDs.Ranged)
             );
             equipmentSelectCard.addSectionTitle("Magic");
             this.addEquipmentMultiButton(
@@ -2501,7 +2503,7 @@ class App {
                 equipmentSlot,
                 (item: any) =>
                     this.filterIfHasLevelReq(item, this.micsr.skillIDs.Magic),
-                (x) => this.filterIfHasLevelReq(x, this.micsr.skillIDs.Magic)
+                (x) => this.getItemLevelReq(x, this.micsr.skillIDs.Magic)
             );
             if (
                 this.equipmentSubsets[equipmentSlot].filter((item: any) =>

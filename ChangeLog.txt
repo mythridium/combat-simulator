@@ -1,3 +1,6 @@
+v2.1.32
+    items are now sorted by level requirement then by default bank sort order
+
 v2.1.31
     added workaround for import errors when using mods that add custom attack styles
 
