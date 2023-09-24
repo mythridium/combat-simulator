@@ -29,7 +29,13 @@ export class Workers {
         }
 
         this.state.player.when(Source.Interface).subscribe(async () => {
-            await this.primary.send({ action: MessageAction.State, data: { player: this.state.player.raw() } });
+            const summary = await this.primary.send({
+                action: MessageAction.State,
+                data: { player: this.state.player.raw() }
+            });
+
+            this.state.summary.setState(Source.Worker, summary);
+            console.log(this.state.summary.getState());
         });
     }
 

@@ -22,30 +22,14 @@ export class Environment {
             loadedLangJson = {};
         `);
 
-        const { SimGame } = await import(/* webpackMode: "eager" */ 'src/worker/simulator/game');
+        const { SimGame } = await import(/* webpackMode: "eager" */ 'src/worker/simulator/sim-game');
 
         (<any>self).game = this.game = new SimGame();
 
         this.evalGlobal(`game = self.game;`);
 
         await this.loadData(data.origin);
-
-        for (const [namespace, dataPackage] of data.modDataPackages) {
-            try {
-                if (!this.game.registeredNamespaces.hasNamespace(namespace.name)) {
-                    this.game.registeredNamespaces.registerNamespace(
-                        namespace.name,
-                        namespace.displayName,
-                        namespace.isModded
-                    );
-                }
-
-                this.game.registerDataPackage(dataPackage);
-            } catch (exception) {
-                exception.message = `Failed to load data package from: '${namespace.displayName}'\n\n${exception.message}`;
-                throw exception;
-            }
-        }
+        this.loadModData(data.modDataPackages);
     }
 
     private async loadData(origin: string) {
@@ -62,6 +46,25 @@ export class Environment {
 
             if (cloudManager.hasAoDEntitlement) {
                 await this.game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
+            }
+        }
+    }
+
+    private loadModData(modDataPackages: [DataNamespace, GameDataPackage][]) {
+        for (const [namespace, dataPackage] of modDataPackages) {
+            try {
+                if (!this.game.registeredNamespaces.hasNamespace(namespace.name)) {
+                    this.game.registeredNamespaces.registerNamespace(
+                        namespace.name,
+                        namespace.displayName,
+                        namespace.isModded
+                    );
+                }
+
+                this.game.registerDataPackage(dataPackage);
+            } catch (exception) {
+                exception.message = `Failed to load data package from: '${namespace.displayName}'\n\n${exception.message}`;
+                throw exception;
             }
         }
     }

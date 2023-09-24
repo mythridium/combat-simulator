@@ -85,6 +85,7 @@ export class Messages {
 
         try {
             const registration = this.registrations.get(message.action);
+
             result = await registration(message.data);
         } catch (exception) {
             error = { message: exception?.message ?? `An unknown error occurred`, stack: exception?.stack };

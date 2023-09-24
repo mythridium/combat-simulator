@@ -4,7 +4,7 @@ import { Source } from 'src/shared/stores/sync.store';
 export class PlayerComponent {
     private readonly fragment = new DocumentFragment();
 
-    constructor(private readonly state: GameState, private readonly game: Game) {
+    constructor(private readonly state: GameState) {
         this.state.player.when(Source.Worker).subscribe(state => this.render(state.equipmentIds));
     }
 
@@ -35,6 +35,6 @@ export class PlayerComponent {
     }
 
     private toEquipment(items: string[]) {
-        return this.game.items.filter(item => items.includes(item.id)) as EquipmentItem[];
+        return game.items.filter(item => items.includes(item.id)) as EquipmentItem[];
     }
 }

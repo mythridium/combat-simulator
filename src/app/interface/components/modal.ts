@@ -1,8 +1,10 @@
 export class Modal {
-    private readonly title = '[Myth] Combat Simulator';
+    private readonly title: string;
     private fragment = new DocumentFragment();
 
-    constructor(private readonly elementId: string) {}
+    constructor(private readonly context: Modding.ModContext, private readonly elementId: string) {
+        this.title = `[Myth] Combat Simulator - ${this.context.version}`;
+    }
 
     public append(...nodes: (string | Node)[]) {
         this.fragment.append(...nodes);

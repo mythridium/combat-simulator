@@ -1,7 +1,7 @@
 export class ModalQueue {
     constructor(private readonly context: Modding.ModContext) {}
 
-    public add(exception: Error | string) {
+    public add(exception: Error | string, withTitle = true) {
         let html = '';
 
         if (exception instanceof Error) {
@@ -21,7 +21,7 @@ ${exception.stack}</textarea>
         }
 
         addModalToQueue({
-            title: `[Myth] Combat Simulator`,
+            title: withTitle ? `[Myth] Combat Simulator` : undefined,
             html,
             allowOutsideClick: false,
             showCancelButton: false

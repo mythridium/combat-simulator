@@ -4,7 +4,11 @@
     "description": "Melvor Idle mod that adds a combat simulator",
     "scripts": {
         "zip": "ts-node-esm -P tsconfig.node.json tools/zip.mts",
-        "build": "webpack && npm run zip"
+        "build": "npm run src && npm run core && npm run zip",
+        "build:src": "npm run src && npm run zip",
+        "build:core": "npm run core && npm run zip",
+        "src": "webpack",
+        "core": "webpack --config core/webpack.config.ts"
     },
     "author": "Mythridium",
     "main": "manifest.json",

@@ -8,65 +8,24 @@ import { ModalQueue } from './interface/modal-queue';
 
 export class App {
     private readonly logger = new Logger('Client', Color.Green);
+    private readonly modalQueue: ModalQueue;
 
     private workers: Workers;
     private interface: Interface;
-    private modalQueue: ModalQueue;
 
-    private readonly namespacesSeenLoading: string[] = [];
-    private readonly modDataPackages: [DataNamespace, GameDataPackage][] = [];
-
-    constructor(private readonly context: Modding.ModContext, private readonly game: Game) {
+    constructor(private readonly context: Modding.ModContext) {
         this.modalQueue = new ModalQueue(this.context);
 
-        this.context
-            .patch(NamespaceMap, 'registerNamespace')
-            .after((_, name: string, _displayName: string, isModded: boolean) => {
-                if (isModded) {
-                    this.namespacesSeenLoading.push(name);
-                }
-            });
-
-        this.context.patch(Game, 'registerDataPackage').after((_, dataPackage) => {
-            const namespace = this.game.registeredNamespaces.getNamespace(dataPackage.namespace);
-
-            if (namespace.isModded) {
-                this.modDataPackages.push([namespace, dataPackage]);
-            }
-        });
-
         this.context.onInterfaceReady(async () => {
-            this.startupCheck();
             this.logger.log('Client Loaded');
 
             const state = new GameState();
 
             this.workers = new Workers(this.context, this.logger, this.modalQueue, state);
-            this.interface = new Interface(state, this.game);
+            this.interface = new Interface(this.context, state);
 
             await this.init();
         });
-    }
-
-    private startupCheck() {
-        const exclude: string[] = ['creatorToolkit', 'mythCombatSimulator'];
-        const loadedNamespacesNotSeen = Array.from(this.game.registeredNamespaces.registeredNamespaces.entries())
-            .filter(
-                ([name, namespace]) =>
-                    namespace.isModded && !this.namespacesSeenLoading.includes(name) && !exclude.includes(name)
-            )
-            .map(([_name, namespace]) => namespace.displayName);
-
-        if (loadedNamespacesNotSeen.length) {
-            const message = `<span class="text-warning">Make sure Combat Simulator is at the TOP of your mod list.
-                             <br /><br/>
-                             The following mods will not have any data in the Combat Simulator.</span>
-                             <br /><br />`;
-
-            this.modalQueue.add(
-                `${message}<span class="text-combat-smoke">${loadedNamespacesNotSeen.join(', ')}</span>`
-            );
-        }
     }
 
     private async init() {
@@ -76,6 +35,8 @@ export class App {
             origin += '/lemvorIdle';
         }
 
+        const modDataPackages = this.getModDataPackages();
+
         const isInitialised = await this.workers.init({
             scripts: Scripts.getScriptsForWorker(),
             origin,
@@ -84,11 +45,29 @@ export class App {
                 toth: cloudManager.hasTotHEntitlement,
                 aod: cloudManager.hasAoDEntitlement
             },
-            modDataPackages: this.modDataPackages
+            modDataPackages
         });
 
         if (isInitialised) {
             this.interface.init();
         }
+    }
+
+    private getModDataPackages(): [DataNamespace, GameDataPackage][] {
+        if (!mod.api?.mythCombatSimulatorCore?.mods) {
+            this.modalQueue.add(
+                `
+                <br/><br/>
+                [Myth] Combat Simulator Core is not installed.
+                <br/><br/>
+                <span class="text-warning">Combat Simulator will still work, however no data from mods will be available within the Combat Simulator.</span>
+                `,
+                false
+            );
+
+            return [];
+        }
+
+        return mod.api.mythCombatSimulatorCore.mods;
     }
 }

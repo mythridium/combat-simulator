@@ -1,41 +1,45 @@
-import { existsSync, mkdirSync, createWriteStream, readdir } from 'fs';
-import { resolve, join } from 'path';
+import { existsSync, mkdirSync, createWriteStream } from 'fs';
+import { resolve } from 'path';
 import { deleteSync } from 'del';
 import archiver from 'archiver';
 import pkg from '../package.json' assert { type: 'json' };
 
-const dir = 'build';
-
-if (!existsSync(dir)) {
-    mkdirSync(dir);
-}
-
-const time = Date.now();
-const outname = `${pkg.name}.${time}.zip`;
-const output = createWriteStream(resolve(dir, outname));
-const archive = archiver('zip');
-
-output.on('close', () => {
-    console.log(outname + ': ' + archive.pointer() + ' total bytes');
-
-    deleteSync('packed');
-    readdir(dir, (err, files) => {
-        if (err) {
-            console.log(err);
+class Zip {
+    public async run(outDir: string, inDir: string, name: string) {
+        if (!existsSync(outDir)) {
+            mkdirSync(outDir);
         }
 
-        files.forEach(file => {
-            if (file !== outname) {
-                deleteSync(join(dir, file));
-            }
+        const output = createWriteStream(resolve(outDir, name));
+        const archive = archiver('zip');
+
+        output.on('close', () => {
+            console.log(name + ': ' + archive.pointer() + ' total bytes');
         });
-    });
-});
 
-archive.on('error', err => {
-    throw err;
-});
+        archive.on('error', err => {
+            throw err;
+        });
 
-archive.pipe(output);
-archive.directory('packed/', false);
-archive.finalize();
+        archive.pipe(output);
+        archive.directory(inDir, false);
+        await archive.finalize();
+    }
+}
+
+(async () => {
+    const zip = new Zip();
+    const time = Date.now();
+
+    deleteSync('build');
+
+    if (existsSync('.output/src')) {
+        await zip.run('build', '.output/src', `${pkg.name}.${time}.zip`);
+    }
+
+    if (existsSync('.output/core')) {
+        await zip.run('build', '.output/core', `${pkg.name}-core.${time}.zip`);
+    }
+
+    deleteSync('.output');
+})();

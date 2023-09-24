@@ -4,10 +4,10 @@ import { resolve } from 'path';
 
 const config = {
     mode: 'production',
-    entry: { setup: 'src/setup.ts', 'src/worker': 'src/worker/main.ts' },
+    entry: { core: 'core/core.ts' },
     output: {
         filename: '[name].mjs',
-        path: resolve(__dirname, '.output/src'),
+        path: resolve(__dirname, '../.output/core'),
         library: {
             type: 'module'
         },
@@ -32,9 +32,7 @@ const config = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: '**/*.html', to: '[path][name][ext]', context: 'src', noErrorOnMissing: true },
-                { from: 'manifest.json', to: 'manifest.json', context: 'src', noErrorOnMissing: true },
-                { from: 'data.json', to: 'data.json', context: 'src', noErrorOnMissing: true },
+                { from: 'manifest.json', to: 'manifest.json', context: 'core', noErrorOnMissing: true },
                 { from: 'assets', to: 'assets', noErrorOnMissing: true }
             ]
         })
