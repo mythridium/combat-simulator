@@ -1,3 +1,6 @@
+v2.1.33
+    fixed equipment set exception
+
 v2.1.32
     items are now sorted by level requirement then by default bank sort order
 

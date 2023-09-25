@@ -498,7 +498,7 @@ class SimGame extends Game {
     }
 
     setAutoEatTier(tier: number) {
-        this.shop.upgradesPurchased.clear();
+        this.clearShop();
         for (let t = 0; t <= tier; t++) {
             this.shop.upgradesPurchased.set(
                 this.shop.purchases.getObjectByID(this.autoEatTiers[t])!,
@@ -508,10 +508,19 @@ class SimGame extends Game {
         this.shop.computeProvidedStats(false);
     }
 
+    clearShop() {
+        const equipmentSets = Array.from(this.shop.upgradesPurchased.keys()).filter(upgrade => upgrade.localID.includes('Extra_Equipment_Set'));
+        this.shop.upgradesPurchased.clear();
+
+        for (const set of equipmentSets) {
+            this.shop.upgradesPurchased.set(set, 1);
+        }
+    }
+
     resetToBlankState() {
         this.combat.player.resetToBlankState();
         this.combat.player.setPotion(undefined);
-        this.shop.upgradesPurchased.clear();
+        this.clearShop();
 
         this.astrology.actions.allObjects.forEach((constellation) => {
             constellation.standardModsBought.fill(0);
