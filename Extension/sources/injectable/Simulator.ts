@@ -1021,13 +1021,14 @@ class Simulator {
         return `${dungeonID}-${monsterID}`;
     }
 
-    pushMonsterToQueue(monsterID: string, dungeonID?: string) {
+    pushMonsterToQueue(monsterID: string, dungeonID?: string, isSingle?: boolean) {
         const simID = this.simID(monsterID, dungeonID);
         if (!this.monsterSimData[simID].inQueue) {
             this.monsterSimData[simID].inQueue = true;
             this.simulationQueue.push({
                 monsterID: monsterID,
                 dungeonID: dungeonID,
+                isSingle: isSingle
             });
         }
     }
@@ -1049,7 +1050,7 @@ class Simulator {
             const monsterID =
                 this.parent.barMonsterIDs[this.parent.selectedBar];
             if (this.monsterSimFilter[monsterID]) {
-                this.pushMonsterToQueue(monsterID);
+                this.pushMonsterToQueue(monsterID, undefined, true);
             } else {
                 this.parent.notify(
                     "The selected monster is filtered!",
@@ -1076,14 +1077,15 @@ class Simulator {
                 if (this.parent.isViewingDungeon && this.parent.barSelected) {
                     this.pushMonsterToQueue(
                         this.parent.getSelectedDungeonMonsterID(),
-                        dungeonID
+                        dungeonID,
+                        true
                     );
                     return { dungeonID: dungeonID };
                 }
                 this.micsr.dungeons
                     .getObjectByID(dungeonID)!
                     .monsters.forEach((monster) => {
-                        this.pushMonsterToQueue(monster.id, dungeonID);
+                        this.pushMonsterToQueue(monster.id, dungeonID, false);
                     });
                 return { dungeonID: dungeonID };
             }
@@ -1145,7 +1147,7 @@ class Simulator {
                 return;
             }
             // all checks passed
-            this.pushMonsterToQueue(monster.id, undefined);
+            this.pushMonsterToQueue(monster.id, undefined, false);
             this.slayerTaskMonsters[taskName].push(monster);
         });
     }
@@ -1163,13 +1165,13 @@ class Simulator {
         this.micsr.combatAreas.forEach((area) => {
             area.monsters.forEach((monster) => {
                 if (this.monsterSimFilter[monster.id]) {
-                    this.pushMonsterToQueue(monster.id, undefined);
+                    this.pushMonsterToQueue(monster.id, undefined, false);
                 }
             });
         });
         // Wandering Bard
         if (this.monsterSimFilter[this.micsr.bardID]) {
-            this.pushMonsterToQueue(this.micsr.bardID, undefined);
+            this.pushMonsterToQueue(this.micsr.bardID, undefined, false);
         }
         // Queue simulation of monsters in slayer areas
         this.micsr.slayerAreas.forEach((area) => {
@@ -1192,7 +1194,7 @@ class Simulator {
             }
             area.monsters.forEach((monster) => {
                 if (this.monsterSimFilter[monster.id]) {
-                    this.pushMonsterToQueue(monster.id, undefined);
+                    this.pushMonsterToQueue(monster.id, undefined, false);
                 }
             });
         });
@@ -1201,7 +1203,7 @@ class Simulator {
             if (this.dungeonSimFilter[dungeon.id]) {
                 for (let j = 0; j < dungeon.monsters.length; j++) {
                     const monster = dungeon.monsters[j];
-                    this.pushMonsterToQueue(monster.id, dungeon.id);
+                    this.pushMonsterToQueue(monster.id, dungeon.id, false);
                 }
             }
         });
@@ -1261,25 +1263,25 @@ class Simulator {
         } else {
             this.combineReasons(averageData, monsters, dungeonID);
         }
-        averageData.simSuccess = true;
-        averageData.tickCount = 0;
 
-        // not time-weighted averages
-        averageData.deathRate = 0;
-        averageData.highestDamageTaken = 0;
-        averageData.lowestHitpoints = Number.MAX_SAFE_INTEGER;
-        averageData.killTimeS = 0;
-        averageData.simulationTime = 0;
         monsters.forEach((monster) => {
             const simID = this.simID(monster.id, dungeonID);
             const monsterData = this.monsterSimData[simID];
             if (monsterData.simSuccess) {
+                averageData.simSuccess = true;
+                averageData.tickCount = 0;
+
+                // not time-weighted averages
+                averageData.deathRate = 0;
+                averageData.highestDamageTaken = 0;
+                averageData.lowestHitpoints = Number.MAX_SAFE_INTEGER;
+                averageData.killTimeS = 0;
+                averageData.simulationTime = 0;
+
                 if (!isSlayerTask) {
                     averageData.simSuccess &&= monsterData.simSuccess;
                 }
-                averageData.deathRate =
-                    1 -
-                    (1 - averageData.deathRate) * (1 - monsterData.deathRate);
+                averageData.deathRate = 1 - (1 - averageData.deathRate) * (1 - monsterData.deathRate);
                 averageData.highestDamageTaken = Math.max(
                     averageData.highestDamageTaken,
                     monsterData.highestDamageTaken
@@ -1449,6 +1451,7 @@ class Simulator {
         ) {
             const monsterID = this.simulationQueue[this.currentJob].monsterID;
             const dungeonID = this.simulationQueue[this.currentJob].dungeonID;
+            const isSingle = this.simulationQueue[this.currentJob].isSingle;
             const saveString = this.micsr.game.generateSaveStringSimple();
             // debugger;
             this.simulationWorkers[workerID].worker.postMessage({
@@ -1458,6 +1461,7 @@ class Simulator {
                 saveString: saveString,
                 trials: this.micsr.trials,
                 maxTicks: this.micsr.maxTicks,
+                isSingle: isSingle
             });
             this.simulationWorkers[workerID].inUse = true;
             this.currentJob++;

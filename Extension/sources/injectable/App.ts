@@ -230,6 +230,7 @@ class App {
         addPlotOption("Kills per ", true, "killsPerSecond", "Kills/");
         // loot gains
         addPlotOption("GP per ", true, "gpPerSecond", "GP/");
+        addPlotOption("Raw GP per ", true, "baseGpPerSecond", "Raw GP/");
         addPlotOption("Drops per", true, "dropChance", "Drops/");
         addPlotOption(
             "Percent Chance for Signet Part B per",
@@ -525,6 +526,8 @@ class App {
             this.tippyOptions
         );
         this.tippySingleton = tippy.createSingleton(this.tippyInstances, {
+            delay: [0, 0],
+            duration: [0, 0],
             ...this.tippyOptions,
         });
         for (const bar of this.plotter.bars) {
@@ -1112,7 +1115,6 @@ class App {
                 [
                     "MCS prayerXpPerSecond Output",
                     "MCS runesUsedPerSecond Output",
-                    "MCS gpPerSecond Output",
                     "MCS deathRate Output",
                 ].includes(child.id)
             ) {
@@ -4035,7 +4037,6 @@ class App {
             document.getElementById("MCS deathRate Output").style.color = "";
         }
         this.setDeathRateTooltip(data.deathRate, data.killTimeS);
-        this.setGPTooltip(data.baseGpPerSecond, data.killTimeS);
         this.setRuneTooltip(data.usedRunesBreakdown, data.killTimeS);
         this.setPrayerTooltip(data.prayerXpPerSecond, data.ppConsumedPerSecond);
     }
@@ -4059,18 +4060,6 @@ class App {
     setTooltip(element: HTMLElement | null, tooltip: string) {
         // @ts-expect-error TS(2339): Property _tippy does not exist on type 'HTMLElement'.
         element._tippy.setContent(tooltip);
-    }
-
-    setGPTooltip(baseGpPerSecond: any, killTimeS: any) {
-        let dataMultiplier = this.timeMultiplier;
-        if (dataMultiplier === -1) {
-            dataMultiplier = killTimeS;
-        }
-        let tooltip = `<span>${formatNumber(
-            Math.floor(baseGpPerSecond * dataMultiplier)
-        )} Raw GP/${this.selectedTimeShorthand}</span><br/>`;
-        tooltip = `<div className="text-center">${tooltip}</div>`;
-        this.setTooltipById(`MCS gpPerSecond Output`, tooltip);
     }
 
     setPrayerTooltip(prayerXpPerSecond: any, ppConsumedPerSecond: any) {

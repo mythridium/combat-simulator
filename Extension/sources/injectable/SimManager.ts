@@ -119,6 +119,7 @@ class SimManager extends CombatManager {
     // @ts-expect-error Force SimGame type
     game: SimGame;
     micsr: MICSR;
+    isSingle = false;
 
     constructor(game: SimGame, namespace: DataNamespace) {
         super(game as any, namespace);
@@ -339,6 +340,12 @@ class SimManager extends CombatManager {
         // this.enemy.processDeath();
 
         this.simStats.killCount++;
+
+         // if we targeting a monster within a dungeon, reduce the dungeon progress since the enemy death will increment it back to the same monster.
+         if (this.selectedArea instanceof Dungeon && this.isSingle) {
+            this.dungeonProgress--;
+        }
+
         return super.onEnemyDeath();
     }
 
@@ -450,9 +457,11 @@ class SimManager extends CombatManager {
         dungeonID: any,
         trials: any,
         tickLimit: any,
-        verbose = false
+        verbose = false,
+        isSingle = false
     ): ISimStats {
         this.resetSimStats();
+        this.isSingle = isSingle;
         const startTimeStamp = performance.now();
         const monster = this.game.monsters.getObjectByID(monsterID);
         let areaData = this.game.getMonsterArea(monster!);

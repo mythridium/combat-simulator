@@ -340,7 +340,8 @@
                         event.data.monsterID,
                         event.data.dungeonID,
                         event.data.trials,
-                        event.data.maxTicks
+                        event.data.maxTicks,
+                        event.data.isSingle
                     )
                     .then((simResult: any) => {
                         const timeTaken = performance.now() - startTime;
@@ -384,7 +385,8 @@ class CombatSimulator {
         monsterID: string,
         dungeonID: string,
         trials: number,
-        maxTicks: number
+        maxTicks: number,
+        isSingle: boolean
     ) {
         try {
             // this.micsr.log("Creating manager");
@@ -400,7 +402,9 @@ class CombatSimulator {
                     monsterID,
                     dungeonID,
                     trials,
-                    maxTicks
+                    maxTicks,
+                    undefined,
+                    isSingle
                 ),
                 trials
             );
