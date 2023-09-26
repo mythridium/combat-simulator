@@ -573,6 +573,10 @@
     align-items: center;
 }
 
+.mcsCCContainer.synergy {
+    justify-content: center;
+}
+
 .mcsCCContainer .dropdown-toggle::after {
     margin-left: 8px;
 }

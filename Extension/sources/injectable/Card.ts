@@ -668,6 +668,7 @@ class Card {
     }
 
     addImageToggleWithInfo(
+        parent: Element,
         imgSrc: any,
         id: any,
         callBack: (
@@ -678,18 +679,17 @@ class Card {
         size = "Medium",
         tooltip = ""
     ) {
-        const container = this.createCCContainer();
-        // image
         const img = this.createImageButton(imgSrc, id, callBack, size, tooltip);
-        container.appendChild(img);
-        // filled to push icon to the left and text to the righ
-        const filler = document.createElement("p");
-        filler.style.flexGrow = "1";
-        container.appendChild(filler);
+        img.style.padding = '6px';
+        parent.insertAdjacentElement('afterend', img);
+
+        const container = this.createCCContainer();
+        container.className += ' synergy';
+
         // text
         const span = document.createElement("span");
         span.textContent = text;
-        span.className = "mcsInfoText";
+        span.className = "mcsInfoText synergy";
         if (id) {
             span.id = `MCS ${id} Info`;
         }

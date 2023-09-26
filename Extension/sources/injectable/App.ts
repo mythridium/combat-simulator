@@ -121,6 +121,8 @@ class App {
             allowHTML: true,
             animation: false,
             hideOnClick: true,
+            delay: [0, 20],
+            duration: [0, 0],
             onCreate(instance: TippyTooltip) {
                 instance.popper.addEventListener('touchstart', (event: Event) => {
                     event.preventDefault();
@@ -523,7 +525,6 @@ class App {
             this.tippyOptions
         );
         this.tippySingleton = tippy.createSingleton(this.tippyInstances, {
-            delay: [0, 200],
             ...this.tippyOptions,
         });
         for (const bar of this.plotter.bars) {
@@ -684,15 +685,21 @@ class App {
                 tooltips
             );
         });
-        this.equipmentSelectCard.addImageToggleWithInfo(
-            this.media.synergyLock,
-            "Summoning Synergy",
-            () => {
-                this.setSummoningSynergyText();
-                this.updateCombatStats();
-            },
-            "Synergy locked."
-        );
+
+        const summon1 = this.equipmentSelectCard.container.querySelector('.MCS.Summon1.Image.Container');
+
+        if (summon1) {
+            this.equipmentSelectCard.addImageToggleWithInfo(
+                summon1,
+                this.media.synergyLock,
+                "Summoning Synergy",
+                () => {
+                    this.setSummoningSynergyText();
+                    this.updateCombatStats();
+                },
+                "Synergy locked."
+            );
+        }
 
         // Style dropdown (Specially Coded)
         const combatStyleCCContainer =
@@ -2816,7 +2823,7 @@ class App {
             tooltip += `<span class="text-info mt-1 mb-1">${description}</span>`;
         }
 
-        const pushBonus = (list: any, header = "", footer = "") => {
+        const pushBonus = (list: any, header = "", footer = "", multiplier = 1) => {
             const statBonuses: any = [];
             if (item.equipmentStats === undefined) {
                 return;
@@ -2830,7 +2837,7 @@ class App {
                     .reduce((a: any, b: any) => a + b.value, 0);
                 if (value !== 0) {
                     statBonuses.push(
-                        this.getTooltipStatBonus(name, value, suffix)
+                        this.getTooltipStatBonus(name, value * multiplier, suffix)
                     );
                 }
             });
@@ -2866,6 +2873,15 @@ class App {
             ],
             `<div class="mt-1">Defence:</div><span class="mb-1">`,
             "</span>"
+        );
+
+        pushBonus(
+            [
+                ["Summoning Max Hit", "summoningMaxhit"],
+            ],
+            `<div class="mt-1">`,
+            "</div>",
+            10
         );
 
         if (item.equipRequirements) {
