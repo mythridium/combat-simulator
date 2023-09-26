@@ -1,3 +1,6 @@
+v2.1.36
+    reverted -fixed simulating a single monster while multiple were enabled would show meaningless data when selecting one of the monsters that did not get simulated-
+
 v2.1.35
     fixed inspecting dungeons and simulating one monster showing inaccurate results (notably ITM Phase 1)
     fixed plotter tooltips showing old tooltips for too long

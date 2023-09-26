@@ -1264,20 +1264,20 @@ class Simulator {
             this.combineReasons(averageData, monsters, dungeonID);
         }
 
+        averageData.simSuccess = true;
+        averageData.tickCount = 0;
+
+        // not time-weighted averages
+        averageData.deathRate = 0;
+        averageData.highestDamageTaken = 0;
+        averageData.lowestHitpoints = Number.MAX_SAFE_INTEGER;
+        averageData.killTimeS = 0;
+        averageData.simulationTime = 0;
+
         monsters.forEach((monster) => {
             const simID = this.simID(monster.id, dungeonID);
             const monsterData = this.monsterSimData[simID];
             if (monsterData.simSuccess) {
-                averageData.simSuccess = true;
-                averageData.tickCount = 0;
-
-                // not time-weighted averages
-                averageData.deathRate = 0;
-                averageData.highestDamageTaken = 0;
-                averageData.lowestHitpoints = Number.MAX_SAFE_INTEGER;
-                averageData.killTimeS = 0;
-                averageData.simulationTime = 0;
-
                 if (!isSlayerTask) {
                     averageData.simSuccess &&= monsterData.simSuccess;
                 }
