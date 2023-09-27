@@ -1,9 +1,9 @@
 import { GameState } from 'src/app/state/game';
-import { EquipmentComponent } from './elements/equipment-component';
-import { ModalComponent } from './elements/modal-component';
+import { ModalComponent } from './components/modal-component';
+import { EquipmentComponent } from './components/equipment-component';
+import { SummaryComponent } from './components/summary-component';
 
 import './interface.scss';
-import { SummaryComponent } from './elements/summary-component';
 
 export class Interface {
     private readonly modalElementId = 'myth-combat-simulator-modal';

@@ -7,8 +7,8 @@ export interface BaseOptions {
 export class BaseComponent {
     public element: Element;
 
-    protected readonly fragment = new DocumentFragment();
-    protected readonly children: (Element | BaseComponent)[] = [];
+    private readonly fragment = new DocumentFragment();
+    private children: (Element | BaseComponent)[] = [];
 
     protected constructor(protected readonly _options: BaseOptions) {}
 
@@ -17,6 +17,21 @@ export class BaseComponent {
     }
 
     public render() {
+        const element = this.construct();
+
+        this.preRender(element);
+
+        element.append(this.fragment);
+
+        if (this.element) {
+            this.element.replaceWith(element);
+        }
+
+        this.element = element;
+        this.children = [];
+    }
+
+    protected preRender(_container: Element) {
         for (const child of this.children) {
             let element: Element;
 
@@ -29,21 +44,12 @@ export class BaseComponent {
 
             this.fragment.append(element);
         }
-
-        const element = this.construct();
-
-        if (this.element) {
-            this.element.replaceWith(element);
-        }
-
-        this.element = element;
     }
 
-    protected construct() {
+    private construct() {
         const container = document.createElement(this._options.tag);
 
         container.id = this._options.id;
-        container.append(this.fragment);
 
         if (this._options.classes?.length) {
             container.classList.add(...this._options.classes);
