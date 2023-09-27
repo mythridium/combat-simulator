@@ -1,10 +1,10 @@
 import { Source, SyncState, SyncStore } from './sync.store';
 
-export interface PlayerState extends SyncState {
+export interface EquipmentState extends SyncState {
     equipmentIds: string[];
 }
 
-export class PlayerStore extends SyncStore<PlayerState> {
+export class EquipmentStore extends SyncStore<EquipmentState> {
     constructor() {
         super({ source: Source.Default, equipmentIds: [] });
     }

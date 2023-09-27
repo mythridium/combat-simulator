@@ -28,10 +28,10 @@ export class Workers {
             this.workers.push(worker);
         }
 
-        this.state.player.when(Source.Interface).subscribe(async () => {
+        this.state.equipment.when(Source.Interface).subscribe(async () => {
             const summary = await this.primary.send({
                 action: MessageAction.State,
-                data: { player: this.state.player.raw() }
+                data: { equipment: this.state.equipment.raw() }
             });
 
             this.state.summary.setState(Source.Worker, summary);

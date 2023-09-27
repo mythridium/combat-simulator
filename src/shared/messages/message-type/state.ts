@@ -1,8 +1,8 @@
-import { PlayerState } from 'src/shared/stores/player.store';
+import { EquipmentState } from 'src/shared/stores/equipment.store';
 import { SummaryState } from 'src/shared/stores/summary.store';
 
 export interface StateRequest {
-    player?: PlayerState;
+    equipment?: EquipmentState;
 }
 
 export interface StateResponse extends SummaryState {}
