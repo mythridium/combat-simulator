@@ -4,7 +4,7 @@ export class ModalQueue {
     public add(exception: Error | string, withTitle = true) {
         let html = '';
 
-        if (exception instanceof Error) {
+        if (this.isException(exception)) {
             html += `
                 <h5 class="font-w400 text-combat-smoke font-size-sm mb-1">Oops! An error occurred during startup.</h5>
                 <h5 class="font-w600 text-combat-smoke font-size-sm mt-3 mb-1">Please copy the following information and create a new issue</h5>
@@ -26,5 +26,9 @@ ${exception.stack}</textarea>
             allowOutsideClick: false,
             showCancelButton: false
         });
+    }
+
+    private isException(exception: string | Error): exception is Error {
+        return typeof exception !== 'string';
     }
 }

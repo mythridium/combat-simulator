@@ -1,8 +1,6 @@
 import { InitRequest } from 'src/shared/messages/message-type/init';
 
 export class Environment {
-    public game: Game;
-
     public async init(data: InitRequest) {
         importScripts(...data.scripts);
 
@@ -24,48 +22,57 @@ export class Environment {
 
         const { SimGame } = await import(/* webpackMode: "eager" */ 'src/worker/simulator/sim-game');
 
-        (<any>self).game = this.game = new SimGame();
+        (<any>self).game = new SimGame();
 
         this.evalGlobal(`game = self.game;`);
 
         await this.loadData(data.origin);
-        this.loadModData(data.modDataPackages);
+        this.loadModData(data.dataPackages, data.skills);
     }
 
     private async loadData(origin: string) {
         const url = (file: string) => `${origin}/assets/data/${file}.json?${DATA_VERSION}`;
 
-        await this.game.fetchAndRegisterDataPackage(url('melvorDemo'));
+        await game.fetchAndRegisterDataPackage(url('melvorDemo'));
 
         if (cloudManager.hasFullVersionEntitlement) {
-            await this.game.fetchAndRegisterDataPackage(url('melvorFull'));
+            await game.fetchAndRegisterDataPackage(url('melvorFull'));
 
             if (cloudManager.hasTotHEntitlement) {
-                await this.game.fetchAndRegisterDataPackage(url('melvorTotH'));
+                await game.fetchAndRegisterDataPackage(url('melvorTotH'));
             }
 
             if (cloudManager.hasAoDEntitlement) {
-                await this.game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
+                await game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
             }
         }
     }
 
-    private loadModData(modDataPackages: [DataNamespace, GameDataPackage][]) {
-        for (const [namespace, dataPackage] of modDataPackages) {
+    private loadModData(dataPackages: [DataNamespace, GameDataPackage][], skills: [string, DataNamespace][]) {
+        for (const [id, namespace] of skills) {
             try {
-                if (!this.game.registeredNamespaces.hasNamespace(namespace.name)) {
-                    this.game.registeredNamespaces.registerNamespace(
-                        namespace.name,
-                        namespace.displayName,
-                        namespace.isModded
-                    );
-                }
-
-                this.game.registerDataPackage(dataPackage);
+                this.registerNamespace(namespace);
+                game.registerSkill(namespace, this.mockSkill(id));
             } catch (exception) {
-                exception.message = `Failed to load data package from: '${namespace.displayName}'\n\n${exception.message}`;
+                exception.message = `Failed to load register mod skill from: '${namespace.displayName}'\n\n${exception.message}`;
                 throw exception;
             }
+        }
+
+        for (const [namespace, dataPackage] of dataPackages) {
+            try {
+                this.registerNamespace(namespace);
+                game.registerDataPackage(dataPackage);
+            } catch (exception) {
+                exception.message = `Failed to load mod data from: '${namespace.displayName}'\n\n${exception.message}`;
+                throw exception;
+            }
+        }
+    }
+
+    private registerNamespace(namespace: DataNamespace) {
+        if (!game.registeredNamespaces.hasNamespace(namespace.name)) {
+            game.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
         }
     }
 
@@ -76,5 +83,20 @@ export class Environment {
     private evalGlobal(script: string) {
         // @ts-ignore - needed to bind these to global scope and not the module
         (1, eval)(script);
+    }
+
+    private mockSkill(id: string) {
+        class MockSkill extends Skill<any> {
+            public _media = '';
+            public renderQueue = new SkillRenderQueue();
+
+            constructor(namespace: DataNamespace, game: Game) {
+                super(namespace, id, game);
+            }
+
+            public activeTick() {}
+        }
+
+        return MockSkill;
     }
 }

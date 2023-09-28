@@ -33,12 +33,8 @@ class Zip {
 
     deleteSync('build');
 
-    if (existsSync('.output/src')) {
-        await zip.run('build', '.output/src', `${pkg.name}.${time}.zip`);
-    }
-
-    if (existsSync('.output/core')) {
-        await zip.run('build', '.output/core', `${pkg.name}-core.${time}.zip`);
+    if (existsSync('.output')) {
+        await zip.run('build', '.output', `${pkg.name}.${time}.zip`);
     }
 
     deleteSync('.output');

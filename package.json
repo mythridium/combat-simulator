@@ -4,11 +4,7 @@
     "description": "Melvor Idle mod that adds a combat simulator",
     "scripts": {
         "zip": "ts-node-esm -P tsconfig.node.json tools/zip.mts",
-        "build": "npm run src && npm run core && npm run zip",
-        "build:src": "npm run src && npm run zip",
-        "build:core": "npm run core && npm run zip",
-        "src": "webpack",
-        "core": "webpack --config core/webpack.config.ts"
+        "build": "webpack && npm run zip"
     },
     "author": "Mythridium",
     "main": "manifest.json",
@@ -27,6 +23,7 @@
         "copy-webpack-plugin": "11.0.0",
         "css-loader": "6.8.1",
         "del": "7.1.0",
+        "dexie": "3.2.4",
         "melvor-types": "https://github.com/GamesByMalcsPtyLtd/Melvor-Typing-Project/tarball/bd5611f",
         "sass": "1.67.0",
         "sass-loader": "13.3.2",

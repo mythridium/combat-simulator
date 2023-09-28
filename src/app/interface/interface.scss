@@ -13,3 +13,13 @@
     font-family: consolas;
     white-space: pre;
 }
+
+.mcs-missing-mods {
+    text-align: left;
+    line-height: 1.3rem;
+
+    .text-warning {
+        padding: 10px;
+        border-radius: 5px;
+    }
+}

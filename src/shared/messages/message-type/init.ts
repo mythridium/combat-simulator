@@ -7,5 +7,6 @@ export interface InitRequest {
         toth: boolean;
         aod: boolean;
     };
-    modDataPackages: [DataNamespace, GameDataPackage][];
+    dataPackages: [DataNamespace, GameDataPackage][];
+    skills: [string, DataNamespace][];
 }

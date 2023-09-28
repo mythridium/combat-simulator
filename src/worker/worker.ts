@@ -1,7 +1,6 @@
 import { Logger } from 'src/shared/logger';
 import { Messages } from 'src/shared/messages/messages';
 import { WorkerMock } from './mock';
-import { Environment } from './simulator/environment';
 import { MessageAction } from 'src/shared/messages/message';
 import { Simulator } from './simulator/simulator';
 

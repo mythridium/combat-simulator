@@ -17,9 +17,9 @@ export class Simulator {
 
         this.messages.on(MessageAction.State, async data => {
             console.log(data);
-            this.environment.game.combat.player.computeAllStats();
+            game.combat.player.computeAllStats();
 
-            const stats = this.environment.game.combat.player.stats;
+            const stats = game.combat.player.stats;
 
             this.summaryStore.setState(Source.Worker, {
                 attackInterval: stats.attackInterval,
@@ -34,9 +34,9 @@ export class Simulator {
                 maxHit: stats.maxHit,
                 minHit: stats.minHit,
                 summoningMaxHit: stats.summoningMaxHit,
-                autoEatThreshold: this.environment.game.combat.player.autoEatThreshold,
-                dropDoublingPercentage: this.environment.game.combat.player.modifiers.combatLootDoubleChance,
-                gpMultiplier: this.environment.game.combat.player.modifiers.increasedCombatGP
+                autoEatThreshold: game.combat.player.autoEatThreshold,
+                dropDoublingPercentage: game.combat.player.modifiers.combatLootDoubleChance,
+                gpMultiplier: game.combat.player.modifiers.increasedCombatGP
             });
 
             return this.summaryStore.raw();
