@@ -1,3 +1,8 @@
+v2.1.37
+    fixed carthulu not doubling cartography modifiers
+    fixed inspect dungeon not displaying accurate results for individual monsters within the dungeon
+    fixed negative results being displayed as NaN
+
 v2.1.36
     reverted -fixed simulating a single monster while multiple were enabled would show meaningless data when selecting one of the monsters that did not get simulated-
 

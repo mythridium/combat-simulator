@@ -1021,14 +1021,13 @@ class Simulator {
         return `${dungeonID}-${monsterID}`;
     }
 
-    pushMonsterToQueue(monsterID: string, dungeonID?: string, isSingle?: boolean) {
+    pushMonsterToQueue(monsterID: string, dungeonID?: string) {
         const simID = this.simID(monsterID, dungeonID);
         if (!this.monsterSimData[simID].inQueue) {
             this.monsterSimData[simID].inQueue = true;
             this.simulationQueue.push({
                 monsterID: monsterID,
-                dungeonID: dungeonID,
-                isSingle: isSingle
+                dungeonID: dungeonID
             });
         }
     }
@@ -1050,7 +1049,7 @@ class Simulator {
             const monsterID =
                 this.parent.barMonsterIDs[this.parent.selectedBar];
             if (this.monsterSimFilter[monsterID]) {
-                this.pushMonsterToQueue(monsterID, undefined, true);
+                this.pushMonsterToQueue(monsterID, undefined);
             } else {
                 this.parent.notify(
                     "The selected monster is filtered!",
@@ -1077,15 +1076,14 @@ class Simulator {
                 if (this.parent.isViewingDungeon && this.parent.barSelected) {
                     this.pushMonsterToQueue(
                         this.parent.getSelectedDungeonMonsterID(),
-                        dungeonID,
-                        true
+                        dungeonID
                     );
                     return { dungeonID: dungeonID };
                 }
                 this.micsr.dungeons
                     .getObjectByID(dungeonID)!
                     .monsters.forEach((monster) => {
-                        this.pushMonsterToQueue(monster.id, dungeonID, false);
+                        this.pushMonsterToQueue(monster.id, dungeonID);
                     });
                 return { dungeonID: dungeonID };
             }
@@ -1147,7 +1145,7 @@ class Simulator {
                 return;
             }
             // all checks passed
-            this.pushMonsterToQueue(monster.id, undefined, false);
+            this.pushMonsterToQueue(monster.id, undefined);
             this.slayerTaskMonsters[taskName].push(monster);
         });
     }
@@ -1165,13 +1163,13 @@ class Simulator {
         this.micsr.combatAreas.forEach((area) => {
             area.monsters.forEach((monster) => {
                 if (this.monsterSimFilter[monster.id]) {
-                    this.pushMonsterToQueue(monster.id, undefined, false);
+                    this.pushMonsterToQueue(monster.id, undefined);
                 }
             });
         });
         // Wandering Bard
         if (this.monsterSimFilter[this.micsr.bardID]) {
-            this.pushMonsterToQueue(this.micsr.bardID, undefined, false);
+            this.pushMonsterToQueue(this.micsr.bardID, undefined);
         }
         // Queue simulation of monsters in slayer areas
         this.micsr.slayerAreas.forEach((area) => {
@@ -1194,7 +1192,7 @@ class Simulator {
             }
             area.monsters.forEach((monster) => {
                 if (this.monsterSimFilter[monster.id]) {
-                    this.pushMonsterToQueue(monster.id, undefined, false);
+                    this.pushMonsterToQueue(monster.id, undefined);
                 }
             });
         });
@@ -1203,7 +1201,7 @@ class Simulator {
             if (this.dungeonSimFilter[dungeon.id]) {
                 for (let j = 0; j < dungeon.monsters.length; j++) {
                     const monster = dungeon.monsters[j];
-                    this.pushMonsterToQueue(monster.id, dungeon.id, false);
+                    this.pushMonsterToQueue(monster.id, dungeon.id);
                 }
             }
         });
@@ -1451,7 +1449,6 @@ class Simulator {
         ) {
             const monsterID = this.simulationQueue[this.currentJob].monsterID;
             const dungeonID = this.simulationQueue[this.currentJob].dungeonID;
-            const isSingle = this.simulationQueue[this.currentJob].isSingle;
             const saveString = this.micsr.game.generateSaveStringSimple();
             // debugger;
             this.simulationWorkers[workerID].worker.postMessage({
@@ -1460,8 +1457,7 @@ class Simulator {
                 dungeonID: dungeonID,
                 saveString: saveString,
                 trials: this.micsr.trials,
-                maxTicks: this.micsr.maxTicks,
-                isSingle: isSingle
+                maxTicks: this.micsr.maxTicks
             });
             this.simulationWorkers[workerID].inUse = true;
             this.currentJob++;

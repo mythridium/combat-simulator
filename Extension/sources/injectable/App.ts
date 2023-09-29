@@ -1516,8 +1516,8 @@ class App {
         ).style.display = "none";
     }
 
-    createCartographySelectCards() {
-        const data: { [key: string]: string[] } = {};
+    getCartographyPointsOfInterest() {
+        const data: { [key: string]: any[] } = {};
         // @ts-ignore
         const maps: any[] = this.game.cartography.worldMaps.filter(map => map.pointsOfInterest.some(poi => poi.activeModifiers));
 
@@ -1530,6 +1530,12 @@ class App {
                 }
             });
         });
+
+        return { data, maps };
+    }
+
+    createCartographySelectCards() {
+        const { data, maps } = this.getCartographyPointsOfInterest();
 
         this.cartographySelectCard = this.mainTabCard.addPremadeTab(
             "Cartography",
@@ -1627,6 +1633,24 @@ class App {
         return card;
     }
 
+    getPointOfInterestTooltip(poi: any) {
+        let tooltip = `<div class="text-center mb-1">${poi.name}</div>`;
+
+        const posMult = (<any>this.game).cartography.hasCarthuluPet ? 2 : 1;
+
+        const descriptions = getSpansFromModifierObject(poi.activeModifiers, 1, posMult);
+
+        tooltip += '<div class="justify-vertical-center font-size-xs text-center">';
+
+        descriptions.forEach(description => {
+            tooltip += description.outerHTML;
+        });
+
+        tooltip += '</div>';
+
+        return tooltip;
+    }
+
     createCartographySelectCard(
         card: Card,
         pointsOfInterest: any[]
@@ -1634,23 +1658,7 @@ class App {
         const poiImages = pointsOfInterest.map(poi => poi.media);
         const poiNames = pointsOfInterest.map(poi => poi.localID);
         const poiCallbacks = pointsOfInterest.map(poi => (event: any) => this.cartographyImageButtonOnClick(event, poi));
-        const tooltips = pointsOfInterest.map(poi => {
-            let tooltip = `<div class="text-center mb-1">${poi.name}</div>`;
-
-            const posMult = (<any>this.game).cartography.hasCarthuluPet ? 2 : 1;
-
-            const descriptions = getSpansFromModifierObject(poi.activeModifiers, 1, posMult);
-
-            tooltip += '<div class="justify-vertical-center font-size-xs text-center">';
-
-            descriptions.forEach(description => {
-                tooltip += description.outerHTML;
-            });
-
-            tooltip += '</div>';
-
-            return tooltip;
-        });
+        const tooltips = pointsOfInterest.map(poi => this.getPointOfInterestTooltip(poi));
 
         card.addImageButtons(
             poiImages,
@@ -3498,20 +3506,46 @@ class App {
      * @param {Pet} pet
      */
     petButtonOnClick(event: any, pet: Pet) {
-        const realPet = this.actualGame.pets.getObjectByID(pet.id);
+        const realPet = this.actualGame.pets.getObjectByID(pet.id)!;
 
-        if (this.player.petUnlocked.includes(pet)) {
+        if (this.game.petManager['unlocked'].has(pet)) {
+            this.game.petManager['unlocked'].delete(pet);
             this.game.petManager['unlocked'].delete(realPet);
             this.player.petUnlocked = this.player.petUnlocked.filter(
-                (unlockedPet) => unlockedPet !== pet
+                (unlockedPet) => unlockedPet.id !== pet.id
             );
             this.unselectButton(event.currentTarget);
         } else {
+
             this.game.petManager['unlocked'].add(realPet);
+            this.game.petManager['unlocked'].add(pet);
+            this.player.petUnlocked.push(realPet);
             this.player.petUnlocked.push(pet);
             this.selectButton(event.currentTarget);
         }
+        this.updateCartographyTooltips(pet);
         this.updateCombatStats();
+    }
+
+    updateCartographyTooltips(pet?: Pet) {
+        if (pet && pet.localID !== 'MapMasteryPet') {
+            return;
+        }
+
+        const { data, maps } = this.getCartographyPointsOfInterest();
+
+        for (const map of maps) {
+            const pois = data[map.localID];
+
+            for (const poi of pois) {
+                const button = document.getElementById(`MCS ${poi.localID} Button`);
+
+                if (button) {
+                    (button as any)._tippy.setContent(this.getPointOfInterestTooltip(poi));
+                    (button as any)._tippy.hide();
+                }
+            }
+        }
     }
 
     /**

@@ -28,6 +28,10 @@ class Util {
      * @return {string}
      */
     static mcsFormatNum(number: any, digits: any): string {
+        const isNegative = number < 0;
+        if (isNegative) {
+            number = Math.abs(number);
+        }
         let output = number.toPrecision(digits);
         let end = '';
         if (output.includes('e+')) {
@@ -41,8 +45,12 @@ class Util {
                 end = `e${powerCount * 3}`;
             }
         }
+
         // @ts-expect-error TS(2554): Expected 0 arguments, but got 2.
-        return `${+parseFloat(output).toFixed(6).toLocaleString(undefined, { minimumSignificantDigits: digits })}${end}`;
+        output = parseFloat(output).toFixed(6).toLocaleString(undefined, { minimumSignificantDigits: digits });
+        output = isNegative ? -output : +output;
+
+        return `${output}${end}`;
     }
 
     /**

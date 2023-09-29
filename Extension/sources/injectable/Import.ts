@@ -558,13 +558,16 @@ class Import {
         // Import pets
         petUnlocked.forEach((petID) => {
             const pet = this.app.game.pets.getObjectByID(petID)!;
+            const realPet = this.app.actualGame.pets.getObjectByID(petID)!;
 
             if (!pet) {
                 return;
             }
 
             this.app.game.petManager['unlocked'].add(pet);
-            this.simPlayer.petUnlocked.push(pet);
+            this.app.game.petManager['unlocked'].add(realPet);
+            this.app.player.petUnlocked.push(pet);
+            this.app.player.petUnlocked.push(realPet);
             this.app.selectButton(
                 this.document.getElementById(`MCS ${pet.name} Button`)
             );
@@ -727,6 +730,7 @@ class Import {
         }
 
         if (didUpdate) {
+            this.app.updateCartographyTooltips();
             cartography.computeProvidedStats(false);
         }
     }
