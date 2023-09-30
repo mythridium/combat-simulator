@@ -11,6 +11,10 @@ declare global {
     interface Window {
         cloudManager: CloudManager;
     }
+
+    interface WorkerGlobalScope {
+        cloudManager: CloudManager;
+    }
 }
 
 export {};

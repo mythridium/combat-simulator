@@ -2,9 +2,11 @@ import { GameState } from 'src/app/state/game';
 import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 import { Source } from 'src/shared/stores/sync.store';
 import { ButtonComponent } from './blocks/button-component';
+import { Workers } from 'src/app/workers/workers';
+import { MessageAction } from 'src/shared/messages/message';
 
 export class EquipmentComponent extends BaseComponent {
-    constructor(private readonly state: GameState) {
+    constructor(private readonly state: GameState, private readonly workers: Workers) {
         super({
             tag: 'div',
             id: 'mcs-equipment-container',
@@ -23,7 +25,15 @@ export class EquipmentComponent extends BaseComponent {
             }
         });
 
-        this.append(button);
+        const simulateButton = new ButtonComponent({
+            id: 'simulate',
+            content: 'Simulate',
+            onClick: async () => {
+                await this.workers.send({ action: MessageAction.Simulate, data: undefined });
+            }
+        });
+
+        this.append(button, simulateButton);
 
         super.preRender(container);
     }

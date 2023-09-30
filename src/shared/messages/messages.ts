@@ -21,7 +21,10 @@ export class Messages {
     private readonly messages = new Map<number, [Function, Function]>();
     private readonly registrations = new Map<MessageAction, MessageCallback<any>>();
 
-    constructor(private readonly self: Window | Worker, private readonly logger: Logger) {
+    constructor(
+        private readonly self: Worker | (WorkerGlobalScope & typeof globalThis),
+        private readonly logger: Logger
+    ) {
         this.listen();
     }
 

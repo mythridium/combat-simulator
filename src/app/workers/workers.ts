@@ -21,7 +21,7 @@ export class Workers {
         private readonly state: GameState
     ) {
         this.url = this.context.getResourceUrl('src/worker.mjs');
-        const threads = Math.max(navigator.hardwareConcurrency - 1, 1);
+        const threads = self.mcs.isDebug ? 1 : Math.max(navigator.hardwareConcurrency - 1, 1);
 
         for (let i = 0; i < threads; i++) {
             const worker = new WebWorker(this.url, this.logger);

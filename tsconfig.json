@@ -15,7 +15,7 @@
             "src/*": ["src/*"]
         }
     },
-    "include": ["src", "core", "node_modules/melvor-types"],
+    "include": ["src", "node_modules/melvor-types"],
     "ts-node": {
         "compilerOptions": {
             "module": "CommonJS"

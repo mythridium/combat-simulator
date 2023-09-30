@@ -8,5 +8,4 @@ export interface InitRequest {
         aod: boolean;
     };
     dataPackages: [DataNamespace, GameDataPackage][];
-    skills: [string, DataNamespace][];
 }

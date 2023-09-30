@@ -8,13 +8,13 @@ declare global {
         mcs: MythCombatSimulator;
     }
 
-    interface Worker {
+    interface WorkerGlobalScope {
         mcs: MythCombatSimulator;
     }
 }
 
 self.mcs = {
-    isDebug: false,
+    isDebug: true,
     isVerbose: true
 };
 

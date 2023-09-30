@@ -1,4 +1,5 @@
 import { InitRequest } from 'src/shared/messages/message-type/init';
+import { Global } from 'src/worker/global';
 
 export class Environment {
     public async init(data: InitRequest) {
@@ -13,56 +14,49 @@ export class Environment {
             setStatus: () => {}
         };
 
-        self.cloudManager = cloudManager;
+        Global.this.cloudManager = cloudManager;
 
         this.evalGlobal(`
-            Minibar = class Minibar {};
+            Minibar = class Minibar {
+                encode() {};
+                decode() {};
+            };
             loadedLangJson = {};
         `);
 
         const { SimGame } = await import(/* webpackMode: "eager" */ 'src/worker/simulator/sim-game');
 
-        (<any>self).game = new SimGame();
+        (<any>self).game = Global.game = new SimGame();
 
         this.evalGlobal(`game = self.game;`);
 
         await this.loadData(data.origin);
-        this.loadModData(data.dataPackages, data.skills);
+        this.loadDataPackages(data.dataPackages);
     }
 
     private async loadData(origin: string) {
         const url = (file: string) => `${origin}/assets/data/${file}.json?${DATA_VERSION}`;
 
-        await game.fetchAndRegisterDataPackage(url('melvorDemo'));
+        await Global.game.fetchAndRegisterDataPackage(url('melvorDemo'));
 
-        if (cloudManager.hasFullVersionEntitlement) {
-            await game.fetchAndRegisterDataPackage(url('melvorFull'));
+        if (self.cloudManager.hasFullVersionEntitlement) {
+            await Global.game.fetchAndRegisterDataPackage(url('melvorFull'));
 
-            if (cloudManager.hasTotHEntitlement) {
-                await game.fetchAndRegisterDataPackage(url('melvorTotH'));
+            if (self.cloudManager.hasTotHEntitlement) {
+                await Global.game.fetchAndRegisterDataPackage(url('melvorTotH'));
             }
 
-            if (cloudManager.hasAoDEntitlement) {
-                await game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
+            if (self.cloudManager.hasAoDEntitlement) {
+                await Global.game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
             }
         }
     }
 
-    private loadModData(dataPackages: [DataNamespace, GameDataPackage][], skills: [string, DataNamespace][]) {
-        for (const [id, namespace] of skills) {
-            try {
-                this.registerNamespace(namespace);
-                game.registerSkill(namespace, this.mockSkill(id));
-            } catch (exception) {
-                exception.message = `Failed to load register mod skill from: '${namespace.displayName}'\n\n${exception.message}`;
-                throw exception;
-            }
-        }
-
+    private loadDataPackages(dataPackages: [DataNamespace, GameDataPackage][]) {
         for (const [namespace, dataPackage] of dataPackages) {
             try {
                 this.registerNamespace(namespace);
-                game.registerDataPackage(dataPackage);
+                Global.game.registerDataPackage(dataPackage);
             } catch (exception) {
                 exception.message = `Failed to load mod data from: '${namespace.displayName}'\n\n${exception.message}`;
                 throw exception;
@@ -72,7 +66,11 @@ export class Environment {
 
     private registerNamespace(namespace: DataNamespace) {
         if (!game.registeredNamespaces.hasNamespace(namespace.name)) {
-            game.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
+            Global.game.registeredNamespaces.registerNamespace(
+                namespace.name,
+                namespace.displayName,
+                namespace.isModded
+            );
         }
     }
 
@@ -83,20 +81,5 @@ export class Environment {
     private evalGlobal(script: string) {
         // @ts-ignore - needed to bind these to global scope and not the module
         (1, eval)(script);
-    }
-
-    private mockSkill(id: string) {
-        class MockSkill extends Skill<any> {
-            public _media = '';
-            public renderQueue = new SkillRenderQueue();
-
-            constructor(namespace: DataNamespace, game: Game) {
-                super(namespace, id, game);
-            }
-
-            public activeTick() {}
-        }
-
-        return MockSkill;
     }
 }

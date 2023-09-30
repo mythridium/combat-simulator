@@ -11,11 +11,11 @@ export class WebWorker {
     private readonly simulator: Simulator;
     private readonly messages: Messages;
 
-    constructor(private readonly worker: Worker, private readonly logger: Logger) {
-        WorkerMock.mock(this.worker);
+    constructor(private readonly worker: WorkerGlobalScope & typeof globalThis, private readonly logger: Logger) {
+        WorkerMock.mock();
 
         this.messages = new Messages(this.worker, this.logger);
-        this.simulator = new Simulator(this.messages);
+        this.simulator = new Simulator(this.messages, this.logger);
 
         this.messages.on(MessageAction.Init, async data => {
             this.workerId = data.workerId;

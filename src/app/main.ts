@@ -10,7 +10,6 @@ export class App {
     private readonly logger = new Logger('Client', Color.Green);
     private readonly modalQueue: ModalQueue;
     private readonly dataPackages: [DataNamespace, GameDataPackage][] = [];
-    private readonly skills: [string, DataNamespace][] = [];
 
     private workers: Workers;
     private interface: Interface;
@@ -28,7 +27,7 @@ export class App {
             const state = new GameState();
 
             this.workers = new Workers(this.context, this.logger, this.modalQueue, state);
-            this.interface = new Interface(this.context, state);
+            this.interface = new Interface(this.context, state, this.workers);
 
             await this.init();
         });
@@ -49,8 +48,7 @@ export class App {
                 toth: cloudManager.hasTotHEntitlement,
                 aod: cloudManager.hasAoDEntitlement
             },
-            dataPackages: this.dataPackages,
-            skills: this.skills
+            dataPackages: this.dataPackages
         });
 
         if (isInitialised) {
@@ -67,10 +65,6 @@ export class App {
             }
 
             this.dataPackages.push([namespace, dataPackage]);
-        });
-
-        this.context.patch(Game, 'registerSkill').after((instance, namespace) => {
-            this.skills.push([instance.localID, namespace]);
         });
     }
 
