@@ -10,6 +10,7 @@ export class App {
     private readonly logger = new Logger('Client', Color.Green);
     private readonly modalQueue: ModalQueue;
     private readonly dataPackages: [DataNamespace, GameDataPackage][] = [];
+    private readonly invalidNamespace: DataNamespace[] = [];
 
     private workers: Workers;
     private interface: Interface;
@@ -20,6 +21,7 @@ export class App {
         this.modalQueue = new ModalQueue(this.context);
 
         this.context.onInterfaceReady(async () => {
+            this.checkDataPackagesForInvalidData();
             await this.checkDataPackages();
 
             this.logger.log('Client Loaded');
@@ -68,6 +70,27 @@ export class App {
         });
     }
 
+    /** Ignore all data packages that introduce custom skills. */
+    private checkDataPackagesForInvalidData() {
+        const moddedSkills = game.skills.filter(skill => skill.isModded).map(skill => skill.namespace);
+        const dataPackages: [DataNamespace, GameDataPackage][] = [];
+
+        for (const [namespace, dataPackage] of this.dataPackages) {
+            if (moddedSkills.includes(namespace.name)) {
+                if (!this.invalidNamespace.some(invalidNamespace => invalidNamespace.name === namespace.name)) {
+                    this.invalidNamespace.push(namespace);
+                }
+
+                continue;
+            }
+
+            dataPackages.push([namespace, dataPackage]);
+        }
+
+        this.dataPackages.length = 0;
+        this.dataPackages.push(...dataPackages);
+    }
+
     private async checkDataPackages() {
         const db = new MelvorDatabase();
         const mods = await db.mods.toArray();
@@ -83,7 +106,8 @@ export class App {
             namespace =>
                 namespace.isModded &&
                 !dependencies.includes(namespace.name) &&
-                !localMods.some(mod => mod.mod.namespace === namespace.name)
+                !localMods.some(mod => mod.mod.namespace === namespace.name && mod.disabled === false) &&
+                !this.invalidNamespace.some(invalidNamespace => invalidNamespace.name === namespace.name)
         );
 
         // namespaces for the mods that we managed to capture in time
