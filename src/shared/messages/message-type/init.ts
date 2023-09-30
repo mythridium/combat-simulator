@@ -8,4 +8,5 @@ export interface InitRequest {
         aod: boolean;
     };
     dataPackages: [DataNamespace, GameDataPackage][];
+    modifierData: string;
 }

@@ -20,7 +20,6 @@ export class SimGame extends Game {
         this.bank.addItem = () => true;
         this.bank.hasItem = () => true;
         this.bank.getQty = () => 1e6;
-
         this.completion.render = () => {};
         this.gp.render = () => {};
         this.slayerCoins.render = () => {};

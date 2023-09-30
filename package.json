@@ -14,11 +14,13 @@
     },
     "homepage": "https://github.com/mythridium/combat-simulator",
     "dependencies": {
+        "buffer": "6.0.3",
         "domino": "2.1.6"
     },
     "devDependencies": {
         "@types/archiver": "5.3.2",
         "@types/jquery": "3.5.19",
+        "@types/serialize-javascript": "5.0.2",
         "archiver": "6.0.1",
         "copy-webpack-plugin": "11.0.0",
         "css-loader": "6.8.1",
@@ -27,6 +29,7 @@
         "melvor-types": "https://github.com/GamesByMalcsPtyLtd/Melvor-Typing-Project/tarball/bd5611f",
         "sass": "1.67.0",
         "sass-loader": "13.3.2",
+        "serialize-javascript": "6.0.1",
         "style-loader": "3.3.3",
         "sweetalert2": "11.6.13",
         "terser-webpack-plugin": "5.3.9",

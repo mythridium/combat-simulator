@@ -1,6 +1,12 @@
 import { InitRequest } from 'src/shared/messages/message-type/init';
 import { Global } from 'src/worker/global';
 
+declare global {
+    interface WorkerGlobalScope {
+        tempModifierData?: ModifierObject<SkillModifierTemplate, StandardModifierTemplate>;
+    }
+}
+
 export class Environment {
     public async init(data: InitRequest) {
         importScripts(...data.scripts);
@@ -30,8 +36,10 @@ export class Environment {
 
         this.evalGlobal(`game = self.game;`);
 
+        this.applyModifierData(data.modifierData);
+
         await this.loadData(data.origin);
-        this.loadDataPackages(data.dataPackages);
+        this.loadModDataPackages(data.dataPackages);
     }
 
     private async loadData(origin: string) {
@@ -52,7 +60,7 @@ export class Environment {
         }
     }
 
-    private loadDataPackages(dataPackages: [DataNamespace, GameDataPackage][]) {
+    private loadModDataPackages(dataPackages: [DataNamespace, GameDataPackage][]) {
         for (const [namespace, dataPackage] of dataPackages) {
             try {
                 this.registerNamespace(namespace);
@@ -62,6 +70,19 @@ export class Environment {
                 throw exception;
             }
         }
+    }
+
+    private applyModifierData(modifierDataAsString: string) {
+        eval(`self.tempModifierData = (${modifierDataAsString})`);
+
+        for (const [key, value] of Object.entries(Global.this.tempModifierData)) {
+            if (!modifierData[key]) {
+                (<any>modifierData)[key] = value;
+            }
+        }
+
+        // no reason to keep this in memory, never using again.
+        delete Global.this.tempModifierData;
     }
 
     private registerNamespace(namespace: DataNamespace) {

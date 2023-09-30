@@ -5,24 +5,24 @@ import { Workers } from './workers/workers';
 import { Interface } from './interface/interface';
 import { GameState } from './state/game';
 import { ModalQueue } from './interface/modal-queue';
+import { Mods } from './mods';
 
 export class App {
     private readonly logger = new Logger('Client', Color.Green);
     private readonly modalQueue: ModalQueue;
-    private readonly dataPackages: [DataNamespace, GameDataPackage][] = [];
-    private readonly invalidNamespace: DataNamespace[] = [];
+    private readonly mods: Mods;
 
     private workers: Workers;
     private interface: Interface;
 
     constructor(private readonly context: Modding.ModContext) {
-        this.patch();
-
         this.modalQueue = new ModalQueue(this.context);
+        this.mods = new Mods(this.context, this.modalQueue);
+        this.mods.init();
 
         this.context.onInterfaceReady(async () => {
-            this.checkDataPackagesForInvalidData();
-            await this.checkDataPackages();
+            this.mods.checkDataPackagesForInvalidData();
+            await this.mods.checkDataPackages();
 
             this.logger.log('Client Loaded');
 
@@ -50,84 +50,12 @@ export class App {
                 toth: cloudManager.hasTotHEntitlement,
                 aod: cloudManager.hasAoDEntitlement
             },
-            dataPackages: this.dataPackages
+            dataPackages: this.mods.dataPackages,
+            modifierData: this.mods.modifierDataToJson()
         });
 
         if (isInitialised) {
             this.interface.init();
-        }
-    }
-
-    private patch() {
-        this.context.patch(Game, 'registerDataPackage').after((_, dataPackage) => {
-            const namespace = game.registeredNamespaces.getNamespace(dataPackage.namespace);
-
-            if (!namespace.isModded) {
-                return;
-            }
-
-            this.dataPackages.push([namespace, dataPackage]);
-        });
-    }
-
-    /** Ignore all data packages that introduce custom skills. */
-    private checkDataPackagesForInvalidData() {
-        const moddedSkills = game.skills.filter(skill => skill.isModded).map(skill => skill.namespace);
-        const dataPackages: [DataNamespace, GameDataPackage][] = [];
-
-        for (const [namespace, dataPackage] of this.dataPackages) {
-            if (moddedSkills.includes(namespace.name)) {
-                if (!this.invalidNamespace.some(invalidNamespace => invalidNamespace.name === namespace.name)) {
-                    this.invalidNamespace.push(namespace);
-                }
-
-                continue;
-            }
-
-            dataPackages.push([namespace, dataPackage]);
-        }
-
-        this.dataPackages.length = 0;
-        this.dataPackages.push(...dataPackages);
-    }
-
-    private async checkDataPackages() {
-        const db = new MelvorDatabase();
-        const mods = await db.mods.toArray();
-        const localMods = await db.localMods.toArray();
-
-        // namespaces for mods that are flagged as a dependency
-        const dependencies = mods
-            .filter(mod => mod.namespace && mod.tags.types.includes('Dependency'))
-            .map(mod => mod.namespace);
-
-        // namespaces for all registered namespaces that are not dependencies and are mods
-        const registeredNamespaces = Array.from(game.registeredNamespaces.registeredNamespaces.values()).filter(
-            namespace =>
-                namespace.isModded &&
-                !dependencies.includes(namespace.name) &&
-                !localMods.some(mod => mod.mod.namespace === namespace.name && mod.disabled === false) &&
-                !this.invalidNamespace.some(invalidNamespace => invalidNamespace.name === namespace.name)
-        );
-
-        // namespaces for the mods that we managed to capture in time
-        const modNamespaces = Array.from(this.dataPackages.values()).map(([namespace]) => namespace.name);
-
-        // did any mods that are not dependencies get registered that we didn't see
-        const missingNamespaces = registeredNamespaces
-            .filter(namespace => modNamespaces.includes(namespace.name))
-            .map(namespace => namespace.displayName);
-
-        if (missingNamespaces?.length) {
-            this.modalQueue.add(
-                `
-                <div class="mcs-missing-mods text-combat-smoke">
-                    <div mt-3>[Myth] Combat Simulator may be missing modded content data and needs to be at the top of your mod load order.</div>
-                    <div class="text-warning block-rounded-double bg-combat-inner-dark mt-4">Move <span class="text-combat-smoke">[Myth] Combat Simulator</span> to the top of your mod load order. Alternatively, unsubscribe and re-subscribe to automatically move the mod to the top.</div>
-                </div>
-                `,
-                false
-            );
         }
     }
 }
