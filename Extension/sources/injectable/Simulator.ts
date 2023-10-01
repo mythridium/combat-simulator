@@ -1327,6 +1327,7 @@ class Simulator {
             "ammoUsedPerSecond",
             "runesUsedPerSecond",
             "combinationRunesUsedPerSecond",
+            "usedConsumablesPerSecond",
             "potionsUsedPerSecond",
             "tabletsUsedPerSecond",
             "atePerSecond",

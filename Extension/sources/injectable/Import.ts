@@ -93,6 +93,7 @@ interface IImportSettings {
     healAfterDeath: boolean;
     isManualEating: boolean;
     isSolarEclipse: boolean;
+    isSynergyUnlocked: boolean;
     isSlayerTask: boolean;
     pillarID: string;
     pillarEliteID: string;
@@ -230,6 +231,7 @@ class Import {
             healAfterDeath: this.simPlayer.healAfterDeath,
             isManualEating: this.simPlayer.isManualEating,
             isSolarEclipse: this.simPlayer.isSolarEclipse,
+            isSynergyUnlocked: this.simPlayer.isSynergyUnlocked,
             isSlayerTask: this.simPlayer.isSlayerTask,
             pillarID: actualGame.agility['builtPassivePillar']?.id || "",
             pillarEliteID: actualGame.agility['builtElitePassivePillar']?.id || "",
@@ -303,6 +305,7 @@ class Import {
             healAfterDeath: this.simPlayer.healAfterDeath,
             isManualEating: this.simPlayer.isManualEating,
             isSolarEclipse: this.simPlayer.isSolarEclipse,
+            isSynergyUnlocked: this.simPlayer.isSynergyUnlocked,
             isSlayerTask: this.simPlayer.isSlayerTask,
             pillarID: this.simPlayer.pillarID,
             pillarEliteID: this.simPlayer.pillarEliteID,
@@ -333,6 +336,7 @@ class Import {
         //     }
         // }
         // import settings
+        this.simPlayer.isSynergyUnlocked = true;
         this.importLevels(settings.levels);
         this.importEquipment(settings.equipment);
         this.importStyle(settings.styles);

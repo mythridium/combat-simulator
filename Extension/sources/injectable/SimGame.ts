@@ -381,6 +381,10 @@ class SimGame extends Game {
             // @ts-expect-error
             skill.levelUp = () => null;
         });
+
+        this.summoning.isSynergyUnlocked = () => {
+            return this.combat.player.isSynergyUnlocked;
+        }
     }
 
     postDataRegistration() {
@@ -538,25 +542,6 @@ class SimGame extends Game {
         this.potions.computeProvidedStats(false);
         this.shop.computeProvidedStats(false);
         this.combat.player.computeAllStats();
-    }
-
-    constructEventMatcher(data: GameEventMatcherData): GameEventMatcher {
-        switch (data.type) {
-            case "EnemyAttack":
-            case "FoodEaten":
-            case "MonsterDrop":
-            case "MonsterKilled":
-            case "PlayerAttack":
-            case "PlayerHitpointRegeneration":
-            case "PlayerSummonAttack":
-            case "PotionChargeUsed":
-            case "PotionUsed":
-            case "PrayerPointConsumption":
-            case "RuneConsumption":
-            case "SummonTabletUsed":
-                return super.constructEventMatcher(data);
-        }
-        return new CustomEventMatcher();
     }
 
     checkRequirements(

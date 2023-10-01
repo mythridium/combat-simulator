@@ -194,6 +194,7 @@ class App {
             "Comb. Runes/"
         );
         addPlotOption("Potions per ", true, "potionsUsedPerSecond", "Potions/");
+        addPlotOption("Consumables per ", true, "usedConsumablesPerSecond", "Consumables/");
         addPlotOption(
             "Tablets per type per ",
             true,
@@ -619,7 +620,7 @@ class App {
             return;
         }
         const synergy = this.player.equippedSummoningSynergy;
-        if (synergy) {
+        if (synergy && this.player.isSynergyUnlocked) {
             (img as any).src = this.media.synergy;
         } else {
             (img as any).src = this.media.synergyLock;
@@ -697,6 +698,7 @@ class App {
                 this.media.synergyLock,
                 "Summoning Synergy",
                 () => {
+                    this.game.combat.player.isSynergyUnlocked = !this.game.combat.player.isSynergyUnlocked;
                     this.setSummoningSynergyText();
                     this.updateCombatStats();
                 },

@@ -481,11 +481,7 @@ class Loot {
             return drop.maxQuantity;
         }
         // avg qty = min + (max - min + 1) / (max - min)
-        return (
-            drop.minQuantity +
-            (drop.maxQuantity - drop.minQuantity + 1) /
-                (drop.maxQuantity - drop.minQuantity)
-        );
+        return Math.floor(new Array(1000).fill(0).map(() => rollInteger(drop.minQuantity, drop.maxQuantity)).reduce((a, b) => a + b) / 1000)
     }
 
     addLoot(lootTable: any) {

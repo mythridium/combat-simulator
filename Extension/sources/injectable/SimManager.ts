@@ -30,6 +30,7 @@ interface ISimGains {
     usedRunesBreakdown: { [index: string]: number };
     usedRunes: number;
     usedCombinationRunes: number;
+    usedConsumables: number;
     usedFood: number;
     usedPotions: number;
     usedPrayerPoints: number;
@@ -69,6 +70,7 @@ interface ISimResult {
     runesUsedPerSecond: number;
     usedRunesBreakdown: any;
     combinationRunesUsedPerSecond: number;
+    usedConsumablesPerSecond: number
     potionsUsedPerSecond: number;
     tabletsUsedPerSecond: number;
     atePerSecond: number;
@@ -174,7 +176,6 @@ class SimManager extends CombatManager {
 
     // create new Sim Enemy
     createNewEnemy() {
-        this.enemy = new SimEnemy(this, this.game);
         this.enemy.setMonster(this.selectedMonster);
         if (
             this.selectedArea instanceof Dungeon &&
@@ -300,6 +301,7 @@ class SimManager extends CombatManager {
             runesUsedPerSecond: gps.usedRunes,
             usedRunesBreakdown: gps.usedRunesBreakdown,
             combinationRunesUsedPerSecond: gps.usedCombinationRunes,
+            usedConsumablesPerSecond: gps.usedConsumables,
             potionsUsedPerSecond: gps.usedPotions,
             tabletsUsedPerSecond: gps.usedSummoningCharges,
             atePerSecond: gps.usedFood,

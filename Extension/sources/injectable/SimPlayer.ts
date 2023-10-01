@@ -43,6 +43,7 @@ class SimPlayer extends Player {
     highestDamageTaken: any;
     isManualEating: any;
     isSolarEclipse: boolean;
+    isSynergyUnlocked: boolean;
     isSlayerTask: boolean;
     lowestHitpoints: any;
     petRolls: any;
@@ -57,6 +58,7 @@ class SimPlayer extends Player {
     usedFood: number;
     usedPotions: number;
     usedPrayerPoints: number;
+    usedConsumables: number;
     usedRunes: { [index: string]: number };
     monsterSpawnTimer: number;
 
@@ -95,6 +97,7 @@ class SimPlayer extends Player {
         this.isSlayerTask = false;
         this.isManualEating = false;
         this.isSolarEclipse = false;
+        this.isSynergyUnlocked = true;
         // runes in bank
         this.hasRunes = true;
 
@@ -107,6 +110,7 @@ class SimPlayer extends Player {
         this.usedRunes = {};
         this.usedPotions = 0;
         this.usedPrayerPoints = 0;
+        this.usedConsumables = 0;
         this.chargesUsed = {
             Summon1: 0,
             Summon2: 0,
@@ -132,6 +136,7 @@ class SimPlayer extends Player {
                 "healAfterDeath",
                 "isManualEating",
                 "isSolarEclipse",
+                "isSynergyUnlocked",
                 "isSlayerTask",
                 "hasRunes",
             ],
@@ -273,6 +278,9 @@ class SimPlayer extends Player {
                     case "Summon2":
                         this.chargesUsed[slot] += quantity;
                         break;
+                    case "Consumable":
+                        this.usedConsumables += quantity;
+                        break;
                 }
                 return false;
             };
@@ -305,6 +313,7 @@ class SimPlayer extends Player {
         this.usedRunes = {};
         this.usedPotions = 0;
         this.usedPrayerPoints = 0;
+        this.usedConsumables = 0;
         this.chargesUsed = {
             Summon1: 0,
             Summon2: 0,
@@ -361,6 +370,7 @@ class SimPlayer extends Player {
             usedRunesBreakdown: usedRunesBreakdown,
             usedRunes: usedRunes,
             usedCombinationRunes: usedCombinationRunes,
+            usedConsumables: this.usedConsumables / seconds,
             usedFood: this.usedFood / seconds,
             usedPotions: this.usedPotions / seconds,
             usedPrayerPoints: this.usedPrayerPoints / seconds,
@@ -589,10 +599,13 @@ class SimPlayer extends Player {
     render() {}
 
     // track prayer point usage instead of consuming
-    consumePrayerPoints(amount: any) {
+    // @ts-ignore
+    consumePrayerPoints(amount: any, isUnholy: boolean) {
         if (amount > 0) {
-            amount = this.applyModifiersToPrayerCost(amount);
+            amount = (<any>this).applyModifiersToPrayerCost(amount, isUnholy);
             this.usedPrayerPoints += amount;
+            const event = new (<any>PrayerPointConsumptionEvent)(amount, isUnholy);
+            (<any>this)._events.emit('prayerPointsUsed', event);
         }
     }
 

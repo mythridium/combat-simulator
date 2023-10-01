@@ -1,3 +1,9 @@
+v2.1.38
+    fixed gp result of items that drop with a quantity of more than one
+    fixed combination runes not being displayed in results
+    added consumables to summary, which shows how many items from the consumable slot are used
+    added the ability to enable or disable summoning synergies by clicking the synergy icon, this defaults to enabled and ignores actual synergy mark levels on your character, import will reset to enabled
+
 v2.1.37
     fixed carthulu not doubling cartography modifiers
     fixed inspect dungeon not displaying accurate results for individual monsters within the dungeon
