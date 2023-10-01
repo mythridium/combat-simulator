@@ -1,3 +1,6 @@
+v2.1.41
+    added support for 'chance to receive no combat drops from monsters or dungeons' modifier on items such as Ring of Deception, this modifier is bugged and only stops drops from dungeons, the sim mimics this behaviour, I'll need to fix after this is fixed in game
+
 v2.1.40
     adjusted tooltip delay to feel more responsive
 

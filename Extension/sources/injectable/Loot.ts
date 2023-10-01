@@ -30,6 +30,7 @@ class Loot {
     convertShards: any;
     godDungeonIDs: any;
     lootBonus: any;
+    noLoot: number;
     modifiers: any;
     petSkill: any;
     player: any;
@@ -48,6 +49,8 @@ class Loot {
             this.app.combatData.combatStats.lootBonusPercent
         );
 
+        this.noLoot = this.getNoLootChance();
+
         // Pet Settings
         this.petSkill = "Attack";
         // Options for GP/s calculations
@@ -63,14 +66,18 @@ class Loot {
         this.computingAlchCount = false;
     }
 
+    getNoLootChance() {
+        return 1 - (this.player.modifiers.increasedChanceToReceiveNoCombatDrops / 100);
+    }
+
     /**
      * Computes the chance that a monster will drop loot when it dies
      * @param {number} monsterID
      * @return {number}
      */
     computeLootChance(monsterID: string) {
-        const lootChance =
-            this.micsr.monsters.getObjectByID(monsterID)!.lootChance;
+        const lootChance = this.micsr.monsters.getObjectByID(monsterID)!.lootChance;
+
         return lootChance !== undefined ? lootChance / 100 : 1;
     }
 
@@ -185,13 +192,13 @@ class Loot {
                             const required = itemUpgrade.itemCosts[0]?.quantity;
 
                             if (chest) {
-                                gpPerKill += ((boneQty * this.lootBonus) / required) * this.computeChestOpenValue(chest);
+                                gpPerKill += ((boneQty * this.lootBonus * this.noLoot) / required) * this.computeChestOpenValue(chest);
                             }
                         }
                     }
                 }
             } else if (shard) {
-                gpPerKill += boneQty * this.lootBonus * this.getItemValue(shard.item);
+                gpPerKill += boneQty * this.lootBonus * this.noLoot * this.getItemValue(shard.item);
             }
         }
         return gpPerKill;
@@ -235,11 +242,9 @@ class Loot {
         let dungeonValue = 0;
         dungeon.rewards.forEach((reward: any) => {
             if (reward.canOpen) {
-                dungeonValue +=
-                    this.computeDropTableValue(reward.dropTable) *
-                    this.lootBonus;
+                dungeonValue += this.computeDropTableValue(reward.dropTable) * this.lootBonus * this.noLoot;
             } else {
-                dungeonValue += this.getItemValue(reward) * this.lootBonus;
+                dungeonValue += this.getItemValue(reward) * this.lootBonus * this.noLoot;
             }
         });
         // Shards
@@ -250,6 +255,7 @@ class Loot {
                 shardCount += monster.bones.quantity;
             });
             shardCount *= this.lootBonus;
+            shardCount *= this.noLoot;
             if (this.convertShards && shard) {
                 const shardItem = game.items.getObjectByID(shard.id);
 
@@ -304,9 +310,8 @@ class Loot {
      * Update all loot related statistics
      */
     update() {
-        this.lootBonus = Util.averageDoubleMultiplier(
-            this.app.combatData.combatStats.lootBonusPercent
-        );
+        this.lootBonus = Util.averageDoubleMultiplier(this.app.combatData.combatStats.lootBonusPercent);
+        this.noLoot = this.getNoLootChance();
         this.updateGPData();
         this.updateSignetChance();
         this.updateDropChance();
@@ -504,9 +509,7 @@ class Loot {
         const monster = this.micsr.monsters.getObjectByID(monsterID)!;
         // get expected loot per drop
         const expected = this.addLoot(monster.lootTable);
-        // compute drop rate based on monster loot chance
-        const lootChance = monster.lootChance ? monster.lootChance / 100 : 1;
-        return expected * lootChance;
+        return expected * this.computeLootChance(monsterID);
     }
 
     getAverageBoneDropAmt(monsterID: string) {
