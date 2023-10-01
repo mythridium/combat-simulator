@@ -5,20 +5,29 @@ import { MessageAction, MessageRequest } from 'src/shared/messages/message';
 import { GameState } from 'src/app/state/game';
 import { Source } from 'src/shared/stores/sync.store';
 import { ModalQueue } from 'src/app/interface/modal-queue';
+import { SimulateRequest } from 'src/shared/messages/message-type/simulate';
+import { Queue, Task, TaskRunner } from './queue';
+import { SimulationState } from 'src/app/state/simulation';
 
 export class Workers {
     public get primary() {
         return this.workers[0];
     }
 
+    public get isSimulationRunning() {
+        return this.queue !== undefined;
+    }
+
     public readonly url: string;
     private readonly workers: WebWorker[] = [];
+    private queue?: Queue<MessageAction.Simulate>;
 
     constructor(
         private readonly context: Modding.ModContext,
         private readonly logger: Logger,
         private readonly modalQueue: ModalQueue,
-        private readonly state: GameState
+        private readonly state: GameState,
+        private readonly simulation: SimulationState
     ) {
         this.url = this.context.getResourceUrl('src/worker.mjs');
         const threads = self.mcs.isDebug ? 1 : Math.max(navigator.hardwareConcurrency - 1, 1);
@@ -56,6 +65,19 @@ export class Workers {
         }
 
         return isSuccess;
+    }
+
+    public async simulate(requests: SimulateRequest[]) {
+        const runners = this.workers.map(worker => new TaskRunner(worker));
+        const tasks = requests.map(data => new Task({ action: MessageAction.Simulate, data }));
+
+        this.queue = new Queue(runners, tasks);
+
+        const results = await this.queue.run();
+
+        this.simulation.results.setState({ source: Source.Worker, results });
+
+        this.queue = undefined;
     }
 
     public async send<K extends MessageAction>(message: MessageRequest<K>) {

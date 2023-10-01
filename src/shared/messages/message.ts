@@ -1,4 +1,5 @@
 import { InitRequest } from './message-type/init';
+import { SimulateRequest, SimulateResponse } from './message-type/simulate';
 import { StateRequest, StateResponse } from './message-type/state';
 
 export enum MessageAction {
@@ -10,13 +11,13 @@ export enum MessageAction {
 export interface RequestData {
     [MessageAction.Init]: InitRequest;
     [MessageAction.State]: StateRequest;
-    [MessageAction.Simulate]: void;
+    [MessageAction.Simulate]: SimulateRequest;
 }
 
 export interface ResponseData {
     [MessageAction.Init]: void;
     [MessageAction.State]: StateResponse;
-    [MessageAction.Simulate]: void;
+    [MessageAction.Simulate]: SimulateResponse;
 }
 
 export type MessageRequest<K extends MessageAction> = { [P in K]: { action: K; data: RequestData[K] } }[K];
