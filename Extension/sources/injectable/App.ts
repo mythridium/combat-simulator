@@ -121,8 +121,8 @@ class App {
             allowHTML: true,
             animation: false,
             hideOnClick: true,
-            delay: [0, 20],
-            duration: [0, 0],
+            delay: 1,
+            duration: 1,
             onCreate(instance: TippyTooltip) {
                 instance.popper.addEventListener('touchstart', (event: Event) => {
                     event.preventDefault();
@@ -527,9 +527,7 @@ class App {
             this.tippyOptions
         );
         this.tippySingleton = tippy.createSingleton(this.tippyInstances, {
-            ...this.tippyOptions,
-            delay: [0, 0],
-            duration: [0, 0]
+            ...this.tippyOptions
         });
         for (const bar of this.plotter.bars) {
             this.addNoSingletonTippy(bar, { triggerTarget: bar.parentElement });

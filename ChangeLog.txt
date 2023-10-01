@@ -1,3 +1,6 @@
+v2.1.40
+    adjusted tooltip delay to feel more responsive
+
 v2.1.39
     minor code cleanup
     adjusted tooltip delay
