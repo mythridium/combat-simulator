@@ -174,56 +174,6 @@ class SimManager extends CombatManager {
     // don't render anything
     render() {}
 
-    // create new Sim Enemy
-    createNewEnemy() {
-        this.enemy.setMonster(this.selectedMonster);
-        if (
-            this.selectedArea instanceof Dungeon &&
-            this.selectedArea.nonBossPassives !== undefined &&
-            !this.selectedArea.monsters[this.dungeonProgress].isBoss
-        ) {
-            this.enemy.addPassives(
-                this.selectedArea.nonBossPassives,
-                true,
-                true,
-                false
-            );
-        }
-        // @ts-expect-error HACK
-        if (super.activeEvent !== undefined) {
-            // @ts-expect-error HACK
-            this.enemy.addPassives(super.eventPassives, true, false, false);
-            if (
-                // @ts-expect-error HACK
-                this.selectedMonster !== super.activeEvent.firstBossMonster &&
-                // @ts-expect-error HACK
-                this.selectedMonster !== super.activeEvent.finalBossMonster
-            ) {
-                this.enemy.addPassives(
-                    // @ts-expect-error HACK
-                    super.activeEvent.enemyPassives,
-                    true,
-                    true,
-                    false
-                );
-            }
-            if (
-                this.dungeonProgress ===
-                // @ts-expect-error HACK
-                super.eventDungeonLength - (super.atLastEventDungeon ? 2 : 1)
-            ) {
-                this.enemy.addPassives(
-                    // @ts-expect-error HACK
-                    super.activeEvent.bossPassives,
-                    true,
-                    true,
-                    false
-                );
-                // May want to make this enemy an actual boss monster for big ol ron? idk
-            }
-        }
-    }
-
     // reset sim stats
     resetSimStats() {
         this.tickCount = 0;

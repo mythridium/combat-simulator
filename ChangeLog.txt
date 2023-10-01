@@ -1,3 +1,7 @@
+v2.1.39
+    minor code cleanup
+    adjusted tooltip delay
+
 v2.1.38
     fixed gp result of items that drop with a quantity of more than one
     fixed combination runes not being displayed in results

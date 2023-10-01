@@ -527,9 +527,9 @@ class App {
             this.tippyOptions
         );
         this.tippySingleton = tippy.createSingleton(this.tippyInstances, {
-            delay: [0, 0],
-            duration: [0, 0],
             ...this.tippyOptions,
+            delay: [0, 0],
+            duration: [0, 0]
         });
         for (const bar of this.plotter.bars) {
             this.addNoSingletonTippy(bar, { triggerTarget: bar.parentElement });
