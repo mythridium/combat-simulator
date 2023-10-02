@@ -1,5 +1,6 @@
 import { InitRequest } from 'src/shared/messages/message-type/init';
 import { Global } from 'src/worker/global';
+import { SimClasses } from './sim-classes';
 
 declare global {
     interface WorkerGlobalScope {
@@ -17,7 +18,8 @@ export class Environment {
             hasAoDEntitlement: data.entitlements.aod,
             isTest: false,
             log: () => {},
-            setStatus: () => {}
+            setStatus: () => {},
+            isBirthdayEvent2023Active: () => false
         };
 
         Global.this.cloudManager = cloudManager;
@@ -30,9 +32,11 @@ export class Environment {
             loadedLangJson = {};
         `);
 
-        const { SimGame } = await import(/* webpackMode: "eager" */ 'src/worker/simulator/sim-game');
+        this.detach();
 
-        (<any>self).game = Global.game = new SimGame();
+        await SimClasses.init();
+
+        (<any>self).game = Global.game = new SimClasses.SimGame();
 
         this.evalGlobal(`game = self.game;`);
 
@@ -40,6 +44,13 @@ export class Environment {
 
         await this.loadData(data.origin);
         this.loadModDataPackages(data.dataPackages);
+    }
+
+    private detach() {
+        Global.this.addModalToQueue = () => {};
+        Global.this.openNextModal = () => {};
+        Global.this.showBaneCompletionModal = () => {};
+        Global.this.setDiscordRPCDetails = async () => {};
     }
 
     private async loadData(origin: string) {

@@ -4,6 +4,7 @@ declare global {
         hasTotHEntitlement: boolean;
         hasAoDEntitlement: boolean;
         isTest: boolean;
+        isBirthdayEvent2023Active(): boolean;
     }
 
     const cloudManager: CloudManager;

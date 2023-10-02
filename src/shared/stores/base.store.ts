@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash-es';
+
 interface BaseState extends Object {
     [index: string | symbol]: any;
 }
@@ -26,16 +28,7 @@ export class BaseStore<TState> {
     }
 
     public getState() {
-        return this.construct(this.state) as TState;
-    }
-
-    /**
-     * This function is not for regular use, this returns the raw mutable state with the root
-     * root level reference broken. This is primarily used to send the object to between the
-     * client and worker since Proxy's cannot be sent.
-     */
-    public raw(): TState {
-        return { ...this.state };
+        return cloneDeep(this.state);
     }
 
     public subscribe(callback: (state: TState) => void) {
@@ -47,48 +40,6 @@ export class BaseStore<TState> {
         subscription.emit(this.state);
 
         return registration;
-    }
-
-    /**
-     * This function creates a proxy on the state and prevents properties on the object being set.
-     *
-     * In addition, getting a property will construct further proxies on the nested property if it is
-     * an object giving us a deeply immutable object.
-     *
-     * Finally, we store an internal cache, so state can be compared by reference as being equal.
-     *
-     * ```ts
-     * const state1 = store.getState();
-     * const state2 = store.getState();
-     *
-     * state1 === state2 // true
-     * ```
-     */
-    protected construct<TObject extends BaseState>(state: TObject) {
-        const that = this;
-
-        return new Proxy(state, {
-            // @ts-ignore
-            cache: {},
-            get(target, prop) {
-                if (prop === Symbol.for('ORIGINAL')) {
-                    return target;
-                }
-
-                if (typeof target[prop] === 'object') {
-                    if (!this.cache[prop]) {
-                        this.cache[prop] = that.construct(target[prop]);
-                    }
-
-                    return this.cache[prop];
-                }
-
-                return target[prop];
-            },
-            set() {
-                return false;
-            }
-        });
     }
 }
 

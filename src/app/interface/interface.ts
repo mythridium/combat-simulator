@@ -1,4 +1,3 @@
-import { GameState } from 'src/app/state/game';
 import { ModalComponent } from './components/modal-component';
 import { EquipmentComponent } from './components/equipment-component';
 import { SummaryComponent } from './components/summary-component';
@@ -10,11 +9,7 @@ export class Interface {
     private readonly modalElementId = 'myth-combat-simulator-modal';
     private modal: ModalComponent;
 
-    constructor(
-        private readonly context: Modding.ModContext,
-        private readonly state: GameState,
-        private readonly workers: Workers
-    ) {}
+    constructor(private readonly context: Modding.ModContext, private readonly workers: Workers) {}
 
     public init() {
         this.addSidebarItem();
@@ -41,8 +36,8 @@ export class Interface {
             title: `[Myth] Combat Simulator - ${this.context.version}`
         });
 
-        const equipment = new EquipmentComponent(this.state, this.workers);
-        const summary = new SummaryComponent(this.state);
+        const equipment = new EquipmentComponent(this.workers);
+        const summary = new SummaryComponent();
 
         this.modal.append(equipment, summary);
         this.modal.render();

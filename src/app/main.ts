@@ -1,14 +1,12 @@
 import 'src/shared/constants';
-import { Color, Logger } from 'src/shared/logger';
 import { Scripts } from './workers/scripts';
 import { Workers } from './workers/workers';
 import { Interface } from './interface/interface';
-import { GameState } from './state/game';
 import { ModalQueue } from './interface/modal-queue';
 import { Mods } from './mods';
+import { Global } from './global';
 
 export class App {
-    private readonly logger = new Logger('Client', Color.Green);
     private readonly modalQueue: ModalQueue;
     private readonly mods: Mods;
 
@@ -24,12 +22,10 @@ export class App {
             this.mods.checkDataPackagesForInvalidData();
             await this.mods.checkDataPackages();
 
-            this.logger.log('Client Loaded');
+            Global.logger.log('Client Loaded');
 
-            const state = new GameState();
-
-            this.workers = new Workers(this.context, this.logger, this.modalQueue, state);
-            this.interface = new Interface(this.context, state, this.workers);
+            this.workers = new Workers(this.context, this.modalQueue);
+            this.interface = new Interface(this.context, this.workers);
 
             await this.init();
         });

@@ -1,20 +1,20 @@
-import { GameState } from 'src/app/state/game';
 import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 import { Source } from 'src/shared/stores/sync.store';
+import { Global } from 'src/app/global';
 
 export class SummaryComponent extends BaseComponent {
-    constructor(private readonly state: GameState) {
+    constructor() {
         super({
             tag: 'div',
             id: 'mcs-summary-container',
             classes: ['mcs-container']
         });
 
-        this.state.summary.when(Source.Worker).subscribe(() => this.render());
+        Global.summary.when(Source.Worker).subscribe(() => this.render());
     }
 
     protected preRender(container: Element) {
-        const state = this.state.summary.getState();
+        const state = Global.summary.getState();
 
         const createText = (value: string | number) => {
             const text = document.createElement('div');

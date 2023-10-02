@@ -17,11 +17,11 @@ export class Task<TAction extends MessageAction> {
     public inQueue = false;
     public isFinished = false;
 
-    constructor(private readonly data: MessageRequest<TAction>) {}
+    constructor(public readonly request: MessageRequest<TAction>) {}
 
     public get() {
         this.inQueue = true;
-        return this.data;
+        return this.request;
     }
 
     public finish(result: MessageReturn<TAction>) {
@@ -42,17 +42,15 @@ export class Queue<TAction extends MessageAction> {
         this.cancelled = true;
     }
 
-    public async run() {
+    public async run(onTaskComplete?: (task: Task<TAction>) => void) {
         this.isRunning = true;
 
-        await Promise.all(this.runners.map(runner => this.execute(runner)));
+        await Promise.all(this.runners.map(runner => this.execute(runner, onTaskComplete)));
 
         this.isRunning = false;
-
-        return this.tasks.map(task => task.result);
     }
 
-    private async execute(runner: TaskRunner) {
+    private async execute(runner: TaskRunner, onTaskComplete?: (task: Task<TAction>) => void) {
         const task = this.next();
 
         if (!task) {
@@ -60,7 +58,12 @@ export class Queue<TAction extends MessageAction> {
         }
 
         await runner.execute(task);
-        await this.execute(runner);
+
+        if (onTaskComplete) {
+            onTaskComplete(task);
+        }
+
+        await this.execute(runner, onTaskComplete);
     }
 
     private next() {

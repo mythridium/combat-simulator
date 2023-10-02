@@ -15,11 +15,13 @@
     "homepage": "https://github.com/mythridium/combat-simulator",
     "dependencies": {
         "buffer": "6.0.3",
-        "domino": "2.1.6"
+        "domino": "2.1.6",
+        "lodash-es": "4.17.21"
     },
     "devDependencies": {
         "@types/archiver": "5.3.2",
         "@types/jquery": "3.5.19",
+        "@types/lodash-es": "4.17.9",
         "@types/serialize-javascript": "5.0.2",
         "archiver": "6.0.1",
         "copy-webpack-plugin": "11.0.0",

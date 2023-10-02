@@ -1,8 +1,8 @@
-import { Logger } from 'src/shared/logger';
 import { Messages } from 'src/shared/messages/messages';
 import { WorkerMock } from './mock';
 import { MessageAction } from 'src/shared/messages/message';
 import { Simulator } from './simulator/simulator';
+import { Global } from './global';
 
 export class WebWorker {
     public isPrimary: boolean = false;
@@ -11,20 +11,20 @@ export class WebWorker {
     private readonly simulator: Simulator;
     private readonly messages: Messages;
 
-    constructor(private readonly worker: WorkerGlobalScope & typeof globalThis, private readonly logger: Logger) {
+    constructor(private readonly worker: WorkerGlobalScope & typeof globalThis) {
         WorkerMock.mock();
 
-        this.messages = new Messages(this.worker, this.logger);
-        this.simulator = new Simulator(this.messages, this.logger);
+        this.messages = new Messages(this.worker, Global.logger);
+        this.simulator = new Simulator(this.messages);
 
         this.messages.on(MessageAction.Init, async data => {
             this.workerId = data.workerId;
             this.isPrimary = data.workerId === 0;
-            this.logger.setEntity(`Worker ${data.workerId.toString()}`);
+            Global.logger.setEntity(`Worker ${data.workerId.toString()}`);
 
             await this.simulator.init(data);
 
-            this.logger.log(`Worker Loaded`);
+            Global.logger.log(`Worker Loaded`);
         });
     }
 }

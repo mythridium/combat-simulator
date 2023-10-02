@@ -1,6 +1,17 @@
+import { SimClasses } from './sim-classes';
+import type { SimManager } from './sim-manager';
+
 export class SimGame extends Game {
+    public declare combat: SimManager;
+
     constructor() {
         super();
+
+        this.combat = new SimClasses.SimManager(this, this.registeredNamespaces.getNamespace('melvorD'));
+
+        this.actions.registeredObjects.set(this.combat.namespace, this.combat);
+        this.activeActions.registeredObjects.set(this.combat.namespace, this.combat);
+        this.passiveActions.registeredObjects.set(this.combat.namespace, this.combat);
 
         this.detach();
     }
@@ -20,6 +31,7 @@ export class SimGame extends Game {
         this.bank.addItem = () => true;
         this.bank.hasItem = () => true;
         this.bank.getQty = () => 1e6;
+        this.bank.checkForItems = () => true;
         this.completion.render = () => {};
         this.gp.render = () => {};
         this.slayerCoins.render = () => {};

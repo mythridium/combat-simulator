@@ -1,50 +1,44 @@
-import { Logger } from 'src/shared/logger';
 import { WebWorker } from './web-worker';
 import { InitRequest } from 'src/shared/messages/message-type/init';
 import { MessageAction, MessageRequest } from 'src/shared/messages/message';
-import { GameState } from 'src/app/state/game';
 import { Source } from 'src/shared/stores/sync.store';
 import { ModalQueue } from 'src/app/interface/modal-queue';
 import { SimulateRequest } from 'src/shared/messages/message-type/simulate';
 import { Queue, Task, TaskRunner } from './queue';
-import { SimulationState } from 'src/app/state/simulation';
+import { Global } from 'src/app/global';
+import { State } from 'src/app/stores/simulation.store';
+
+export class QueueRun {
+    cancel: () => void;
+    promise: Promise<void>;
+}
 
 export class Workers {
     public get primary() {
         return this.workers[0];
     }
 
-    public get isSimulationRunning() {
-        return this.queue !== undefined;
-    }
+    public queue?: QueueRun;
 
     public readonly url: string;
     private readonly workers: WebWorker[] = [];
-    private queue?: Queue<MessageAction.Simulate>;
 
-    constructor(
-        private readonly context: Modding.ModContext,
-        private readonly logger: Logger,
-        private readonly modalQueue: ModalQueue,
-        private readonly state: GameState,
-        private readonly simulation: SimulationState
-    ) {
+    constructor(private readonly context: Modding.ModContext, private readonly modalQueue: ModalQueue) {
         this.url = this.context.getResourceUrl('src/worker.mjs');
         const threads = self.mcs.isDebug ? 1 : Math.max(navigator.hardwareConcurrency - 1, 1);
 
         for (let i = 0; i < threads; i++) {
-            const worker = new WebWorker(this.url, this.logger);
+            const worker = new WebWorker(this.url);
             this.workers.push(worker);
         }
 
-        this.state.equipment.when(Source.Interface).subscribe(async () => {
+        Global.equipment.when(Source.Interface).subscribe(async () => {
             const summary = await this.primary.send({
                 action: MessageAction.State,
-                data: { equipment: this.state.equipment.raw() }
+                data: { equipment: Global.equipment.getState() }
             });
 
-            this.state.summary.setState(Source.Worker, summary);
-            console.log(this.state.summary.getState());
+            Global.summary.setState(Source.Worker, summary);
         });
     }
 
@@ -60,24 +54,54 @@ export class Workers {
             await Promise.all(requests);
             isSuccess = true;
         } catch (exception) {
-            this.logger.error(exception);
+            Global.logger.error(exception);
             this.modalQueue.add(exception);
         }
 
         return isSuccess;
     }
 
-    public async simulate(requests: SimulateRequest[]) {
+    public simulate(requests: SimulateRequest[]) {
         const runners = this.workers.map(worker => new TaskRunner(worker));
         const tasks = requests.map(data => new Task({ action: MessageAction.Simulate, data }));
+        const queue = new Queue(runners, tasks);
 
-        this.queue = new Queue(runners, tasks);
+        Global.simulation.setState({
+            source: Source.Worker,
+            state: State.Running,
+            result: []
+        });
 
-        const results = await this.queue.run();
+        const promise = queue
+            .run(task => {
+                const state = Global.simulation.getState();
 
-        this.simulation.results.setState({ source: Source.Worker, results });
+                Global.simulation.setState({
+                    ...state,
+                    source: Source.Worker,
+                    result: [
+                        ...state.result,
+                        {
+                            monsterId: task.request.data.monsterId,
+                            dungeonId: task.request.data.monsterId,
+                            isSuccess: task.result.isSuccess,
+                            error: task.result.error
+                        }
+                    ]
+                });
+            })
+            .then(() => {
+                Global.simulation.setState({ ...Global.simulation.getState(), state: State.Stopped });
+                this.queue = undefined;
+            });
 
-        this.queue = undefined;
+        this.queue = {
+            cancel: () => {
+                Global.simulation.setState({ ...Global.simulation.getState(), state: State.Cancelling });
+                queue.cancel();
+            },
+            promise
+        };
     }
 
     public async send<K extends MessageAction>(message: MessageRequest<K>) {

@@ -16,15 +16,6 @@ export interface SyncState {
  * subscriptions based on a source. Useful for keeping models in bi directional sync.
  */
 export class SyncStore<TState extends SyncState> extends BaseStore<TState> {
-    public raw() {
-        const state = { ...super.raw() };
-
-        // remove the source, it's unimportant for sending to workers.
-        delete state.source;
-
-        return state;
-    }
-
     public setState(state: TState): void;
     public setState(source: Source, state: Omit<Partial<TState>, 'source'>): void;
     public setState(sourceOrState: Source | TState, state?: Omit<Partial<TState>, 'source'>): void {
