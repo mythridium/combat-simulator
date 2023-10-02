@@ -104,12 +104,12 @@ class MICSR {
         this.shortName = "Combat Simulator";
 
         // compatible game version
-        this.gameVersion = "v1.2";
+        this.gameVersion = "v1.2.1";
 
         // combat sim version
         this.majorVersion = 2;
-        this.minorVersion = 1;
-        this.patchVersion = 41;
+        this.minorVersion = 2;
+        this.patchVersion = 0;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
