@@ -1,3 +1,6 @@
+v2.2.1
+    fixed agility obstacle mastery not correctly applying reduction when importing sets
+
 v2.2.0
     version bump to support game version 1.2.1, no functional change
 

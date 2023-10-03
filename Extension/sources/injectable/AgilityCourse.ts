@@ -527,6 +527,10 @@ class AgilityCourse {
             );
             if (masteries[category]) {
                 this.player.courseMastery[category] = true;
+                const obstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === this.parent.player.course[category])!;
+                if(obstacle) {
+                    this.parent.game.agility['actionMastery'].set(obstacle, { level: 99, xp: 1 });
+                }
                 this.updateAgilityTooltips(category);
             }
         });
