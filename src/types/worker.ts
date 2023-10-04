@@ -11,10 +11,4 @@ declare global {
     }
 }
 
-declare module 'domino' {
-    const impl: {
-        HTMLElement: HTMLElement;
-    };
-}
-
 export {};

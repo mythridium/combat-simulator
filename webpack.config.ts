@@ -1,9 +1,12 @@
 import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import { resolve } from 'path';
+import { Configuration } from 'webpack';
 
-const config = {
-    mode: 'production',
+const isProduction = process.argv[process.argv.indexOf('--mode') + 1] === 'production';
+
+const config: Configuration = {
+    mode: isProduction ? 'production' : 'development',
     entry: { setup: 'src/setup.ts', 'src/worker': 'src/worker/main.ts' },
     output: {
         filename: '[name].mjs',
@@ -20,14 +23,6 @@ const config = {
         hints: false,
         maxEntrypointSize: 512000,
         maxAssetSize: 512000
-    },
-    optimization: {
-        minimize: false,
-        minimizer: [
-            new TerserPlugin({
-                terserOptions: { mangle: false, compress: false, keep_classnames: true, keep_fnames: true }
-            })
-        ]
     },
     plugins: [
         new CopyPlugin({
@@ -57,5 +52,23 @@ const config = {
         ]
     }
 };
+
+if (!isProduction) {
+    config.devtool = 'eval-source-map';
+    config.optimization = {
+        minimize: false,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    mangle: false,
+                    compress: false,
+                    keep_classnames: true,
+                    keep_fnames: true,
+                    sourceMap: false
+                }
+            })
+        ]
+    };
+}
 
 export default config;

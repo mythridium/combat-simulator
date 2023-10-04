@@ -30,6 +30,7 @@ export class Environment {
                 decode() {};
             };
             loadedLangJson = {};
+            skillNav = { setLevelAll: () => {} };
         `);
 
         this.detach();
@@ -44,6 +45,7 @@ export class Environment {
 
         await this.loadData(data.origin);
         this.loadModDataPackages(data.dataPackages);
+        Global.game.postDataRegistration();
     }
 
     private detach() {

@@ -34,14 +34,14 @@ export class Simulator {
                 maxHit: stats.maxHit,
                 minHit: stats.minHit,
                 summoningMaxHit: stats.summoningMaxHit,
-                autoEatThreshold: game.combat.player.autoEatThreshold,
-                dropDoublingPercentage: game.combat.player.modifiers.combatLootDoubleChance,
-                gpMultiplier: game.combat.player.modifiers.increasedCombatGP
+                autoEatThreshold: Global.game.combat.player.autoEatThreshold,
+                dropDoublingPercentage: Global.game.combat.player.modifiers.combatLootDoubleChance,
+                gpMultiplier: Global.game.combat.player.modifiers.increasedCombatGP
             });
 
             return this.summaryStore.getState();
         });
 
-        this.messages.on(MessageAction.Simulate, async data => Global.game.combat.simulate(data));
+        this.messages.on(MessageAction.Simulate, data => Global.game.combat.simulate(data));
     }
 }

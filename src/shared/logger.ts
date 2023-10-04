@@ -6,13 +6,21 @@ export enum Color {
 export class Logger {
     private prefix: string;
 
+    public debug: (...args: any[]) => void;
+    public log: (...args: any[]) => void;
+    public warn: (...args: any[]) => void;
+    public error: (...args: any[]) => void;
+
     constructor(private entity: string, private readonly color: Color) {
         this.setEntity(this.entity);
+        this.bind();
     }
 
     public setEntity(entity: string) {
         this.entity = entity;
         this.prefix = `[Myth] CS - ${this.entity} |`;
+
+        this.bind();
     }
 
     public verbose(...args: any[]) {
@@ -23,19 +31,10 @@ export class Logger {
         this.log(...args);
     }
 
-    public debug(...args: any[]) {
-        console.debug('%c%s', this.color, this.prefix, ...args);
-    }
-
-    public log(...args: any[]) {
-        console.log('%c%s', this.color, this.prefix, ...args);
-    }
-
-    public warn(...args: any[]) {
-        console.warn('%c%s', this.color, this.prefix, ...args);
-    }
-
-    public error(...args: any[]) {
-        console.error('%c%s', this.color, this.prefix, ...args);
+    private bind() {
+        this.debug = Function.prototype.bind.call(console.debug, console, `%c%s`, this.color, this.prefix);
+        this.log = Function.prototype.bind.call(console.log, console, `%c%s`, this.color, this.prefix);
+        this.warn = Function.prototype.bind.call(console.warn, console, `%c%s`, this.color, this.prefix);
+        this.error = Function.prototype.bind.call(console.error, console, `%c%s`, this.color, this.prefix);
     }
 }

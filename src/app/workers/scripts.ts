@@ -13,7 +13,11 @@ export abstract class Scripts {
         'cartographyMenu',
         'sidebar',
         'minibar',
-        'ifvisible'
+        'ifvisible',
+        'petite-vue',
+        'Sortable',
+        'sweetalert2',
+        'tippy-bundle'
     ];
 
     public static getScriptsForWorker() {

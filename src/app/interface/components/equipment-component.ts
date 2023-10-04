@@ -14,7 +14,21 @@ export class EquipmentComponent extends BaseComponent {
         });
 
         Global.equipment.when(Source.Worker).subscribe(() => this.render());
-        Global.simulation.when(Source.Worker).subscribe(() => this.render());
+        Global.simulation.when(Source.Worker).subscribe(({ state, result }) => {
+            const simulateButton = this.element.querySelector('#simulate');
+
+            if (!simulateButton) {
+                return;
+            }
+
+            simulateButton.textContent = this.getSimulateButtonText(state, result.length, 100);
+
+            if (state === State.Cancelling) {
+                simulateButton.setAttribute('disabled', 'disabled');
+            } else {
+                simulateButton.removeAttribute('disabled');
+            }
+        });
     }
 
     protected preRender(container: Element) {

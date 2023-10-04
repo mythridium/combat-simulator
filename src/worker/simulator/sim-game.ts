@@ -20,13 +20,55 @@ export class SimGame extends Game {
         // how about no.
     }
 
-    public customGp = 0;
+    public clearActiveAction(): void {
+        if (!this.disableClearOffline) {
+            this.activeAction = undefined;
+        }
+    }
+
+    public scheduleSave() {}
+    public autoSave() {}
+    public updateRichPresence() {}
+    public cloudUpdate() {}
+    public gameInteractionUpdate() {}
+    public onGameInteraction() {}
+    public rollForAncientRelics() {}
+    public unlockAncientRelicOnLevelUp() {}
+
+    public postDataRegistration(): void {
+        if (this.cartography) {
+            this.cartography.postDataRegistration = () => {};
+        }
+
+        super.postDataRegistration();
+    }
+
+    public onLoad() {
+        this.astrology.computeProvidedStats(false);
+
+        if (cloudManager.hasAoDEntitlement) {
+            this.cartography.computeProvidedStats(false);
+        }
+
+        this.potions.computeProvidedStats(false);
+        this.petManager.onLoad();
+        this.shop.computeProvidedStats(false);
+        this.combat.initialize();
+    }
 
     private detach() {
         // @ts-ignore
         this.telemetry.ENABLE_TELEMETRY = false;
         this.tutorial.complete = true;
+        this.settings.boolData.enableOfflineCombat.currentValue = true;
 
+        this.township.confirmTownCreation = () => {};
+        this.township.startTickTimer = () => {};
+        this.township.onTickTimer = () => {};
+        this.township.tick = () => true;
+        this.township.tickSeason = () => {};
+        this.township.tasks.updateAllTaskProgress = () => {};
+        this.township.tasks.updateTaskProgress = () => {};
         this.petManager.unlockPet = () => {};
         this.bank.addItem = () => true;
         this.bank.hasItem = () => true;
@@ -53,16 +95,60 @@ export class SimGame extends Game {
         this.notifications.createSlayerCoinsNotification = () => {};
         this.notifications.createSuccessNotification = () => {};
         this.notifications.createSummoningMarkNotification = () => {};
+        this.stats.itemFindCount = () => 1;
+        this.summoning.getMarkLevel = () => 1;
 
         for (const skill of this.skills.allObjects) {
             // Make sure nothing gets called on skill level ups, it tends to try rendering
             skill.levelUp = () => {};
             skill.render = () => {};
+            skill.onAncientRelicUnlock = () => {};
+            skill.setUnlock(true);
+            skill.setLevelCap(120);
         }
 
-        this.gp.add = amount => {
-            // Store gp on the SimPlayer
-            this.customGp += amount;
+        this.gp.add = amount => (this.combat.stats.gp += amount);
+
+        this.slayerCoins.add = amount => {
+            const modifier = this.modifiers.increasedSlayerCoins - this.modifiers.decreasedSlayerCoins;
+            amount = applyModifier(amount, modifier, 0);
+
+            this.combat.stats.sc += amount;
+        };
+
+        this.bank.removeItemQuantity = (item: AnyItem, quantity: number) => {
+            switch (item.type) {
+                case 'Potion':
+                    this.combat.stats.usedPotions += quantity;
+                    break;
+                case 'Rune':
+                    if (this.combat.stats.usedRunes[item.id] === undefined) {
+                        this.combat.stats.usedRunes[item.id] = 0;
+                    }
+
+                    this.combat.stats.usedRunes[item.id] += quantity;
+                    break;
+            }
+        };
+
+        this.summoning._level = 120;
+
+        this.summoning.discoverMark = mark => {
+            const count = this.summoning.getMarkCount(mark);
+            const maxMarks = Summoning.markLevels[Summoning.markLevels.length - 1] ?? 0;
+
+            for (const skill of mark.skills) {
+                if (!this.combat.stats.markRolls[skill.id]) {
+                    this.combat.stats.markRolls[skill.id] = 0;
+                }
+
+                // stop counting if we reach max marks.
+                if (count + this.combat.stats.markRolls[skill.id] >= maxMarks) {
+                    continue;
+                }
+
+                this.combat.stats.markRolls[skill.id]++;
+            }
         };
     }
 }

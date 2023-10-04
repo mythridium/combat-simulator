@@ -84,8 +84,7 @@ export class Workers {
                         {
                             monsterId: task.request.data.monsterId,
                             dungeonId: task.request.data.monsterId,
-                            isSuccess: task.result.isSuccess,
-                            error: task.result.error
+                            ...task.result
                         }
                     ]
                 });
