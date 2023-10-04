@@ -19,7 +19,7 @@ export class BaseStore<TState> {
         this._state = { ...this._state, ...state };
 
         for (const subscription of this.subscriptions) {
-            subscription.emit(this.getState());
+            subscription.emit(this._state);
         }
     }
 
@@ -42,7 +42,7 @@ export class BaseStore<TState> {
 
         this.subscriptions.add(subscription);
 
-        subscription.emit(this.getState());
+        subscription.emit(this._state);
 
         return registration;
     }
@@ -72,7 +72,7 @@ export class Subscription<TState> {
             return;
         }
 
-        this.callback(state);
+        this.callback(cloneDeep(state));
     }
 
     private unsubscribe() {

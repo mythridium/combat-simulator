@@ -15,7 +15,7 @@ declare global {
 
 self.mcs = {
     isDebug: false,
-    isVerbose: true
+    isVerbose: false
 };
 
 export {};

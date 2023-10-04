@@ -1,10 +1,44 @@
 #myth-combat-simulator-modal {
     .modal-dialog {
+        max-width: 95%;
         transform: none !important;
     }
 
     .bug-report {
         font-size: 12px;
+    }
+
+    .mcs-flex-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .mcs-flex-column {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .mcs-card {
+        border-radius: 5px;
+        min-width: 250px;
+    }
+
+    .mcs-line-item-wrapper {
+        text-align: end;
+    }
+
+    .mcs-line-item-value {
+        margin-left: 5px;
+        width: 60px;
+        display: inline-block;
+        border-bottom: solid 1px;
+    }
+
+    .mcs-line-item-img {
+        vertical-align: sub;
     }
 }
 

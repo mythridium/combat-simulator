@@ -1,17 +1,13 @@
-import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 import { Source } from 'src/shared/stores/sync.store';
 import { ButtonComponent } from './blocks/button-component';
 import { Workers } from 'src/app/workers/workers';
 import { Global } from 'src/app/global';
 import { State } from 'src/app/stores/simulation.store';
+import { CardComponent } from './blocks/card-component';
 
-export class EquipmentComponent extends BaseComponent {
+export class EquipmentComponent extends CardComponent {
     constructor(private readonly workers: Workers) {
-        super({
-            tag: 'div',
-            id: 'mcs-equipment-container',
-            classes: ['mcs-container']
-        });
+        super({ id: 'mcs-equipment' });
 
         Global.equipment.when(Source.Worker).subscribe(() => this.render());
         Global.simulation.when(Source.Worker).subscribe(({ state, result }) => {

@@ -54,7 +54,7 @@ const config: Configuration = {
 };
 
 if (!isProduction) {
-    config.devtool = 'eval-source-map';
+    config.devtool = 'inline-source-map';
     config.optimization = {
         minimize: false,
         minimizer: [
