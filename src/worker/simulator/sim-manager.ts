@@ -152,9 +152,12 @@ export class SimManager extends CombatManager {
         const combatArea = this.game.combatAreas.getObjectByID('melvorD:Farmlands');
 
         this.selectMonster(monster, combatArea);
-        this.totalTicks = 1000 * 1000;
+        this.totalTicks = Global.configuration.state.ticks * Global.configuration.state.trials;
 
-        while (this.stats.kills + this.stats.deaths < 1000 && this.tickCount < this.totalTicks) {
+        while (
+            this.stats.kills + this.stats.deaths < Global.configuration.state.trials &&
+            this.tickCount < this.totalTicks
+        ) {
             if (!this.isActive && !this.spawnTimer.active) {
                 this.selectMonster(monster, combatArea);
             }

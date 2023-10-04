@@ -5,9 +5,6 @@ import { Simulator } from './simulator/simulator';
 import { Global } from './global';
 
 export class WebWorker {
-    public isPrimary: boolean = false;
-    public workerId: number;
-
     private readonly simulator: Simulator;
     private readonly messages: Messages;
 
@@ -18,10 +15,6 @@ export class WebWorker {
         this.simulator = new Simulator(this.messages);
 
         this.messages.on(MessageAction.Init, async data => {
-            this.workerId = data.workerId;
-            this.isPrimary = data.workerId === 0;
-            Global.logger.setEntity(`Worker ${data.workerId.toString()}`);
-
             await this.simulator.init(data);
 
             Global.logger.log(`Worker Loaded`);

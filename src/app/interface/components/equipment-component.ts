@@ -37,6 +37,7 @@ export class EquipmentComponent extends BaseComponent {
             content: 'Test',
             onClick: () => {
                 Global.equipment.setState(Source.Interface, { equipmentIds: ['123'] });
+                Global.configuration.setState(Source.Interface, { isManualEating: true });
             }
         });
 

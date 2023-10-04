@@ -1,5 +1,4 @@
 export interface InitRequest {
-    workerId: number;
     origin: string;
     scripts: string[];
     entitlements: {

@@ -10,6 +10,7 @@ export class Logger {
     public log: (...args: any[]) => void;
     public warn: (...args: any[]) => void;
     public error: (...args: any[]) => void;
+    public verbose: (...args: any[]) => void;
 
     constructor(private entity: string, private readonly color: Color) {
         this.setEntity(this.entity);
@@ -23,18 +24,13 @@ export class Logger {
         this.bind();
     }
 
-    public verbose(...args: any[]) {
-        if (!self.mcs.isVerbose) {
-            return;
-        }
-
-        this.log(...args);
-    }
-
     private bind() {
         this.debug = Function.prototype.bind.call(console.debug, console, `%c%s`, this.color, this.prefix);
         this.log = Function.prototype.bind.call(console.log, console, `%c%s`, this.color, this.prefix);
         this.warn = Function.prototype.bind.call(console.warn, console, `%c%s`, this.color, this.prefix);
         this.error = Function.prototype.bind.call(console.error, console, `%c%s`, this.color, this.prefix);
+        this.verbose = self.mcs.isVerbose
+            ? Function.prototype.bind.call(console.log, console, `%c%s`, this.color, this.prefix)
+            : () => {};
     }
 }

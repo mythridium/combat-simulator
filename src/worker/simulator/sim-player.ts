@@ -64,13 +64,14 @@ export class SimPlayer extends Player {
     public trackPrayerStats() {}
     public trackWeaponStat() {}
     public setCallbacks() {}
+    public onMagicAttackFailure() {}
 
     public activeTick() {
         super.activeTick();
 
-        //if (this.isManualEating) {
-        this.manualEat();
-        //}
+        if (Global.configuration.state.isManualEating) {
+            this.manualEat();
+        }
     }
 
     public damage(amount: number, source: SplashType): void {
@@ -78,6 +79,19 @@ export class SimPlayer extends Player {
 
         Global.game.combat.stats.highestDamageTaken = Math.max(Global.game.combat.stats.highestDamageTaken, amount);
         Global.game.combat.stats.lowestHitpoints = Math.min(Global.game.combat.stats.lowestHitpoints, this.hitpoints);
+    }
+
+    public consumePrayerPoints(amount: number, isUnholy: boolean) {
+        if (amount > 0) {
+            amount = this.applyModifiersToPrayerCost(amount, isUnholy);
+            Global.game.combat.stats.usedPrayerPoints += amount;
+            const event = new PrayerPointConsumptionEvent(amount, isUnholy);
+            this._events.emit('prayerPointsUsed', event);
+        }
+    }
+
+    public removeFromQuiver(qty: number) {
+        Global.game.combat.stats.usedAmmo += qty;
     }
 
     public manualEat() {

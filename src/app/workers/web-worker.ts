@@ -6,8 +6,8 @@ export class WebWorker {
     private readonly worker: Worker;
     private readonly messages: Messages;
 
-    constructor(private readonly url: string) {
-        this.worker = new Worker(this.url);
+    constructor(private readonly url: string, public readonly index: number) {
+        this.worker = new Worker(this.url, { name: `Worker ${index}` });
         this.messages = new Messages(this.worker, Global.logger);
     }
 

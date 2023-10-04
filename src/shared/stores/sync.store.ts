@@ -16,18 +16,36 @@ export interface SyncState {
  * subscriptions based on a source. Useful for keeping models in bi directional sync.
  */
 export class SyncStore<TState extends SyncState> extends BaseStore<TState> {
-    public setState(state: TState): void;
+    public setState(state: Partial<TState>): void;
     public setState(source: Source, state: Omit<Partial<TState>, 'source'>): void;
-    public setState(sourceOrState: Source | TState, state?: Omit<Partial<TState>, 'source'>): void {
-        let update: TState = { ...this.state };
+    public setState(sourceOrState: Source | Partial<TState>, state?: Omit<Partial<TState>, 'source'>): void {
+        let update: TState = { ...this._state };
 
         if (this.isSource(sourceOrState)) {
-            update = { source: sourceOrState, ...state } as TState;
+            update = { ...update, source: sourceOrState, ...state } as TState;
         } else {
-            update = { ...sourceOrState };
+            update = { ...update, ...sourceOrState };
         }
 
         super.setState(update);
+    }
+
+    // @ts-ignore
+    public getState(): Omit<TState, 'source'> {
+        const state = super.getState();
+
+        delete state.source;
+
+        return state;
+    }
+
+    // @ts-ignore
+    public get state(): Omit<TState, 'source'> {
+        const state = { ...this._state };
+
+        delete state.source;
+
+        return state;
     }
 
     public when(...source: [Source, ...Source[]]) {
@@ -38,7 +56,7 @@ export class SyncStore<TState extends SyncState> extends BaseStore<TState> {
         return subscription.when(...source);
     }
 
-    private isSource(sourceOrState: Source | TState): sourceOrState is Source {
+    private isSource(sourceOrState: Source | Partial<TState>): sourceOrState is Source {
         return Object.values<string>(Source).includes(<Source>sourceOrState);
     }
 }
@@ -50,6 +68,8 @@ export class SyncSubscription<TState extends SyncState> extends Subscription<TSt
         if (this.source.length && !this.source.includes(state.source)) {
             return;
         }
+
+        delete state.source;
 
         super.emit(state);
     }

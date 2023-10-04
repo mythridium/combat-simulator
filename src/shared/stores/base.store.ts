@@ -1,9 +1,5 @@
 import { cloneDeep } from 'lodash-es';
 
-interface BaseState extends Object {
-    [index: string | symbol]: any;
-}
-
 /**
  * Stores are immutable classes that hold state. The only way to modify the state
  * is by calling the `setState` function.
@@ -17,18 +13,27 @@ interface BaseState extends Object {
 export class BaseStore<TState> {
     protected readonly subscriptions = new Set<Subscription<TState>>();
 
-    constructor(protected state: TState) {}
+    constructor(protected _state: TState) {}
 
     public setState(state: Partial<TState>) {
-        this.state = { ...this.state, ...state };
+        this._state = { ...this._state, ...state };
 
-        this.subscriptions.forEach(subscription => {
+        for (const subscription of this.subscriptions) {
             subscription.emit(this.getState());
-        });
+        }
     }
 
     public getState() {
-        return cloneDeep(this.state);
+        return cloneDeep(this._state);
+    }
+
+    /**
+     * THIS IS AN UNSAFE way to obtain the state, only use this if you want to avoid a deep clone,
+     * and you are 100% not going to modify the value. If you don't know what you are doing, use
+     * `getState` instead.
+     */
+    public get state() {
+        return this._state;
     }
 
     public subscribe(callback: (state: TState) => void) {
@@ -37,13 +42,13 @@ export class BaseStore<TState> {
 
         this.subscriptions.add(subscription);
 
-        subscription.emit(this.state);
+        subscription.emit(this.getState());
 
         return registration;
     }
 }
 
-export class Subscription<TState extends BaseState> {
+export class Subscription<TState> {
     public complete = false;
     public started = false;
 
