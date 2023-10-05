@@ -1,6 +1,7 @@
 import { Source, SyncState, SyncStore } from './sync.store';
 
 export interface ConfigurationState extends SyncState {
+    isSynergyEnabled: boolean;
     isManualEating: boolean;
     isSolarEclipse: boolean;
     isSlayerTask: boolean;
@@ -15,6 +16,7 @@ export class ConfigurationStore extends SyncStore<ConfigurationState> {
     constructor() {
         super({
             source: Source.Default,
+            isSynergyEnabled: true,
             isManualEating: false,
             isSolarEclipse: false,
             isSlayerTask: false,

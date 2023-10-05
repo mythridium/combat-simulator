@@ -1,0 +1,15 @@
+#myth-combat-simulator-modal {
+    .mcs-equipment-items {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mcs-equipment-row {
+        display: flex;
+    }
+
+    .blank.combat-equip-img {
+        background: transparent !important;
+    }
+}

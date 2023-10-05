@@ -5,7 +5,29 @@ import { Global } from 'src/app/global';
 import { State } from 'src/app/stores/simulation.store';
 import { CardComponent } from './blocks/card-component';
 
+import './equipment-component.scss';
+
+enum Equipment {
+    Blank = 'blank',
+    Synergy = 'synergy'
+}
+
+type EquipmentSlot = Equipment | EquipmentSlots;
+
 export class EquipmentComponent extends CardComponent {
+    private readonly equipmentSlots: EquipmentSlot[][] = [
+        [EquipmentSlots.Passive, EquipmentSlots.Helmet, EquipmentSlots.Consumable],
+        [EquipmentSlots.Cape, EquipmentSlots.Amulet, EquipmentSlots.Quiver],
+        [EquipmentSlots.Weapon, EquipmentSlots.Platebody, EquipmentSlots.Shield],
+        [
+            cloudManager.hasAoDEntitlement ? EquipmentSlots.Gem : Equipment.Blank,
+            EquipmentSlots.Platelegs,
+            Equipment.Blank
+        ],
+        [EquipmentSlots.Gloves, EquipmentSlots.Boots, EquipmentSlots.Ring],
+        [EquipmentSlots.Summon1, Equipment.Synergy, EquipmentSlots.Summon2]
+    ];
+
     constructor(private readonly workers: Workers) {
         super({ id: 'mcs-equipment' });
 
@@ -28,6 +50,49 @@ export class EquipmentComponent extends CardComponent {
     }
 
     protected preRender(container: Element) {
+        const equipment = document.createElement('div');
+        equipment.className = 'mcs-equipment-items';
+
+        for (const row of this.equipmentSlots) {
+            const equipmentRow = document.createElement('div');
+            equipmentRow.className = 'mcs-equipment-row';
+
+            for (const slot of row) {
+                const equipmentSlot = document.createElement('div');
+                equipmentSlot.className = 'mcs-equipment-slot';
+
+                if (this.isEquipmentSlots(slot)) {
+                    const img = document.createElement('img');
+                    img.src = `assets/media/bank/${
+                        equipmentSlotData[EquipmentSlots[slot] as SlotTypes].emptyMedia
+                    }.png`;
+                    img.className =
+                        'combat-equip-img border border-2x border-rounded-equip border-combat-outline p-1 m-1 pointer-enabled';
+                    // @ts-ignore
+                    tippy(img, {
+                        content: EquipmentSlots[slot]
+                    });
+                    equipmentSlot.append(img);
+                }
+
+                if (slot === Equipment.Blank) {
+                    const blank = document.createElement('div');
+                    blank.className = 'blank combat-equip-img p-1 m-1';
+                    equipmentSlot.append(blank);
+                }
+
+                if (slot === Equipment.Synergy) {
+                    const synergy = document.createElement('div');
+                    synergy.className = 'synergy combat-equip-img p-1 m-1';
+                    equipmentSlot.append(synergy);
+                }
+
+                equipmentRow.append(equipmentSlot);
+            }
+
+            equipment.append(equipmentRow);
+        }
+
         const button = new ButtonComponent({
             id: 'test',
             content: 'Test',
@@ -63,7 +128,7 @@ export class EquipmentComponent extends CardComponent {
             }
         });
 
-        this.append(button, simulateButton);
+        this.append(equipment, button, simulateButton);
 
         super.preRender(container);
     }
@@ -77,5 +142,9 @@ export class EquipmentComponent extends CardComponent {
             case State.Stopped:
                 return 'Simulate';
         }
+    }
+
+    private isEquipmentSlots(slot: EquipmentSlot): slot is EquipmentSlots {
+        return Object.values(EquipmentSlots).includes(<EquipmentSlots>slot);
     }
 }
