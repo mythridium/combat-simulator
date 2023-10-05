@@ -19,10 +19,10 @@ export class SyncStore<TState extends SyncState> extends BaseStore<TState> {
     public setState(state: Partial<TState>): void;
     public setState(source: Source, state: Omit<Partial<TState>, 'source'>): void;
     public setState(sourceOrState: Source | Partial<TState>, state?: Omit<Partial<TState>, 'source'>): void {
-        let update: TState = { ...this._state };
+        let update: TState = this._state;
 
         if (this.isSource(sourceOrState)) {
-            update = { ...update, source: sourceOrState, ...state } as TState;
+            update = { ...update, ...state, source: sourceOrState } as TState;
         } else {
             update = { ...update, ...sourceOrState };
         }
@@ -34,16 +34,16 @@ export class SyncStore<TState extends SyncState> extends BaseStore<TState> {
     public getState(): Omit<TState, 'source'> {
         const state = super.getState();
 
-        delete state.source;
+        state.source = undefined;
 
         return state;
     }
 
     // @ts-ignore
     public get state(): Omit<TState, 'source'> {
-        const state = { ...this._state };
+        const state = this._state;
 
-        delete state.source;
+        state.source = undefined;
 
         return state;
     }
@@ -69,7 +69,7 @@ export class SyncSubscription<TState extends SyncState> extends Subscription<TSt
             return;
         }
 
-        delete state.source;
+        state.source = undefined;
 
         super.emit(state);
     }

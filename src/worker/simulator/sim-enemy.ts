@@ -36,4 +36,18 @@ export class SimEnemy extends Enemy {
     public render() {
         // how about no.
     }
+
+    public computeModifiers() {
+        // optimisation as the reset implemented in the game is not efficient.
+        this.modifiers.reset = () => (this.modifiers = new CombatModifiers());
+
+        super.computeModifiers();
+    }
+
+    public resetStateToDefault() {
+        // optimisation as the reset implemented in the game is not efficient.
+        this.modifiers.reset = () => (this.modifiers = new CombatModifiers());
+
+        super.resetStateToDefault();
+    }
 }
