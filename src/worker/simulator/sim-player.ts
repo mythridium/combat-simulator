@@ -65,6 +65,7 @@ export class SimPlayer extends Player {
     public trackWeaponStat() {}
     public setCallbacks() {}
     public onMagicAttackFailure() {}
+    public rollForSummoningMarks() {}
 
     public activeTick() {
         super.activeTick();

@@ -1,10 +1,10 @@
 import 'src/shared/constants';
-import { Scripts } from './workers/scripts';
 import { Workers } from './workers/workers';
 import { Interface } from './interface/interface';
 import { ModalQueue } from './interface/modal-queue';
 import { Mods } from './mods';
 import { Global } from './global';
+import { Source } from 'src/shared/stores/sync.store';
 
 export class App {
     private readonly modalQueue: ModalQueue;
@@ -19,39 +19,23 @@ export class App {
         this.mods.init();
 
         this.context.onInterfaceReady(async () => {
+            if (localStorage.getItem('mcs-use-max-cpu')) {
+                Global.workers.setState(Source.Default, { useMaxCPU: true });
+            }
+
             this.mods.checkDataPackagesForInvalidData();
             await this.mods.checkDataPackages();
 
             Global.logger.log('Client Loaded');
 
-            this.workers = new Workers(this.context, this.modalQueue);
+            this.workers = new Workers(this.context, this.mods, this.modalQueue);
             this.interface = new Interface(this.context, this.workers);
 
-            await this.init();
+            const isInitialised = await this.workers.init();
+
+            if (isInitialised) {
+                this.interface.init();
+            }
         });
-    }
-
-    private async init() {
-        let origin = location.origin;
-
-        if (cloudManager.isTest) {
-            origin += '/lemvorIdle';
-        }
-
-        const isInitialised = await this.workers.init({
-            scripts: Scripts.getScriptsForWorker(),
-            origin,
-            entitlements: {
-                full: cloudManager.hasFullVersionEntitlement,
-                toth: cloudManager.hasTotHEntitlement,
-                aod: cloudManager.hasAoDEntitlement
-            },
-            dataPackages: this.mods.dataPackages,
-            modifierData: this.mods.modifierDataToJson()
-        });
-
-        if (isInitialised) {
-            this.interface.init();
-        }
     }
 }

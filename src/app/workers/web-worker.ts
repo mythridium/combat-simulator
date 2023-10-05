@@ -14,4 +14,8 @@ export class WebWorker {
     public async send<K extends MessageAction>(data: MessageRequest<K>) {
         return this.messages.send(data);
     }
+
+    public terminate() {
+        this.worker.terminate();
+    }
 }

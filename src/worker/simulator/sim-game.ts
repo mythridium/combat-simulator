@@ -96,7 +96,6 @@ export class SimGame extends Game {
         this.notifications.createSuccessNotification = () => {};
         this.notifications.createSummoningMarkNotification = () => {};
         this.stats.itemFindCount = () => 1;
-        this.summoning.getMarkLevel = () => 1;
 
         for (const skill of this.skills.allObjects) {
             // Make sure nothing gets called on skill level ups, it tends to try rendering
@@ -128,26 +127,6 @@ export class SimGame extends Game {
 
                     this.combat.stats.usedRunes[item.id] += quantity;
                     break;
-            }
-        };
-
-        this.summoning._level = 120;
-
-        this.summoning.discoverMark = mark => {
-            const count = this.summoning.getMarkCount(mark);
-            const maxMarks = Summoning.markLevels[Summoning.markLevels.length - 1] ?? 0;
-
-            for (const skill of mark.skills) {
-                if (!this.combat.stats.markRolls[skill.id]) {
-                    this.combat.stats.markRolls[skill.id] = 0;
-                }
-
-                // stop counting if we reach max marks.
-                if (count + this.combat.stats.markRolls[skill.id] >= maxMarks) {
-                    continue;
-                }
-
-                this.combat.stats.markRolls[skill.id]++;
             }
         };
     }

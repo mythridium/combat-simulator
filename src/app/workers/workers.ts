@@ -1,13 +1,15 @@
 import { WebWorker } from './web-worker';
 import { InitRequest } from 'src/shared/messages/message-type/init';
 import { MessageAction, MessageRequest } from 'src/shared/messages/message';
-import { Source, SyncState, SyncStore } from 'src/shared/stores/sync.store';
+import { Source, SyncState } from 'src/shared/stores/sync.store';
 import { ModalQueue } from 'src/app/interface/modal-queue';
 import { SimulateRequest } from 'src/shared/messages/message-type/simulate';
 import { Queue, Task, TaskRunner } from './queue';
 import { Global } from 'src/app/global';
 import { State } from 'src/app/stores/simulation.store';
 import { StateRequest } from 'src/shared/messages/message-type/state';
+import { Scripts } from './scripts';
+import { Mods } from 'src/app/mods';
 
 export class QueueRun {
     cancel: () => void;
@@ -19,27 +21,54 @@ export class Workers {
     public queue?: QueueRun;
 
     public readonly url: string;
-    private readonly workers: WebWorker[] = [];
+    private workers: WebWorker[] = [];
 
-    constructor(private readonly context: Modding.ModContext, private readonly modalQueue: ModalQueue) {
-        this.url = this.context.getResourceUrl('src/worker.mjs');
-        const threads = Math.max(navigator.hardwareConcurrency - 1, 1);
-
-        for (let i = 0; i < threads; i++) {
-            const worker = new WebWorker(this.url, i + 1);
-
-            if (i === 0) {
-                this.primary = worker;
-            }
-
-            this.workers.push(worker);
-        }
-
-        this.syncToPrimary('equipment', 'configuration');
+    private get threads() {
+        return Global.workers.state.useMaxCPU ? navigator.hardwareConcurrency - 1 : 1;
     }
 
-    public async init(data: InitRequest) {
+    constructor(
+        private readonly context: Modding.ModContext,
+        private readonly mods: Mods,
+        private readonly modalQueue: ModalQueue
+    ) {
+        this.url = this.context.getResourceUrl('src/worker.mjs');
+        this.syncToPrimary('equipment', 'configuration');
+
+        Global.workers.when(Source.Interface).subscribe(async ({ useMaxCPU }) => {
+            if (useMaxCPU) {
+                localStorage.setItem('mcs-use-max-cpu', 'true');
+            } else {
+                localStorage.removeItem('mcs-use-max-cpu');
+            }
+
+            await this.init();
+        });
+    }
+
+    public async init() {
+        Global.workers.setState(Source.Worker, { isLoading: true });
+
+        this.createWorkers();
+
         let isSuccess = false;
+        let origin = location.origin;
+
+        if (cloudManager.isTest) {
+            origin += '/lemvorIdle';
+        }
+
+        const data: InitRequest = {
+            scripts: Scripts.getScriptsForWorker(),
+            origin,
+            entitlements: {
+                full: cloudManager.hasFullVersionEntitlement,
+                toth: cloudManager.hasTotHEntitlement,
+                aod: cloudManager.hasAoDEntitlement
+            },
+            dataPackages: this.mods.dataPackages,
+            modifierData: this.mods.modModifierData
+        };
 
         try {
             const requests = this.workers.map(worker => worker.send({ action: MessageAction.Init, data }));
@@ -52,14 +81,12 @@ export class Workers {
             this.modalQueue.add(exception);
         }
 
+        Global.workers.setState(Source.Worker, { isLoading: false });
         return isSuccess;
     }
 
     public simulate(requests: SimulateRequest[]) {
-        const runners = this.workers
-            .filter((_, index) => index + 1 <= this.threads())
-            .map(worker => new TaskRunner(worker));
-
+        const runners = this.workers.map(worker => new TaskRunner(worker));
         const tasks = requests.map(data => new Task({ action: MessageAction.Simulate, data }));
         const queue = new Queue(runners, tasks);
 
@@ -97,21 +124,24 @@ export class Workers {
         await Promise.all(requests);
     }
 
-    private threads() {
-        if (self.mcs.isDebug) {
-            return 1;
+    private createWorkers() {
+        for (const worker of this.workers) {
+            worker.terminate();
         }
 
-        let threads: null | string | number = localStorage.getItem('mcs-threads');
+        this.workers = [];
 
-        if (threads) {
-            try {
-                threads = parseInt(threads, 10) || 1;
-                return threads;
-            } catch {}
+        const threads = Math.max(this.threads, 1);
+
+        for (let i = 0; i < threads; i++) {
+            const worker = new WebWorker(this.url, i + 1);
+
+            if (i === 0) {
+                this.primary = worker;
+            }
+
+            this.workers.push(worker);
         }
-
-        return Math.max(navigator.hardwareConcurrency - 1, 1);
     }
 
     private syncToPrimary(item: keyof StateRequest, ...items: (keyof StateRequest)[]) {

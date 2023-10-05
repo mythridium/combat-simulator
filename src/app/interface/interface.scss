@@ -20,26 +20,6 @@
         flex-direction: column;
         justify-content: center;
     }
-
-    .mcs-card {
-        border-radius: 5px;
-        min-width: 250px;
-    }
-
-    .mcs-line-item-wrapper {
-        text-align: end;
-    }
-
-    .mcs-line-item-value {
-        margin-left: 5px;
-        width: 60px;
-        display: inline-block;
-        border-bottom: solid 1px;
-    }
-
-    .mcs-line-item-img {
-        vertical-align: sub;
-    }
 }
 
 #combat-simulator-init-exception {

@@ -16,18 +16,9 @@ export interface SyncState {
  * subscriptions based on a source. Useful for keeping models in bi directional sync.
  */
 export class SyncStore<TState extends SyncState> extends BaseStore<TState> {
-    public setState(state: Partial<TState>): void;
-    public setState(source: Source, state: Omit<Partial<TState>, 'source'>): void;
-    public setState(sourceOrState: Source | Partial<TState>, state?: Omit<Partial<TState>, 'source'>): void {
-        let update: TState = this._state;
-
-        if (this.isSource(sourceOrState)) {
-            update = { ...update, ...state, source: sourceOrState } as TState;
-        } else {
-            update = { ...update, ...sourceOrState };
-        }
-
-        super.setState(update);
+    // @ts-ignore
+    public setState(source: Source, state: Omit<Partial<TState>, 'source'>): void {
+        super.setState({ ...this._state, ...state, source });
     }
 
     // @ts-ignore
@@ -78,7 +69,7 @@ export class SyncSubscription<TState extends SyncState> extends Subscription<TSt
         this.source = source;
 
         return {
-            subscribe: (callback: (state: TState) => void) => this.subscribe(callback)
+            subscribe: (callback: (state: Omit<TState, 'source'>) => void) => this.subscribe(callback)
         };
     }
 }

@@ -1,3 +1,4 @@
+import './card-component.scss';
 import { BaseComponent } from './base-component';
 
 export interface CardOptions {

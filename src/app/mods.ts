@@ -5,6 +5,7 @@ export class Mods {
     public readonly dataPackages: [DataNamespace, GameDataPackage][] = [];
     public readonly invalidNamespace: DataNamespace[] = [];
 
+    public modModifierData: string;
     private melvorModifierData = { ...modifierData };
 
     constructor(private readonly context: Modding.ModContext, private readonly modalQueue: ModalQueue) {}
@@ -22,7 +23,7 @@ export class Mods {
     }
 
     /** Get all modifier data that are from mods. */
-    public modifierDataToJson() {
+    private modifierDataToJson() {
         const data = {};
 
         for (const [key, value] of Object.entries(modifierData)) {
@@ -39,6 +40,8 @@ export class Mods {
 
     /** Ignore all data packages that introduce custom skills. */
     public checkDataPackagesForInvalidData() {
+        this.modModifierData = this.modifierDataToJson();
+
         const moddedSkills = game.skills.filter(skill => skill.isModded).map(skill => skill.namespace);
         const dataPackages: [DataNamespace, GameDataPackage][] = [];
 

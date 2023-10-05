@@ -3,10 +3,11 @@ import { SummaryStore } from 'src/shared/stores/summary.store';
 import { SimulationStore } from 'src/app/stores/simulation.store';
 import { Color, Logger } from 'src/shared/logger';
 import { ConfigurationStore } from 'src/shared/stores/configuration.store';
+import { WorkersStore } from './stores/workers.store';
 
 export abstract class Global {
     public static logger = new Logger('Client', Color.Green);
-
+    public static workers = new WorkersStore();
     public static summary = new SummaryStore();
     public static configuration = new ConfigurationStore();
     public static equipment = new EquipmentStore();

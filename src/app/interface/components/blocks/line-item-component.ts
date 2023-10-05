@@ -1,3 +1,4 @@
+import './line-item-component.scss';
 import { BaseComponent } from './base-component';
 
 export interface CardOptions {

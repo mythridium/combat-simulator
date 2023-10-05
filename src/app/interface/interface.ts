@@ -1,3 +1,4 @@
+import './interface.scss';
 import { ModalComponent } from './components/modal-component';
 import { EquipmentComponent } from './components/equipment-component';
 import { SummaryComponent } from './components/summary-component';
@@ -5,8 +6,6 @@ import { Workers } from 'src/app/workers/workers';
 import { ContainerComponent } from './components/blocks/container-component';
 import { InformationComponent } from './components/information-component';
 import { ConfigurationComponent } from './components/configuration-component';
-
-import './interface.scss';
 
 export class Interface {
     private readonly modalElementId = 'myth-combat-simulator-modal';

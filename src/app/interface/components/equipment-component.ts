@@ -1,11 +1,10 @@
+import './equipment-component.scss';
 import { Source } from 'src/shared/stores/sync.store';
 import { ButtonComponent } from './blocks/button-component';
 import { Workers } from 'src/app/workers/workers';
 import { Global } from 'src/app/global';
 import { State } from 'src/app/stores/simulation.store';
 import { CardComponent } from './blocks/card-component';
-
-import './equipment-component.scss';
 
 enum Equipment {
     Blank = 'blank',
@@ -97,6 +96,7 @@ export class EquipmentComponent extends CardComponent {
             id: 'test',
             content: 'Test',
             onClick: () => {
+                //Global.workers.setState(Source.Interface, { useMaxCPU: !Global.workers.state.useMaxCPU });
                 Global.equipment.setState(Source.Interface, { equipmentIds: ['123'] });
                 Global.configuration.setState(Source.Interface, { isManualEating: true });
             }

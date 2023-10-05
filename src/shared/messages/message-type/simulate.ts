@@ -25,7 +25,4 @@ export interface SimulateStats {
     usedCominationRunes: number;
     usedCharges: { summon1: number; summon2: number };
     skillXp: { [index: string]: number };
-    petRolls: { [index: string]: number };
-    ancientRelicRolls: { [index: string]: number };
-    markRolls: { [index: string]: number };
 }

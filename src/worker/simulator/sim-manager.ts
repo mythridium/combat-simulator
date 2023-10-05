@@ -77,10 +77,7 @@ export class SimManager extends CombatManager {
             skillXp: this.game.skills.allObjects.reduce((result, skill) => {
                 result[skill.id] = skill.xp;
                 return result;
-            }, {} as { [index: string]: number }),
-            petRolls: {},
-            ancientRelicRolls: {},
-            markRolls: {}
+            }, {} as { [index: string]: number })
         };
     }
 
