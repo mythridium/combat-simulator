@@ -533,6 +533,7 @@ class SimGame extends Game {
 
         this.skills.filter(skill => this.micsr.ancientRelicSkillKeys.includes(skill.localID)).forEach(skill => {
             (<any>skill).ancientRelicsFound.clear();
+            (<any>skill).numberOfRelicsFound = 0;
         });
 
         // @ts-expect-error

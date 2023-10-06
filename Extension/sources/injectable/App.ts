@@ -1051,7 +1051,11 @@ class App {
         const prefix = `Uncapped Damage Reduction:`;
         // @ts-ignore
         tippy(dr, { content: `${prefix} 0`, onShow: (instance) => {
-            instance.setContent( `${prefix} ${this.game.combat.player.equipmentStats.damageReduction + this.game.combat.player.modifiers.increasedDamageReduction}`);
+            const damageReduction = this.game.combat.player.equipmentStats.damageReduction +
+                this.game.combat.player.modifiers.increasedDamageReduction -
+                this.game.combat.player.modifiers.decreasedDamageReduction;
+
+            instance.setContent( `${prefix} ${damageReduction}`);
         } });
 
         this.combatStatCard.addSectionTitle("Plot Options");
@@ -3032,6 +3036,7 @@ class App {
         if (isMasterRelic) {
             if (skill.ancientRelicsFound.size === skill.ancientRelics.length) {
                 skill.ancientRelicsFound.clear();
+                skill.numberOfRelicsFound = 0;
 
                 skill.ancientRelics.forEach((relic: any) => {
                     const button = document.getElementById(`MCS ${relic.relic.localID} Button`);
@@ -3044,9 +3049,11 @@ class App {
                 updateMasterRelic();
             } else {
                 skill.ancientRelicsFound.clear();
+                skill.numberOfRelicsFound = 0;
 
                 skill.ancientRelics.forEach((relic: any) => {
                     skill.ancientRelicsFound.set(relic.relic, 1);
+                    skill.numberOfRelicsFound++;
 
                     const button = document.getElementById(`MCS ${relic.relic.localID} Button`);
 
@@ -3062,10 +3069,12 @@ class App {
         } else {
             if (skill.ancientRelicsFound.has(relic)) {
                 skill.ancientRelicsFound.delete(relic);
+                skill.numberOfRelicsFound--;
                 this.unselectButton(event.currentTarget);
                 relicChanged = true;
             } else {
                 skill.ancientRelicsFound.set(relic, 1);
+                skill.numberOfRelicsFound++;
                 this.selectButton(event.currentTarget);
                 relicChanged = true;
             }
@@ -3075,6 +3084,7 @@ class App {
 
         if (relicChanged) {
             this.updateCombatStats();
+            this.agilityCourse.updateAllAgilityTooltips();
         }
     }
 

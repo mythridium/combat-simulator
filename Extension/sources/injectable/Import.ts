@@ -473,6 +473,7 @@ class Import {
 
         skills.forEach((skill: any) => {
             skill.ancientRelicsFound.clear();
+            skill.numberOfRelicsFound = 0;
         });
 
         skills.forEach((skill: any) => {
@@ -484,6 +485,7 @@ class Import {
                     if (skillData[1].includes(relic.relic.localID)) {
                         this.app.selectButton(button);
                         skill.ancientRelicsFound.set(relic.relic, 1);
+                        skill.numberOfRelicsFound++;
                     } else {
                         this.app.unselectButton(button);
                     }

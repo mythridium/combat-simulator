@@ -342,9 +342,15 @@ class AgilityCourse {
     ) {
         let passives = `<div class="text-center">${obstacle.name}</div>`;
         let negativeMultiplier = 1;
+
         if(typeof category === "number"){
             negativeMultiplier = this.player.courseMastery[category] ? 0.5 : 1;
         }
+
+        if ((<any>this.micsr.game.agility).hasMasterRelic) {
+            negativeMultiplier = 0;
+        }
+
         this.tmpModifiers.addModifiers(
             obstacle.modifiers,
             negativeMultiplier
@@ -481,6 +487,21 @@ class AgilityCourse {
         );
     }
 
+    updateAllAgilityTooltips() {
+        this.player.course.forEach((_, category) => {
+            this.updateAgilityTooltips(category);
+        });
+
+        this.agilityObstacles.forEach((obstacle) => {
+            const button = document.getElementById(
+                `MCS ${obstacle.name} ${this.id} Button`
+            );
+            (button as any)._tippy.setContent(
+                this.getObstacleTooltip(obstacle.category, obstacle)
+            );
+        });
+    }
+
     agilityMasteryOnClick(event: MouseEvent, category: number) {
         const obstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === this.parent.player.course[category])!;
 
@@ -531,7 +552,6 @@ class AgilityCourse {
                 if(obstacle) {
                     this.parent.game.agility['actionMastery'].set(obstacle, { level: 99, xp: 1 });
                 }
-                this.updateAgilityTooltips(category);
             }
         });
         this.player.pillarID = pillarID;
@@ -569,5 +589,7 @@ class AgilityCourse {
                 }
             }
         });
+
+        this.updateAllAgilityTooltips();
     }
 }

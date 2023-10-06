@@ -1,3 +1,9 @@
+v2.2.5
+    fixed agility tooltips not updating when agility master relic is toggled or imported
+    fixed agility master relic not removing negative agility modifiers
+    fixed master relic state not being accurate to the ui
+    fixed uncapped damage reduction tooltip not considering reduced damage reduction
+
 v2.2.4
     fixed uncapped damage reduction tooltip not always updating
 
