@@ -1,3 +1,6 @@
+v2.2.4
+    fixed uncapped damage reduction tooltip not always updating
+
 v2.2.3
     fixed 'target damage reduction is decreased' not being displayed on agility obstacles
     added tooltip for damage reduction showing uncapped damage reduction, making it easier to see how much over the cap you are

@@ -1048,7 +1048,11 @@ class App {
         }
 
         const dr = this.combatStatCard.numOutputs.find((output: Element) => output.id === `MCS damageReduction CS Output`);
-        dr!.dataset.tippyContent = 'Uncapped Damage Reduction: 0';
+        const prefix = `Uncapped Damage Reduction:`;
+        // @ts-ignore
+        tippy(dr, { content: `${prefix} 0`, onShow: (instance) => {
+            instance.setContent( `${prefix} ${this.game.combat.player.equipmentStats.damageReduction + this.game.combat.player.modifiers.increasedDamageReduction}`);
+        } });
 
         this.combatStatCard.addSectionTitle("Plot Options");
         this.plotter.addToggles(this.combatStatCard);
@@ -4392,12 +4396,7 @@ class App {
         this.combatStatKeys.forEach((key: any) => {
             if (key === "attackSpeed") {
                 const attackSpeed = this.combatData.playerAttackSpeed();
-                document.getElementById(`MCS ${key} CS Output`)!.textContent =
-                    attackSpeed.toLocaleString();
-            } else if(key === 'damageReduction') {
-                const dr = document.getElementById(`MCS ${key} CS Output`)!
-                dr.textContent = (<any>this.combatData.combatStats)[key].toLocaleString();
-                (<any>dr)._tippy.setContent(`Uncapped Damage Reduction: ${this.game.combat.player.equipmentStats.damageReduction + this.game.combat.player.modifiers.increasedDamageReduction}`);
+                document.getElementById(`MCS ${key} CS Output`)!.textContent = attackSpeed.toLocaleString();
             } else {
                 document.getElementById(`MCS ${key} CS Output`)!.textContent =
                     (<any>this.combatData.combatStats)[key].toLocaleString();
