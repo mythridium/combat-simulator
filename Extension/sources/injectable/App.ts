@@ -1046,6 +1046,10 @@ class App {
                 `MCS ${this.combatStatKeys[i]} CS Output`
             );
         }
+
+        const dr = this.combatStatCard.numOutputs.find((output: Element) => output.id === `MCS damageReduction CS Output`);
+        dr!.dataset.tippyContent = 'Uncapped Damage Reduction: 0';
+
         this.combatStatCard.addSectionTitle("Plot Options");
         this.plotter.addToggles(this.combatStatCard);
         this.combatStatCard.addSectionTitle("");
@@ -4390,6 +4394,10 @@ class App {
                 const attackSpeed = this.combatData.playerAttackSpeed();
                 document.getElementById(`MCS ${key} CS Output`)!.textContent =
                     attackSpeed.toLocaleString();
+            } else if(key === 'damageReduction') {
+                const dr = document.getElementById(`MCS ${key} CS Output`)!
+                dr.textContent = (<any>this.combatData.combatStats)[key].toLocaleString();
+                (<any>dr)._tippy.setContent(`Uncapped Damage Reduction: ${this.game.combat.player.equipmentStats.damageReduction + this.game.combat.player.modifiers.increasedDamageReduction}`);
             } else {
                 document.getElementById(`MCS ${key} CS Output`)!.textContent =
                     (<any>this.combatData.combatStats)[key].toLocaleString();

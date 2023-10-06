@@ -1,3 +1,7 @@
+v2.2.3
+    fixed 'target damage reduction is decreased' not being displayed on agility obstacles
+    added tooltip for damage reduction showing uncapped damage reduction, making it easier to see how much over the cap you are
+
 v2.2.2
     updated 'chance to receive no combat drops from monsters or dungeons' modifier to also affect non dungeon loot, now that this modifier is fixed in the actual game
 

@@ -83,6 +83,7 @@ class ShowModifiers {
                 'FlatMinHit',
                 'DamageTaken',
                 'GlobalEvasion',
+                'EnemyDamageReduction'
             ],
             // modifiers that relate to healing
             hitpoints: [
