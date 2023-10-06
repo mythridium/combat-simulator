@@ -1,6 +1,7 @@
 import './interface.scss';
+import './components/blocks/element';
 import { ModalComponent } from './components/modal-component';
-import { EquipmentComponent } from './components/equipment-component';
+import { PlayerComponent } from './components/player/player-component';
 import { SummaryComponent } from './components/summary-component';
 import { Workers } from 'src/app/workers/workers';
 import { ContainerComponent } from './components/blocks/container-component';
@@ -38,17 +39,17 @@ export class Interface {
             title: `[Myth] Combat Simulator - ${this.context.version}`
         });
 
-        const player = new ContainerComponent({ id: 'mcs-player', classes: ['mcs-flex-row'] });
+        const setup = new ContainerComponent({ id: 'mcs-setup', classes: ['mcs-flex-row'] });
         const plotter = new ContainerComponent({ id: 'mcs-plotter', classes: ['mcs-flex-column'] });
 
-        const equipment = new EquipmentComponent(this.workers);
+        const player = new PlayerComponent(this.workers);
         const configuration = new ConfigurationComponent();
         const summary = new SummaryComponent();
         const information = new InformationComponent();
 
-        player.append(equipment, configuration, summary, information);
+        setup.append(player, configuration, summary, information);
 
-        this.modal.append(player, plotter);
+        this.modal.append(setup, plotter);
         this.modal.render();
     }
 }

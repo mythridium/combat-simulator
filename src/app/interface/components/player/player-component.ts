@@ -1,10 +1,11 @@
-import './equipment-component.scss';
+import './player-component.scss';
 import { Source } from 'src/shared/stores/sync.store';
-import { ButtonComponent } from './blocks/button-component';
+import { ButtonComponent } from 'src/app/interface/components/blocks/button-component';
 import { Workers } from 'src/app/workers/workers';
 import { Global } from 'src/app/global';
 import { State } from 'src/app/stores/simulation.store';
-import { CardComponent } from './blocks/card-component';
+import { CardComponent } from 'src/app/interface/components/blocks/card-component';
+import { EquipmentComponent } from './equipment/equipment-component';
 
 enum Equipment {
     Blank = 'blank',
@@ -13,22 +14,9 @@ enum Equipment {
 
 type EquipmentSlot = Equipment | EquipmentSlots;
 
-export class EquipmentComponent extends CardComponent {
-    private readonly equipmentSlots: EquipmentSlot[][] = [
-        [EquipmentSlots.Passive, EquipmentSlots.Helmet, EquipmentSlots.Consumable],
-        [EquipmentSlots.Cape, EquipmentSlots.Amulet, EquipmentSlots.Quiver],
-        [EquipmentSlots.Weapon, EquipmentSlots.Platebody, EquipmentSlots.Shield],
-        [
-            cloudManager.hasAoDEntitlement ? EquipmentSlots.Gem : Equipment.Blank,
-            EquipmentSlots.Platelegs,
-            Equipment.Blank
-        ],
-        [EquipmentSlots.Gloves, EquipmentSlots.Boots, EquipmentSlots.Ring],
-        [EquipmentSlots.Summon1, Equipment.Synergy, EquipmentSlots.Summon2]
-    ];
-
+export class PlayerComponent extends CardComponent {
     constructor(private readonly workers: Workers) {
-        super({ id: 'mcs-equipment' });
+        super({ id: 'mcs-player' });
 
         Global.equipment.when(Source.Worker).subscribe(() => this.render());
         Global.simulation.when(Source.Worker).subscribe(({ state, result }) => {
@@ -49,48 +37,7 @@ export class EquipmentComponent extends CardComponent {
     }
 
     protected preRender(container: Element) {
-        const equipment = document.createElement('div');
-        equipment.className = 'mcs-equipment-items';
-
-        for (const row of this.equipmentSlots) {
-            const equipmentRow = document.createElement('div');
-            equipmentRow.className = 'mcs-equipment-row';
-
-            for (const slot of row) {
-                const equipmentSlot = document.createElement('div');
-                equipmentSlot.className = 'mcs-equipment-slot';
-
-                if (this.isEquipmentSlots(slot)) {
-                    const img = document.createElement('img');
-                    img.src = `assets/media/bank/${
-                        equipmentSlotData[EquipmentSlots[slot] as SlotTypes].emptyMedia
-                    }.png`;
-                    img.className =
-                        'combat-equip-img border border-2x border-rounded-equip border-combat-outline p-1 m-1 pointer-enabled';
-                    // @ts-ignore
-                    tippy(img, {
-                        content: EquipmentSlots[slot]
-                    });
-                    equipmentSlot.append(img);
-                }
-
-                if (slot === Equipment.Blank) {
-                    const blank = document.createElement('div');
-                    blank.className = 'blank combat-equip-img p-1 m-1';
-                    equipmentSlot.append(blank);
-                }
-
-                if (slot === Equipment.Synergy) {
-                    const synergy = document.createElement('div');
-                    synergy.className = 'synergy combat-equip-img p-1 m-1';
-                    equipmentSlot.append(synergy);
-                }
-
-                equipmentRow.append(equipmentSlot);
-            }
-
-            equipment.append(equipmentRow);
-        }
+        const equipment = new EquipmentComponent();
 
         const button = new ButtonComponent({
             id: 'test',
@@ -142,9 +89,5 @@ export class EquipmentComponent extends CardComponent {
             case State.Stopped:
                 return 'Simulate';
         }
-    }
-
-    private isEquipmentSlots(slot: EquipmentSlot): slot is EquipmentSlots {
-        return Object.values(EquipmentSlots).includes(<EquipmentSlots>slot);
     }
 }
