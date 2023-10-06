@@ -1,3 +1,6 @@
+v2.2.2
+    updated 'chance to receive no combat drops from monsters or dungeons' modifier to also affect non dungeon loot, now that this modifier is fixed in the actual game
+
 v2.2.1
     fixed agility obstacle mastery not correctly applying reduction when importing sets
 

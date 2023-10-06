@@ -116,7 +116,7 @@ class Loot {
             }
         });
         // @ts-expect-error
-        return (gpWeight / lootTable.totalWeight) * this.lootBonus;
+        return (gpWeight / lootTable.totalWeight) * this.lootBonus * this.noLoot;
     }
 
     computeDropTableValue(dropTable: any) {
@@ -157,11 +157,12 @@ class Loot {
                 ) * signetDropRate;
         }
         monsterValue *= this.computeLootChance(monsterID);
+        monsterValue *= this.noLoot;
         // bones drops are not affected by loot chance
         const bones = this.micsr.monsters.getObjectByID(monsterID)!.bones;
         if (this.sellBones && !this.modifiers.autoBurying && bones) {
             monsterValue +=
-                this.getItemValue(bones.item) * this.lootBonus * bones.quantity;
+                this.getItemValue(bones.item) * this.lootBonus * this.noLoot * bones.quantity;
         }
         return monsterValue;
     }
@@ -411,7 +412,7 @@ class Loot {
                 return;
             }
             const dropCount = this.getAverageDropAmt(monsterID);
-            const itemDoubleChance = this.lootBonus;
+            const itemDoubleChance = this.lootBonus * this.noLoot;
             data.dropChance = (dropCount * itemDoubleChance) / data.killTimeS;
         };
 
