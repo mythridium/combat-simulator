@@ -16,6 +16,7 @@
         }
     },
     "include": ["src", "node_modules/melvor-types"],
+    "exclude": ["node_modules/melvor-types/src/libraryTypes/tippyGlobal.d.ts"],
     "ts-node": {
         "compilerOptions": {
             "module": "CommonJS"

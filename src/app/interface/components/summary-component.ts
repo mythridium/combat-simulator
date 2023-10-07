@@ -123,4 +123,16 @@ export class SummaryComponent extends CardComponent {
 
         super.preRender(container);
     }
+
+    public render() {
+        super.render();
+
+        const damageReduction = this.element.querySelector('#mcs-summary-damage-reduction .mcs-line-item-value');
+
+        damageReduction._tippy?.destroy();
+
+        tippy(damageReduction, {
+            content: `Uncapped Damage Reduction: ${Global.summary.state.uncappedDamageReduction}`
+        });
+    }
 }

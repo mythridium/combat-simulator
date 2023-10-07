@@ -18,12 +18,9 @@ export class CardComponent extends BaseComponent {
 
     public render() {
         if (this.options.title) {
-            const title = document.createElement('h5');
-
-            title.className = 'mcs-card-title mb-2';
-            title.innerHTML = this.options.title;
-
-            this.append(title);
+            this.append(
+                document.element({ tag: 'h5', classes: ['mcs-card-title', 'mb-2'], innerHTML: this.options.title })
+            );
         }
 
         super.render();

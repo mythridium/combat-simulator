@@ -40,6 +40,10 @@ export class Simulator {
             attackInterval: stats.attackInterval,
             accuracy: stats.accuracy,
             damageReduction: stats.damageReduction,
+            uncappedDamageReduction:
+                Global.game.combat.player.equipmentStats.damageReduction +
+                Global.game.combat.player.modifiers.increasedDamageReduction -
+                Global.game.combat.player.modifiers.decreasedDamageReduction,
             evasion: {
                 melee: stats.evasion.melee,
                 ranged: stats.evasion.ranged,

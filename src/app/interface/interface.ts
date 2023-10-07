@@ -1,5 +1,5 @@
 import './interface.scss';
-import './components/blocks/element';
+import './element';
 import { ModalComponent } from './components/modal-component';
 import { PlayerComponent } from './components/player/player-component';
 import { SummaryComponent } from './components/summary-component';

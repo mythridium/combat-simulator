@@ -4,6 +4,7 @@ export interface SummaryState extends SyncState {
     attackInterval: number;
     accuracy: number;
     damageReduction: number;
+    uncappedDamageReduction: number;
     evasion: {
         melee: number;
         ranged: number;
@@ -25,6 +26,7 @@ export class SummaryStore extends SyncStore<SummaryState> {
             attackInterval: 0,
             accuracy: 0,
             damageReduction: 0,
+            uncappedDamageReduction: 0,
             evasion: {
                 melee: 0,
                 ranged: 0,

@@ -1,5 +1,5 @@
-export interface BaseOptions {
-    tag: string;
+export interface BaseOptions<K extends keyof HTMLElementTagNameMap> {
+    tag: K;
     id: string;
     classes?: string[];
 }
@@ -10,7 +10,7 @@ export class BaseComponent {
     private readonly fragment = new DocumentFragment();
     private children: (Element | BaseComponent)[] = [];
 
-    protected constructor(protected readonly _options: BaseOptions) {}
+    protected constructor(protected readonly _options: BaseOptions<any>) {}
 
     public append(child: Element | BaseComponent, ...children: Element[] | BaseComponent[]) {
         this.children.push(child, ...children);
@@ -47,13 +47,11 @@ export class BaseComponent {
     }
 
     private construct() {
-        const container = document.createElement(this._options.tag);
-
-        container.id = this._options.id;
-
-        if (this._options.classes?.length) {
-            container.classList.add(...this._options.classes);
-        }
+        const container = document.element({
+            tag: this._options.tag,
+            id: this._options.id,
+            classes: this._options.classes
+        });
 
         return container as Element;
     }

@@ -18,21 +18,18 @@ export class ButtonComponent extends BaseComponent {
     }
 
     protected preRender(container: Element) {
-        const content = document.createElement('span');
-
-        if (typeof this.options.content === 'string') {
-            content.innerHTML = this.options.content;
-        } else {
-            content.innerHTML = this.options.content.outerHTML;
-        }
-
-        this.append(content);
+        const content = document.element({
+            tag: 'span',
+            innerHTML: typeof this.options.content === 'string' ? this.options.content : this.options.content.outerHTML
+        });
 
         if (this.options.disabled) {
             container.setAttribute('disabled', 'disabled');
         }
 
         container.addEventListener('click', () => this.options.onClick());
+
+        this.append(content);
 
         super.preRender(container);
     }

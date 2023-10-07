@@ -19,21 +19,17 @@ export class LineItemComponent extends BaseComponent {
     }
 
     public preRender(container: Element) {
-        const wrapper = document.createElement('div');
-        const text = document.createElement('span');
-        const value = document.createElement('span');
-
-        wrapper.className = 'mcs-line-item-wrapper';
-        text.className = 'mcs-line-item-text';
-        value.className = 'mcs-line-item-value';
-
-        text.innerHTML = this.options.text;
-        value.innerHTML = this.options.value.toString();
+        const wrapper = document.element({ tag: 'div', classes: ['mcs-line-item-wrapper'] });
+        const text = document.element({ tag: 'span', classes: ['mcs-line-item-text'], innerHTML: this.options.text });
+        const value = document.element({
+            tag: 'span',
+            classes: ['mcs-line-item-value'],
+            innerHTML: this.options.value.toString()
+        });
 
         if (this.options.img) {
-            const img = document.createElement('img');
+            const img = document.element({ tag: 'img', classes: ['mcs-line-item-img', 'skill-icon-xxs', 'mr-1'] });
 
-            img.className = 'mcs-line-item-img skill-icon-xxs mr-1';
             img.src = this.options.img;
 
             wrapper.append(img);

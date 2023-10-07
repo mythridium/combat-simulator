@@ -28,17 +28,11 @@ export class EquipmentItemComponent extends BaseComponent {
         }
 
         if (this.options.slot === EquipmentCustomSlot.Blank) {
-            const blank = document.createElement('div');
-            blank.className = 'blank combat-equip-img p-1 m-1';
-
-            this.append(blank);
+            this.append(document.element({ tag: 'div', classes: ['blank combat-equip-img', 'p-1', 'm-1'] }));
         }
 
         if (this.options.slot === EquipmentCustomSlot.Synergy) {
-            const synergy = document.createElement('div');
-            synergy.className = 'synergy combat-equip-img p-1 m-1';
-
-            this.append(synergy);
+            this.append(document.element({ tag: 'div', classes: ['synergy', 'combat-equip-img', 'p-1', 'm-1'] }));
         }
 
         super.preRender(container);
