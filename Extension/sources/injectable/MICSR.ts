@@ -92,6 +92,7 @@ class MICSR {
         'Cooking',
         'Smithing',
         "Agility",
+        "Summoning",
         "Astrology"
     ];
 
@@ -109,7 +110,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 2;
-        this.patchVersion = 5;
+        this.patchVersion = 6;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
