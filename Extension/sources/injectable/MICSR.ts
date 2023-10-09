@@ -110,7 +110,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 2;
-        this.patchVersion = 6;
+        this.patchVersion = 7;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -478,6 +478,48 @@ class MICSR {
 
         if ((<any>self).game) {
             (<any>self).game.pets = this.pets;
+        }
+
+        const impendingDarkness = this.game.dungeons.getObjectByID('melvorF:Impending_Darkness');
+
+        if (impendingDarkness) {
+            const originalBane = this.game.monsters.getObjectByID('melvorF:Bane');
+            const originalBiggerBane = this.game.monsters.getObjectByID('melvorF:BaneInstrumentOfFear');
+
+            if (originalBane && originalBiggerBane) {
+                const getBane = (attackType: AttackType) => {
+                    const bane = Object.assign(Object.create(Object.getPrototypeOf(originalBane)), originalBane);
+                    bane.attackType = attackType;
+                    bane['_namespace'] = { name: "mythCombatSimulator", displayName:"[Myth] Combat Simulator", isModded: true };
+                    bane['_localID'] = `${bane.localID}_${attackType}`;
+                    bane['_name'] = `${bane.name} (${attackType})`;
+                    bane['_media'] = originalBane['_media'];
+                    bane.getMediaURL = (media: string) => cdnMedia(media);
+                    this.game.monsters.registerObject(bane);
+                    return bane;
+                };
+
+                const getBiggerBane = (attackType: AttackType) => {
+                    const biggerBane = Object.assign(Object.create(Object.getPrototypeOf(originalBiggerBane)), originalBiggerBane);
+                    biggerBane.attackType = attackType;
+                    biggerBane['_namespace'] = { name: "mythCombatSimulator", displayName:"[Myth] Combat Simulator", isModded: true };
+                    biggerBane['_localID'] = `${biggerBane.localID}_${attackType}`;
+                    biggerBane['_name'] = `${biggerBane.name} (${attackType})`;
+                    biggerBane['_media'] = originalBiggerBane['_media'];
+                    biggerBane.getMediaURL = (media: string) => cdnMedia(media);
+                    this.game.monsters.registerObject(biggerBane);
+                    return biggerBane;
+                };
+
+                impendingDarkness.monsters = [
+                    getBane('melee'),
+                    getBane('ranged'),
+                    getBane('magic'),
+                    getBiggerBane('melee'),
+                    getBiggerBane('ranged'),
+                    getBiggerBane('magic'),
+                ];
+            }
         }
 
         // dg array

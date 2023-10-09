@@ -1,3 +1,7 @@
+v2.2.7
+    added attack type variants of impending darkness bosses
+    fixed agility pillar requiring toth obstacles to be built to be considered active
+
 v2.2.6
     added summoning ancient relics to the ui
 

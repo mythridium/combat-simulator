@@ -526,7 +526,9 @@ class SimPlayer extends Player {
     }
 
     addAgilityModifiers() {
+        let fullCourseForPillar = this.course.filter((course, index) => index <= 9 && course < 0).length === 0;
         let fullCourse = true;
+
         for (
             let obstacleIndex = 0;
             obstacleIndex < this.course.length;
@@ -543,7 +545,7 @@ class SimPlayer extends Player {
             const modifiers = this.game.agility.getObstacleModifiers(obstacle);
             this.modifiers.addMappedModifiers(modifiers);
         }
-        if (fullCourse && this.pillarID) {
+        if (fullCourseForPillar && this.pillarID) {
             this.modifiers.addModifiers(
                 this.micsr.actualGame.agility.pillars.allObjects.find(
                     (p) => p.id === this.pillarID

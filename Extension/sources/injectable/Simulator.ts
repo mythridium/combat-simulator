@@ -858,6 +858,7 @@ class Simulator {
             AstrologyRecipe,
             DummyAstrologyRecipe,
             DummySummoningRecipe,
+            DummyObstacle,
             CookingRecipe,
             FiremakingLog,
             // @ts-ignore
