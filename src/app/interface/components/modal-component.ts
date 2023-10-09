@@ -16,7 +16,7 @@ export class ModalComponent extends BaseComponent {
         });
     }
 
-    protected preRender(container: Element) {
+    protected preRender(container: HTMLElement) {
         super.preRender(container);
 
         const modal = document.createElement('div');

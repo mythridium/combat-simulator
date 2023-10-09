@@ -1,7 +1,8 @@
-import './equipment-component.scss';
+import './equipment.scss';
 import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 import { EquipmentCustomSlot, EquipmentSlot } from './equipment.types';
-import { EquipmentItemComponent } from './equipment-item-component';
+import { EquipmentItemContainerComponent } from './equipment-item-container';
+import { PopupRegistry } from './popup-registry';
 
 export class EquipmentComponent extends BaseComponent {
     private readonly equipmentSlots: EquipmentSlot[][] = [
@@ -19,14 +20,18 @@ export class EquipmentComponent extends BaseComponent {
 
     constructor() {
         super({ id: 'mcs-equipment', tag: 'div' });
+
+        document.addEventListener('click', () => PopupRegistry.hide());
     }
 
-    protected preRender(container: Element) {
+    protected preRender(container: HTMLElement) {
+        PopupRegistry.clear();
+
         for (const [index, row] of this.equipmentSlots.entries()) {
             const equipmentRow = new EquipmentRow(index);
 
-            for (const [index, slot] of row.entries()) {
-                equipmentRow.append(new EquipmentItemComponent({ id: `mcs-equipment-item-${index}`, slot }));
+            for (const slot of row) {
+                equipmentRow.append(new EquipmentItemContainerComponent({ slot }));
             }
 
             this.append(equipmentRow);

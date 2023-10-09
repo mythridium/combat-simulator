@@ -1,16 +1,25 @@
+import { SkillData } from 'src/shared/messages/message-type/init';
 import { ModalQueue } from './interface/modal-queue';
 import serialize from 'serialize-javascript';
 
 export class Mods {
-    public readonly dataPackages: [DataNamespace, GameDataPackage][] = [];
-    public readonly invalidNamespace: DataNamespace[] = [];
+    public readonly dataPackages: [DataNamespace, GameDataPackage, SkillData | undefined][] = [];
+    public moddedModifierData: string;
 
-    public modModifierData: string;
+    private readonly seenNamespaces = new Map<string, DataNamespace>();
     private melvorModifierData = { ...modifierData };
 
     constructor(private readonly context: Modding.ModContext, private readonly modalQueue: ModalQueue) {}
 
-    public init() {
+    public setup() {
+        this.context.patch(NamespaceMap, 'registerNamespace').after(namespace => {
+            if (!namespace.isModded) {
+                return;
+            }
+
+            this.seenNamespaces.set(namespace.name, namespace);
+        });
+
         this.context.patch(Game, 'registerDataPackage').after((_, dataPackage) => {
             const namespace = game.registeredNamespaces.getNamespace(dataPackage.namespace);
 
@@ -18,8 +27,19 @@ export class Mods {
                 return;
             }
 
-            this.dataPackages.push([namespace, dataPackage]);
+            const skill = game.skills.find(skill => skill.namespace === namespace.name);
+
+            this.dataPackages.push([
+                namespace,
+                dataPackage,
+                skill ? { localId: skill.localID, name: skill.name } : undefined
+            ]);
         });
+    }
+
+    public async init() {
+        this.moddedModifierData = this.modifierDataToJson();
+        await this.checkDataPackages();
     }
 
     /** Get all modifier data that are from mods. */
@@ -38,54 +58,25 @@ export class Mods {
         return serialize(data);
     }
 
-    /** Ignore all data packages that introduce custom skills. */
-    public checkDataPackagesForInvalidData() {
-        this.modModifierData = this.modifierDataToJson();
-
-        const moddedSkills = game.skills.filter(skill => skill.isModded).map(skill => skill.namespace);
-        const dataPackages: [DataNamespace, GameDataPackage][] = [];
-
-        for (const [namespace, dataPackage] of this.dataPackages) {
-            if (moddedSkills.includes(namespace.name)) {
-                if (!this.invalidNamespace.some(invalidNamespace => invalidNamespace.name === namespace.name)) {
-                    this.invalidNamespace.push(namespace);
-                }
-
-                continue;
-            }
-
-            dataPackages.push([namespace, dataPackage]);
-        }
-
-        this.dataPackages.length = 0;
-        this.dataPackages.push(...dataPackages);
-    }
-
-    public async checkDataPackages() {
+    private async checkDataPackages() {
         const db = new MelvorDatabase();
         const mods = await db.mods.toArray();
-        const localMods = await db.localMods.toArray();
 
-        // namespaces for mods that are flagged as a dependency
         const dependencies = mods
             .filter(mod => mod.namespace && mod.tags.types.includes('Dependency'))
-            .map(mod => mod.namespace);
+            .map(mod => mod.name);
 
-        // namespaces for all registered namespaces that are not dependencies and are mods
-        const registeredNamespaces = Array.from(game.registeredNamespaces.registeredNamespaces.values()).filter(
-            namespace =>
-                namespace.isModded &&
-                !dependencies.includes(namespace.name) &&
-                !localMods.some(mod => mod.mod.namespace === namespace.name && mod.disabled === false) &&
-                !this.invalidNamespace.some(invalidNamespace => invalidNamespace.name === namespace.name)
+        const registered = Array.from(game.registeredNamespaces.registeredNamespaces.values()).filter(
+            namespace => namespace.isModded && !dependencies.includes(namespace.displayName)
         );
 
-        // namespaces for the mods that we managed to capture in time
-        const modNamespaces = Array.from(this.dataPackages.values()).map(([namespace]) => namespace.name);
+        const seenNamespaces = Array.from(this.seenNamespaces.values()).filter(
+            namespace => !dependencies.includes(namespace.displayName)
+        );
 
         // did any mods get registered that we didn't see
-        const missingNamespaces = registeredNamespaces
-            .filter(namespace => modNamespaces.includes(namespace.name))
+        const missingNamespaces = registered
+            .filter(namespace => !seenNamespaces.some(seen => seen.name === namespace.name))
             .map(namespace => namespace.displayName);
 
         if (missingNamespaces?.length) {

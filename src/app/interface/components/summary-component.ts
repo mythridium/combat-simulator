@@ -10,7 +10,7 @@ export class SummaryComponent extends CardComponent {
         Global.summary.when(Source.Worker).subscribe(() => this.render());
     }
 
-    protected preRender(container: Element) {
+    protected preRender(container: HTMLElement) {
         const state = Global.summary.getState();
 
         this.append(
@@ -41,7 +41,8 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-summoning-max-hit',
                 text: 'Summoning Max Hit',
-                value: state.summoningMaxHit
+                value: state.summoningMaxHit,
+                tooltip: { content: `Barrier Max Hit: ${state.barrierMaxHit}` }
             })
         );
 
@@ -93,7 +94,8 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-damage-reduction',
                 text: 'Damage Reduction',
-                value: state.damageReduction
+                value: state.damageReduction,
+                tooltip: { content: `Uncapped Damage Reduction: ${state.uncappedDamageReduction}` }
             })
         );
 
@@ -122,17 +124,5 @@ export class SummaryComponent extends CardComponent {
         );
 
         super.preRender(container);
-    }
-
-    public render() {
-        super.render();
-
-        const damageReduction = this.element.querySelector('#mcs-summary-damage-reduction .mcs-line-item-value');
-
-        damageReduction._tippy?.destroy();
-
-        tippy(damageReduction, {
-            content: `Uncapped Damage Reduction: ${Global.summary.state.uncappedDamageReduction}`
-        });
     }
 }

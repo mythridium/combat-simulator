@@ -1,4 +1,4 @@
-import { InitRequest } from 'src/shared/messages/message-type/init';
+import { InitRequest, SkillData } from 'src/shared/messages/message-type/init';
 import { Global } from 'src/worker/global';
 import { SimClasses } from './sim-classes';
 
@@ -73,10 +73,12 @@ export class Environment {
         }
     }
 
-    private loadModDataPackages(dataPackages: [DataNamespace, GameDataPackage][]) {
-        for (const [namespace, dataPackage] of dataPackages) {
+    private loadModDataPackages(dataPackages: [DataNamespace, GameDataPackage, SkillData | undefined][]) {
+        for (const [namespace, dataPackage, skillData] of dataPackages) {
             try {
                 this.registerNamespace(namespace);
+                this.registerSkill(namespace, skillData);
+
                 Global.game.registerDataPackage(dataPackage);
             } catch (exception) {
                 exception.message = `Failed to load mod data from: '${namespace.displayName}'\n\n${exception.message}`;
@@ -106,6 +108,33 @@ export class Environment {
                 namespace.isModded
             );
         }
+    }
+
+    private registerSkill(namespace: DataNamespace, skillData?: SkillData) {
+        if (
+            !skillData ||
+            Global.game.skills.find(skill => skill.namespace === namespace.name && skill.localID === skillData.localId)
+        ) {
+            return;
+        }
+
+        Global.game.registerSkill(namespace, this.createSkill(namespace, skillData));
+    }
+
+    private createSkill(namespace: DataNamespace, { localId, name }: SkillData) {
+        class CustomSkill extends Skill<unknown> {
+            _name = name;
+            _media = '';
+            renderQueue = new SkillRenderQueue();
+
+            constructor() {
+                super(namespace, localId, Global.game);
+            }
+
+            public activeTick() {}
+        }
+
+        return CustomSkill;
     }
 
     /**

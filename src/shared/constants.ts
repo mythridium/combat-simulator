@@ -1,5 +1,3 @@
-import { Tippy } from 'tippy.js';
-
 declare global {
     interface MythCombatSimulator {
         isDebug: boolean;
@@ -12,13 +10,6 @@ declare global {
 
     interface WorkerGlobalScope {
         mcs: MythCombatSimulator;
-        tippy: Tippy;
-    }
-
-    const tippy: Tippy;
-
-    interface Element {
-        _tippy?: TippyTooltip;
     }
 }
 

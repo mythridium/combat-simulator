@@ -1,0 +1,51 @@
+.darkMode #myth-combat-simulator-modal {
+    .mcs-equipment-popup {
+        background-color: #3e4856;
+        color: whitesmoke;
+    }
+}
+
+#myth-combat-simulator-modal {
+    .mcs-equipment-popup {
+        background-color: #ececec;
+        color: #575757;
+        border-color: #6c757d;
+        border-style: solid;
+        border-width: thick;
+        border-radius: 0.5rem;
+        padding: 0 0.5rem 0.5rem 0.5rem;
+        z-index: 999;
+        cursor: default;
+        position: absolute;
+        left: 100%;
+        top: 4px;
+        width: 614px;
+    }
+
+    @media (max-width: 982px) {
+        .mcs-equipment-popup-section-wrapper {
+            gap: 6px !important;
+        }
+
+        .mcs-equipment-popup {
+            position: fixed;
+            top: 10%;
+            left: 10%;
+            max-width: 80%;
+            height: 80%;
+            overflow-y: scroll;
+        }
+    }
+
+    .mcs-equipment-popup-section {
+        display: flex;
+        flex-direction: column;
+
+        .mcs-equipment-popup-section-wrapper {
+            gap: 7px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+    }
+}

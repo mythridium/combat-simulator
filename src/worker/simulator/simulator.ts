@@ -23,6 +23,13 @@ export class Simulator {
 
             if (data.equipment) {
                 Global.equipment.setState(Source.Interface, data.equipment);
+
+                Global.game.combat.player.equipment.unequipAll();
+
+                for (const equipment of data.equipment.equipment) {
+                    const item = Global.game.items.equipment.getObjectByID(equipment.id);
+                    Global.game.combat.player.equipment.equipItem(item, equipment.slot, 1);
+                }
             }
 
             return this.summary();
@@ -53,11 +60,39 @@ export class Simulator {
             maxHit: stats.maxHit,
             minHit: stats.minHit,
             summoningMaxHit: stats.summoningMaxHit,
+            barrierMaxHit: this.applySummonDamageModifiers(stats.summoningMaxHit),
             autoEatThreshold: Global.game.combat.player.autoEatThreshold,
             dropDoublingPercentage: Global.game.combat.player.modifiers.combatLootDoubleChance,
             gpMultiplier: Global.game.combat.player.modifiers.increasedCombatGP
         });
 
         return this.summaryStore.getState();
+    }
+
+    private applySummonDamageModifiers(damage: number) {
+        let modifier = Global.game.combat.player.modifiers.increasedBarrierSummonDamage;
+
+        if (Global.game.combat.onSlayerTask) {
+            modifier += Global.game.combat.player.modifiers.increasedBarrierSummonDamageIfSlayerTask;
+        }
+
+        damage *= 1 + modifier / 100;
+
+        let flatBonus = Global.game.combat.player.modifiers.increasedFlatBarrierSummonDamage;
+        switch (Global.game.combat.player.attackType) {
+            case 'melee':
+                flatBonus += Global.game.combat.player.modifiers.increasedFlatBarrierSummonDamageMelee;
+                break;
+            case 'ranged':
+                flatBonus += Global.game.combat.player.modifiers.increasedFlatBarrierSummonDamageRanged;
+                break;
+            case 'magic':
+                flatBonus += Global.game.combat.player.modifiers.increasedFlatBarrierSummonDamageMagic;
+                break;
+        }
+
+        damage += flatBonus * numberMultiplier;
+
+        return Math.floor(damage);
     }
 }

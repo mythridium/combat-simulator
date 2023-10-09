@@ -16,15 +16,14 @@ export class App {
     constructor(private readonly context: Modding.ModContext) {
         this.modalQueue = new ModalQueue(this.context);
         this.mods = new Mods(this.context, this.modalQueue);
-        this.mods.init();
+        this.mods.setup();
 
         this.context.onInterfaceReady(async () => {
             if (localStorage.getItem('mcs-use-max-cpu')) {
                 Global.workers.setState(Source.Default, { useMaxCPU: true });
             }
 
-            this.mods.checkDataPackagesForInvalidData();
-            await this.mods.checkDataPackages();
+            await this.mods.init();
 
             Global.logger.log('Client Loaded');
 

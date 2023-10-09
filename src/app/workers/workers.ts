@@ -67,7 +67,7 @@ export class Workers {
                 aod: cloudManager.hasAoDEntitlement
             },
             dataPackages: this.mods.dataPackages,
-            modifierData: this.mods.modModifierData
+            modifierData: this.mods.moddedModifierData
         };
 
         try {

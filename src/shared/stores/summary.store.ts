@@ -14,6 +14,7 @@ export interface SummaryState extends SyncState {
     maxHit: number;
     minHit: number;
     summoningMaxHit: number;
+    barrierMaxHit: number;
     autoEatThreshold: number;
     dropDoublingPercentage: number;
     gpMultiplier: number;
@@ -36,6 +37,7 @@ export class SummaryStore extends SyncStore<SummaryState> {
             maxHit: 0,
             minHit: 0,
             summoningMaxHit: 0,
+            barrierMaxHit: 0,
             autoEatThreshold: 0,
             dropDoublingPercentage: 0,
             gpMultiplier: 0

@@ -5,14 +5,7 @@ import { Workers } from 'src/app/workers/workers';
 import { Global } from 'src/app/global';
 import { State } from 'src/app/stores/simulation.store';
 import { CardComponent } from 'src/app/interface/components/blocks/card-component';
-import { EquipmentComponent } from './equipment/equipment-component';
-
-enum Equipment {
-    Blank = 'blank',
-    Synergy = 'synergy'
-}
-
-type EquipmentSlot = Equipment | EquipmentSlots;
+import { EquipmentComponent } from './equipment/equipment';
 
 export class PlayerComponent extends CardComponent {
     constructor(private readonly workers: Workers) {
@@ -36,7 +29,7 @@ export class PlayerComponent extends CardComponent {
         });
     }
 
-    protected preRender(container: Element) {
+    protected preRender(container: HTMLElement) {
         const equipment = new EquipmentComponent();
 
         const button = new ButtonComponent({
@@ -44,7 +37,9 @@ export class PlayerComponent extends CardComponent {
             content: 'Test',
             onClick: () => {
                 //Global.workers.setState(Source.Interface, { useMaxCPU: !Global.workers.state.useMaxCPU });
-                Global.equipment.setState(Source.Interface, { equipmentIds: ['123'] });
+                Global.equipment.setState(Source.Interface, {
+                    equipment: [{ id: 'melvorD:Bronze_Sword', slot: 'Weapon', occupies: [] }]
+                });
                 Global.configuration.setState(Source.Interface, { isManualEating: true });
             }
         });

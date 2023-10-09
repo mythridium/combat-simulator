@@ -1,3 +1,4 @@
+import { Global } from 'src/worker/global';
 import { SimClasses } from './sim-classes';
 import type { SimManager } from './sim-manager';
 
@@ -129,5 +130,26 @@ export class SimGame extends Game {
                     break;
             }
         };
+
+        this.summoning.isSynergyUnlocked = () => {
+            return Global.configuration.state.isSynergyEnabled;
+        };
+
+        for (const set of this.combat.player.equipmentSets) {
+            set.equipment.removeQuantityFromSlot = (slot: SlotTypes, quantity: number) => {
+                switch (slot) {
+                    case 'Summon1':
+                        this.combat.stats.usedCharges.summon1 += quantity;
+                        break;
+                    case 'Summon2':
+                        this.combat.stats.usedCharges.summon2 += quantity;
+                        break;
+                    case 'Consumable':
+                        this.combat.stats.usedConsumabes += quantity;
+                        break;
+                }
+                return false;
+            };
+        }
     }
 }

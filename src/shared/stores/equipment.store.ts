@@ -1,11 +1,17 @@
 import { Source, SyncState, SyncStore } from './sync.store';
 
+export interface EquipmentItemSlot {
+    slot: SlotTypes;
+    occupies: SlotTypes[];
+    id: string;
+}
+
 export interface EquipmentState extends SyncState {
-    equipmentIds: string[];
+    equipment: EquipmentItemSlot[];
 }
 
 export class EquipmentStore extends SyncStore<EquipmentState> {
     constructor() {
-        super({ source: Source.Default, equipmentIds: [] });
+        super({ source: Source.Default, equipment: [] });
     }
 }

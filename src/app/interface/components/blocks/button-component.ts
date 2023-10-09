@@ -2,8 +2,8 @@ import { BaseComponent } from './base-component';
 
 export interface ButtonOptions {
     id: string;
-    content: string | Element;
-    onClick(): void;
+    content: string | HTMLElement;
+    onClick(event: MouseEvent): void;
     disabled?: boolean;
     classes?: string[];
 }
@@ -17,7 +17,7 @@ export class ButtonComponent extends BaseComponent {
         });
     }
 
-    protected preRender(container: Element) {
+    protected preRender(container: HTMLElement) {
         const content = document.element({
             tag: 'span',
             innerHTML: typeof this.options.content === 'string' ? this.options.content : this.options.content.outerHTML
@@ -27,7 +27,7 @@ export class ButtonComponent extends BaseComponent {
             container.setAttribute('disabled', 'disabled');
         }
 
-        container.addEventListener('click', () => this.options.onClick());
+        container.addEventListener('click', event => this.options.onClick(event));
 
         this.append(content);
 
