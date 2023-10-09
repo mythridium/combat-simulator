@@ -1970,6 +1970,17 @@ class App {
             lootMap.set(monster.bones.item.id, true);
             // TODO: some bones are upgradable, e.g. Earth_Shard
         }
+        if (monster.rewards) {
+            monster.rewards.forEach((reward: any) => {
+                lootMap.set(reward.id, true);
+                const dropTable = reward.dropTable;
+                if (dropTable) {
+                    dropTable.drops.forEach((drp: any) =>
+                        lootMap.set(drp.item.id, true)
+                    );
+                }
+            });
+        }
         return lootMap;
     }
 
@@ -1980,10 +1991,11 @@ class App {
             if (!this.isViewingDungeon) {
                 if (this.barIsDungeon(this.selectedBar)) {
                     const dungeonID = this.barMonsterIDs[this.selectedBar];
-                    const monsters =
-                        this.micsr.dungeons.getObjectByID(dungeonID)!.monsters;
+                    const dungeon = this.micsr.dungeons.getObjectByID(dungeonID)!;
+                    const monsters = dungeon.monsters;
                     const boss = monsters[monsters.length - 1];
                     lootMap = this.addToLootMap(boss, lootMap);
+                    lootMap = this.addToLootMap(dungeon, lootMap);
                 } else if (this.barIsTask(this.selectedBar)) {
                     const taskID = this.barMonsterIDs[this.selectedBar];
                     const monsters = this.simulator.slayerTaskMonsters[taskID];
@@ -2013,6 +2025,10 @@ class App {
                 (monster: any) =>
                     (lootMap = this.addToLootMap(monster, lootMap))
             );
+
+            this.micsr.dungeons.forEach(dungeon => {
+                lootMap = this.addToLootMap(dungeon, lootMap);
+            });
         }
         // construct list
         let lootList: any[] = [];

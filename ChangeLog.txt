@@ -1,3 +1,8 @@
+v2.2.8
+    fixed dungeons not calculating raw gp
+    fixed only some dungeon chests displaying in the loot dropdown
+    fixed dungeon drop chance not always showing a result for items within chests
+
 v2.2.7
     added attack type variants of impending darkness bosses
     fixed agility pillar requiring toth obstacles to be built to be considered active

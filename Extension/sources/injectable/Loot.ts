@@ -416,6 +416,15 @@ class Loot {
             data.dropChance = (dropCount * itemDoubleChance) / data.killTimeS;
         };
 
+        const updateDungeonDropChance = (dungeon: Dungeon, data: any) => {
+            if (!data) {
+                return;
+            }
+            const dropCount = this.getDungeonAverageDropAmt(dungeon);
+            const itemDoubleChance = this.lootBonus * this.noLoot;
+            data.dropChance = (dropCount * itemDoubleChance) / data.killTimeS;
+        };
+
         // Set data for monsters in combat zones
         this.micsr.monsterIDs.forEach((monsterID: string) =>
             updateMonsterDropChance(
@@ -442,10 +451,11 @@ class Loot {
                 );
             } else {
                 const monster = monsterList[monsterList.length - 1];
-                updateMonsterDropChance(
-                    monster.id,
-                    this.simulator.dungeonSimData[dungeon.id]
-                );
+                updateMonsterDropChance(monster.id, this.simulator.dungeonSimData[dungeon.id]);
+
+                if (dungeon.rewards) {
+                    updateDungeonDropChance(dungeon, this.simulator.dungeonSimData[dungeon.id]);
+                }
             }
         });
         // compute auto slayer drop rates
@@ -501,7 +511,7 @@ class Loot {
             if (drop.item.id === this.app.combatData.dropSelected) {
                 expected += chance * this.avgQuantity(drop);
             }
-            expected += this.addLoot(drop.lootTable) * chance;
+            expected += this.addLoot(drop.lootTable ?? drop.item?.dropTable) * chance;
         });
         return expected;
     }
@@ -532,12 +542,26 @@ class Loot {
         // TODO: some bones are upgradable, e.g. Earth_Shard
     }
 
+    getAverageDungeonDropAmt(dungeon: Dungeon) {
+        // get expected loot per drop
+        const expected = this.addLoot({ drops: dungeon.rewards.map((reward: any) => ({ weight: 1, item: reward, minQuantity: 1, maxQuantity: 1 })), totalWeight: 1 });
+        return expected;
+    }
+
     getAverageDropAmt(monsterID: string) {
         let averageDropAmt = 0;
         // regular drops
         averageDropAmt += this.getAverageRegularDropAmt(monsterID);
         // bone drops
         averageDropAmt += this.getAverageBoneDropAmt(monsterID);
+        return averageDropAmt;
+    }
+
+    getDungeonAverageDropAmt(dungeon: Dungeon) {
+        let averageDropAmt = 0;
+
+        averageDropAmt += this.getAverageDungeonDropAmt(dungeon);
+
         return averageDropAmt;
     }
 

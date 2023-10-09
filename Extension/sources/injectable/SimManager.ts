@@ -292,25 +292,15 @@ class SimManager extends CombatManager {
 
         this.simStats.killCount++;
 
+        const dungeonProgress = this.dungeonProgress;
+        const result = super.onEnemyDeath();
+
          // if we targeting a dungeon, reduce the dungeon progress since the enemy death will increment it back to the same monster.
         if (this.selectedArea instanceof Dungeon) {
-            this.dungeonProgress--;
+            this.dungeonProgress = dungeonProgress;
         }
 
-        return super.onEnemyDeath();
-    }
-
-    progressDungeon() {
-        // do not progress the dungeon!
-        if (this.selectedArea.dropBones) {
-            this.dropEnemyBones();
-        }
-        // check if we killed the last monster (length - 1 since we do not increase the progress!)
-        if (this.dungeonProgress === this.selectedArea.monsters.length - 1) {
-            this.dropEnemyGP(this.enemy.monster);
-            // TODO: roll for dungeon pets?
-            // TODO: add bonus coal on dungeon completion?
-        }
+        return result;
     }
 
     dropSignetHalfB() {}
