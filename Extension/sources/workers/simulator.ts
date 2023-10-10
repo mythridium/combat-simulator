@@ -301,8 +301,17 @@
 
                 impotedGamemodes.forEach((stringifiedGamemode: string) => {
                     const [namespaceData, gamemodeData] = JSON.parse(stringifiedGamemode);
-                    // @ts-expect-error
-                    simGame.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
+
+                    if (namespaceData.isModded) {
+                        // @ts-expect-error
+                        simGame.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
+                    } else {
+                        const gamemode = simGame.gamemodes.find(gamemode => gamemode.id === `${namespaceData.name}:${gamemodeData.id}`);
+
+                        if (gamemode) {
+                            gamemode.hitpointMultiplier = gamemodeData.hitpointMultiplier;
+                        }
+                    }
                 });
 
                 importedAgilityActions.forEach((stringifiedAction: string) => {

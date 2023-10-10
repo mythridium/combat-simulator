@@ -941,14 +941,12 @@ class Simulator {
         });
 
         game.gamemodes.forEach((gm: Gamemode) => {
-            if (gm.isModded) {
-                const gmNamespace: string = gm.namespace;
-                const gmName: string = gm.name;
-                const gmIsModded: boolean = gm.isModded;
-                const gmData: GamemodeData = this.micsr.gamemodeToData(gm);
+            const gmNamespace: string = gm.namespace;
+            const gmName: string = gm.name;
+            const gmIsModded: boolean = gm.isModded;
+            const gmData: GamemodeData = this.micsr.gamemodeToData(gm);
 
-                gamemodes[gm.id] = JSON.stringify([{ name: gmNamespace, displayName: gmName, isModded: gmIsModded }, gmData]);
-            }
+            gamemodes[gm.id] = JSON.stringify([{ name: gmNamespace, displayName: gmName, isModded: gmIsModded }, gmData]);
         });
 
         game.agility.actions.forEach(action => {

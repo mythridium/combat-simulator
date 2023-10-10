@@ -1,3 +1,6 @@
+v2.2.9
+    added support for custom hitpoint multipliers on built in gamemodes
+
 v2.2.8
     fixed dungeons not calculating raw gp
     fixed only some dungeon chests displaying in the loot dropdown
