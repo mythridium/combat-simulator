@@ -12,7 +12,9 @@ export interface EquipmentItemOptions {
 export class EquipmentItemComponent extends BaseComponent {
     constructor(private readonly options: EquipmentItemOptions) {
         super({ id: `mcs-equipment-item-${options.id}`, tag: 'div', classes: ['mcs-equipment-item'] });
+    }
 
+    protected init() {
         Global.equipment.subscribe(() => this.render());
     }
 

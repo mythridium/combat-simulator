@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash-es';
+import { ComponentSubscriptionManager } from 'src/app/modules/component-subscription-manager';
 
 /**
  * Stores are immutable classes that hold state. The only way to modify the state
@@ -19,7 +20,7 @@ export class BaseStore<TState> {
         this._state = { ...this._state, ...state };
 
         for (const subscription of this.subscriptions) {
-            subscription.emit(this._state);
+            subscription.emit({ ...this._state });
         }
     }
 
@@ -38,13 +39,18 @@ export class BaseStore<TState> {
 
     public subscribe(callback: (state: TState) => void) {
         const subscription = new Subscription<TState>();
-        const registration = subscription.subscribe(callback);
+        const unsubscribe = subscription.subscribe(callback);
 
         this.subscriptions.add(subscription);
 
-        subscription.emit(this._state);
+        const storeUnsubscribe = () => {
+            unsubscribe();
+            this.subscriptions.delete(subscription);
+        };
 
-        return registration;
+        ComponentSubscriptionManager.register(storeUnsubscribe);
+
+        return storeUnsubscribe;
     }
 }
 
@@ -62,9 +68,7 @@ export class Subscription<TState> {
         this.started = true;
         this.callback = callback;
 
-        return {
-            unsubscribe: () => this.unsubscribe()
-        };
+        return () => this.unsubscribe();
     }
 
     public emit(state: TState) {

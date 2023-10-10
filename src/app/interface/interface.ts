@@ -1,14 +1,15 @@
 import './interface.scss';
-import './element';
+import './modules/element';
 import { ModalComponent } from './components/modal-component';
 import { PlayerComponent } from './components/player/player-component';
-import { SummaryComponent } from './components/summary-component';
-import { Workers } from 'src/app/workers/workers';
+import { SummaryComponent } from './components/summary/summary-component';
 import { ContainerComponent } from './components/blocks/container-component';
 import { InformationComponent } from './components/information-component';
 import { ConfigurationComponent } from './components/configuration-component';
+import { Workers } from 'src/app/workers/workers';
 import { Global } from 'src/app/global';
 import { Source } from 'src/shared/stores/sync.store';
+import { EquipmentCategories } from 'src/app/modules/equipment-categories';
 
 export class Interface {
     private readonly modalElementId = 'myth-combat-simulator-modal';
@@ -17,6 +18,8 @@ export class Interface {
     constructor(private readonly context: Modding.ModContext, private readonly workers: Workers) {}
 
     public init() {
+        Global.equipmentCategories = new EquipmentCategories();
+
         this.addSidebarItem();
         this.createInterface();
 
@@ -50,9 +53,9 @@ export class Interface {
 
         const setup = new ContainerComponent({ id: 'mcs-setup', classes: ['mcs-flex-row'] });
 
-        const player = new PlayerComponent(this.workers);
+        const player = new PlayerComponent();
         const configuration = new ConfigurationComponent();
-        const summary = new SummaryComponent();
+        const summary = new SummaryComponent(this.workers);
         const information = new InformationComponent();
 
         setup.append(player, configuration, summary, information);

@@ -4,7 +4,6 @@ import { BaseComponent } from 'src/app/interface/components/blocks/base-componen
 import { PopupRegistry } from './popup-registry';
 import { Global } from 'src/app/global';
 import { Source } from 'src/shared/stores/sync.store';
-import { EquipmentCategories } from './equipment-categories';
 
 export interface EquipmentPopupOptions {
     id: string;
@@ -15,8 +14,6 @@ const emptyEquipmentId = 'melvorD:Empty_Equipment';
 
 export class EquipmentPopup extends BaseComponent {
     public isVisible = false;
-
-    private readonly equipment = new EquipmentCategories();
 
     constructor(public readonly options: EquipmentPopupOptions) {
         super({ id: `mcs-equipment-popup-${options.id}`, tag: 'div', classes: ['mcs-equipment-popup'] });
@@ -54,7 +51,7 @@ export class EquipmentPopup extends BaseComponent {
     protected preRender(container: HTMLElement): void {
         if (this.isVisible) {
             this.append(
-                this.equipment.sections[this.options.slot].map(
+                Global.equipmentCategories.sections[this.options.slot].map(
                     ({ title, items }) =>
                         new EquipmentPopupSection({
                             id: `popup-section-${this.options.slot}-${title.toLowerCase()}`,

@@ -2,14 +2,14 @@ import { WebWorker } from './web-worker';
 import { InitRequest } from 'src/shared/messages/message-type/init';
 import { MessageAction, MessageRequest } from 'src/shared/messages/message';
 import { Source, SyncState } from 'src/shared/stores/sync.store';
-import { ModalQueue } from 'src/app/interface/modal-queue';
+import { ModalQueue } from 'src/app/interface/modules/modal-queue';
 import { SimulateRequest } from 'src/shared/messages/message-type/simulate';
 import { Queue, Task, TaskRunner } from './queue';
 import { Global } from 'src/app/global';
 import { State } from 'src/app/stores/simulation.store';
 import { StateRequest } from 'src/shared/messages/message-type/state';
 import { Scripts } from './scripts';
-import { Mods } from 'src/app/mods';
+import { Mods } from 'src/app/modules/mods';
 
 export class QueueRun {
     cancel: () => void;
@@ -92,18 +92,25 @@ export class Workers {
 
         Global.simulation.setState(Source.Worker, { state: State.Running, result: [] });
 
-        const promise = queue
-            .run(task => {
-                const state = Global.simulation.getState();
+        const message = {
+            action: MessageAction.State,
+            data: { equipment: Global.equipment.state, configuration: Global.configuration.state }
+        };
 
-                state.result.push({
-                    monsterId: task.request.data.monsterId,
-                    dungeonId: task.request.data.monsterId,
-                    ...task.result
-                });
+        const promise = this.send(message)
+            .then(() =>
+                queue.run(task => {
+                    const state = Global.simulation.getState();
 
-                Global.simulation.setState(Source.Worker, state);
-            })
+                    state.result.push({
+                        monsterId: task.request.data.monsterId,
+                        dungeonId: task.request.data.monsterId,
+                        ...task.result
+                    });
+
+                    Global.simulation.setState(Source.Worker, state);
+                })
+            )
             .then(() => {
                 Global.simulation.setState(Source.Worker, { state: State.Stopped });
                 this.queue = undefined;

@@ -1,3 +1,4 @@
+import { ComponentSubscriptionManager } from 'src/app/modules/component-subscription-manager';
 import { Props } from 'tippy.js';
 
 export interface BaseOptions<K extends keyof HTMLElementTagNameMap> {
@@ -13,8 +14,34 @@ export class BaseComponent {
 
     private readonly fragment = new DocumentFragment();
     private children: (HTMLElement | BaseComponent)[] = [];
+    private isInitialised = false;
 
-    protected constructor(protected readonly _options: BaseOptions<any>) {}
+    protected constructor(protected readonly _options: BaseOptions<any>) {
+        this._init();
+    }
+
+    private _init() {
+        ComponentSubscriptionManager.set(this);
+        this.init();
+        ComponentSubscriptionManager.set(undefined);
+    }
+
+    protected init() {}
+
+    protected destroy() {
+        for (const tooltip of this.tooltips) {
+            tooltip.destroy();
+        }
+
+        for (const child of this.children) {
+            if (this.isComponent(child)) {
+                ComponentSubscriptionManager.destroy(child);
+                child.destroy();
+            }
+        }
+
+        this.children = [];
+    }
 
     public append(
         child: HTMLElement | BaseComponent | HTMLElement[] | BaseComponent[],
@@ -28,8 +55,10 @@ export class BaseComponent {
     }
 
     public render() {
-        for (const tooltip of this.tooltips) {
-            tooltip.destroy();
+        if (!this.isInitialised) {
+            this.isInitialised = true;
+        } else {
+            this.destroy();
         }
 
         const element = this.construct();
@@ -43,7 +72,6 @@ export class BaseComponent {
         }
 
         this.element = element;
-        this.children = [];
 
         if (this._options.tooltip) {
             this.tooltips.push(tippy(element, this._options.tooltip));

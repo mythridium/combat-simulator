@@ -5,6 +5,7 @@ import { Color, Logger } from 'src/shared/logger';
 import { ConfigurationStore } from 'src/shared/stores/configuration.store';
 import { WorkersStore } from './stores/workers.store';
 import { InterfaceStore } from './stores/interface.store';
+import { EquipmentCategories } from './modules/equipment-categories';
 
 export abstract class Global {
     public static logger = new Logger('Client', Color.Green);
@@ -14,4 +15,6 @@ export abstract class Global {
     public static configuration = new ConfigurationStore();
     public static equipment = new EquipmentStore();
     public static simulation = new SimulationStore();
+
+    public static equipmentCategories: EquipmentCategories;
 }

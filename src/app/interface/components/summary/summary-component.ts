@@ -1,12 +1,16 @@
 import { Source } from 'src/shared/stores/sync.store';
 import { Global } from 'src/app/global';
-import { CardComponent } from './blocks/card-component';
-import { LineItemComponent } from './blocks/line-item-component';
+import { CardComponent } from 'src/app/interface/components/blocks/card-component';
+import { LineItemComponent } from 'src/app/interface/components/blocks/line-item-component';
+import { SimulateComponent } from './simulate';
+import { Workers } from 'src/app/workers/workers';
 
 export class SummaryComponent extends CardComponent {
-    constructor() {
+    constructor(private readonly workers: Workers) {
         super({ id: 'mcs-summary', title: 'Out of Combat Stats' });
+    }
 
+    protected init() {
         Global.summary.when(Source.Worker).subscribe(() => this.render());
     }
 
@@ -122,6 +126,8 @@ export class SummaryComponent extends CardComponent {
                 value: 1 + state.gpMultiplier / 100
             })
         );
+
+        this.append(new SimulateComponent(this.workers));
 
         super.preRender(container);
     }

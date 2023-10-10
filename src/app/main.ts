@@ -1,8 +1,8 @@
 import 'src/shared/constants';
 import { Workers } from './workers/workers';
 import { Interface } from './interface/interface';
-import { ModalQueue } from './interface/modal-queue';
-import { Mods } from './mods';
+import { ModalQueue } from './interface/modules/modal-queue';
+import { Mods } from './modules/mods';
 import { Global } from './global';
 import { Source } from 'src/shared/stores/sync.store';
 

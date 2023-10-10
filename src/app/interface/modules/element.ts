@@ -1,5 +1,5 @@
 import { Props } from 'tippy.js';
-import { BaseComponent } from './components/blocks/base-component';
+import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 import { ImageLoader } from './image-loader';
 
 declare global {

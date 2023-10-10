@@ -35,7 +35,21 @@ export class Simulator {
             return this.summary();
         });
 
-        this.messages.on(MessageAction.Simulate, data => Global.game.combat.simulate(data));
+        this.messages.on(MessageAction.Simulate, async data => {
+            try {
+                const result = await Global.game.combat.simulate(data);
+
+                return result;
+            } catch (exception) {
+                Global.logger.error(exception);
+
+                return {
+                    isSuccess: false,
+                    error: exception?.message ?? 'Unknown error occurred during simulation.',
+                    stats: Global.game.combat.stats
+                };
+            }
+        });
     }
 
     private summary() {

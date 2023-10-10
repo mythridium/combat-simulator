@@ -1,3 +1,4 @@
+import { ComponentSubscriptionManager } from 'src/app/modules/component-subscription-manager';
 import { BaseStore, Subscription } from './base.store';
 
 export enum Source {
@@ -42,13 +43,23 @@ export class SyncStore<TState extends SyncState> extends BaseStore<TState> {
     public when(...source: [Source, ...Source[]]) {
         const subscription = new SyncSubscription<TState>();
 
-        this.subscriptions.add(subscription);
+        subscription.when(...source);
 
-        return subscription.when(...source);
-    }
+        return {
+            subscribe: (callback: (state: Omit<TState, 'source'>) => void) => {
+                const unsubscribe = subscription.subscribe(callback);
+                this.subscriptions.add(subscription);
 
-    private isSource(sourceOrState: Source | Partial<TState>): sourceOrState is Source {
-        return Object.values<string>(Source).includes(<Source>sourceOrState);
+                const storeUnsubscribe = () => {
+                    unsubscribe();
+                    this.subscriptions.delete(subscription);
+                };
+
+                ComponentSubscriptionManager.register(storeUnsubscribe);
+
+                return storeUnsubscribe;
+            }
+        };
     }
 }
 
@@ -67,9 +78,5 @@ export class SyncSubscription<TState extends SyncState> extends Subscription<TSt
 
     public when(...source: [Source, ...Source[]]) {
         this.source = source;
-
-        return {
-            subscribe: (callback: (state: Omit<TState, 'source'>) => void) => this.subscribe(callback)
-        };
     }
 }

@@ -5,6 +5,8 @@ import { EquipmentItemContainerComponent } from './equipment-item-container';
 import { PopupRegistry } from './popup-registry';
 
 export class EquipmentComponent extends BaseComponent {
+    private static hidePopupCallback = () => PopupRegistry.hide();
+
     private readonly equipmentSlots: EquipmentSlot[][] = [
         [EquipmentSlots.Passive, EquipmentSlots.Helmet, EquipmentSlots.Consumable],
         [EquipmentSlots.Cape, EquipmentSlots.Amulet, EquipmentSlots.Quiver],
@@ -20,8 +22,14 @@ export class EquipmentComponent extends BaseComponent {
 
     constructor() {
         super({ id: 'mcs-equipment', tag: 'div' });
+    }
 
-        document.addEventListener('click', () => PopupRegistry.hide());
+    protected init() {
+        document.addEventListener('click', EquipmentComponent.hidePopupCallback);
+    }
+
+    protected destroy() {
+        document.removeEventListener('click', EquipmentComponent.hidePopupCallback);
     }
 
     protected preRender(container: HTMLElement) {

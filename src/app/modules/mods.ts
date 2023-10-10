@@ -1,5 +1,5 @@
 import { SkillData } from 'src/shared/messages/message-type/init';
-import { ModalQueue } from './interface/modal-queue';
+import { ModalQueue } from 'src/app/interface/modules/modal-queue';
 import serialize from 'serialize-javascript';
 
 export class Mods {

@@ -398,11 +398,11 @@ export class EquipmentCategories {
             const keyB = sortKey(b);
 
             if (typeof keyA === 'string' && typeof keyB === 'string') {
-                return keyA.localeCompare(keyB) || this.sortByExpansion(a, b) || sortFunc({ item: a }, { item: b });
+                return keyA.localeCompare(keyB) || sortFunc({ item: a }, { item: b });
             }
 
             if (typeof keyA === 'number' && typeof keyB === 'number') {
-                return keyA - keyB || this.sortByExpansion(a, b) || sortFunc({ item: a }, { item: b });
+                return keyA - keyB || sortFunc({ item: a }, { item: b });
             }
 
             return this.sortByExpansion(a, b) || sortFunc({ item: a }, { item: b });
