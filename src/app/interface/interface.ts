@@ -7,6 +7,8 @@ import { Workers } from 'src/app/workers/workers';
 import { ContainerComponent } from './components/blocks/container-component';
 import { InformationComponent } from './components/information-component';
 import { ConfigurationComponent } from './components/configuration-component';
+import { Global } from 'src/app/global';
+import { Source } from 'src/shared/stores/sync.store';
 
 export class Interface {
     private readonly modalElementId = 'myth-combat-simulator-modal';
@@ -29,6 +31,13 @@ export class Interface {
                 elements.itemEl.setAttribute('data-toggle', 'modal');
                 elements.itemEl.setAttribute('data-backdrop', 'static');
                 elements.itemEl.setAttribute('data-target', `#${this.modalElementId}`);
+            },
+            onClick: () => {
+                const equipmentSets = game.combat.player.equipmentSets.length;
+
+                if (equipmentSets !== Global.interface.state.equipmentSets) {
+                    Global.interface.setState(Source.Interface, { equipmentSets });
+                }
             }
         });
     }
@@ -40,7 +49,6 @@ export class Interface {
         });
 
         const setup = new ContainerComponent({ id: 'mcs-setup', classes: ['mcs-flex-row'] });
-        const plotter = new ContainerComponent({ id: 'mcs-plotter', classes: ['mcs-flex-column'] });
 
         const player = new PlayerComponent(this.workers);
         const configuration = new ConfigurationComponent();
@@ -48,6 +56,8 @@ export class Interface {
         const information = new InformationComponent();
 
         setup.append(player, configuration, summary, information);
+
+        const plotter = new ContainerComponent({ id: 'mcs-plotter', classes: ['mcs-flex-column'] });
 
         this.modal.append(setup, plotter);
         this.modal.render();
