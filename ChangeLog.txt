@@ -1,3 +1,6 @@
+v2.2.11
+    fixed 'window is not defined' error after latest game hotfix
+
 v2.2.10
     fixed 'undiscovered only' loot option treating everything as undiscovered
 

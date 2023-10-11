@@ -48,6 +48,13 @@
 
     self.addModalToQueue = () => undefined;
 
+    (<any>self).window = {
+        clearTimeout: () => {},
+        setTimeout: () => 0
+    };
+    self.clearTimeout = () => {};
+    (<any>self).setTimeout = () => 0;
+
     // Hard to copy functions
     const levelUnlockSum = (skill: Skill<BaseSkillData>) => (previous: number, current: Skill<BaseSkillData>) => {
         if (skill.level >= current.level) previous++;
