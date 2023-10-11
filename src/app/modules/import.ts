@@ -24,5 +24,6 @@ export abstract class Import {
         }
 
         Global.equipment.setState(Source.Interface, { equipment: items });
+        Global.configuration.setState(Source.Interface, { isSynergyEnabled: true });
     }
 }

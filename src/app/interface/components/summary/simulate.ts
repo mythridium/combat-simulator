@@ -3,11 +3,11 @@ import { ButtonComponent } from 'src/app/interface/components/blocks/button-comp
 import { Workers } from 'src/app/workers/workers';
 import { Global } from 'src/app/global';
 import { State } from 'src/app/stores/simulation.store';
-import { CardComponent } from 'src/app/interface/components/blocks/card-component';
+import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 
-export class SimulateComponent extends CardComponent {
+export class SimulateComponent extends BaseComponent {
     constructor(private readonly workers: Workers) {
-        super({ id: 'mcs-simulate' });
+        super({ id: 'mcs-simulate', tag: 'div' });
     }
 
     protected init() {

@@ -3,6 +3,8 @@ import { BaseComponent } from 'src/app/interface/components/blocks/base-componen
 import { EquipmentCustomSlot, EquipmentSlot } from './equipment.types';
 import { Global } from 'src/app/global';
 import { PopupRegistry } from './popup-registry';
+import { ImageButtonComponent } from '../../blocks/image-button-component';
+import { Source } from 'src/shared/stores/sync.store';
 
 export interface EquipmentItemOptions {
     id: string;
@@ -16,6 +18,11 @@ export class EquipmentItemComponent extends BaseComponent {
 
     protected init() {
         Global.equipment.subscribe(() => this.render());
+        Global.configuration.subscribe(() => {
+            if (this.options.slot === EquipmentCustomSlot.Synergy) {
+                this.render();
+            }
+        });
     }
 
     protected preRender(container: HTMLElement) {
@@ -76,10 +83,49 @@ export class EquipmentItemComponent extends BaseComponent {
         }
 
         if (this.options.slot === EquipmentCustomSlot.Synergy) {
-            this.append(document.element({ tag: 'div', classes: ['synergy', 'combat-equip-img', 'p-1', 'm-1'] }));
+            this.append(
+                new ImageButtonComponent({
+                    id: 'mcs-synergy-button',
+                    src: this.isSynergyEnabled
+                        ? 'assets/media/skills/summoning/synergy.svg'
+                        : 'assets/media/skills/summoning/synergy_locked.svg',
+                    classes: [
+                        'combat-equip-img',
+                        'border',
+                        'border-2x',
+                        'border-rounded-equip',
+                        'border-combat-outline',
+                        'p-1',
+                        'm-1',
+                        'pointer-enabled'
+                    ],
+                    tooltip: {
+                        content: this.hasSynergy ? `Toggle Synergy ${this.isSynergyEnabled ? 'Off' : 'On'}` : 'Locked'
+                    },
+                    onClick: () => {
+                        if (!this.hasSynergy) {
+                            return;
+                        }
+
+                        Global.configuration.setState(Source.Interface, {
+                            isSynergyEnabled: !Global.configuration.state.isSynergyEnabled
+                        });
+                    }
+                })
+            );
         }
 
         super.preRender(container);
+    }
+
+    private get hasSynergy() {
+        const summons = Global.equipment.state.equipment.filter(slot => ['Summon1', 'Summon2'].includes(slot.slot));
+
+        return summons.length === 2;
+    }
+
+    private get isSynergyEnabled() {
+        return Global.configuration.state.isSynergyEnabled && this.hasSynergy;
     }
 
     private isEquipmentSlots(slot: EquipmentSlot): slot is EquipmentSlots {

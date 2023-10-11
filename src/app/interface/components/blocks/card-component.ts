@@ -16,13 +16,13 @@ export class CardComponent extends BaseComponent {
         });
     }
 
-    public render() {
+    protected construct(): HTMLElement {
         if (this.options.title) {
             this.append(
                 document.element({ tag: 'h5', classes: ['mcs-card-title', 'mb-2'], innerHTML: this.options.title })
             );
         }
 
-        super.render();
+        return super.construct();
     }
 }

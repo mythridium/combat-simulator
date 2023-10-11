@@ -20,6 +20,10 @@
         flex-direction: column;
         justify-content: center;
     }
+
+    .mcs-fixed-width {
+        max-width: 220px;
+    }
 }
 
 #combat-simulator-init-exception {

@@ -123,7 +123,7 @@ export class BaseComponent {
         }
     }
 
-    private construct() {
+    protected construct() {
         const container = document.createElement(this._options.tag) as HTMLElement;
 
         if (this._options.id) {
