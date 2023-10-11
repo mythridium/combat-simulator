@@ -102,6 +102,7 @@ class EquipmentPopupSection extends BaseComponent {
                 id: `mcs-equipment-item-button-${item.localID}`,
                 src: item.media,
                 lazy: true,
+                withOutline: true,
                 onClick: () => {
                     let { equipment } = Global.equipment.getState();
 

@@ -10,14 +10,17 @@ export interface ImageButtonOptions {
     classes?: string[];
     tooltip?: Partial<Props>;
     lazy?: boolean;
+    withOutline?: boolean;
 }
 
 export class ImageButtonComponent extends BaseComponent {
     constructor(private readonly options: ImageButtonOptions) {
+        const outline = options.withOutline ? ['btn', 'btn-outline-dark'] : [];
+
         super({
             tag: 'button',
             id: options.id,
-            classes: ['mcs-image-btn', 'btn', 'btn-outline-dark', ...(options.classes ?? [])],
+            classes: ['mcs-image-btn', ...outline, ...(options.classes ?? [])],
             tooltip: options.tooltip
         });
     }

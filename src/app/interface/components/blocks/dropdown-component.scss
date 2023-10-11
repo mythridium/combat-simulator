@@ -1,0 +1,35 @@
+#myth-combat-simulator-modal .mcs-dropdown {
+    .dropdown {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .dropdown button:focus {
+        outline: none !important;
+    }
+
+    .dropdown > button,
+    .show.dropdown > button {
+        font-weight: normal;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .dropdown-toggle::after {
+        margin-left: 8px;
+    }
+}
+
+.darkMode #myth-combat-simulator-modal .mcs-dropdown {
+    .dropdown > button:hover {
+        background: #464e5b !important;
+    }
+
+    .dropdown > button,
+    .show.dropdown > button {
+        background: #2d3542 !important;
+        border-color: #3a3b49 !important;
+    }
+}
