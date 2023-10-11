@@ -1,4 +1,3 @@
-import './synergy.scss';
 import { Global } from 'src/app/global';
 import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 
@@ -15,7 +14,7 @@ export class SynergyComponent extends BaseComponent {
         const text = document.element({
             tag: 'div',
             innerHTML: this.synergyDescription?.description ?? 'Synergy Locked',
-            classes: ['mcs-synergy-text']
+            classes: ['mcs-md-text']
         });
 
         this.append(text);
