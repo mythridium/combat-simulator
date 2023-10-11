@@ -1,3 +1,6 @@
+v2.2.10
+    fixed 'undiscovered only' loot option treating everything as undiscovered
+
 v2.2.9
     added support for custom hitpoint multipliers on built in gamemodes
 

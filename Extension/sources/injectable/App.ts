@@ -2035,7 +2035,7 @@ class App {
         lootMap.forEach((_: boolean, itemID: any) => {
             // apply undiscovered filter
             if (this.dropListFilters.onlyUndiscovered) {
-                const item = this.micsr.items.getObjectByID(itemID);
+                const item = this.micsr.actualGame.items.getObjectByID(itemID);
                 if (this.micsr.actualGame.stats.itemFindCount(item!) === 0) {
                     lootList.push(itemID);
                 }
