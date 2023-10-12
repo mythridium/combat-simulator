@@ -1139,7 +1139,7 @@ class Simulator {
             }
             // check if the area is accessible, this only works for auto slayer
             // without auto slayer you can get some tasks for which you don't wear/own the gear
-            let area = this.micsr.game.getMonsterArea(monster.id);
+            let area = this.micsr.game.getMonsterArea(monster);
             if (!this.parent.game.checkRequirements(area.entryRequirements)) {
                 return;
             }
@@ -1295,22 +1295,19 @@ class Simulator {
                 );
             }
         });
+
         averageData.killsPerSecond = 1 / averageData.killTimeS;
 
         // time-weighted averages
         const computeAvg = (tag: string) => {
             averageData[tag] =
                 monsters
-                    .map(
-                        (monster) =>
-                            this.monsterSimData[
-                                this.simID(monster.id, dungeonID)
-                            ]
-                    )
+                    .map(monster => this.monsterSimData[this.simID(monster.id, dungeonID)])
                     .reduce((avgData, mData) => {
                         if (!mData.simSuccess) {
                             return avgData;
                         }
+
                         return avgData + mData[tag] * mData.killTimeS;
                     }, 0) / averageData.killTimeS;
         };
@@ -1353,10 +1350,7 @@ class Simulator {
         // average rune breakdown
         averageData.usedRunesBreakdown = {};
         monsters
-            .map(
-                (monster) =>
-                    this.monsterSimData[this.simID(monster.id, dungeonID)]
-            )
+            .map(monster => this.monsterSimData[this.simID(monster.id, dungeonID)])
             .forEach((mData) => {
                 for (const runeID in mData.usedRunesBreakdown) {
                     if (averageData.usedRunesBreakdown[runeID] === undefined) {
@@ -1367,6 +1361,24 @@ class Simulator {
                         averageData.killTimeS;
                 }
             });
+
+        if (isSlayerTask) {
+            averageData.killTimeS = 0;
+            averageData.killsPerSecond = 0;
+
+            monsters.forEach((monster) => {
+                const simID = this.simID(monster.id, dungeonID);
+                const monsterData = this.monsterSimData[simID];
+
+                if (monsterData.simSuccess) {
+                    averageData.killTimeS += monsterData.killTimeS;
+                    averageData.killsPerSecond += 1 / monsterData.killTimeS;;
+                }
+            });
+
+            averageData.killTimeS = averageData.killTimeS / (monsters.length || 1);
+            averageData.killsPerSecond = averageData.killsPerSecond / (monsters.length || 1);
+        }
     }
 
     /** Performs all data analysis post queue completion */

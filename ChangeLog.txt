@@ -1,3 +1,7 @@
+v2.2.12
+    fixed slayer task requirement check not working at all (only slayer level and slayer items are currently considered)
+    fixed slayer kills/ and killTime/ calculations not being accurate
+
 v2.2.11
     fixed 'window is not defined' error after latest game hotfix
 

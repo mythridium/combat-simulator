@@ -55,6 +55,8 @@
     self.clearTimeout = () => {};
     (<any>self).setTimeout = () => 0;
 
+    self.notifyPlayer = () => {};
+
     // Hard to copy functions
     const levelUnlockSum = (skill: Skill<BaseSkillData>) => (previous: number, current: Skill<BaseSkillData>) => {
         if (skill.level >= current.level) previous++;
