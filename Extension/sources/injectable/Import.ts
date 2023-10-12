@@ -396,6 +396,20 @@ class Import {
                 false
             );
         }
+
+        if (!this.simPlayer.equipment.slots.Summon1.isEmpty && !this.simPlayer.equipment.slots.Summon2.isEmpty) {
+            const summon1 = this.micsr.actualGame.items.equipment.getObjectByID(this.simPlayer.equipment.slots.Summon1.item.id);
+            const summon2 = this.micsr.actualGame.items.equipment.getObjectByID(this.simPlayer.equipment.slots.Summon2.item.id);
+
+            if (summon1 && summon2) {
+                const synergyData = this.micsr.actualGame.summoning.getSynergyData(summon1, summon2);
+
+                this.simPlayer.isSynergyUnlocked = synergyData
+                    ? this.micsr.actualGame.summoning.isSynergyUnlocked.call(this.micsr.actualGame.summoning, synergyData)
+                    : true;
+            }
+        }
+
         this.app.updateEquipmentStats();
     }
 

@@ -608,6 +608,9 @@ class SimPlayer extends Player {
             this.usedPrayerPoints += amount;
             const event = new (<any>PrayerPointConsumptionEvent)(amount, isUnholy);
             (<any>this)._events.emit('prayerPointsUsed', event);
+            if (isUnholy && amount > 0) {
+                (<any>this.target).consumeUnholyMarkStack();
+            }
         }
     }
 

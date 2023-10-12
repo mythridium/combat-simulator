@@ -1,3 +1,7 @@
+v2.2.13
+    fixed unholy prayer stacks not being reduced when consumed
+    summoning synergy lock status now matches the synergy lock status of the real game when importing from an equipment set
+
 v2.2.12
     fixed slayer task requirement check not working at all (only slayer level and slayer items are currently considered)
     fixed slayer kills/ and killTime/ calculations not being accurate
