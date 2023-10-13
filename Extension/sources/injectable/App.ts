@@ -4058,7 +4058,7 @@ class App {
         return "";
     }
 
-    setZoneInfoCard(title: any, id: any, media: any, data: any) {
+    setZoneInfoCard(title: any, id: any, media: any, data: any, monsterData?: any) {
         // @ts-expect-error TS(2531): Object is possibly 'null'.
         document.getElementById("MCS Zone Info Title").textContent = `${title}`;
         (document.getElementById("MCS Info Image") as any).src = media;
@@ -4081,23 +4081,30 @@ class App {
                       )
                     : "N/A";
         }
-        if (data.highestDamageTaken >= data.lowestHitpoints) {
+
+        let isNearDeath = data.highestDamageTaken >= data.lowestHitpoints;
+
+        if (monsterData) {
+            const monsters = monsterData.map((monster: Monster) => {
+                const id = this.simulator.simID(monster.id);
+                return this.simulator.monsterSimData[id];
+            });
+
+            isNearDeath = monsters.some((data: ISimData) => data.highestDamageTaken >= data.lowestHitpoints);
+        }
+
+        if (isNearDeath) {
             // @ts-expect-error TS(2531): Object is possibly 'null'.
-            document.getElementById(
-                "MCS highestDamageTaken Output"
-            ).style.color = "orange";
+            document.getElementById("MCS highestDamageTaken Output").style.color = "orange";
             // @ts-expect-error TS(2531): Object is possibly 'null'.
-            document.getElementById("MCS lowestHitpoints Output").style.color =
-                "orange";
+            document.getElementById("MCS lowestHitpoints Output").style.color = "orange";
         } else {
             // @ts-expect-error TS(2531): Object is possibly 'null'.
-            document.getElementById(
-                "MCS highestDamageTaken Output"
-            ).style.color = "";
+            document.getElementById("MCS highestDamageTaken Output").style.color = "";
             // @ts-expect-error TS(2531): Object is possibly 'null'.
-            document.getElementById("MCS lowestHitpoints Output").style.color =
-                "";
+            document.getElementById("MCS lowestHitpoints Output").style.color = "";
         }
+
         if (data.deathRate > 0) {
             // @ts-expect-error TS(2531): Object is possibly 'null'.
             document.getElementById("MCS deathRate Output").style.color = "red";
@@ -4105,6 +4112,7 @@ class App {
             // @ts-expect-error TS(2531): Object is possibly 'null'.
             document.getElementById("MCS deathRate Output").style.color = "";
         }
+
         this.setDeathRateTooltip(data.deathRate, data.killTimeS);
         this.setRuneTooltip(data.usedRunesBreakdown, data.killTimeS);
         this.setPrayerTooltip(data.prayerXpPerSecond, data.ppConsumedPerSecond);
@@ -4188,7 +4196,8 @@ class App {
                     taskID,
                     taskID,
                     this.micsr.game.slayer.media,
-                    this.simulator.slayerSimData[taskID]
+                    this.simulator.slayerSimData[taskID],
+                    this.simulator.slayerTaskMonsters[taskID]
                 );
             } else {
                 let monsterID;
@@ -4204,8 +4213,7 @@ class App {
                     monsterID,
                     this.micsr.monsters.getObjectByID(monsterID)!.media,
                     this.simulator.monsterSimData[
-                        this.simulator.simID(
-                            monsterID,
+                        this.simulator.simID(monsterID,
                             // @ts-ignore
                             dungeonID >= this.micsr.dungeonCount
                                 ? undefined

@@ -110,7 +110,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 2;
-        this.patchVersion = 15;
+        this.patchVersion = 16;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -524,9 +524,7 @@ class MICSR {
 
         // dg array
         this.dungeons = this.game.dungeons;
-        this.dungeonIDs = this.dungeons.allObjects.map(
-            (dungeon: any) => dungeon.id
-        );
+        this.dungeonIDs = this.game.dungeonDisplayOrder.map(dungeon => dungeon.id);
         this.dungeonCount = this.dungeonIDs.length;
 
         // TODO filter special dungeons
