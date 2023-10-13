@@ -56,6 +56,7 @@
     (<any>self).setTimeout = () => 0;
 
     self.notifyPlayer = () => {};
+    (<any>self).useCDN = true;
 
     // Hard to copy functions
     const levelUnlockSum = (skill: Skill<BaseSkillData>) => (previous: number, current: Skill<BaseSkillData>) => {

@@ -1,3 +1,6 @@
+v2.2.17
+    fixed 'useCDN' error
+
 v2.2.16
     fixed dungeon bars being out of sync
     slayer results now highlight highest and lowest hits in orange if any monsters within the task would have triggered that state instead of the highest and lowest across all monsters in the task
