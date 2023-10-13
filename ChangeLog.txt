@@ -1,3 +1,6 @@
+v2.2.14
+    fixed god dungeons not calculating drop results
+
 v2.2.13
     fixed unholy prayer stacks not being reduced when consumed
     summoning synergy lock status now matches the synergy lock status of the real game when importing from an equipment set

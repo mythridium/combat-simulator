@@ -479,8 +479,8 @@ class Loot {
         }
         let drops = 0;
         let killTime = 0;
-        for (const monsterID of monsterList) {
-            const simID = this.simulator.simID(monsterID, dungeonID);
+        for (const monster of monsterList) {
+            const simID = this.simulator.simID(monster.id, dungeonID);
             if (!this.simulator.monsterSimData[simID]) {
                 return;
             }

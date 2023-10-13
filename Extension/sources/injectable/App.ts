@@ -2000,11 +2000,8 @@ class App {
                     const taskID = this.barMonsterIDs[this.selectedBar];
                     const monsters = this.simulator.slayerTaskMonsters[taskID];
                     monsters
-                        .map((id: any) => this.micsr.monsters.getObjectByID(id))
-                        .forEach(
-                            (monster: any) =>
-                                (lootMap = this.addToLootMap(monster, lootMap))
-                        );
+                        .map((monster: any) => this.micsr.monsters.getObjectByID(monster.id))
+                        .forEach((monster: any) => (lootMap = this.addToLootMap(monster, lootMap)));
                 } else {
                     lootMap = this.addToLootMap(
                         this.micsr.monsters.getObjectByID(
