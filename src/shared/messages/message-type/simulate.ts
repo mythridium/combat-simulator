@@ -10,6 +10,7 @@ export interface SimulateResponse {
 }
 
 export interface SimulateStats {
+    killTime: number;
     kills: number;
     deaths: number;
     gp: number;

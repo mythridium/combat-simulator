@@ -60,6 +60,7 @@ export class SimManager extends CombatManager {
         this.totalTicks = 0;
 
         this.stats = {
+            killTime: 0,
             kills: 0,
             deaths: 0,
             gp: 0,
@@ -176,6 +177,8 @@ export class SimManager extends CombatManager {
 
             return result;
         }, {} as { [index: string]: number });
+
+        this.stats.killTime = this.tickCount / TICKS_PER_SECOND / this.stats.kills;
 
         const end = performance.now() - start;
 

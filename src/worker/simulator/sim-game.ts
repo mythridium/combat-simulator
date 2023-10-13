@@ -148,6 +148,7 @@ export class SimGame extends Game {
                         this.combat.stats.usedConsumabes += quantity;
                         break;
                 }
+
                 return false;
             };
         }

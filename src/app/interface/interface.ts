@@ -4,7 +4,7 @@ import { ModalComponent } from './components/modal-component';
 import { PlayerComponent } from './components/player/player-component';
 import { SummaryComponent } from './components/summary/summary-component';
 import { ContainerComponent } from './components/blocks/container-component';
-import { InformationComponent } from './components/information-component';
+import { InformationComponent } from './components/information/information-component';
 import { ConfigurationComponent } from './components/configuration-component';
 import { Workers } from 'src/app/workers/workers';
 import { Global } from 'src/app/global';
