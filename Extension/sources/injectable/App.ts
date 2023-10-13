@@ -2113,9 +2113,7 @@ class App {
         this.importedSettings = undefined;
         this.simOptionsCard.addTextInput("Settings JSON:", "", (event: any) => {
             try {
-                this.importedSettings = this.import.convertStringToObject(
-                    event.currentTarget.value
-                );
+                this.importedSettings = this.import.convertStringToObject(event.currentTarget.value);
             } catch {
                 this.notify("Ignored invalid JSON settings!", "danger");
                 this.importedSettings = undefined;
@@ -3819,20 +3817,26 @@ class App {
     }
 
     popExport(data: any) {
-        navigator.clipboard.writeText(data).then(
-            () => {
-                this.notify("Exported to clipboard!");
-            },
-            () => {
-                Swal.fire({
-                    title: "Clipboard API error!",
-                    html: `<h5 class="font-w600 text-combat-smoke mb-1">Manually copy the data below, e.g. with ctrl-A ctrl-C.</h5><textarea class="mcsLabel mb-1">${data}</textarea>`,
-                    showCancelButton: false,
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "Bye",
-                });
+        const error = () => Swal.fire({
+            title: "Clipboard API error!",
+            html: `<h5 class="font-w600 font-size-sm text-combat-smoke mb-4">Manually copy the data below.</h5><textarea class="mb-1" rows="5" onclick="this.select();">${data}</textarea>`,
+            showCancelButton: false,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Ok",
+        });
+
+        if ((<any>self).nw?.Clipboard.get().set) {
+            try {
+                (<any>self).nw?.Clipboard?.get().set(data, 'text');
+            } catch {
+                error();
             }
-        );
+        } else {
+            navigator.clipboard.writeText(data).then(
+                () => this.notify("Exported to clipboard!"),
+                () => error()
+            );
+        }
     }
 
     /**

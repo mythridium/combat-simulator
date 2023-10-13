@@ -78,7 +78,7 @@ class Plotter {
 
         let totBars = 0;
 
-        this.micsr.combatAreas.forEach((area) => {
+        this.micsr.game.combatAreaDisplayOrder.forEach((area) => {
             totBars += area.monsters.length;
             this.barBottomNames.push(area.name);
             this.barBottomLength.push(area.monsters.length);
@@ -94,7 +94,7 @@ class Plotter {
         this.barImageSrc.push(
             this.micsr.monsters.getObjectByID(this.micsr.bardID)!.media
         );
-        this.micsr.slayerAreas.forEach((area) => {
+        this.micsr.game.slayerAreaDisplayOrder.forEach((area) => {
             totBars += area.monsters.length;
             this.barBottomNames.push(area.name);
             this.barBottomLength.push(area.monsters.length);
@@ -107,7 +107,7 @@ class Plotter {
         this.barBottomNames.push("Dungeons");
         this.barBottomLength.push(this.micsr.dungeons.allObjects.length);
         totBars += this.micsr.dungeons.allObjects.length;
-        for (const area of this.micsr.dungeons.allObjects) {
+        for (const area of this.micsr.game.dungeonDisplayOrder) {
             this.barNames.push(this.parent.getDungeonName(area));
             this.barImageSrc.push(area.media);
         }

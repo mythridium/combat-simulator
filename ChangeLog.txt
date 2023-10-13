@@ -1,3 +1,8 @@
+v2.2.15
+    adjusted plotter monster sort order to align with the game sort order
+    fixed steam export settings always failing to save to clipboard
+    cleaned up modal when failing to save to clipboard
+
 v2.2.14
     fixed god dungeons not calculating drop results
 
