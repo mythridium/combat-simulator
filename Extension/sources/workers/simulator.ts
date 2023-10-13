@@ -56,7 +56,7 @@
     (<any>self).setTimeout = () => 0;
 
     self.notifyPlayer = () => {};
-    (<any>self).useCDN = true;
+    (<any>self).CDNDIR = () => (<any>self).CDNDIR_ORIGINAL;
 
     // Hard to copy functions
     const levelUnlockSum = (skill: Skill<BaseSkillData>) => (previous: number, current: Skill<BaseSkillData>) => {

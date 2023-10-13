@@ -208,7 +208,11 @@ class Simulator {
             data: any;
         }[] = [
             // modified objects
-            { name: "CDNDIR", data: "" },
+            { name: "useCDN", data: useCDN },
+            { name: 'CDNVersion', data: CDNVersion },
+            { name: 'CDNEndpoint', data: CDNEndpoint },
+            // @ts-ignore
+            { name: 'CDNDIR_ORIGINAL', data: CDNDIR_ORIGINAL },
             { name: "currentSaveVersion", data: currentSaveVersion },
             { name: "gameVersion", data: gameVersion },
             { name: "enemyNoun", data: enemyNoun },
