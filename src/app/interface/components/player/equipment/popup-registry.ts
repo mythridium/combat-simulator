@@ -7,6 +7,12 @@ export abstract class PopupRegistry {
         this.popups.push(popup);
     }
 
+    public static delete(popup: EquipmentPopup) {
+        const index = this.popups.indexOf(popup);
+
+        this.popups.splice(index, 1);
+    }
+
     public static clear() {
         this.hide();
         this.popups = [];

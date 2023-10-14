@@ -60,6 +60,27 @@ export class SimPlayer extends Player {
 
     public setRenderAll() {}
     public render() {}
+    public renderFood() {}
+    public renderActiveSkillModifiers() {}
+    public renderAttackBar() {}
+    public renderAttackIcon() {}
+    public renderAttackStyle() {}
+    public renderAutoEat() {}
+    public renderBarrier() {}
+    public renderCombatLevel() {}
+    public renderCombatTriangle() {}
+    public renderDamageSplashes() {}
+    public renderDamageValues() {}
+    public renderEffects() {}
+    public renderEquipmentSets() {}
+    public renderHitchance() {}
+    public renderHitpoints() {}
+    public renderModifierEffect() {}
+    public renderPrayerPoints() {}
+    public renderPrayerSelection() {}
+    public renderStats() {}
+    public renderSummonBar() {}
+    public renderSummonMaxHit() {}
     public addItemStat() {}
     public trackPrayerStats() {}
     public trackWeaponStat() {}
@@ -153,6 +174,38 @@ export class SimPlayer extends Player {
         }
 
         this.eatFood();
+    }
+
+    public unequipFood() {
+        this.food.unequipSelected();
+    }
+
+    public getFoodHealingBonus(): number {
+        let bonus = this.modifiers.increasedFoodHealingValue - this.modifiers.decreasedFoodHealingValue;
+
+        if (Global.configuration.state.cookingMastery) {
+            bonus += 20;
+        }
+
+        if (Global.configuration.state.cookingPool) {
+            bonus += 10;
+        }
+
+        return bonus;
+    }
+
+    public autoEat() {
+        const autoHealAmt = Math.floor(
+            (this.getFoodHealing(this.food.currentSlot.item) * this.autoEatEfficiency) / 100
+        );
+
+        const usedAllFood = this.autoEatThreshold > 0 && autoHealAmt === 0;
+
+        if (usedAllFood) {
+            Global.game.combat.stats.usedFood = Infinity;
+        } else {
+            super.autoEat();
+        }
     }
 
     private getMaxDotDamage() {

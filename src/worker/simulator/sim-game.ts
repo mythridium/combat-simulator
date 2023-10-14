@@ -14,6 +14,10 @@ export class SimGame extends Game {
         this.activeActions.registeredObjects.set(this.combat.namespace, this.combat);
         this.passiveActions.registeredObjects.set(this.combat.namespace, this.combat);
 
+        this.combat.player.registerStatProvider(this.petManager);
+        this.combat.player.registerStatProvider(this.shop);
+        this.combat.player.registerStatProvider(this.potions);
+
         this.detach();
     }
 
@@ -114,6 +118,12 @@ export class SimGame extends Game {
             amount = applyModifier(amount, modifier, 0);
 
             this.combat.stats.sc += amount;
+        };
+
+        this.combat.player.food.consume = quantity => {
+            if (quantity) {
+                this.combat.stats.usedFood += quantity;
+            }
         };
 
         this.bank.removeItemQuantity = (item: AnyItem, quantity: number) => {

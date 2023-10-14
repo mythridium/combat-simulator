@@ -1,6 +1,7 @@
 import { SkillData } from 'src/shared/messages/message-type/init';
 import { ModalQueue } from 'src/app/interface/modules/modal-queue';
 import serialize from 'serialize-javascript';
+import { Global } from 'src/app/global';
 
 export class Mods {
     public readonly dataPackages: [DataNamespace, GameDataPackage, SkillData | undefined][] = [];
@@ -9,10 +10,10 @@ export class Mods {
     private readonly seenNamespaces = new Map<string, DataNamespace>();
     private melvorModifierData = { ...modifierData };
 
-    constructor(private readonly context: Modding.ModContext, private readonly modalQueue: ModalQueue) {}
+    constructor(private readonly modalQueue: ModalQueue) {}
 
     public setup() {
-        this.context.patch(NamespaceMap, 'registerNamespace').after(namespace => {
+        Global.context.patch(NamespaceMap, 'registerNamespace').after(namespace => {
             if (!namespace.isModded) {
                 return;
             }
@@ -20,7 +21,7 @@ export class Mods {
             this.seenNamespaces.set(namespace.name, namespace);
         });
 
-        this.context.patch(Game, 'registerDataPackage').after((_, dataPackage) => {
+        Global.context.patch(Game, 'registerDataPackage').after((_, dataPackage) => {
             const namespace = game.registeredNamespaces.getNamespace(dataPackage.namespace);
 
             if (!namespace.isModded) {

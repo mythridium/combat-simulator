@@ -3,22 +3,26 @@ import { ImageButtonComponent } from 'src/app/interface/components/blocks/image-
 import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 import { PopupRegistry } from './popup-registry';
 import { Global } from 'src/app/global';
-import { Source } from 'src/shared/stores/sync.store';
 
 export interface EquipmentPopupOptions {
     id: string;
-    slot: SlotTypes;
+    slot: SlotTypes | 'Food';
+    onClick: (item: AnyItem, event: MouseEvent) => void;
 }
-
-const emptyEquipmentId = 'melvorD:Empty_Equipment';
 
 export class EquipmentPopup extends BaseComponent {
     public isVisible = false;
 
     constructor(public readonly options: EquipmentPopupOptions) {
         super({ id: `mcs-equipment-popup-${options.id}`, tag: 'div', classes: ['mcs-equipment-popup'] });
+    }
 
+    protected init(): void {
         PopupRegistry.register(this);
+    }
+
+    protected destroy(): void {
+        PopupRegistry.delete(this);
     }
 
     public show() {
@@ -55,10 +59,10 @@ export class EquipmentPopup extends BaseComponent {
                     ({ title, items }) =>
                         new EquipmentPopupSection({
                             id: `popup-section-${this.options.slot}-${title.toLowerCase()}`,
-                            slot: this.options.slot,
                             popup: this,
                             title,
-                            items
+                            items,
+                            onClick: (item, event) => this.options.onClick(item, event)
                         })
                 )
             );
@@ -82,10 +86,10 @@ export class EquipmentPopup extends BaseComponent {
 
 interface EquipmentPopupSectionOptions {
     id: string;
-    slot: SlotTypes;
     title: string;
     popup: EquipmentPopup;
-    items: EquipmentItem[];
+    items: (EquipmentItem | FoodItem)[];
+    onClick: (item: AnyItem, event: MouseEvent) => void;
 }
 
 class EquipmentPopupSection extends BaseComponent {
@@ -103,30 +107,16 @@ class EquipmentPopupSection extends BaseComponent {
                 src: item.media,
                 lazy: true,
                 withOutline: true,
-                onClick: () => {
-                    let { equipment } = Global.equipment.getState();
-
-                    equipment = equipment.filter(
-                        equipped =>
-                            equipped.id !== item.id &&
-                            equipped.slot !== this.options.slot &&
-                            !equipped.occupies.includes(this.options.slot) &&
-                            !item.occupiesSlots.includes(equipped.slot)
-                    );
-
-                    if (item.id !== emptyEquipmentId) {
-                        equipment.push({ id: item.id, slot: this.options.slot, occupies: item.occupiesSlots });
-                    }
-
-                    Global.equipment.setState(Source.Interface, { equipment });
+                onClick: event => {
+                    this.options.onClick(item, event);
                     this.options.popup.hide();
                     tippy.hideAll();
                 },
                 tooltip: {
                     content:
-                        item.id === emptyEquipmentId
+                        item.id === Global.emptyEquipmentId || item.id === Global.emptyFoodId
                             ? 'Empty'
-                            : createItemInformationTooltip(item, true).replace(
+                            : Global.createItemInformationTooltip(item).replace(
                                   '"media-body"',
                                   '"media-body mcs-media-body"'
                               )

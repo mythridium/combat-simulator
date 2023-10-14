@@ -9,6 +9,7 @@ import { EquipmentCategories } from './modules/equipment-categories';
 import { SelectedBarStore } from './stores/selected-bar.store';
 
 export abstract class Global {
+    public static context: Modding.ModContext;
     public static logger = new Logger('Client', Color.Green);
     public static workers = new WorkersStore();
     public static interface = new InterfaceStore();
@@ -19,4 +20,90 @@ export abstract class Global {
     public static information = new SelectedBarStore();
 
     public static equipmentCategories: EquipmentCategories;
+
+    public static emptyEquipmentId = 'melvorD:Empty_Equipment';
+    public static emptyFoodId = 'melvorD:Empty_Food';
+
+    public static createItemInformationTooltip(item: AnyItem) {
+        let potionCharges = '',
+            description = '',
+            spec = '',
+            hp = '',
+            passive = '',
+            html = '',
+            baseStats = '';
+
+        if (item instanceof EquipmentItem) {
+            spec = getItemSpecialAttackInformation(item);
+            baseStats = getItemBaseStatsBreakdown(item);
+        }
+
+        if (item instanceof PotionItem) {
+            potionCharges = `<small class='text-warning'>${templateString(getLangString('MENU_TEXT_POTION_CHARGES'), {
+                charges: `${item.charges}`
+            })}</small><br>`;
+        }
+
+        let itemDesc = item.modifiedDescription;
+
+        if (item instanceof EquipmentItem) {
+            itemDesc += getSummonMaxHitItemDescription(item);
+        }
+
+        if (item.hasDescription || item.isArtefact) {
+            description += `<small class='text-info'>${itemDesc}</small><br>`;
+        }
+
+        if (item instanceof FoodItem) {
+            hp = `<img class='skill-icon-xs ml-2' src='${
+                game.hitpoints.media
+            }'><span class='text-success'>+${this.getFoodHealing(item)}</span>`;
+        }
+
+        if (
+            item instanceof EquipmentItem &&
+            item.validSlots.includes('Passive') &&
+            game.combat.player.isEquipmentSlotUnlocked('Passive')
+        ) {
+            passive =
+                '<br><small class="text-success">' + getLangString('MENU_TEXT_PASSIVE_SLOT_COMPATIBLE') + '</small>';
+        }
+
+        html += `<div class="text-center">
+                    <div class="media d-flex align-items-center push">
+                        <div class="mr-3">
+                            <img class="bank-img m-1" src="${item.media}">
+                        </div>
+                        <div class="media-body">
+                            <div class="font-w600">${item.name}</div>
+                            ${potionCharges}
+                            ${description}
+                            ${spec}
+                            <div class="font-size-sm">
+                                ${hp}
+                                ${passive}
+                            </div>
+                            ${baseStats}
+                        </div>
+                    </div>
+                </div>`;
+
+        return html;
+    }
+
+    private static getFoodHealing(item: FoodItem) {
+        const value = item.healsFor * numberMultiplier;
+
+        let bonus = 0;
+
+        if (Global.configuration.state.cookingMastery) {
+            bonus += 20;
+        }
+
+        if (Global.configuration.state.cookingPool) {
+            bonus += 10;
+        }
+
+        return applyModifier(value, bonus);
+    }
 }

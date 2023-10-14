@@ -14,8 +14,10 @@ export class App {
     private interface: Interface;
 
     constructor(private readonly context: Modding.ModContext) {
+        Global.context = this.context;
+
         this.modalQueue = new ModalQueue(this.context);
-        this.mods = new Mods(this.context, this.modalQueue);
+        this.mods = new Mods(this.modalQueue);
         this.mods.setup();
 
         this.context.onInterfaceReady(async () => {
@@ -27,8 +29,8 @@ export class App {
 
             Global.logger.log('Client Loaded');
 
-            this.workers = new Workers(this.context, this.mods, this.modalQueue);
-            this.interface = new Interface(this.context, this.workers);
+            this.workers = new Workers(this.mods, this.modalQueue);
+            this.interface = new Interface(this.workers);
 
             const isInitialised = await this.workers.init();
 

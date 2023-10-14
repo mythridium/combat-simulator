@@ -62,6 +62,11 @@ export interface Categories {
         throwingKnives: EquipmentItem[];
         other: EquipmentItem[];
     };
+    food: {
+        food: FoodItem[];
+        perfect: FoodItem[];
+        empty: FoodItem[];
+    };
 }
 
 interface CategorySection extends Section {
@@ -70,11 +75,11 @@ interface CategorySection extends Section {
 
 interface Section {
     title: string;
-    items: EquipmentItem[];
+    items: (EquipmentItem | FoodItem)[];
 }
 
 export type Sections = {
-    [key in SlotTypes]: Section[];
+    [key in SlotTypes | 'Food']: Section[];
 };
 
 type GearSlotTypes = Extract<SlotTypes, 'Helmet' | 'Platebody' | 'Gloves' | 'Platelegs' | 'Boots' | 'Shield'>;
@@ -211,9 +216,36 @@ export class EquipmentCategories {
                 consumable: [],
                 amulet: [],
                 gem: [],
-                empty: []
+                empty: [],
+                food: {
+                    food: [],
+                    perfect: [],
+                    empty: []
+                }
             } as Categories
         );
+
+        for (const item of game.items.food.allObjects) {
+            if (item.golbinRaidExclusive) {
+                continue;
+            }
+
+            if (item.id === 'melvorD:Empty_Food') {
+                this.categories.food.empty.push(item);
+                continue;
+            }
+
+            // the food is perfect if it's found in the product recipe map, but not found as an action.
+            const isPerfect =
+                game.cooking.productRecipeMap.get(item) !== undefined &&
+                game.cooking.actions.getObjectByID(item.id) === undefined;
+
+            if (isPerfect) {
+                this.categories.food.perfect.push(item);
+            } else {
+                this.categories.food.food.push(item);
+            }
+        }
 
         this.sections = this.getSections();
     }
@@ -231,13 +263,39 @@ export class EquipmentCategories {
             });
         }
 
+        const slotSections = this.createSections('Food');
+
+        sections['Food'] = slotSections.map(section => {
+            this.sort(section.items, section.sortBy);
+
+            return { title: section.title, items: section.items };
+        });
+
         return sections;
     }
 
-    private createSections(slot: SlotTypes) {
+    private createSections(slot: SlotTypes | 'Food') {
         const sections: CategorySection[] = [];
 
         switch (slot) {
+            case 'Food':
+                sections.push({
+                    title: 'Food',
+                    items: this.categories.food.food,
+                    sortBy: item => (<FoodItem>(<unknown>item)).healsFor
+                });
+
+                sections.push({
+                    title: 'Perfect Food',
+                    items: this.categories.food.perfect,
+                    sortBy: item => (<FoodItem>(<unknown>item)).healsFor
+                });
+
+                sections.push({
+                    title: 'Empty',
+                    items: this.categories.food.empty
+                });
+                break;
             case 'Amulet':
                 sections.push({ title: 'Amulets', items: this.categories.amulet });
                 break;
@@ -380,12 +438,14 @@ export class EquipmentCategories {
                 break;
         }
 
-        sections.push({ title: 'Empty', items: this.categories.empty });
+        if (slot !== 'Food') {
+            sections.push({ title: 'Empty', items: this.categories.empty });
+        }
 
         return sections;
     }
 
-    private sort(items: EquipmentItem[], sortBy?: (item: EquipmentItem) => number | string) {
+    private sort(items: (EquipmentItem | FoodItem)[], sortBy?: (item: EquipmentItem | FoodItem) => number | string) {
         const sortKey = (item: EquipmentItem) => sortBy(item) || 0;
         const sortFunc = sortByOrder<any, any>(game.bank.defaultSortOrder, 'item');
 

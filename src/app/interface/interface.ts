@@ -15,7 +15,7 @@ export class Interface {
     private readonly modalElementId = 'myth-combat-simulator-modal';
     private modal: ModalComponent;
 
-    constructor(private readonly context: Modding.ModContext, private readonly workers: Workers) {}
+    constructor(private readonly workers: Workers) {}
 
     public init() {
         Global.equipmentCategories = new EquipmentCategories();
@@ -48,7 +48,7 @@ export class Interface {
     private createInterface() {
         this.modal = new ModalComponent({
             id: this.modalElementId,
-            title: `[Myth] Combat Simulator - ${this.context.version}`
+            title: `[Myth] Combat Simulator - ${Global.context.version}`
         });
 
         const setup = new ContainerComponent({ id: 'mcs-setup', classes: ['mcs-flex-row'] });

@@ -8,6 +8,7 @@ export interface ConfigurationState extends SyncState {
     cookingPool: boolean;
     cookingMastery: boolean;
     useCombinationRunes: boolean;
+    autoEatTier: string;
     trials: number;
     ticks: number;
 }
@@ -23,6 +24,7 @@ export class ConfigurationStore extends SyncStore<ConfigurationState> {
             cookingPool: false,
             cookingMastery: false,
             useCombinationRunes: false,
+            autoEatTier: '-1',
             trials: 1000,
             ticks: 1000
         });

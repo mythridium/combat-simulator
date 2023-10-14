@@ -19,7 +19,7 @@ export class BaseStore<TState> {
     public setState(state: Partial<TState>) {
         this._state = { ...this._state, ...state };
 
-        for (const subscription of this.subscriptions) {
+        for (const subscription of [...this.subscriptions]) {
             subscription.emit({ ...this._state });
         }
     }

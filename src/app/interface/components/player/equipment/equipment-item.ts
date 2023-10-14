@@ -3,7 +3,7 @@ import { BaseComponent } from 'src/app/interface/components/blocks/base-componen
 import { EquipmentCustomSlot, EquipmentSlot } from './equipment.types';
 import { Global } from 'src/app/global';
 import { PopupRegistry } from './popup-registry';
-import { ImageButtonComponent } from '../../blocks/image-button-component';
+import { ImageButtonComponent } from 'src/app/interface/components/blocks/image-button-component';
 import { Source } from 'src/shared/stores/sync.store';
 
 export interface EquipmentItemOptions {
@@ -42,7 +42,7 @@ export class EquipmentItemComponent extends BaseComponent {
                 if (item) {
                     isOccupying = itemEquipment.slot !== slot;
                     fileName = item.media;
-                    tooltip = createItemInformationTooltip(item, true).replace(
+                    tooltip = Global.createItemInformationTooltip(item).replace(
                         '"media-body"',
                         '"media-body mcs-media-body"'
                     );
@@ -113,6 +113,47 @@ export class EquipmentItemComponent extends BaseComponent {
                     }
                 })
             );
+        }
+
+        if (this.options.slot === EquipmentCustomSlot.Food) {
+            let fileName = Global.context.getResourceUrl('assets/fish-empty.svg');
+            let tooltip: string = 'Food';
+
+            const food = game.items.getObjectByID(Global.equipment.state.food);
+
+            if (food) {
+                fileName = food.media;
+                tooltip = Global.createItemInformationTooltip(food).replace(
+                    '"media-body"',
+                    '"media-body mcs-media-body"'
+                );
+            }
+
+            const img = document.element({
+                tag: 'img',
+                src: fileName,
+                classes: [
+                    'combat-equip-img',
+                    'border',
+                    'border-2x',
+                    'border-rounded-equip',
+                    'border-combat-outline',
+                    'p-1',
+                    'm-1',
+                    'pointer-enabled'
+                ],
+                tooltip: { content: tooltip },
+                onClick: event => {
+                    event.stopPropagation();
+
+                    const popup = PopupRegistry.get(this.options.id);
+
+                    PopupRegistry.hide(popup);
+                    popup?.toggle();
+                }
+            });
+
+            this.append(img);
         }
 
         super.preRender(container);

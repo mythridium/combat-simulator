@@ -6,7 +6,8 @@ export interface DropdownOptions {
     classes?: string[];
     options: DropdownOption[];
     search?: boolean;
-    onChange?: (event: MouseEvent, option: DropdownOption) => void;
+    default?: () => string;
+    onChange?: (option: DropdownOption, event: MouseEvent) => void;
 }
 
 export interface DropdownOption {
@@ -115,11 +116,13 @@ export class DropdownComponent extends BaseComponent {
                 button.innerHTML = option.text;
 
                 if (this.options.onChange) {
-                    this.options.onChange(event, option);
+                    this.options.onChange(option, event);
                 }
             };
 
-            if (index === 0) {
+            if (this.options.default && this.options.default() === option.value) {
+                button.innerHTML = option.text;
+            } else if (index === 0) {
                 button.innerHTML = option.text;
             }
 

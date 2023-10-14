@@ -1,6 +1,7 @@
 export enum EquipmentCustomSlot {
     Blank = 'blank',
-    Synergy = 'synergy'
+    Synergy = 'synergy',
+    Food = 'food'
 }
 
 export type EquipmentSlot = EquipmentCustomSlot | EquipmentSlots;

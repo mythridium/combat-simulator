@@ -8,6 +8,7 @@ export interface EquipmentItemSlot {
 
 export interface EquipmentState extends SyncState {
     equipment: EquipmentItemSlot[];
+    food?: string;
 }
 
 export class EquipmentStore extends SyncStore<EquipmentState> {

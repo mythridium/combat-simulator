@@ -23,7 +23,21 @@ export abstract class Import {
             });
         }
 
-        Global.equipment.setState(Source.Interface, { equipment: items });
-        Global.configuration.setState(Source.Interface, { isSynergyEnabled: true });
+        Global.equipment.setState(Source.Interface, {
+            equipment: items,
+            food: game.combat.player.food?.currentSlot?.item?.id
+        });
+
+        Global.configuration.setState(Source.Interface, {
+            isSynergyEnabled: true,
+            autoEatTier: this.autoEatTier.toString()
+        });
+    }
+
+    private static get autoEatTier() {
+        const autoEatPurchases = game.shop.purchases.filter(purchase => purchase.id.includes('Auto_Eat'));
+        const purchases = autoEatPurchases.filter(purchase => game.shop.upgradesPurchased.get(purchase));
+
+        return purchases.length - 1;
     }
 }

@@ -1,0 +1,21 @@
+#myth-combat-simulator-modal {
+    #mcs-food-wrapper {
+        position: relative;
+
+        #mcs-equipment-item-mcs-food img {
+            width: 35px;
+            height: 35px;
+        }
+    }
+
+    #mcs-food {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    #mcs-auto-eat {
+        flex-grow: 1;
+    }
+}

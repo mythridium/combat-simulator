@@ -19,16 +19,26 @@ export class Simulator {
         this.messages.on(MessageAction.State, async data => {
             if (data.configuration) {
                 Global.configuration.setState(Source.Interface, data.configuration);
+
+                Global.game.shop.upgradesPurchased.clear();
+                this.updateAutoEatTier();
             }
 
             if (data.equipment) {
                 Global.equipment.setState(Source.Interface, data.equipment);
 
                 Global.game.combat.player.equipment.unequipAll();
+                Global.game.combat.player.food.unequipSelected();
 
                 for (const equipment of data.equipment.equipment) {
                     const item = Global.game.items.equipment.getObjectByID(equipment.id);
                     Global.game.combat.player.equipment.equipItem(item, equipment.slot, 1);
+                }
+
+                const food = Global.game.items.food.getObjectByID(Global.equipment.state.food);
+
+                if (food) {
+                    Global.game.combat.player.equipFood(food, 1);
                 }
             }
 
@@ -53,7 +63,7 @@ export class Simulator {
     }
 
     private summary() {
-        Global.game.combat.player.computeAllStats();
+        this.compute();
 
         const stats = Global.game.combat.player.stats;
 
@@ -83,6 +93,13 @@ export class Simulator {
         return this.summaryStore.getState();
     }
 
+    private compute() {
+        Global.game.shop.computeProvidedStats();
+        Global.game.potions.computeProvidedStats();
+        Global.game.petManager.computeProvidedStats();
+        Global.game.combat.player.computeAllStats();
+    }
+
     private applySummonDamageModifiers(damage: number) {
         let modifier = Global.game.combat.player.modifiers.increasedBarrierSummonDamage;
 
@@ -108,5 +125,25 @@ export class Simulator {
         damage += flatBonus * numberMultiplier;
 
         return Math.floor(damage);
+    }
+
+    private updateAutoEatTier() {
+        let autoEatTier = -1;
+
+        try {
+            autoEatTier = parseInt(Global.configuration.state.autoEatTier, 10);
+        } catch {}
+
+        if (autoEatTier === -1) {
+            return;
+        }
+
+        Global.game.shop.purchases
+            .filter(purchase => purchase.id.includes('Auto_Eat'))
+            .forEach((purchase, index) => {
+                if (index <= autoEatTier) {
+                    Global.game.shop.upgradesPurchased.set(purchase, 1);
+                }
+            });
     }
 }

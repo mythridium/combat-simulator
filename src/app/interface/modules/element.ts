@@ -51,7 +51,7 @@ declare global {
     }
 }
 
-class ElementComponent<K extends keyof ElementOptionsTagMap> extends BaseComponent {
+export class ElementComponent<K extends keyof ElementOptionsTagMap> extends BaseComponent {
     constructor(private readonly options: ElementOptions<K>) {
         super({
             id: options.id ?? '',

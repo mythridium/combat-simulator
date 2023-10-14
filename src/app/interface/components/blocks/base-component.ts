@@ -8,12 +8,15 @@ export interface BaseOptions<K extends keyof HTMLElementTagNameMap> {
     tooltip?: Partial<Props>;
 }
 
+type ConstructorOf<C> = { new (...args: any[]): C };
+
 export class BaseComponent {
     public element: HTMLElement;
+
     protected tooltips: TippyTooltip[] = [];
 
-    private readonly fragment = new DocumentFragment();
     private children: (HTMLElement | BaseComponent)[] = [];
+    private readonly fragment = new DocumentFragment();
     private isInitialised = false;
 
     protected constructor(protected readonly _options: BaseOptions<any>) {
@@ -26,9 +29,7 @@ export class BaseComponent {
         ComponentSubscriptionManager.set(undefined);
     }
 
-    protected init() {}
-
-    protected destroy() {
+    protected _destroy() {
         for (const tooltip of this.tooltips) {
             tooltip.destroy();
         }
@@ -41,6 +42,15 @@ export class BaseComponent {
         }
 
         this.children = [];
+    }
+
+    protected init() {}
+    protected destroy() {}
+
+    public get<T extends BaseComponent>(instance: ConstructorOf<T>) {
+        const child = this.children.find(child => child instanceof instance);
+
+        return child as T;
     }
 
     public append(
@@ -58,7 +68,7 @@ export class BaseComponent {
         if (!this.isInitialised) {
             this.isInitialised = true;
         } else {
-            this.destroy();
+            this._destroy();
         }
 
         const element = this.construct();

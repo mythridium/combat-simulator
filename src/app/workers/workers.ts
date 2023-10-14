@@ -27,12 +27,8 @@ export class Workers {
         return Global.workers.state.useMaxCPU ? navigator.hardwareConcurrency - 1 : 1;
     }
 
-    constructor(
-        private readonly context: Modding.ModContext,
-        private readonly mods: Mods,
-        private readonly modalQueue: ModalQueue
-    ) {
-        this.url = this.context.getResourceUrl('src/worker.mjs');
+    constructor(private readonly mods: Mods, private readonly modalQueue: ModalQueue) {
+        this.url = Global.context.getResourceUrl('src/worker.mjs');
         this.syncToPrimary('equipment', 'configuration');
 
         Global.workers.when(Source.Interface).subscribe(async ({ useMaxCPU }) => {

@@ -4,6 +4,7 @@ import { EquipmentComponent } from './equipment/equipment';
 import { EquipmentSetComponent } from './equipment-sets/equipment-sets';
 import { SynergyComponent } from './synergy/synergy';
 import { PlayerSettingsComponent } from './settings/settings';
+import { FoodComponent } from './food/food';
 
 export class PlayerComponent extends CardComponent {
     constructor() {
@@ -13,10 +14,11 @@ export class PlayerComponent extends CardComponent {
     protected preRender(container: HTMLElement) {
         const equipment = new EquipmentComponent();
         const synergy = new SynergyComponent();
+        const food = new FoodComponent();
         const settings = new PlayerSettingsComponent();
         const equipmentSets = new EquipmentSetComponent();
 
-        this.append(equipment, synergy, settings, equipmentSets);
+        this.append(equipment, synergy, food, settings, equipmentSets);
 
         super.preRender(container);
     }

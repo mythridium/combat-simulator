@@ -165,7 +165,6 @@ export class SimManager extends CombatManager {
             }
 
             this.tick();
-            this.player.hitpoints = this.player.stats.maxHitpoints;
         }
 
         this.stop();
