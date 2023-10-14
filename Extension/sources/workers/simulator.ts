@@ -284,12 +284,6 @@
                 const importedAgilityPillars = Object.keys(event.data.agilityPillars).map(key => event.data.agilityPillars[key]);
                 const importedAgilityElitePillars = Object.keys(event.data.agilityElitePillars).map(key => event.data.agilityElitePillars[key]);
 
-                importedNamespaces.forEach((stringifiedNamespace: string) => {
-                    const namespace = JSON.parse(stringifiedNamespace);
-                    // @ts-expect-error
-                    self._game.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
-                });
-
                 const micsr = new MICSR();
                 const simGame = new SimGame(micsr, true, (<any>self)._game);
                 // @ts-ignore
@@ -311,12 +305,20 @@
                 Summoning.markLevels = event.data.SummoningMarkLevels;
                 await micsr.initialize(simGame, simGame as any);
 
+                importedNamespaces.forEach((stringifiedNamespace: string) => {
+                    const namespace = JSON.parse(stringifiedNamespace);
+
+                    if (!simGame.registeredNamespaces.hasNamespace(namespace.name)) {
+                        simGame.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
+                    }
+                });
+
                 impotedGamemodes.forEach((stringifiedGamemode: string) => {
                     const [namespaceData, gamemodeData] = JSON.parse(stringifiedGamemode);
 
                     if (namespaceData.isModded) {
                         // @ts-expect-error
-                        simGame.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self._game));
+                        simGame.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, simGame));
                     } else {
                         const gamemode = simGame.gamemodes.find(gamemode => gamemode.id === `${namespaceData.name}:${gamemodeData.id}`);
 
@@ -329,19 +331,19 @@
                 importedAgilityActions.forEach((stringifiedAction: string) => {
                     const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
                     // @ts-expect-error
-                    simGame.agility.actions.registerObject(new AgilityObstacle(namespaceData, obstacleData, self._game));
+                    simGame.agility.actions.registerObject(new AgilityObstacle(namespaceData, obstacleData, simGame));
                 });
 
                 importedAgilityPillars.forEach((stringifiedAction: string) => {
                     const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
                     // @ts-expect-error
-                    simGame.agility.pillars.registerObject(new AgilityPillar(namespaceData, obstacleData, self._game));
+                    simGame.agility.pillars.registerObject(new AgilityPillar(namespaceData, obstacleData, simGame));
                 });
 
                 importedAgilityElitePillars.forEach((stringifiedAction: string) => {
                     const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
                     // @ts-expect-error
-                    simGame.agility.elitePillars.registerObject(new AgilityPillar(namespaceData, obstacleData, self._game));
+                    simGame.agility.elitePillars.registerObject(new AgilityPillar(namespaceData, obstacleData, simGame));
                 });
 
                 // @ts-expect-error

@@ -1,3 +1,6 @@
+v2.2.20
+    fixed namespace registration error
+
 v2.2.19
     fixed simulate all not simulating in the same order as the plotter
     fixed into the mist requiring slayer in ancient relics mode
