@@ -22,6 +22,14 @@ export class Simulator {
 
                 Global.game.shop.upgradesPurchased.clear();
                 this.updateAutoEatTier();
+
+                const attackStyle = Global.game.attackStyles.find(
+                    attackStyle => attackStyle.id === data.configuration.attackStyle
+                );
+
+                if (attackStyle) {
+                    Global.game.combat.player.setAttackStyle(attackStyle.attackType, attackStyle);
+                }
             }
 
             if (data.equipment) {

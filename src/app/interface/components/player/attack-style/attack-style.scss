@@ -1,0 +1,15 @@
+#myth-combat-simulator-modal {
+    #mcs-attack-styles-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        #mcs-attack-styles {
+            width: 100%;
+        }
+
+        span {
+            text-wrap: nowrap;
+        }
+    }
+}
