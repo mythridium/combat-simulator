@@ -275,7 +275,7 @@
                 cloudManager.hasFullVersionEntitlement = !!full;
 
                 // @ts-expect-error I'm muting these errors because that seems to be the approach taken above
-                self.game = new Game();
+                self._game = new Game();
 
                 // Minor workaround to easily use Object.values with Typescript. See https://stackoverflow.com/questions/42966362/how-to-use-object-values-with-typescript
                 const importedNamespaces = Object.keys(event.data.namespaces).map(key => event.data.namespaces[key]);
@@ -287,11 +287,13 @@
                 importedNamespaces.forEach((stringifiedNamespace: string) => {
                     const namespace = JSON.parse(stringifiedNamespace);
                     // @ts-expect-error
-                    self.game.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
+                    self._game.registeredNamespaces.registerNamespace(namespace.name, namespace.displayName, namespace.isModded);
                 });
 
                 const micsr = new MICSR();
-                const simGame = new SimGame(micsr, true, (<any>self).game);
+                const simGame = new SimGame(micsr, true, (<any>self)._game);
+                // @ts-ignore
+                self.game = simGame;
                 micsr.dataPackage = event.data.dataPackage;
                 micsr.cleanupDataPackage("Demo");
                 if (cloudManager.hasFullVersionEntitlement) {
@@ -314,7 +316,7 @@
 
                     if (namespaceData.isModded) {
                         // @ts-expect-error
-                        simGame.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self.game));
+                        simGame.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, self._game));
                     } else {
                         const gamemode = simGame.gamemodes.find(gamemode => gamemode.id === `${namespaceData.name}:${gamemodeData.id}`);
 
@@ -327,19 +329,19 @@
                 importedAgilityActions.forEach((stringifiedAction: string) => {
                     const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
                     // @ts-expect-error
-                    simGame.agility.actions.registerObject(new AgilityObstacle(namespaceData, obstacleData, self.game));
+                    simGame.agility.actions.registerObject(new AgilityObstacle(namespaceData, obstacleData, self._game));
                 });
 
                 importedAgilityPillars.forEach((stringifiedAction: string) => {
                     const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
                     // @ts-expect-error
-                    simGame.agility.pillars.registerObject(new AgilityPillar(namespaceData, obstacleData, self.game));
+                    simGame.agility.pillars.registerObject(new AgilityPillar(namespaceData, obstacleData, self._game));
                 });
 
                 importedAgilityElitePillars.forEach((stringifiedAction: string) => {
                     const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
                     // @ts-expect-error
-                    simGame.agility.elitePillars.registerObject(new AgilityPillar(namespaceData, obstacleData, self.game));
+                    simGame.agility.elitePillars.registerObject(new AgilityPillar(namespaceData, obstacleData, self._game));
                 });
 
                 // @ts-expect-error

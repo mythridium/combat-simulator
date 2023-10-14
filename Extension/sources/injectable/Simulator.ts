@@ -1163,7 +1163,7 @@ class Simulator {
             return;
         }
         // Queue simulation of monsters in combat areas
-        this.micsr.combatAreas.forEach((area) => {
+        this.micsr.game.combatAreaDisplayOrder.forEach((area) => {
             area.monsters.forEach((monster) => {
                 if (this.monsterSimFilter[monster.id]) {
                     this.pushMonsterToQueue(monster.id, undefined);
@@ -1175,7 +1175,7 @@ class Simulator {
             this.pushMonsterToQueue(this.micsr.bardID, undefined);
         }
         // Queue simulation of monsters in slayer areas
-        this.micsr.slayerAreas.forEach((area) => {
+        this.micsr.game.slayerAreaDisplayOrder.forEach((area) => {
             if (!this.micsr.game.checkRequirements(area.entryRequirements)) {
                 const tryToSim = area.monsters.reduce(
                     (sim, monster) =>
@@ -1200,7 +1200,7 @@ class Simulator {
             });
         });
         // Queue simulation of monsters in dungeons
-        this.micsr.dungeons.forEach((dungeon) => {
+        this.micsr.game.dungeonDisplayOrder.forEach((dungeon) => {
             if (this.dungeonSimFilter[dungeon.id]) {
                 for (let j = 0; j < dungeon.monsters.length; j++) {
                     const monster = dungeon.monsters[j];

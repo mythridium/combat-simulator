@@ -110,7 +110,7 @@ class MICSR {
         // combat sim version
         this.majorVersion = 2;
         this.minorVersion = 2;
-        this.patchVersion = 18;
+        this.patchVersion = 19;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {
@@ -288,7 +288,13 @@ class MICSR {
         this.dataPackage[id].data.steamAchievements = undefined;
         this.dataPackage[id].data.shopDisplayOrder = undefined;
         this.dataPackage[id].data.shopUpgradeChains = undefined;
-        this.dataPackage[id].modifications = undefined;
+
+        if (id !== 'AoD') {
+            this.dataPackage[id].modifications = undefined;
+        } else {
+            this.dataPackage[id].modifications.shopPurchases = undefined;
+            this.dataPackage[id].modifications.fletchingRecipes = undefined;
+        }
 
         this.dataPackage[id].data.shopPurchases.forEach(
             (x: any) => (x.purchaseRequirements = [])

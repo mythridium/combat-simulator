@@ -4613,11 +4613,16 @@ class App {
     updateDisplayPostSim() {
         this.createLootOptionsCard(); // update in case slayer task monsters changed
         this.updatePlotData();
-        this.updateZoneInfoCard();
         if (this.isViewingDungeon) {
+            let bar = this.selectedBar;
+            let selected = this.barSelected;
             this.setPlotToGeneral();
             this.setPlotToDungeon(this.barMonsterIDs[this.selectedBar]);
+            this.barSelected = selected;
+            this.selectedBar = bar;
+            this.setBarHighlight(bar);
         }
+        this.updateZoneInfoCard();
         (document.getElementById("MCS Simulate All Button") as any).disabled =
             false;
         // @ts-expect-error TS(2531): Object is possibly 'null'.

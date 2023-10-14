@@ -1,3 +1,8 @@
+v2.2.19
+    fixed simulate all not simulating in the same order as the plotter
+    fixed into the mist requiring slayer in ancient relics mode
+    fixed simulating specific monsters while inspecting dungeons de-selecting the monster
+
 v2.2.18
     fixed more cdn errors
 
