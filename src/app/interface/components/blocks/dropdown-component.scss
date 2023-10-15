@@ -1,7 +1,13 @@
 #myth-combat-simulator-modal .mcs-dropdown {
+    display: flex;
+    align-items: center;
+
+    .mcs-dropdown-label {
+        text-wrap: nowrap;
+    }
+
     .dropdown {
         width: 100%;
-        margin: 5px 0;
     }
 
     .dropdown button {

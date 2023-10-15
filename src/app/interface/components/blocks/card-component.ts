@@ -5,14 +5,16 @@ export interface CardOptions {
     id: string;
     title?: string;
     classes?: string[];
+    withoutSpacing?: boolean;
 }
 
 export class CardComponent extends BaseComponent {
     constructor(private readonly options: CardOptions) {
+        const spacing = options.withoutSpacing ? [] : ['m-1', 'p-2'];
         super({
             tag: 'div',
             id: options.id,
-            classes: ['mcs-card', 'm-1', 'p-2', 'text-center', 'bg-combat-inner-dark', ...(options.classes ?? [])]
+            classes: ['mcs-card', ...spacing, 'text-center', 'bg-combat-inner-dark', ...(options.classes ?? [])]
         });
     }
 

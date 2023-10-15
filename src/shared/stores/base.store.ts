@@ -19,8 +19,10 @@ export class BaseStore<TState> {
     public setState(state: Partial<TState>) {
         this._state = { ...this._state, ...state };
 
+        const stateSnapshot = cloneDeep(this._state);
+
         for (const subscription of [...this.subscriptions]) {
-            subscription.emit({ ...this._state });
+            subscription.emit({ ...stateSnapshot });
         }
     }
 

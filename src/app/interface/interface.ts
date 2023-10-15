@@ -10,6 +10,8 @@ import { Workers } from 'src/app/workers/workers';
 import { Global } from 'src/app/global';
 import { Source } from 'src/shared/stores/sync.store';
 import { EquipmentCategories } from 'src/app/modules/equipment-categories';
+import { PlotterComponent } from './components/plotter/plotter';
+import { SimEntities } from './components/plotter/sim-entities';
 
 export class Interface {
     private readonly modalElementId = 'myth-combat-simulator-modal';
@@ -19,6 +21,7 @@ export class Interface {
 
     public init() {
         Global.equipmentCategories = new EquipmentCategories();
+        Global.simEntities = new SimEntities();
 
         this.addSidebarItem();
         this.createInterface();
@@ -60,7 +63,9 @@ export class Interface {
 
         setup.append(player, configuration, summary, information);
 
-        const plotter = new ContainerComponent({ id: 'mcs-plotter', classes: ['mcs-flex-column'] });
+        const plotter = new ContainerComponent({ id: 'mcs-plotter-container', classes: ['mcs-flex-column'] });
+
+        plotter.append(new PlotterComponent());
 
         this.modal.append(setup, plotter);
         this.modal.render();

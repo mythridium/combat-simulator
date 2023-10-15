@@ -1,3 +1,4 @@
+import './gamemode.scss';
 import { Global } from 'src/app/global';
 import { BaseComponent } from 'src/app/interface/components/blocks/base-component';
 import { Source } from 'src/shared/stores/sync.store';
@@ -11,7 +12,7 @@ declare global {
 
 export class GamemodeComponent extends BaseComponent {
     constructor() {
-        super({ id: 'mcs-gamemode', tag: 'div', classes: ['mcs-fixed-width', 'w-100'] });
+        super({ id: 'mcs-gamemode', tag: 'div', classes: ['w-100', 'my-1'] });
     }
 
     protected init() {
@@ -22,6 +23,7 @@ export class GamemodeComponent extends BaseComponent {
         this.append(
             new DropdownComponent({
                 id: 'mcs-gamemode-dropdown',
+                classes: ['w-100'],
                 options: game.gamemodes.allObjects
                     .filter(gamemode => this.isGamemodeAvailable(gamemode))
                     .map(gamemode => ({ text: gamemode.name, value: gamemode.id })),

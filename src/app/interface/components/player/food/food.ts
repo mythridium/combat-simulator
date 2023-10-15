@@ -11,7 +11,7 @@ export class FoodComponent extends BaseComponent {
     private readonly autoEatPurchases = game.shop.purchases.filter(purchase => purchase.id.includes('Auto_Eat'));
 
     constructor() {
-        super({ id: 'mcs-food', tag: 'div', classes: ['mcs-fixed-width'] });
+        super({ id: 'mcs-food', tag: 'div', classes: ['w-100', 'my-1'] });
     }
 
     protected init() {
@@ -55,7 +55,7 @@ export class FoodComponent extends BaseComponent {
         this.append(
             new DropdownComponent({
                 id: 'mcs-auto-eat',
-                classes: ['ml-1'],
+                classes: ['ml-1', 'w-100'],
                 options: [
                     { text: 'No Auto Eat', value: '-1' },
                     ...this.autoEatPurchases.map((purchase, index) => ({
@@ -82,7 +82,7 @@ class FoodHealing extends BaseComponent {
     protected preRender(container: HTMLElement): void {
         const food = game.items.food.getObjectByID(Global.equipment.state.food);
 
-        this.append(document.element({ tag: 'img', src: 'assets/media/skills/hitpoints/hitpoints.svg' }));
+        this.append(document.element({ tag: 'img', src: game.hitpoints.media }));
         this.append(
             document.element({
                 tag: 'span',

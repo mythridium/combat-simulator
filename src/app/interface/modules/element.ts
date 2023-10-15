@@ -38,6 +38,8 @@ interface InputElementOptions extends BaseElementOptions {
     type: string;
     name?: string;
     checked?: boolean;
+    placeholder?: string;
+    onInput?: (event: InputEvent) => void;
 }
 
 interface LabelElementOptions extends BaseElementOptions {
@@ -77,11 +79,22 @@ export class ElementComponent<K extends keyof ElementOptionsTagMap> extends Base
         if (this.options.tag === 'input') {
             const element = this.asElement()['input'];
 
-            element.name = this.options.name;
             element.type = this.options.type;
+
+            if (this.options.placeholder) {
+                element.placeholder = this.options.placeholder;
+            }
+
+            if (this.options.name) {
+                element.name = this.options.name;
+            }
 
             if (this.options.checked !== undefined) {
                 element.checked = this.options.checked;
+            }
+
+            if (this.options.onInput) {
+                element.oninput = (event: InputEvent) => (<InputElementOptions>this.options).onInput(event);
             }
         }
 

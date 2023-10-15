@@ -54,6 +54,44 @@ export class EquipmentPopup extends BaseComponent {
 
     protected preRender(container: HTMLElement): void {
         if (this.isVisible) {
+            const search = document.element({
+                id: `mcs-popup-${this.options.id}-search`,
+                tag: 'input',
+                type: 'text',
+                placeholder: 'Search',
+                classes: ['form-control', 'form-control-sm', 'mt-2'],
+                onInput: event => {
+                    if (!this.element) {
+                        return;
+                    }
+
+                    const items = Global.equipmentCategories.sections[this.options.slot].flatMap(({ items }) => items);
+
+                    const buttons = Array.from(this.element.querySelectorAll<HTMLButtonElement>('.mcs-image-btn'));
+
+                    for (const item of items) {
+                        const button = buttons.find(
+                            button => button.id === `mcs-equipment-item-button-${item.localID}`
+                        );
+
+                        if (!button) {
+                            continue;
+                        }
+
+                        // @ts-ignore
+                        const value = event?.target?.value;
+
+                        if (!value || item.name.toLowerCase().includes(value.toLowerCase())) {
+                            button.style.display = 'block';
+                        } else {
+                            button.style.display = 'none';
+                        }
+                    }
+                }
+            });
+
+            this.append(search);
+
             this.append(
                 Global.equipmentCategories.sections[this.options.slot].map(
                     ({ title, items }) =>
@@ -81,6 +119,10 @@ export class EquipmentPopup extends BaseComponent {
         }
 
         this.element.onclick = event => event.stopPropagation();
+
+        if (this.isVisible) {
+            this.get(`mcs-popup-${this.options.id}-search`)?.element?.focus();
+        }
     }
 }
 

@@ -6,6 +6,7 @@ export interface DropdownOptions {
     classes?: string[];
     options: DropdownOption[];
     search?: boolean;
+    label?: string;
     default?: () => string;
     onChange?: (option: DropdownOption, event: MouseEvent) => void;
 }
@@ -28,6 +29,16 @@ export class DropdownComponent extends BaseComponent {
 
     protected preRender(container: HTMLElement): void {
         this.dropdownOptions = [];
+
+        if (this.options.label) {
+            this.append(
+                document.element({
+                    tag: 'span',
+                    innerHTML: this.options.label,
+                    classes: ['mcs-dropdown-label', 'mx-1', 'mcs-md-text']
+                })
+            );
+        }
 
         const button = createElement('button', {
             id: `${this.options.id}-button`,

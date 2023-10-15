@@ -11,12 +11,13 @@
     #mcs-food {
         display: flex;
         align-items: center;
-        justify-content: center;
-        width: 100%;
+        justify-content: space-between;
+        max-width: 250px;
     }
 
     #mcs-auto-eat {
         flex-grow: 1;
+        max-width: 160px;
     }
 
     #mcs-food-healing-value {

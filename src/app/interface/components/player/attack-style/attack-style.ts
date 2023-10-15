@@ -6,7 +6,7 @@ import { Source } from 'src/shared/stores/sync.store';
 
 export class AttackStyleComponent extends BaseComponent {
     constructor() {
-        super({ id: 'mcs-attack-styles-container', tag: 'div' });
+        super({ id: 'mcs-attack-styles-container', tag: 'div', classes: ['w-100', 'mt-1'] });
     }
 
     protected init() {
@@ -14,18 +14,17 @@ export class AttackStyleComponent extends BaseComponent {
     }
 
     protected preRender(container: HTMLElement): void {
-        const label = document.element({ tag: 'span', innerHTML: 'Attack Style', classes: ['mx-2', 'mcs-md-text'] });
-
         const combatStyles = new DropdownComponent({
             id: 'mcs-attack-styles',
             options: this.getOptions(),
+            label: 'Attack Style',
             default: () => Global.configuration.state.attackStyle,
             onChange: option => {
                 Global.configuration.setState(Source.Interface, { attackStyle: option.value });
             }
         });
 
-        this.append(label, combatStyles);
+        this.append(combatStyles);
 
         super.preRender(container);
     }

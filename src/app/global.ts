@@ -7,6 +7,7 @@ import { WorkersStore } from './stores/workers.store';
 import { InterfaceStore } from './stores/interface.store';
 import { EquipmentCategories } from './modules/equipment-categories';
 import { SelectedBarStore } from './stores/selected-bar.store';
+import { SimEntities } from './interface/components/plotter/sim-entities';
 
 export abstract class Global {
     public static context: Modding.ModContext;
@@ -17,9 +18,10 @@ export abstract class Global {
     public static configuration = new ConfigurationStore();
     public static equipment = new EquipmentStore();
     public static simulation = new SimulationStore();
-    public static information = new SelectedBarStore();
+    public static selectedBar = new SelectedBarStore();
 
     public static equipmentCategories: EquipmentCategories;
+    public static simEntities: SimEntities;
 
     public static emptyEquipmentId = 'melvorD:Empty_Equipment';
     public static emptyFoodId = 'melvorD:Empty_Food';

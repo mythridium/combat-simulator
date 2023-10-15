@@ -13,12 +13,21 @@ export interface SelectedLoot {
     drops: number;
 }
 
+export enum BarType {
+    Monster = 'monster',
+    Dungeon = 'dungeon',
+    Slayer = 'slayer'
+}
+
 export interface SelectedBar {
     monster: MonsterInformation;
-    stats: SimulateStats;
-    loot: SelectedLoot;
-    pet: { [index: string]: number };
-    result: string;
+    type: BarType;
+    sim?: {
+        stats: SimulateStats;
+        loot: SelectedLoot;
+        pet: { [index: string]: number };
+        result: string;
+    };
 }
 
 export interface SelectedBarState extends SyncState {

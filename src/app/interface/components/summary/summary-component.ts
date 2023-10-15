@@ -63,7 +63,7 @@ export class SummaryComponent extends CardComponent {
                 id: 'mcs-summary-melee-evasion',
                 text: 'Melee Evasion',
                 value: formatNumber(state.evasion.melee),
-                img: 'assets/media/skills/combat/attack.svg'
+                img: game.attack.media
             })
         );
 
@@ -72,7 +72,7 @@ export class SummaryComponent extends CardComponent {
                 id: 'mcs-summary-ranged-evasion',
                 text: 'Ranged Evasion',
                 value: formatNumber(state.evasion.ranged),
-                img: 'assets/media/skills/ranged/ranged.svg'
+                img: game.ranged.media
             })
         );
 
@@ -81,7 +81,7 @@ export class SummaryComponent extends CardComponent {
                 id: 'mcs-summary-magic-evasion',
                 text: 'Magic Evasion',
                 value: formatNumber(state.evasion.magic),
-                img: 'assets/media/skills/magic/magic.svg'
+                img: game.altMagic.media
             })
         );
 
@@ -90,7 +90,7 @@ export class SummaryComponent extends CardComponent {
                 id: 'mcs-summary-max-hitpoints',
                 text: 'Max Hitpoints',
                 value: formatNumber(state.maxHitpoints),
-                img: 'assets/media/skills/hitpoints/hitpoints.svg'
+                img: game.hitpoints.media
             })
         );
 

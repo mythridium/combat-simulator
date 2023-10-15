@@ -1,15 +1,15 @@
 #myth-combat-simulator-modal {
     #mcs-attack-styles-container {
         display: flex;
-        align-items: center;
-        width: 100%;
+        max-width: 250px;
 
-        #mcs-attack-styles {
-            width: 100%;
+        #mcs-attack-styles-dropdown {
+            max-width: 160px;
         }
 
-        span {
-            text-wrap: nowrap;
+        #mcs-attack-styles {
+            flex-grow: 1;
+            justify-content: space-between;
         }
     }
 }
