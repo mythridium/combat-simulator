@@ -3,6 +3,11 @@
         display: flex;
     }
 
+    .mcs-equipment-item .combat-equip-img {
+        width: 40px;
+        height: 40px;
+    }
+
     .blank.combat-equip-img {
         background: transparent !important;
     }
@@ -14,8 +19,8 @@
         align-items: center;
 
         img {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
         }
     }
 }

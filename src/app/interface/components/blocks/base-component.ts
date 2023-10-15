@@ -47,8 +47,21 @@ export class BaseComponent {
     protected init() {}
     protected destroy() {}
 
-    public get<T extends BaseComponent>(instance: ConstructorOf<T>) {
-        const child = this.children.find(child => child instanceof instance);
+    public get<T extends BaseComponent>(instance: ConstructorOf<T>): T;
+    public get<T extends BaseComponent>(id: string): T;
+    public get<T extends BaseComponent>(instanceOrId: ConstructorOf<T> | string) {
+        if (typeof instanceOrId === 'string') {
+            return this.children.find(child => {
+                if (
+                    child instanceof BaseComponent &&
+                    (child._options.id === instanceOrId || child.element?.id === instanceOrId)
+                ) {
+                    return child;
+                }
+            }) as T;
+        }
+
+        const child = this.children.find(child => child instanceof instanceOrId);
 
         return child as T;
     }

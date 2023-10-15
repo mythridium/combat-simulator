@@ -22,7 +22,11 @@ export class LineItemComponent extends BaseComponent {
 
     public preRender(container: HTMLElement) {
         const wrapper = document.element({ tag: 'div', classes: ['mcs-line-item-wrapper'] });
-        const text = document.element({ tag: 'span', classes: ['mcs-line-item-text'], innerHTML: this.options.text });
+        const text = document.element({
+            tag: 'span',
+            classes: ['mcs-line-item-text'],
+            innerHTML: this.options.text
+        });
         const value = document.element({
             tag: 'span',
             classes: ['mcs-line-item-value'],

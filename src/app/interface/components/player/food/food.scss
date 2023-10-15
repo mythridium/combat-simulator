@@ -18,4 +18,16 @@
     #mcs-auto-eat {
         flex-grow: 1;
     }
+
+    #mcs-food-healing-value {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 20px;
+            height: 20px;
+        }
+    }
 }

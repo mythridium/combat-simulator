@@ -10,6 +10,7 @@ export interface ConfigurationState extends SyncState {
     useCombinationRunes: boolean;
     autoEatTier: string;
     attackStyle: string;
+    gamemode: string;
     trials: number;
     ticks: number;
 }
@@ -27,6 +28,7 @@ export class ConfigurationStore extends SyncStore<ConfigurationState> {
             useCombinationRunes: false,
             autoEatTier: '-1',
             attackStyle: 'melvorD:Stab',
+            gamemode: 'melvorD:Standard',
             trials: 1000,
             ticks: 1000
         });

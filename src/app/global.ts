@@ -57,7 +57,7 @@ export abstract class Global {
         if (item instanceof FoodItem) {
             hp = `<img class='skill-icon-xs ml-2' src='${
                 game.hitpoints.media
-            }'><span class='text-success'>+${this.getFoodHealing(item)}</span>`;
+            }'><span class='text-success'>+${numberWithCommas(this.getFoodHealing(item))}</span>`;
         }
 
         if (
@@ -91,8 +91,9 @@ export abstract class Global {
         return html;
     }
 
-    private static getFoodHealing(item: FoodItem) {
-        const value = item.healsFor * numberMultiplier;
+    public static getFoodHealing(item: FoodItem) {
+        const gamemode = game.gamemodes.getObjectByID(Global.configuration.state.gamemode);
+        const value = item.healsFor * gamemode?.hitpointMultiplier ?? numberMultiplier;
 
         let bonus = 0;
 

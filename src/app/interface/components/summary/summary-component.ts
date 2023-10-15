@@ -21,7 +21,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-attack-interval',
                 text: 'Attack Interval',
-                value: state.attackInterval
+                value: formatNumber(state.attackInterval)
             })
         );
 
@@ -29,7 +29,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-min-hit',
                 text: 'Min Hit',
-                value: state.minHit
+                value: formatNumber(state.minHit)
             })
         );
 
@@ -37,7 +37,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-max-hit',
                 text: 'Max Hit',
-                value: state.maxHit
+                value: formatNumber(state.maxHit)
             })
         );
 
@@ -45,8 +45,8 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-summoning-max-hit',
                 text: 'Summoning Max Hit',
-                value: state.summoningMaxHit,
-                tooltip: { content: `Barrier Max Hit: ${state.barrierMaxHit}` }
+                value: formatNumber(state.summoningMaxHit),
+                tooltip: { content: `Barrier Max Hit: ${formatNumber(state.barrierMaxHit)}` }
             })
         );
 
@@ -54,7 +54,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-accuracy',
                 text: 'Accuracy',
-                value: state.accuracy
+                value: formatNumber(state.accuracy)
             })
         );
 
@@ -62,7 +62,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-melee-evasion',
                 text: 'Melee Evasion',
-                value: state.evasion.melee,
+                value: formatNumber(state.evasion.melee),
                 img: 'assets/media/skills/combat/attack.svg'
             })
         );
@@ -71,7 +71,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-ranged-evasion',
                 text: 'Ranged Evasion',
-                value: state.evasion.ranged,
+                value: formatNumber(state.evasion.ranged),
                 img: 'assets/media/skills/ranged/ranged.svg'
             })
         );
@@ -80,7 +80,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-magic-evasion',
                 text: 'Magic Evasion',
-                value: state.evasion.magic,
+                value: formatNumber(state.evasion.magic),
                 img: 'assets/media/skills/magic/magic.svg'
             })
         );
@@ -89,7 +89,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-max-hitpoints',
                 text: 'Max Hitpoints',
-                value: state.maxHitpoints,
+                value: formatNumber(state.maxHitpoints),
                 img: 'assets/media/skills/hitpoints/hitpoints.svg'
             })
         );
@@ -98,8 +98,8 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-damage-reduction',
                 text: 'Damage Reduction',
-                value: state.damageReduction,
-                tooltip: { content: `Uncapped Damage Reduction: ${state.uncappedDamageReduction}` }
+                value: formatNumber(state.damageReduction),
+                tooltip: { content: `Uncapped Damage Reduction: ${formatNumber(state.uncappedDamageReduction)}` }
             })
         );
 
@@ -107,7 +107,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-auto-eat-threshold',
                 text: 'Auto Eat Threshold',
-                value: state.autoEatThreshold
+                value: formatNumber(state.autoEatThreshold)
             })
         );
 
@@ -115,7 +115,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-drop-doubling',
                 text: 'Drop Doubling (%)',
-                value: Math.max(0, Math.min(state.dropDoublingPercentage, 100))
+                value: formatNumber(Math.max(0, Math.min(state.dropDoublingPercentage, 100)))
             })
         );
 
@@ -123,7 +123,7 @@ export class SummaryComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-summary-gp-multiplier',
                 text: 'GP Multiplier',
-                value: 1 + state.gpMultiplier / 100
+                value: formatNumber(1 + state.gpMultiplier / 100)
             })
         );
 

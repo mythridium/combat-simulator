@@ -4,8 +4,12 @@
         margin: 5px 0;
     }
 
-    .dropdown button:focus {
-        outline: none !important;
+    .dropdown button {
+        overflow: hidden;
+
+        &:focus {
+            outline: none !important;
+        }
     }
 
     .dropdown > button,

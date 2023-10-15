@@ -43,7 +43,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-xp',
                 text: this.toUnit('XP'),
-                value: selected?.stats.skillXp['melvorD:Attack'] ?? 'N/A'
+                value: this.format(selected?.stats.skillXp['melvorD:Attack'])
             })
         );
 
@@ -51,7 +51,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-hp-xp',
                 text: this.toUnit('HP XP'),
-                value: selected?.stats.skillXp['melvorD:Hitpoints'] ?? 'N/A'
+                value: this.format(selected?.stats.skillXp['melvorD:Hitpoints'])
             })
         );
 
@@ -59,7 +59,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-prayer-xp',
                 text: this.toUnit('Prayer XP'),
-                value: selected?.stats.skillXp['melvorD:Prayer'] ?? 'N/A'
+                value: this.format(selected?.stats.skillXp['melvorD:Prayer'])
             })
         );
 
@@ -67,7 +67,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-slayer-xp',
                 text: this.toUnit('Slayer XP'),
-                value: selected?.stats.skillXp['melvorD:Slayer'] ?? 'N/A'
+                value: this.format(selected?.stats.skillXp['melvorD:Slayer'])
             })
         );
 
@@ -75,7 +75,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-summoning-xp',
                 text: this.toUnit('Summoning XP'),
-                value: selected?.stats.skillXp['melvorD:Summoning'] ?? 'N/A'
+                value: this.format(selected?.stats.skillXp['melvorD:Summoning'])
             })
         );
 
@@ -83,7 +83,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-prayer-points',
                 text: this.toUnit('Prayer Points'),
-                value: selected?.stats.usedPrayerPoints ?? 'N/A'
+                value: this.format(selected?.stats.usedPrayerPoints)
             })
         );
 
@@ -91,7 +91,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-ammo',
                 text: this.toUnit('Ammo'),
-                value: selected?.stats.usedAmmo ?? 'N/A'
+                value: this.format(selected?.stats.usedAmmo)
             })
         );
 
@@ -101,7 +101,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-runes',
                 text: this.toUnit('Runes'),
-                value: breakdownRunes?.total ?? 'N/A',
+                value: this.format(breakdownRunes?.total),
                 tooltip: {
                     content: breakdownRunes?.items.length
                         ? `
@@ -111,7 +111,7 @@ export class InformationComponent extends CardComponent {
                         <div class="mcs-rune">
                             <img class="mcs-rune-media" src="${item.media}" />
                             <span>${item.name}</span>
-                            <span>${item.value}</span>
+                            <span>${this.format(item.value)}</span>
                         </div>`;
                     })}
                 </div>
@@ -125,7 +125,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-combination-runes',
                 text: this.toUnit('Comb. Runes'),
-                value: selected?.stats.usedCominationRunes ?? 'N/A'
+                value: this.format(selected?.stats.usedCominationRunes)
             })
         );
 
@@ -133,7 +133,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-potions',
                 text: this.toUnit('Potions'),
-                value: selected?.stats.usedPotions ?? 'N/A'
+                value: this.format(selected?.stats.usedPotions)
             })
         );
 
@@ -141,7 +141,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-consumables',
                 text: this.toUnit('Consumables'),
-                value: selected?.stats.usedConsumabes ?? 'N/A'
+                value: this.format(selected?.stats.usedConsumabes)
             })
         );
 
@@ -151,7 +151,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-tablets',
                 text: this.toUnit('Tablets per type'),
-                value: breakdownSummon?.total ?? 'N/A'
+                value: this.format(breakdownSummon?.total)
             })
         );
 
@@ -159,7 +159,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-food',
                 text: this.toUnit('Food'),
-                value: selected?.stats.usedFood ?? 'N/A'
+                value: this.format(selected?.stats.usedFood)
             })
         );
 
@@ -167,7 +167,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-death-rate',
                 text: 'Est. Death Rate',
-                value: selected?.stats.deaths ?? 'N/A'
+                value: this.format(selected?.stats.deaths)
             })
         );
 
@@ -175,7 +175,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-highest-hit',
                 text: 'Highest Hit Taken',
-                value: selected?.stats.highestDamageTaken ?? 'N/A'
+                value: this.format(selected?.stats.highestDamageTaken)
             })
         );
 
@@ -183,7 +183,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-lowest-hitpoints',
                 text: 'Lowest Hitpoints',
-                value: selected?.stats.lowestHitpoints ?? 'N/A'
+                value: this.format(selected?.stats.lowestHitpoints)
             })
         );
 
@@ -191,7 +191,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-kill-time',
                 text: 'Kill Time (s)',
-                value: selected?.stats.killTime ?? 'N/A'
+                value: this.format(selected?.stats.killTime)
             })
         );
 
@@ -199,7 +199,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-kills',
                 text: this.toUnit('Kills'),
-                value: selected?.stats.kills ?? 'N/A'
+                value: this.format(selected?.stats.kills)
             })
         );
 
@@ -207,7 +207,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-gp',
                 text: this.toUnit('GP'),
-                value: selected?.loot.gp ?? 'N/A'
+                value: this.format(selected?.loot.gp)
             })
         );
 
@@ -215,7 +215,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-raw-gp',
                 text: this.toUnit('Raw GP'),
-                value: selected?.stats.gp ?? 'N/A'
+                value: this.format(selected?.stats.gp)
             })
         );
 
@@ -223,7 +223,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-slayer-coins',
                 text: this.toUnit('Slayer Coins'),
-                value: selected?.stats.sc ?? 'N/A'
+                value: this.format(selected?.stats.sc)
             })
         );
 
@@ -231,7 +231,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-drops',
                 text: this.toUnit('Drops'),
-                value: selected?.loot.drops ?? 'N/A'
+                value: this.format(selected?.loot.drops)
             })
         );
 
@@ -239,7 +239,7 @@ export class InformationComponent extends CardComponent {
             new LineItemComponent({
                 id: 'mcs-information-signet',
                 text: this.toUnit('Signet (%)'),
-                value: selected?.loot.signet ?? 'N/A'
+                value: this.format(selected?.loot.signet)
             })
         );
 
@@ -250,12 +250,20 @@ export class InformationComponent extends CardComponent {
                 new LineItemComponent({
                     id: 'mcs-information-pet',
                     text: skill ? `${skill.name} ${this.toUnit('Pet (%)')}` : this.toUnit('Pet (%)'),
-                    value: selected?.pet[Global.interface.state.skillId] ?? 'N/A'
+                    value: this.format(selected?.pet[Global.interface.state.skillId])
                 })
             );
         }
 
         super.preRender(container);
+    }
+
+    private format(value: number) {
+        if (value === undefined || value === null) {
+            return 'N/A';
+        }
+
+        return formatNumber(value);
     }
 
     private toBreakdown(stat: { [index: string]: number }) {

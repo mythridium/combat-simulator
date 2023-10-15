@@ -20,6 +20,13 @@ export class Simulator {
             if (data.configuration) {
                 Global.configuration.setState(Source.Interface, data.configuration);
 
+                const gamemode = Global.game.gamemodes.find(gamemode => gamemode.id === data.configuration.gamemode);
+
+                if (gamemode) {
+                    Global.game.currentGamemode = gamemode;
+                    numberMultiplier = Global.game.currentGamemode.hitpointMultiplier;
+                }
+
                 Global.game.shop.upgradesPurchased.clear();
                 this.updateAutoEatTier();
 

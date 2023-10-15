@@ -30,8 +30,22 @@ export abstract class Import {
 
         Global.configuration.setState(Source.Interface, {
             isSynergyEnabled: true,
+            cookingMastery: this.is99CookingMastery(),
+            cookingPool: game.cooking.isPoolTierActive(3),
+            attackStyle: game.combat.player.attackStyle.id,
+            gamemode: game.currentGamemode.id,
             autoEatTier: this.autoEatTier.toString()
         });
+    }
+
+    private static is99CookingMastery() {
+        const recipe = game.cooking.actions.getObjectByID(game.combat.player.food?.currentSlot?.item.id);
+
+        if (!recipe) {
+            return false;
+        }
+
+        return game.cooking.getMasteryLevel(recipe) >= 99;
     }
 
     private static get autoEatTier() {

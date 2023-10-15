@@ -6,7 +6,6 @@ import { EquipmentCustomSlot } from 'src/app/interface/components/player/equipme
 import { EquipmentPopup } from 'src/app/interface/components/player/equipment/equipment-popup';
 import { Source } from 'src/shared/stores/sync.store';
 import { DropdownComponent } from 'src/app/interface/components/blocks/dropdown-component';
-import { ElementComponent } from 'src/app/interface/modules/element';
 
 export class FoodComponent extends BaseComponent {
     private readonly autoEatPurchases = game.shop.purchases.filter(purchase => purchase.id.includes('Auto_Eat'));
@@ -16,9 +15,14 @@ export class FoodComponent extends BaseComponent {
     }
 
     protected init() {
-        Global.equipment.subscribe(() => this.get(ElementComponent)?.get(EquipmentItemComponent)?.render());
+        Global.equipment.subscribe(() => {
+            this.get('mcs-food-wrapper').get(`mcs-equipment-item-${this._options.id}`)?.render();
+            this.get(FoodHealing)?.render();
+        });
+
         Global.configuration.subscribe(() => {
-            this.get(ElementComponent)?.get(EquipmentItemComponent)?.render();
+            this.get('mcs-food-wrapper')?.get(`mcs-equipment-item-${this._options.id}`)?.render();
+            this.get(FoodHealing)?.render();
             this.get(DropdownComponent)?.render();
         });
     }
@@ -46,6 +50,7 @@ export class FoodComponent extends BaseComponent {
         );
 
         this.append(wrapper);
+        this.append(new FoodHealing());
 
         this.append(
             new DropdownComponent({
@@ -62,6 +67,27 @@ export class FoodComponent extends BaseComponent {
                 onChange: option => {
                     Global.configuration.setState(Source.Interface, { autoEatTier: option.value });
                 }
+            })
+        );
+
+        super.preRender(container);
+    }
+}
+
+class FoodHealing extends BaseComponent {
+    constructor() {
+        super({ id: 'mcs-food-healing-value', tag: 'span', classes: ['mx-1'] });
+    }
+
+    protected preRender(container: HTMLElement): void {
+        const food = game.items.food.getObjectByID(Global.equipment.state.food);
+
+        this.append(document.element({ tag: 'img', src: 'assets/media/skills/hitpoints/hitpoints.svg' }));
+        this.append(
+            document.element({
+                tag: 'span',
+                classes: ['mcs-md-text', 'text-success'],
+                innerHTML: `${food ? numberWithCommas(Global.getFoodHealing(food)) : 0}`
             })
         );
 
