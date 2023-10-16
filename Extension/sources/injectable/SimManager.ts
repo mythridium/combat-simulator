@@ -145,6 +145,7 @@ class SimManager extends CombatManager {
     }
 
     initialize() {
+        this.stopCombat();
         // Set up player gamemode before combat initialize
         // TODO: This can probably be removed once we use the SimGame gamemode for everything
         this.player.currentGamemodeID = this.micsr.game.currentGamemode.id;

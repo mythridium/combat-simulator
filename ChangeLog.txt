@@ -1,3 +1,6 @@
+v2.2.21
+    fixed out of combat stats calculating incorrectly after loading a save that is in combat
+
 v2.2.20
     fixed namespace registration error
 
