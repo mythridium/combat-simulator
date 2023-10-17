@@ -1,3 +1,6 @@
+v2.2.22
+    fixed potions breaking import and failing to change tier in some non english languages
+
 v2.2.21
     fixed out of combat stats calculating incorrectly after loading a save that is in combat
 

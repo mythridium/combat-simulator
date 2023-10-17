@@ -540,28 +540,23 @@ class Import {
     importPotion(potionID?: string) {
         // Deselect potion if selected
         if (this.simPlayer.potion) {
-            this.app.unselectButton(
-                this.document.getElementById(
-                    `MCS ${this.app.getPotionHtmlId(
-                        this.simPlayer.potion
-                    )} Button`
-                )
-            );
-            this.simPlayer.setPotion(undefined);
+            const recipe = this.app.game.herblore['potionToRecipeMap'].get(this.simPlayer.potion);
+
+            if (recipe) {
+                this.app.unselectButton(this.document.getElementById(`MCS ${this.app.getPotionHtmlId(recipe)} Button`));
+                this.simPlayer.setPotion(undefined);
+            }
         }
+
         // Select new potion if applicable
         if (potionID) {
-            const potion =
-                this.simPlayer.game.items.potions.getObjectByID(potionID);
+            const potion = this.simPlayer.game.items.potions.getObjectByID(potionID);
             this.simPlayer.setPotion(potion);
-            if (this.simPlayer.potion) {
-                this.app.selectButton(
-                    this.document.getElementById(
-                        `MCS ${this.app.getPotionHtmlId(
-                            this.simPlayer.potion
-                        )} Button`
-                    )
-                );
+
+            const recipe = this.app.game.herblore['potionToRecipeMap'].get(this.simPlayer.potion);
+
+            if (this.simPlayer.potion && recipe) {
+                this.app.selectButton(this.document.getElementById(`MCS ${this.app.getPotionHtmlId(recipe)} Button`));
                 this.app.updatePotionTier(this.simPlayer.potion.tier);
             }
         }

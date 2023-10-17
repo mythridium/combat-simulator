@@ -1447,7 +1447,7 @@ class App {
             if (herblorePotionRecipe.category.localID === "CombatPotions") {
                 const basePotion = herblorePotionRecipe.potions[0];
                 potionSources.push(basePotion.media);
-                potionNames.push(this.getPotionHtmlId(basePotion));
+                potionNames.push(this.getPotionHtmlId(herblorePotionRecipe));
                 potionCallbacks.push((e: any) =>
                     this.potionImageButtonOnClick(e, herblorePotionRecipe)
                 );
@@ -1473,7 +1473,7 @@ class App {
 
         otherPotions.forEach(potion => {
             otherPotionSources.push(potion.media);
-            otherPotionNames.push(potion.name);
+            otherPotionNames.push(potion.id);
             otherPotionCallbacks.push(e => this.otherPotionImageButtonOnClick(e, potion));
             otherPotionTooltips.push(this.getPotionTooltip(potion));
         });
@@ -3278,10 +3278,10 @@ class App {
             this.unselectButton(event.currentTarget);
         } else {
             if (this.player.potion) {
+                recipe = this.micsr.game.herblore['potionToRecipeMap'].get(this.player.potion)!;
                 // Change Potion
-                const button = document.getElementById(
-                    `MCS ${this.getPotionHtmlId(this.player.potion)} Button`
-                );
+                const button = document.getElementById( `MCS ${this.getPotionHtmlId(recipe) ?? this.player.potion.id} Button`);
+
                 if (button) {
                     this.unselectButton(button);
                 }
@@ -3309,10 +3309,9 @@ class App {
             this.unselectButton(event.currentTarget);
         } else {
             if (this.player.potion) {
+                const recipe = this.micsr.game.herblore['potionToRecipeMap'].get(this.player.potion)!;
                 // Change Potion
-                const button = document.getElementById(
-                    `MCS ${this.getPotionHtmlId(this.player.potion)} Button`
-                );
+                const button = document.getElementById(`MCS ${this.getPotionHtmlId(recipe) ?? this.player.potion.id} Button`);
                 if (button) {
                     this.unselectButton(button);
                 }
@@ -4482,7 +4481,7 @@ class App {
         this.combatPotionRecipes.forEach((recipe: HerbloreRecipe) => {
             const potion = recipe.potions[potionTier];
             const img = document.getElementById(
-                `MCS ${this.getPotionHtmlId(potion)} Button Image`
+                `MCS ${this.getPotionHtmlId(recipe)} Button Image`
             ) as HTMLImageElement;
             img.src = potion.media;
             this.setTooltip(img.parentElement, this.getPotionTooltip(recipe.potions[this.potionTier]));
@@ -4568,12 +4567,8 @@ class App {
      * @param {PotionItem} potion The potion
      * @return {string} The name of a potion
      */
-    getPotionHtmlId(potion: PotionItem) {
-        return this.replaceApostrophe(potion.name)
-            .replace(/ IV$/, "")
-            .replace(/ III$/, "")
-            .replace(/ II$/, "")
-            .replace(/ I$/, "");
+    getPotionHtmlId(recipe: HerbloreRecipe) {
+        return recipe?.id;
     }
 
     /**
