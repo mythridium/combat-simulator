@@ -58,6 +58,8 @@
     self.notifyPlayer = () => {};
     (<any>self).CDNDIR = () => (<any>self).CDNDIR_ORIGINAL;
 
+    self.notifyPlayer = () => {};
+
     // Hard to copy functions
     const levelUnlockSum = (skill: Skill<BaseSkillData>) => (previous: number, current: Skill<BaseSkillData>) => {
         if (skill.level >= current.level) previous++;

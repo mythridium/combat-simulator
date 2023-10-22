@@ -366,6 +366,7 @@ class SimGame extends Game {
             }
             return true;
         };
+        this.stats.itemFindCount = () => 1;
         this.gp.add = (amount) => {
             // Store gp on the SimPlayer
             this.combat.player.gp += amount;

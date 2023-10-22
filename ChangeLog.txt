@@ -1,3 +1,7 @@
+v2.2.23
+    fixed unholy prayers being de-selected when switching unholy prayer items
+    fixed slayer tasks returning no monsters in certain circumstances
+
 v2.2.22
     fixed potions breaking import and failing to change tier in some non english languages
 

@@ -2789,6 +2789,10 @@ class App {
                     this.unselectButton(button);
                 }
             }
+        } else {
+            for (const prayer of activePrayers.values()) {
+                this.player.activePrayers.add(prayer);
+            }
         }
     }
 
