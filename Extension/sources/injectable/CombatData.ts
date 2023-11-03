@@ -176,7 +176,7 @@ class CombatData {
 
         // Calculate auto eat threshold
         // @ts-expect-error TS(2445)
-        this.combatStats.autoEatThreshold = this.player.autoEatThreshold;
+        this.combatStats.autoEatThreshold = Math.floor(this.player.autoEatThreshold);
     }
 
     /**

@@ -538,11 +538,11 @@ class SimPlayer extends Player {
                 fullCourse = false;
                 break;
             }
-            const obstacle = this.micsr.actualGame.agility.actions.allObjects.find(
+            const obstacle = this.micsr.game.agility.actions.allObjects.find(
                 (_, i) => i === this.course[obstacleIndex]
             )!;
 
-            const modifiers = this.game.agility.getObstacleModifiers(obstacle);
+            const modifiers = this.micsr.game.agility.getObstacleModifiers(obstacle);
             this.modifiers.addMappedModifiers(modifiers);
         }
         if (fullCourseForPillar && this.pillarID) {
@@ -612,6 +612,10 @@ class SimPlayer extends Player {
                 (<any>this.target).consumeUnholyMarkStack();
             }
         }
+    }
+
+    addPrayerPoints(amount: number): void {
+        this.usedPrayerPoints -= amount;
     }
 
     removeFromQuiver(qty: number) {

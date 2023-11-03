@@ -1,3 +1,8 @@
+v2.2.24
+    fixed auto eat threshold not being floored on the combat stats panel
+    fixed agility masteries not being passed into the simulator as expected
+    gaining prayer points (eg. prayer point on taking damage) now reduce the prayer points used stat, a negative number means you gained more prayer points then you used
+
 v2.2.23
     fixed unholy prayers being de-selected when switching unholy prayer items
     fixed slayer tasks returning no monsters in certain circumstances

@@ -423,25 +423,25 @@ class AgilityCourse {
         } else if (category === "elite") {
             this.player.pillarEliteID = obstacle.id;
         } else {
-            const existingObstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === this.player.course[category])!;
+            const existingObstacle = this.parent.game.agility.actions.allObjects.find((_, i) => i === this.player.course[category])!;
 
             if (obstacle.category === -1) {
                 // deselecting, remove from mastery regardless of being enabled
                 if (existingObstacle) {
-                    this.parent.game.agility['actionMastery'].delete(existingObstacle);
+                    this.parent.game.agility['actionMastery'].set(existingObstacle, { level: 1, xp: 1 });
                 }
                 this.player.course[category] = -1;
             } else {
                 // remove any existing obstacle
                 if (existingObstacle) {
-                    this.parent.game.agility['actionMastery'].delete(existingObstacle);
+                    this.parent.game.agility['actionMastery'].set(existingObstacle, { level: 1, xp: 1 });
                 }
 
-                const realObstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === obstacle.index)!;
+                const realObstacle = this.parent.game.agility.actions.allObjects.find((_, i) => i === obstacle.index)!;
 
                 // add obstacle to mastery if enabled
                 if (this.player.courseMastery[category] && realObstacle) {
-                    this.parent.game.agility['actionMastery'].set(realObstacle, { level: 99, xp: 1 });
+                    this.parent.game.agility['actionMastery'].set(realObstacle, { level: 99, xp: 13100000 });
                 }
 
                 this.player.course[category] = obstacle.index;
@@ -503,13 +503,13 @@ class AgilityCourse {
     }
 
     agilityMasteryOnClick(event: MouseEvent, category: number) {
-        const obstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === this.parent.player.course[category])!;
+        const obstacle = this.parent.game.agility.actions.allObjects.find((_, i) => i === this.parent.player.course[category])!;
 
         // toggle
         if (this.player.courseMastery[category]) {
             this.player.courseMastery[category] = false;
             if (obstacle) {
-                this.parent.game.agility['actionMastery'].delete(obstacle);
+                this.parent.game.agility['actionMastery'].set(obstacle, { level: 1, xp: 1 });
             }
             this.parent.unselectButton(
                 event.currentTarget as HTMLButtonElement
@@ -517,7 +517,7 @@ class AgilityCourse {
         } else {
             this.player.courseMastery[category] = true;
             if(obstacle) {
-                this.parent.game.agility['actionMastery'].set(obstacle, { level: 99, xp: 1 });
+                this.parent.game.agility['actionMastery'].set(obstacle, { level: 99, xp: 13100000 });
             }
             this.parent.selectButton(event.currentTarget as HTMLButtonElement);
         }
@@ -548,9 +548,9 @@ class AgilityCourse {
             );
             if (masteries[category]) {
                 this.player.courseMastery[category] = true;
-                const obstacle = this.micsr.actualGame.agility.actions.allObjects.find((_, i) => i === this.parent.player.course[category])!;
+                const obstacle = this.parent.game.agility.actions.allObjects.find((_, i) => i === this.parent.player.course[category])!;
                 if(obstacle) {
-                    this.parent.game.agility['actionMastery'].set(obstacle, { level: 99, xp: 1 });
+                    this.parent.game.agility['actionMastery'].set(obstacle, { level: 99, xp: 13100000 });
                 }
             }
         });
