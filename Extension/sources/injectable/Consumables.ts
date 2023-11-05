@@ -79,6 +79,8 @@ class Consumables {
         // global costs
         this.card.addSectionTitle('Seconds per Consumable');
         // @ts-expect-error TS(2554): Expected 5 arguments, but got 4.
+        this.addConsumableInput(this.card, 'ppg', 'Prayer Points Gained', () => false);
+        // @ts-expect-error TS(2554): Expected 5 arguments, but got 4.
         this.addConsumableInput(this.card, 'pp', 'Prayer Points', () => false);
         // @ts-expect-error TS(2554): Expected 5 arguments, but got 4.
         this.addConsumableInput(this.card, 'potion', 'Potion', () => false);
@@ -312,6 +314,9 @@ class Consumables {
         // compute factor
         let factor = 1;
         // pp
+        if (data.ppGainedPerSecond && data.ppGainedPerSecond > 0) {
+            factor += data.ppGainedPerSecond * this.getConsumableCostInSeconds('ppg');
+        }
         if (data.ppConsumedPerSecond && data.ppConsumedPerSecond > 0) {
             factor += data.ppConsumedPerSecond * this.getConsumableCostInSeconds('pp');
         }

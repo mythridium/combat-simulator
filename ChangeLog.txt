@@ -1,3 +1,8 @@
+v2.2.25
+    improved accuracy of item drop amount line item for items with a low range of quantity
+    split prayer points used and gained into two line items
+    prayer points used no longer subtracts prayer points gained
+
 v2.2.24
     fixed auto eat threshold not being floored on the combat stats panel
     fixed agility masteries not being passed into the simulator as expected

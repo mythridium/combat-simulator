@@ -58,6 +58,7 @@ class SimPlayer extends Player {
     usedFood: number;
     usedPotions: number;
     usedPrayerPoints: number;
+    gainedPrayerPoints: number;
     usedConsumables: number;
     usedRunes: { [index: string]: number };
     monsterSpawnTimer: number;
@@ -109,6 +110,7 @@ class SimPlayer extends Player {
         this.usedFood = 0;
         this.usedRunes = {};
         this.usedPotions = 0;
+        this.gainedPrayerPoints = 0;
         this.usedPrayerPoints = 0;
         this.usedConsumables = 0;
         this.chargesUsed = {
@@ -312,6 +314,7 @@ class SimPlayer extends Player {
         this.usedFood = 0;
         this.usedRunes = {};
         this.usedPotions = 0;
+        this.gainedPrayerPoints = 0;
         this.usedPrayerPoints = 0;
         this.usedConsumables = 0;
         this.chargesUsed = {
@@ -373,6 +376,7 @@ class SimPlayer extends Player {
             usedConsumables: this.usedConsumables / seconds,
             usedFood: this.usedFood / seconds,
             usedPotions: this.usedPotions / seconds,
+            gainedPrayerPoints: this.gainedPrayerPoints / seconds,
             usedPrayerPoints: this.usedPrayerPoints / seconds,
             usedSummoningCharges: usedSummoningCharges / seconds,
             highestDamageTaken: this.highestDamageTaken,
@@ -615,7 +619,7 @@ class SimPlayer extends Player {
     }
 
     addPrayerPoints(amount: number): void {
-        this.usedPrayerPoints -= amount;
+        this.gainedPrayerPoints += amount;
     }
 
     removeFromQuiver(qty: number) {

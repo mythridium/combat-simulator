@@ -178,12 +178,18 @@ class App {
             "summoningXpPerSecond",
             "Summoning XP/"
         );
+        addPlotOption(
+            "Prayer P. Gained per ",
+            true,
+            "ppGainedPerSecond",
+            "Prayer P. Gained/"
+        );
         // resource loss
         addPlotOption(
-            "Prayer Points per ",
+            "Prayer P. Used per ",
             true,
             "ppConsumedPerSecond",
-            "Prayer Points/"
+            "Prayer P. Used/"
         );
         addPlotOption("Ammo per ", true, "ammoUsedPerSecond", "Ammo/");
         addPlotOption("Runes per ", true, "runesUsedPerSecond", "Runes/");

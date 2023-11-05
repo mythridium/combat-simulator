@@ -34,6 +34,7 @@ interface ISimGains {
     usedFood: number;
     usedPotions: number;
     usedPrayerPoints: number;
+    gainedPrayerPoints: number;
     usedSummoningCharges: number;
     highestDamageTaken: number;
     lowestHitpoints: number;
@@ -65,6 +66,7 @@ interface ISimResult {
     prayerXpPerSecond: number;
     summoningXpPerSecond: number;
     // consumables
+    ppGainedPerSecond: number;
     ppConsumedPerSecond: number;
     ammoUsedPerSecond: number;
     runesUsedPerSecond: number;
@@ -247,6 +249,7 @@ class SimManager extends CombatManager {
             prayerXpPerSecond: gps.skillXP[this.micsr.skillIDs.Prayer],
             summoningXpPerSecond: gps.skillXP[this.micsr.skillIDs.Summoning],
             // consumables
+            ppGainedPerSecond: gps.gainedPrayerPoints,
             ppConsumedPerSecond: gps.usedPrayerPoints,
             ammoUsedPerSecond: gps.usedAmmo,
             runesUsedPerSecond: gps.usedRunes,

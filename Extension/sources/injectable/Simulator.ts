@@ -1323,6 +1323,7 @@ class Simulator {
             "prayerXpPerSecond",
             "summoningXpPerSecond",
             // consumables
+            "ppGainedPerSecond",
             "ppConsumedPerSecond",
             "ammoUsedPerSecond",
             "runesUsedPerSecond",
