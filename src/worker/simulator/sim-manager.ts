@@ -70,6 +70,7 @@ export class SimManager extends CombatManager {
             usedAmmo: 0,
             usedFood: 0,
             usedPotions: 0,
+            gainedPrayerPoints: 0,
             usedPrayerPoints: 0,
             usedConsumabes: 0,
             usedRunes: {},

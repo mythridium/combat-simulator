@@ -132,6 +132,8 @@ export class BaseComponent {
                     interactive: true,
                     appendTo: () => document.body,
                     onMount(instance) {
+                        instance.popperInstance.update();
+
                         if (!instance.popper || instance.popper.onclick) {
                             return;
                         }

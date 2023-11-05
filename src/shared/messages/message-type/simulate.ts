@@ -20,6 +20,7 @@ export interface SimulateStats {
     usedAmmo: number;
     usedFood: number;
     usedPotions: number;
+    gainedPrayerPoints: number;
     usedPrayerPoints: number;
     usedConsumabes: number;
     usedRunes: { [index: string]: number };

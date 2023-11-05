@@ -20,6 +20,7 @@ export class FilterComponent extends BaseComponent {
                 new DropdownComponent({
                     id: 'mcs-plotter-skill',
                     label: 'Pets',
+                    classes: ['mr-2'],
                     options: game.skills
                         .filter(skill => skill.isCombat)
                         .map(skill => ({ text: skill.name, value: skill.id })),
@@ -43,6 +44,7 @@ export class FilterComponent extends BaseComponent {
             new DropdownComponent({
                 id: 'mcs-plotter-unit',
                 label: 'Time',
+                classes: ['ml-2'],
                 default: () => Global.interface.state.unit,
                 options: map(Unit, (value, key) => ({ text: key, value })),
                 onChange: option => Global.interface.setState(Source.Interface, { unit: option.value as Unit })

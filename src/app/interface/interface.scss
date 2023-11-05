@@ -1,4 +1,17 @@
 #myth-combat-simulator-modal {
+    &.show {
+        display: flex !important;
+        overflow: hidden;
+    }
+
+    #mcs-content-container {
+        overflow: auto;
+    }
+
+    .modal-content {
+        height: 100%;
+    }
+
     .modal-dialog {
         max-width: 95%;
         transform: none !important;

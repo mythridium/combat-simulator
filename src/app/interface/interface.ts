@@ -67,7 +67,10 @@ export class Interface {
 
         plotter.append(new PlotterComponent());
 
-        this.modal.append(setup, plotter);
+        const container = new ContainerComponent({ id: 'mcs-content-container' });
+        container.append(setup, plotter);
+
+        this.modal.append(container);
         this.modal.render();
     }
 }

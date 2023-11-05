@@ -107,9 +107,18 @@ export class SimPlayer extends Player {
         if (amount > 0) {
             amount = this.applyModifiersToPrayerCost(amount, isUnholy);
             Global.game.combat.stats.usedPrayerPoints += amount;
+
             const event = new PrayerPointConsumptionEvent(amount, isUnholy);
             this._events.emit('prayerPointsUsed', event);
+
+            if (isUnholy && amount > 0) {
+                this.target.consumeUnholyMarkStack();
+            }
         }
+    }
+
+    public addPrayerPoints(amount: number): void {
+        Global.game.combat.stats.gainedPrayerPoints += amount;
     }
 
     public removeFromQuiver(qty: number) {

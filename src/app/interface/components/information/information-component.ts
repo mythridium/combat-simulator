@@ -89,8 +89,16 @@ export class InformationComponent extends CardComponent {
 
         this.append(
             new LineItemComponent({
-                id: 'mcs-information-prayer-points',
-                text: this.toUnit('Prayer Points'),
+                id: 'mcs-information-prayer-points-gained',
+                text: this.toUnit('Prayer Points Gained'),
+                value: this.format(selected?.sim?.stats.gainedPrayerPoints)
+            })
+        );
+
+        this.append(
+            new LineItemComponent({
+                id: 'mcs-information-prayer-points-used',
+                text: this.toUnit('Prayer Points Used'),
                 value: this.format(selected?.sim?.stats.usedPrayerPoints)
             })
         );

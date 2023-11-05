@@ -161,7 +161,8 @@ class EquipmentPopupSection extends BaseComponent {
                             : Global.createItemInformationTooltip(item).replace(
                                   '"media-body"',
                                   '"media-body mcs-media-body"'
-                              )
+                              ),
+                    placement: 'auto'
                 }
             });
 
