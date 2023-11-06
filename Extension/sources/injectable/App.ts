@@ -635,14 +635,14 @@ class App {
             return;
         }
         if (!synergy) {
-            text.textContent = "Synergy locked";
+            text.innerHTML = "Synergy locked";
             return;
         }
         if (synergy) {
-            text.textContent = synergy.description;
+            text.innerHTML = synergy.description;
             return;
         }
-        text.textContent = "No synergy possible.";
+        text.innerHTML = "No synergy possible.";
     }
 
     createEquipmentSelectCard() {

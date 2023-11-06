@@ -1,3 +1,6 @@
+v2.2.26
+    fixed compatibility with tiny passive icons
+
 v2.2.25
     improved accuracy of item drop amount line item for items with a low range of quantity
     split prayer points used and gained into two line items
