@@ -2344,6 +2344,22 @@ class App {
         return true;
     }
 
+    filterByCombatConsumable(item: EquipmentItem) {
+        return this.filterByMonsterConsumable(item) || this.filterByPlayerConsumable(item);
+    }
+
+    filterByMonsterConsumable(item: EquipmentItem) {
+        const combatTypes = ['EnemyAttack', 'MonsterKilled', 'MonsterSpawned'];
+
+        return item.consumesOn?.some(consume => combatTypes.includes((<any>consume).type));
+    }
+
+    filterByPlayerConsumable(item: EquipmentItem) {
+        const combatTypes = ['PlayerAttack', 'PrayerPointConsumption', 'RuneConsumption'];
+
+        return item.consumesOn?.some(consume => combatTypes.includes((<any>consume).type));
+    }
+
     /**
      * Filter an item array by the ammoType
      * @param {number} type
@@ -2523,8 +2539,7 @@ class App {
         const noSplit = [
             EquipmentSlots.Amulet,
             EquipmentSlots.Ring,
-            EquipmentSlots.Cape,
-            EquipmentSlots.Consumable,
+            EquipmentSlots.Cape
         ];
         if (triSplit.includes(equipmentSlot)) {
             equipmentSelectCard.addSectionTitle("Melee");
@@ -2701,6 +2716,25 @@ class App {
                 equipmentSlot,
                 (item: any) => this.filterRemainingPassive(item),
                 (x) => x.name
+            );
+        } else if (equipmentSlot === EquipmentSlots.Consumable) {
+            equipmentSelectCard.addSectionTitle('Player Events');
+            this.addEquipmentMultiButton(
+                equipmentSelectCard,
+                equipmentSlot,
+                (item: EquipmentItem) => this.filterByPlayerConsumable(item)
+            );
+            equipmentSelectCard.addSectionTitle('Monster Events');
+            this.addEquipmentMultiButton(
+                equipmentSelectCard,
+                equipmentSlot,
+                (item: EquipmentItem) => this.filterByMonsterConsumable(item)
+            );
+            equipmentSelectCard.addSectionTitle('Non Combat');
+            this.addEquipmentMultiButton(
+                equipmentSelectCard,
+                equipmentSlot,
+                (item: EquipmentItem) => !this.filterByCombatConsumable(item)
             );
         } else if (
             equipmentSlot === EquipmentSlots.Summon1 ||

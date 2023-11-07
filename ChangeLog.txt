@@ -1,3 +1,10 @@
+v2.2.27
+    re-organised consumables item popup into 4 categories
+        consumables used from player attacks, prayer points and runes used
+        consumables used from monster attacks, monster death and monster spawn
+        consumables used in non combat
+        consumables used in golbin raid (currently empty)
+
 v2.2.26
     fixed compatibility with tiny passive icons
 
