@@ -381,6 +381,8 @@ class SimGame extends Game {
             // Make sure nothing gets called on skill level ups, it tends to try rendering
             // @ts-expect-error
             skill.levelUp = () => null;
+            // @ts-expect-error
+            skill.rollForAncientRelics = () => null;
         });
 
         this.summoning.isSynergyUnlocked = () => {

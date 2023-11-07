@@ -1,3 +1,6 @@
+v2.2.28
+    fixed 'printPlayerModifier' error
+
 v2.2.27
     re-organised consumables item popup into 4 categories
         consumables used from player attacks, prayer points and runes used
