@@ -3984,23 +3984,32 @@ class App {
         }
         let newState;
         if (this.barIsDungeon(imageID)) {
-            newState =
-                !this.simulator.dungeonSimFilter[this.barMonsterIDs[imageID]];
+            newState = !this.simulator.dungeonSimFilter[this.barMonsterIDs[imageID]];
             if (newState && this.player.isSlayerTask) {
-                this.notify("no dungeon simulation on slayer task", "danger");
-                newState = false;
+                const checkbox = document.getElementById(`MCS Slayer Task Radio No`) as HTMLInputElement;
+                checkbox.checked = true;
+                this.player.isSlayerTask = false;
+                this.slayerToggleState = false;
+                this.micsr.taskIDs.forEach((taskID: string) => {
+                    this.simulator.slayerSimFilter[taskID] = false;
+                });
+                this.plotter.crossImagesPerSetting();
+                this.notify("Auto Slayer has been disabled", "danger");
             }
-            this.simulator.dungeonSimFilter[this.barMonsterIDs[imageID]] =
-                newState;
+            this.simulator.dungeonSimFilter[this.barMonsterIDs[imageID]] = newState;
         } else if (this.barIsTask(imageID)) {
             const taskID = this.barMonsterIDs[imageID];
             newState = !this.simulator.slayerSimFilter[taskID];
             if (newState && !this.player.isSlayerTask) {
-                this.notify(
-                    "no auto slayer simulation off slayer task",
-                    "danger"
-                );
-                newState = false;
+                const checkbox = document.getElementById(`MCS Slayer Task Radio Yes`) as HTMLInputElement;
+                checkbox.checked = true;
+                this.player.isSlayerTask = true;
+                this.dungeonToggleState = false;
+                this.micsr.dungeonIDs.forEach((dungeonID: any) => {
+                    this.simulator.dungeonSimFilter[dungeonID] = false;
+                });
+                this.plotter.crossImagesPerSetting();
+                this.notify("Auto Slayer has been enabled", "success");
             }
             this.simulator.slayerSimFilter[taskID] = newState;
         } else {
@@ -4029,11 +4038,17 @@ class App {
      */
     toggleDungeonSims(newState: any, silent: any) {
         if (newState && this.player.isSlayerTask) {
-            if (!silent) {
-                this.notify("no dungeon simulation on slayer task", "danger");
-            }
-            newState = false;
+            const checkbox = document.getElementById(`MCS Slayer Task Radio No`) as HTMLInputElement;
+            checkbox.checked = true;
+            this.player.isSlayerTask = !newState;
+            this.slayerToggleState = !newState;
+
+            this.micsr.taskIDs.forEach((taskID: string) => {
+                this.simulator.slayerSimFilter[taskID] = !newState;
+            });
+            this.notify("Auto Slayer has been disabled", "danger");
         }
+
         this.dungeonToggleState = newState;
         this.micsr.dungeonIDs.forEach((dungeonID: any) => {
             this.simulator.dungeonSimFilter[dungeonID] = newState;
@@ -4047,14 +4062,21 @@ class App {
      */
     toggleSlayerSims(newState: any, silent: any) {
         if (newState && !this.player.isSlayerTask) {
-            if (!silent) {
-                this.notify(
-                    "no auto slayer simulation off slayer task",
-                    "danger"
-                );
-            }
-            newState = false;
+            const checkbox = document.getElementById(`MCS Slayer Task Radio Yes`) as HTMLInputElement;
+            checkbox.checked = true;
+            this.player.isSlayerTask = newState;
+            this.dungeonToggleState = !newState;
+            this.micsr.dungeonIDs.forEach((dungeonID: any) => {
+                this.simulator.dungeonSimFilter[dungeonID] = !newState;
+            });
+            this.notify("Auto Slayer has been enabled", "success");
+        } else if (!newState && this.player.isSlayerTask) {
+            const checkbox = document.getElementById(`MCS Slayer Task Radio No`) as HTMLInputElement;
+            checkbox.checked = true;
+            this.player.isSlayerTask = newState;
+            this.notify("Auto Slayer has been disabled", "danger");
         }
+
         this.slayerToggleState = newState;
         this.micsr.taskIDs.forEach((taskID: string) => {
             this.simulator.slayerSimFilter[taskID] = newState;

@@ -1,3 +1,6 @@
+v2.2.29
+    toggling between dungeons and slayer tasks should now toggle auto slayer on/off intuitively instead of requiring the user to toggle auto slayer on/off manually
+
 v2.2.28
     fixed 'printPlayerModifier' error
 
