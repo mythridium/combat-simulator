@@ -1176,7 +1176,7 @@ class Simulator {
         }
         // Queue simulation of monsters in slayer areas
         this.micsr.game.slayerAreaDisplayOrder.forEach((area) => {
-            if (!this.micsr.game.checkRequirements(area.entryRequirements)) {
+            if (!this.micsr.game.checkRequirements(area.entryRequirements, undefined, undefined, area instanceof SlayerArea)) {
                 const tryToSim = area.monsters.reduce(
                     (sim, monster) =>
                         (this.monsterSimFilter[monster.id] &&
@@ -1755,7 +1755,7 @@ class Simulator {
             // push `canEnter` for every monster in this zone
             for (const monster of area.monsters) {
                 enterSet.push(
-                    this.parent.game.checkRequirements(area.entryRequirements, undefined, undefined, true)
+                    this.parent.game.checkRequirements(area.entryRequirements, undefined, undefined, area instanceof SlayerArea)
                 );
             }
         }

@@ -1,3 +1,6 @@
+v2.3.1
+    fixed a missing check for slayer requirements
+
 v2.3.0
     improved ui performance during character load
     re-implemented the astrology tab
