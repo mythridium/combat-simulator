@@ -109,8 +109,8 @@ class MICSR {
 
         // combat sim version
         this.majorVersion = 2;
-        this.minorVersion = 2;
-        this.patchVersion = 29;
+        this.minorVersion = 3;
+        this.patchVersion = 0;
         this.preReleaseVersion = undefined;
         this.version = `v${this.majorVersion}.${this.minorVersion}.${this.patchVersion}`;
         if (this.preReleaseVersion !== undefined) {

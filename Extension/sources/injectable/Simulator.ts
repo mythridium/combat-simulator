@@ -1144,7 +1144,7 @@ class Simulator {
             // check if the area is accessible, this only works for auto slayer
             // without auto slayer you can get some tasks for which you don't wear/own the gear
             let area = this.micsr.game.getMonsterArea(monster);
-            if (!this.parent.game.checkRequirements(area.entryRequirements)) {
+            if (!this.parent.game.checkRequirements(area.entryRequirements, undefined, undefined, area instanceof SlayerArea)) {
                 return;
             }
             // all checks passed
@@ -1755,7 +1755,7 @@ class Simulator {
             // push `canEnter` for every monster in this zone
             for (const monster of area.monsters) {
                 enterSet.push(
-                    this.parent.game.checkRequirements(area.entryRequirements)
+                    this.parent.game.checkRequirements(area.entryRequirements, undefined, undefined, true)
                 );
             }
         }

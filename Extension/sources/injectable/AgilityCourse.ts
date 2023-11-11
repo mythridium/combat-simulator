@@ -260,7 +260,7 @@ class AgilityCourse {
                 obstacleSelectionContainer.appendChild(emptyDiv);
             }
             // popup
-            card.addMultiPopupMenu(
+            card.addMultiAgilityPopupMenu(
                 [this.media.stamina],
                 [`MICSR Obstacle ${category} ${this.id} Image`],
                 [this.createAgilityPopup(category, filter)],
@@ -470,21 +470,12 @@ class AgilityCourse {
             if (obstacle.category !== category) {
                 return;
             }
-            const button = document.getElementById(
-                `MCS ${obstacle.name} ${this.id} Button`
-            );
-            (button as any)._tippy.setContent(
-                this.getObstacleTooltip(category, obstacle)
-            );
+            const button = document.getElementById(`MCS ${obstacle.name} ${this.id} Button`);
+            (button as any)._tippy?.setContent(this.getObstacleTooltip(category, obstacle));
         });
-        const obstacle =
-            this.agilityObstacles[this.player.course[category] + 1];
-        const img = document.getElementById(
-            `MICSR Obstacle ${category} ${this.id} Image`
-        );
-        (img as any)._tippy.setContent(
-            this.getObstacleTooltip(category, obstacle)
-        );
+        const obstacle = this.agilityObstacles[this.player.course[category] + 1];
+        const img = document.getElementById(`MICSR Obstacle ${category} ${this.id} Image`);
+        (img as any)._tippy?.setContent(this.getObstacleTooltip(category, obstacle));
     }
 
     updateAllAgilityTooltips() {
@@ -493,12 +484,8 @@ class AgilityCourse {
         });
 
         this.agilityObstacles.forEach((obstacle) => {
-            const button = document.getElementById(
-                `MCS ${obstacle.name} ${this.id} Button`
-            );
-            (button as any)._tippy.setContent(
-                this.getObstacleTooltip(obstacle.category, obstacle)
-            );
+            const button = document.getElementById(`MCS ${obstacle.name} ${this.id} Button`);
+            (button as any)?._tippy.setContent(this.getObstacleTooltip(obstacle.category, obstacle));
         });
     }
 

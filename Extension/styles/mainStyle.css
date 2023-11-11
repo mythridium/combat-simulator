@@ -224,6 +224,7 @@
 
 .mcsTabButtonContainer {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     background-color: inherit;
     border-color: inherit;
@@ -554,6 +555,10 @@
     margin: 5px 0;
 }
 
+.mcsPopup .mcsCardContentContainer {
+    width: 100%;
+}
+
 .darkMode .mcsCCContainer .dropdown > button:hover {
     background: #464e5b !important;
 }
@@ -592,4 +597,27 @@
 
 .msc-dropdown-content-search {
     width: 100% !important;
+}
+
+.constellation-modifiers-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.mcs-contellation-skill-container {
+    max-width: 240px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.constellation-modifiers-container .astro-mod {
+    height: 20px;
+    cursor: pointer;
 }

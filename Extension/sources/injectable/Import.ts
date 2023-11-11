@@ -67,11 +67,17 @@ interface IImportAstrology {
     uniqueModsBought: number[];
 }
 
+interface IImportSlayer {
+    dungeonCompletion: string[];
+    shopPurchase: string[];
+    foundItem: string[];
+}
+
 interface IImportSettings {
     version: string;
     // lists
     astrologyModifiers: Map<string, IImportAstrology>;
-    season: any;
+    season: string;
     course: number[];
     courseMastery: boolean[];
     equipment: string[];
@@ -84,6 +90,7 @@ interface IImportSettings {
         ranged: string;
     };
     spells: IImportSpells;
+    slayer: IImportSlayer;
     // simple values
     autoEatTier: number;
     cookingMastery: boolean;
@@ -162,8 +169,7 @@ class Import {
             ).length;
 
         // get the active astrology modifiers
-        const astrologyModifiers: Map<string, IImportAstrology> =
-            this.getAstrologyFromGame(actualGame);
+        const astrologyModifiers: Map<string, IImportAstrology> = this.getAstrologyFromGame(actualGame);
 
         // get the chosen agility obstacles
         const chosenAgilityObstacles = new Array(
@@ -198,7 +204,7 @@ class Import {
             astrologyModifiers: astrologyModifiers,
             course: chosenAgilityObstacles,
             courseMastery: courseMastery,
-            season: season,
+            season: season.id,
             equipment: equipment.slotArray.map((x) => x.item.id),
             levels: new Map(
                 actualGame.skills.allObjects.map((skill) => [
@@ -233,6 +239,7 @@ class Import {
             isSolarEclipse: this.simPlayer.isSolarEclipse,
             isSynergyUnlocked: this.simPlayer.isSynergyUnlocked,
             isSlayerTask: this.simPlayer.isSlayerTask,
+            slayer: this.app.getSlayerData(this.app.actualGame),
             pillarID: actualGame.agility['builtPassivePillar']?.id || "",
             pillarEliteID: actualGame.agility['builtElitePassivePillar']?.id || "",
             potionID: potionID,
@@ -271,7 +278,7 @@ class Import {
             astrologyModifiers: this.getAstrologyFromGame(simGame),
             course: this.simPlayer.course,
             courseMastery: courseMastery,
-            season: (<any>this.simPlayer.game.township.townData).season,
+            season: (<any>this.simPlayer.game.township.townData).season.id,
             equipment: this.simPlayer.equipment.slotArray.map(
                 (x: any) => x.item.id
             ),
@@ -296,6 +303,7 @@ class Import {
                 curse: this.simPlayer.spellSelection.curse?.id || "",
                 standard: this.simPlayer.spellSelection.standard?.id || "",
             },
+            slayer: this.app.getSlayerData(this.app.game),
             // simple values
             autoEatTier: autoEatTier,
             cookingMastery: this.simPlayer.cookingMastery,
@@ -362,6 +370,7 @@ class Import {
             settings.pillarID,
             settings.pillarEliteID
         );
+        this.importSlayer(settings.slayer);
         this.importAstrology(settings.astrologyModifiers);
         this.importTownship(settings.season);
         // @ts-ignore
@@ -479,6 +488,31 @@ class Import {
         const newSpell = spells.getObjectByID(spellSelection[spellType]);
         if (newSpell) {
             this.app.enableSpell(spellType, newSpell);
+        }
+    }
+
+    importSlayer(slayer: IImportSlayer) {
+        this.app.game.combat['dungeonCompletion'].clear();
+
+        const { itemsFoundSet } = this.app.getSlayerRequirementData(this.app.game);
+
+        for (const item of itemsFoundSet.values()) {
+            this.app.game.stats.Items.getTracker(item).remove(ItemStats.TimesFound);
+        }
+
+        for (const dungeonId of slayer.dungeonCompletion) {
+            const dungeon = this.app.game.dungeons.getObjectByID(dungeonId);
+            this.app.game.combat['dungeonCompletion'].set(dungeon, 1);
+        }
+
+        for (const purchaseId of slayer.shopPurchase) {
+            const purchase = this.app.game.shop.purchases.getObjectByID(purchaseId)!;
+            this.app.game.shop.upgradesPurchased.set(purchase, 1);
+        }
+
+        for (const itemId of slayer.foundItem) {
+            const item = this.app.game.items.getObjectByID(itemId)!;
+            this.app.game.stats.Items.add(item, ItemStats.TimesFound, 1);
         }
     }
 
@@ -653,39 +687,19 @@ class Import {
     }
 
     importAstrology(astrologyModifiers: Map<string, IImportAstrology>) {
-        const updateApp = (
-            constellation: AstrologyRecipe,
-            type: "standard" | "unique",
-            values: number[]
-        ) => {
-            values.forEach((val, i) => {
-                var input = document.getElementById(
-                    `MCS_${constellation.id}_${type}_${i}_Input`
-                );
-                if (input) {
-                    (input as HTMLInputElement).value = val.toString();
-                }
-            });
-        };
-
         astrologyModifiers.forEach((value, key) => {
-            const constellation =
-                this.app.game.astrology.actions.getObjectByID(key)!;
+            const constellation = this.app.game.astrology.actions.getObjectByID(key)!;
             constellation.standardModsBought = value.standardModsBought;
-            updateApp(
-                constellation,
-                "standard",
-                constellation.standardModsBought
-            );
             constellation.uniqueModsBought = value.uniqueModsBought;
-            updateApp(constellation, "unique", constellation.uniqueModsBought);
         });
         // @ts-expect-error
         this.app.game.astrology.computeProvidedStats(false);
+        this.app.updateAstrologyMods();
+        this.app.updateAstrologyTooltips();
     }
 
-    importTownship(season: any) {
-        this.app.player.isSolarEclipse = season.id === 'melvorF:SolarEclipse';
+    importTownship(seasonId: any) {
+        this.app.player.isSolarEclipse = seasonId === 'melvorF:SolarEclipse';
         this.app.player.computeModifiers();
         this.checkRadio("MCS Solar Eclipse", this.app.player.isSolarEclipse);
     }
@@ -756,7 +770,7 @@ class Import {
             // Make sure to not copy the array reference or the real game will be updated
             astrologyModifiers.set(constellation.id, {
                 standardModsBought: JSON.parse(JSON.stringify(constellation.standardModsBought)),
-                uniqueModsBought: JSON.parse(JSON.stringify(constellation.uniqueModsBought)),
+                uniqueModsBought: JSON.parse(JSON.stringify(constellation.uniqueModsBought))
             });
         }
         return astrologyModifiers;

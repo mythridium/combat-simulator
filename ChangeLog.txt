@@ -1,3 +1,12 @@
+v2.3.0
+    improved ui performance during character load
+    re-implemented the astrology tab
+    added a slayer tab providing more fine grained control over accessible slayer areas
+    monsters inside slayer areas now also respect dungeon completion, item found and shop purchase requirements
+    added search box to all equipment popups
+    food is now split into regular and perfect categories
+    removed golbin raid items from equipment popups
+
 v2.2.29
     toggling between dungeons and slayer tasks should now toggle auto slayer on/off intuitively instead of requiring the user to toggle auto slayer on/off manually
 

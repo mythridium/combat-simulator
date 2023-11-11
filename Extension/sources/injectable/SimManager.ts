@@ -148,6 +148,9 @@ class SimManager extends CombatManager {
 
     initialize() {
         this.stopCombat();
+        if (!this.game.isWebWorker) {
+            this['dungeonCompletion'].clear();
+        }
         // Set up player gamemode before combat initialize
         // TODO: This can probably be removed once we use the SimGame gamemode for everything
         this.player.currentGamemodeID = this.micsr.game.currentGamemode.id;
@@ -222,9 +225,9 @@ class SimManager extends CombatManager {
 
         let reason = "";
         if (!simResult.success && simResult.failMessage) {
-            reason += simResult.failMessage + " ";
+            reason += simResult.failMessage;
         }
-        if (targetTrials - trials > 0) {
+        if (simResult.success && targetTrials - trials > 0) {
             reason += `Simulated ${trials}/${targetTrials} trials.`;
         }
         let killTimeS =
@@ -344,7 +347,8 @@ class SimManager extends CombatManager {
             !this.game.checkRequirements(
                 areaData.entryRequirements,
                 true,
-                slayerLevelReq
+                slayerLevelReq,
+                areaData instanceof SlayerArea
             )
         ) {
             return;
@@ -417,11 +421,8 @@ class SimManager extends CombatManager {
         }
         const totalTickLimit = trials * tickLimit;
         // debugger;
-        let success = this.game.checkRequirements(
-            areaData.entryRequirements,
-            true
-        );
-        let failMessage = "";
+        let success = this.game.checkRequirements(areaData.entryRequirements, true, undefined, areaData instanceof SlayerArea);
+        let failMessage = success ? "" : 'Missing Slayer Area Requirements';
         if (success) {
             this.selectMonster(monster, areaData);
 

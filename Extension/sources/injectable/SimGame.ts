@@ -26,6 +26,7 @@ class SimGame extends Game {
     agilityObstacles: [string, AgilityObstacle][] = [];
     agilityPillars: [string, AgilityPillar][] = [];
     agilityElitePillars: [string, AgilityPillar][] = [];
+    itemFoundFromSlayer = new Set<AnyItem>();
 
     // @ts-expect-error Force shop type
     shop: {
@@ -366,7 +367,14 @@ class SimGame extends Game {
             }
             return true;
         };
-        this.stats.itemFindCount = () => 1;
+        const original = this.stats.itemFindCount.bind(this.stats);
+        this.stats.itemFindCount = item => {
+            if (this.itemFoundFromSlayer.has(item)) {
+                return original(item);
+            } else {
+                return 1;
+            }
+        };
         this.gp.add = (amount) => {
             // Store gp on the SimPlayer
             this.combat.player.gp += amount;
@@ -446,6 +454,14 @@ class SimGame extends Game {
                 this.agility.elitePillars.registerObject(new AgilityPillar({ name: action.namespace, displayName: action.name, isModded: true }, this.micsr.pillarToData(action), game));
             }
         });
+
+        for (const area of this.slayerAreas.allObjects) {
+            for (const requirement of area.entryRequirements) {
+                if (requirement.type === 'ItemFound') {
+                    this.itemFoundFromSlayer.add(requirement.item);
+                }
+            }
+        }
 
         // this.pages.forEach((page) => {
         //   if (page.action !== undefined) this.actionPageMap.set(page.action, page);
@@ -551,17 +567,17 @@ class SimGame extends Game {
     checkRequirements(
         requirements: AnyRequirement[],
         notifyOnFailure?: boolean,
-        slayerLevelReq?: number
+        slayerLevelReq?: number,
+        checkSlayer?: boolean
     ): boolean {
-        return requirements.every((req: any) =>
-            this.checkRequirement(req, notifyOnFailure)
-        );
+        return requirements.every((req: any) => this.checkRequirement(req, notifyOnFailure, undefined, checkSlayer));
     }
 
     checkRequirement(
         requirement: AnyRequirement,
         notifyOnFailure?: boolean,
-        slayerLevelReq?: number
+        slayerLevelReq?: number,
+        checkSlayer?: boolean
     ): boolean {
         switch (requirement.type) {
             case "SkillLevel":
@@ -570,15 +586,12 @@ class SimGame extends Game {
                     requirement.level
                 );
             case "SlayerItem":
-                return super.checkRequirement(
-                    requirement,
-                    false,
-                    slayerLevelReq
-                );
-            case "Completion":
-            case "DungeonCompletion":
-            case "ShopPurchase":
+                return super.checkRequirement(requirement, false, slayerLevelReq);
             case "ItemFound":
+            case "ShopPurchase":
+            case "DungeonCompletion":
+                return checkSlayer ? super.checkRequirement(requirement, false, slayerLevelReq) : true;
+            case "Completion":
             // @ts-ignore
             case 'CartographyHexDiscovery':
                 // @ts-ignore
@@ -620,7 +633,7 @@ class SimGame extends Game {
         // this.itemCharges.encode(writer);
         this.tutorial.encode(writer);
         this.potions.encode(writer);
-        // this.stats.encode(writer);
+        this.stats.encode(writer);
         // this.settings.encode(writer);
         // this.gp.encode(writer);
         // this.slayerCoins.encode(writer);
@@ -691,7 +704,7 @@ class SimGame extends Game {
         // this.itemCharges.decode(reader, version);
         this.tutorial.decode(reader, version);
         this.potions.decode(reader, version);
-        // this.stats.decode(reader, version);
+        this.stats.decode(reader, version);
         // this.settings.decode(reader, version);
         // this.gp.decode(reader, version);
         // this.slayerCoins.decode(reader, version);

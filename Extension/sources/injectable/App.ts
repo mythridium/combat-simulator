@@ -26,7 +26,7 @@
 class App {
     agilityCourse!: AgilityCourse;
     agilitySelectCard!: Card;
-    astrologySelectCard!: Card;
+    astrologySelectCard!: TabCard;
     astrologySelected: any;
     barMonsterIDs!: string[];
     barSelected: any;
@@ -49,7 +49,6 @@ class App {
     equipmentSubsets: any;
     failureLabel: any;
     foodCCContainer: any;
-    foodItems!: FoodItem[];
     force: any;
     import!: Import;
     importedSettings?: IImportSettings;
@@ -70,6 +69,7 @@ class App {
     potionSelectCard!: Card;
     prayerSelectCard!: TabCard;
     ancientRelicSelectCard!: Card;
+    slayerSelectCard!: Card;
     savedSimulations: ISimSave[];
     selectedBar: any;
     selectedTime: any;
@@ -267,7 +267,7 @@ class App {
         // Useful assets
         this.media = {
             combat: "assets/media/skills/combat/combat.png",
-            slayer: "assets/media/skills/slayer/slayer.png",
+            slayer: "assets/media/skills/slayer/slayer.svg",
             prayer: "assets/media/skills/prayer/prayer.svg",
             unholy: "assets/media/skills/prayer/unholy_prayer.svg",
             spellbook: "assets/media/skills/combat/spellbook.svg",
@@ -287,7 +287,7 @@ class App {
             emptyFood: "assets/media/skills/combat/food_empty.svg",
             agility: "assets/media/skills/agility/agility.svg",
             cartography: "assets/media/skills/cartography/cartography.svg",
-            mastery: "assets/media/main/mastery_header.png",
+            mastery: "assets/media/main/mastery_header.svg",
             statistics: "assets/media/main/statistics_header.svg",
             loot: "assets/media/bank/chapeau_noir.png",
             summoning: "assets/media/skills/summoning/summoning.svg",
@@ -296,10 +296,8 @@ class App {
             stamina: "assets/media/main/stamina.png",
             question: "assets/media/main/question.svg",
             ancientRelics: "assets/media/main/gamemode_ancient_relic.png",
-            airRune:
-                this.micsr.game.items.getObjectByID("melvorD:Air_Rune")!.media,
-            mistRune:
-                this.micsr.game.items.getObjectByID("melvorD:Mist_Rune")!.media,
+            airRune: this.micsr.game.items.getObjectByID("melvorD:Air_Rune")!.media,
+            mistRune: this.micsr.game.items.getObjectByID("melvorD:Mist_Rune")!.media,
             bank: "assets/media/main/bank_header.svg",
             herblore: "assets/media/skills/herblore/herblore.svg",
             cooking: "assets/media/skills/cooking/cooking.svg",
@@ -469,6 +467,7 @@ class App {
         this.createPotionSelectCard();
         this.createPetSelectCard();
         this.createAgilitySelectCard();
+        this.createSlayerSelectCard();
         this.createAstrologySelectCard();
         this.createLootOptionsCard();
         this.createSimulationAndExportCard();
@@ -562,6 +561,7 @@ class App {
         this.updatePrayerOptions();
         this.updateCombatStats();
         this.updateHealing();
+        this.updateSlayer();
         this.updatePlotData();
     }
 
@@ -676,14 +676,9 @@ class App {
             const rowPopups: any = [];
             const tooltips: any = [];
             row.forEach((slotID) => {
-                rowSources.push(
-                    `assets/media/bank/${
-                        (<any>this.micsr.equipmentSlotData)[EquipmentSlots[slotID]]
-                            .emptyMedia
-                    }.png`
-                );
+                rowSources.push(`assets/media/bank/${(<any>this.micsr.equipmentSlotData)[EquipmentSlots[slotID]].emptyMedia}.png`);
                 rowIDs.push(`MCS ${EquipmentSlots[slotID]} Image`);
-                rowPopups.push(this.createEquipmentPopup(slotID));
+                rowPopups.push(slotID);
                 tooltips.push(EquipmentSlots[slotID]);
             });
             this.equipmentSelectCard.addMultiPopupMenu(
@@ -852,6 +847,96 @@ class App {
         this.equipmentSelectCard.container.appendChild(modifierCCContainer);
     }
 
+    createFoodPopup() {
+        const foodSelectPopup = document.createElement("div");
+        foodSelectPopup.className = "mcsPopup";
+
+        const equipmentSelectCard = new Card(
+            this.micsr,
+            foodSelectPopup,
+            "",
+            "600px"
+        );
+
+        equipmentSelectCard.addSearch(`Food-search`, '.btn');
+
+        const categories: { empty: FoodItem[], food: FoodItem[], perfect: FoodItem[] } = {
+            empty: [],
+            food: [],
+            perfect: []
+        };
+
+        for (const item of this.micsr.items.food.allObjects.filter((item) => this.filterIfHasKey("healsFor", item))) {
+            if (item.golbinRaidExclusive) {
+                continue;
+            }
+
+            if (item.id === 'melvorD:Empty_Food') {
+                categories.empty.push(item);
+                continue;
+            }
+
+            // the food is perfect if it's found in the product recipe map, but not found as an action.
+            const isPerfect =
+                this.micsr.game.cooking.productRecipeMap.get(item) !== undefined &&
+                this.micsr.game.cooking.actions.getObjectByID(item.id) === undefined;
+
+            if (isPerfect) {
+                categories.perfect.push(item);
+            } else {
+                categories.food.push(item);
+            }
+        }
+
+        categories.food.sort((a, b) => a.healsFor - b.healsFor);
+        categories.perfect.sort((a, b) => a.healsFor - b.healsFor);
+
+        const getDataFor = (items: FoodItem[]) => {
+            const media = items.map(item => item.media);
+            const ids = items.map(item => item.name);
+            const callbacks = items.map(item => () => this.equipFood(item.id));
+            const tooltips = items.map(item => this.getFoodTooltip(item));
+
+            return { media, ids, callbacks, tooltips };
+        };
+
+        const food = getDataFor(categories.food);
+        const perfect = getDataFor(categories.perfect);
+        const empty = getDataFor(categories.empty);
+
+        equipmentSelectCard.addSectionTitle("Food");
+        equipmentSelectCard.addImageButtons(
+            food.media,
+            food.ids,
+            "Small",
+            food.callbacks,
+            food.tooltips,
+            "100%"
+        );
+
+        equipmentSelectCard.addSectionTitle("Perfect Food");
+        equipmentSelectCard.addImageButtons(
+            perfect.media,
+            perfect.ids,
+            "Small",
+            perfect.callbacks,
+            perfect.tooltips,
+            "100%"
+        );
+
+        equipmentSelectCard.addSectionTitle("Empty");
+        equipmentSelectCard.addImageButtons(
+            empty.media,
+            empty.ids,
+            "Small",
+            empty.callbacks,
+            empty.tooltips,
+            "100%"
+        );
+
+        return foodSelectPopup;
+    }
+
     createFoodContainer() {
         this.foodCCContainer = this.equipmentSelectCard.createCCContainer();
         // Food card
@@ -866,42 +951,8 @@ class App {
         newImage.dataset.tippyContent = "No Food";
         newImage.dataset.tippyHideonclick = "true";
         containerDiv.appendChild(newImage);
-        const foodPopup = (() => {
-            const foodSelectPopup = document.createElement("div");
-            foodSelectPopup.className = "mcsPopup";
-            const equipmentSelectCard = new Card(
-                this.micsr,
-                foodSelectPopup,
-                "",
-                "600px"
-            );
-            equipmentSelectCard.addSectionTitle("Food");
-            this.foodItems = this.micsr.items.food.allObjects.filter((item) =>
-                this.filterIfHasKey("healsFor", item)
-            );
-            this.foodItems.sort((a, b) => b.healsFor - a.healsFor);
-            const buttonMedia = this.foodItems.map((item) => item.media);
-            const buttonIds = this.foodItems.map((item) => item.name);
-            const buttonCallbacks = this.foodItems.map(
-                (item) => () => this.equipFood(item.id)
-            );
-            const tooltips = this.foodItems.map((item) =>
-                this.getFoodTooltip(item)
-            );
-            equipmentSelectCard.addImageButtons(
-                buttonMedia,
-                buttonIds,
-                "Small",
-                buttonCallbacks,
-                tooltips,
-                "100%"
-            );
-            return foodSelectPopup;
-        })();
-        containerDiv.appendChild(foodPopup);
         this.foodCCContainer.appendChild(containerDiv);
-        foodPopup.style.display = "none";
-        this.equipmentSelectCard.registerPopupMenu(containerDiv, foodPopup);
+        this.equipmentSelectCard.registerPopupMenu(containerDiv, 'Food');
         // Heal amt
         let label = document.createElement("span");
         label.id = "MICSR-heal-amount-Label";
@@ -1715,56 +1766,469 @@ class App {
         this.updateCombatStats();
     }
 
-    createAstrologySelectCard() {
-        let initial = false;
-        if (!this.astrologySelectCard) {
-            this.astrologySelectCard = this.mainTabCard.addTab(
-                "Astrology",
-                this.media.astrology,
+    createSlayerSelectCard() {
+        this.slayerSelectCard = this.mainTabCard.addPremadeTab(
+            "Slayer",
+            this.media.slayer,
+            new TabCard(
+                this.micsr,
                 "",
-                "100px"
-            );
-            initial = true;
-        } else {
-            this.astrologySelectCard.clearContainer();
+                false,
+                this.mainTabCard.tabContainer,
+                "100%",
+                "150px"
+            )
+        ) as TabCard;
+        this.slayerSelectCard.addSectionTitle("Slayer");
+
+        const newCard = new Card(
+            this.micsr,
+            this.slayerSelectCard.container,
+            "",
+            "100px",
+            undefined,
+            'slayer-tab-container'
+        );
+
+        const { dungeonSet, purchaseSet, itemsFoundSet } = this.getSlayerRequirementData(this.game);
+
+        newCard.addSectionTitle('Dungeon Completions');
+
+        const dungeons = Array.from(dungeonSet);
+        const purchases = Array.from(purchaseSet);
+        const items = Array.from(itemsFoundSet);
+
+        newCard.addImageButtons(
+            dungeons.map(dungeon => dungeon.media),
+            dungeons.map(dungeon => dungeon.localID),
+            "Medium",
+            dungeons.map(dungeon => event => {
+                dungeon = this.game.dungeons.find(dung => dung.id === dungeon.id)!;
+
+                if (this.game.combat['dungeonCompletion'].has(dungeon)) {
+                    this.game.combat['dungeonCompletion'].delete(dungeon);
+                    this.unselectButton(event.currentTarget as HTMLButtonElement);
+                } else {
+                    this.game.combat['dungeonCompletion'].set(dungeon, 1);
+                    this.selectButton(event.currentTarget as HTMLButtonElement);
+                }
+            }),
+            dungeons.map(dungeon => dungeon.name),
+            "300px"
+        );
+
+        newCard.addSectionTitle('Shop Purchases');
+
+        newCard.addImageButtons(
+            purchases.map(purchase => purchase.media),
+            purchases.map(purchase => purchase.localID),
+            "Medium",
+            purchases.map(purchase => event => {
+                if (this.game.shop.upgradesPurchased.has(purchase)) {
+                    this.game.shop.upgradesPurchased.delete(purchase);
+                    this.unselectButton(event.currentTarget as HTMLButtonElement);
+                } else {
+                    this.game.shop.upgradesPurchased.set(purchase, 1);
+                    this.selectButton(event.currentTarget as HTMLButtonElement);
+                }
+            }),
+            purchases.map(purchase => purchase.name),
+            "300px"
+        );
+
+        newCard.addSectionTitle('Found Items');
+
+        newCard.addImageButtons(
+            items.map(item => item.media),
+            items.map(item => item.localID),
+            "Medium",
+            items.map(item => event => {
+                const current = this.game.stats.itemFindCount(item);
+
+                if (current) {
+                    this.game.stats.Items.getTracker(item).remove(ItemStats.TimesFound);
+                    this.unselectButton(event.currentTarget as HTMLButtonElement);
+                } else {
+                    this.game.stats.Items.add(item, ItemStats.TimesFound, 1);
+                    this.selectButton(event.currentTarget as HTMLButtonElement);
+                }
+            }),
+            items.map(item => item.name),
+            "300px"
+        );
+    }
+
+    getSlayerRequirementData(game: Game | SimGame) {
+        const dungeonSet = new Set<Dungeon>();
+        const purchaseSet = new Set<ShopPurchase>();
+        const itemsFoundSet = new Set<AnyItem>();
+
+        for (const area of game.slayerAreas.allObjects) {
+            area.entryRequirements?.filter(requirement => requirement.type === 'DungeonCompletion')
+                .forEach((requirement: any) => {
+                    dungeonSet.add(requirement.dungeon);
+                });
+
+            area.entryRequirements?.filter(requirement => requirement.type === 'ShopPurchase')
+                .forEach((requirement: any) => {
+                    purchaseSet.add(requirement.purchase);
+                });
+
+            area.entryRequirements?.filter(requirement => requirement.type === 'ItemFound')
+                .forEach((requirement: any) => {
+                    itemsFoundSet.add(requirement.item);
+                });
         }
+
+        return { dungeonSet, purchaseSet, itemsFoundSet };
+    }
+
+    getSlayerData(game: Game | SimGame) {
+        const { dungeonSet, purchaseSet, itemsFoundSet } = this.getSlayerRequirementData(game);
+
+        const slayer: IImportSlayer = {
+            dungeonCompletion: [],
+            shopPurchase: [],
+            foundItem: []
+        };
+
+        for (const dungeon of dungeonSet.values()) {
+            const count: number = game.combat['dungeonCompletion'].get(dungeon);
+
+            if (count) {
+                slayer.dungeonCompletion.push(dungeon.id);
+            }
+        }
+
+        for (const purchase of purchaseSet.values()) {
+            // @ts-ignore
+            const count: number = game.shop['upgradesPurchased'].get(purchase);
+
+            if (count) {
+                slayer.shopPurchase.push(purchase.id);
+            }
+        }
+
+        for (const itm of itemsFoundSet.values()) {
+            const found = game.stats.itemFindCount(itm);
+
+            if (found) {
+                slayer.foundItem.push(itm.id);
+            }
+        }
+
+        return slayer;
+    }
+
+    updateSlayer() {
+        const container = document.querySelector('.slayer-tab-container');
+
+        if (!container) {
+            return;
+        }
+
+        const buttons = Array.from(container.querySelectorAll('button'));
+
+        for (const button of buttons) {
+            this.unselectButton(button);
+        }
+
+        const slayer = this.getSlayerData(this.game);
+
+        for (const dungeonId of slayer.dungeonCompletion) {
+            const dungeon = this.game.dungeons.getObjectByID(dungeonId);
+
+            if (dungeon) {
+                const button = buttons.find(button => button.id === `MCS ${dungeon.localID} Button`);
+
+                if (button) {
+                    this.selectButton(button);
+                }
+            }
+        }
+
+        for (const purchaseId of slayer.shopPurchase) {
+            const purchase = this.game.shop.purchases.getObjectByID(purchaseId);
+
+            if (purchase) {
+                const button = buttons.find(button => button.id === `MCS ${purchase.localID} Button`);
+
+                if (button) {
+                    this.selectButton(button);
+                }
+            }
+        }
+
+        for (const itemId of slayer.foundItem) {
+            const item = this.game.items.getObjectByID(itemId);
+
+            if (item) {
+                const button = buttons.find(button => button.id === `MCS ${item.localID} Button`);
+
+                if (button) {
+                    this.selectButton(button);
+                }
+            }
+        }
+    }
+
+    createAstrologySelectCard() {
+        this.astrologySelectCard = this.mainTabCard.addPremadeTab(
+            "Astrology",
+            this.media.astrology,
+            new TabCard(
+                this.micsr,
+                "",
+                false,
+                this.mainTabCard.tabContainer,
+                "100%",
+                "150px"
+            )
+        ) as TabCard;
+
+        this.astrologySelectCard.container.classList.add('astrology-card-container');
+
         this.astrologySelectCard.addSectionTitle("Astrology");
-        this.astrologySelectCard.addSectionTitle("(Improvements coming soon™)");
-        const card = this.astrologySelectCard;
+        this.astrologySelectCard.addTabMenu();
+
         this.game.astrology.actions.allObjects
             .filter((constellation, index) => !this.skipConstellations.includes(index))
             .sort((a, b) => a.level - b.level)
             .forEach(constellation => {
-                // create constellation container
-                const cc = card.createCCContainer();
-                cc.className = "mcsEquipmentImageContainer";
-                // constellation symbol and skills
-                const constellationImage = card.createImage(
+                this.astrologySelectCard.addPremadeTab(
+                    constellation.name,
                     constellation.media,
-                    40
-                );
-                cc.appendChild(
-                    card.createLabel(
-                        `${constellation.name} (${constellation.level})`
-                    )
-                );
-                cc.appendChild(constellationImage);
-                card.container.appendChild(cc);
-                this.createAstrologyModifiers(
-                    card,
-                    constellation,
-                    "standard"
-                );
-                this.createAstrologyModifiers(
-                    card,
-                    constellation,
-                    "unique"
+                    this.createConstellationSelectCard(constellation)
                 );
             }
         );
-        this.astrologySelectCard.addButton("Clear All Star Modifiers", () =>
-            this.clearAstrology()
+
+        this.astrologySelectCard.addButton("Clear All Star Modifiers", () => this.clearAstrology());
+    }
+
+    createConstellationSelectCard(constellation: AstrologyRecipe) {
+        const newCard = new Card(
+            this.micsr,
+            this.astrologySelectCard.container,
+            "",
+            "100px",
+            undefined,
+            undefined,
+            `constellation-card-container-${constellation.localID.toLowerCase()} my-2`
         );
+
+        newCard.addSectionTitle(constellation.name);
+
+        const skillContainer = document.createElement('div');
+        skillContainer.className = `mcs-contellation-skill-container`;
+
+        for (const skill of constellation.skills) {
+            const skillImg = document.createElement('img');
+
+            skillImg.src = skill.media;
+            skillImg.className = `skill-icon-xs m-2`;
+
+            skillContainer.appendChild(skillImg);
+        }
+
+        newCard.container.appendChild(skillContainer);
+
+        for (const [index, modifier] of constellation.standardModifiers.entries()) {
+            this.createModifier(newCard, index, modifier, constellation, false);
+        }
+
+        for (const [index, modifier] of constellation.uniqueModifiers.entries()) {
+            this.createModifier(newCard, index, modifier, constellation, true);
+        }
+
+        return newCard;
+    }
+
+    createModifier(card: Card, index: number, modifier: AstrologyModifier, constellation: AstrologyRecipe, isUnique: boolean) {
+        const container = document.createElement('div');
+        container.className = `constellation-modifiers-container`;
+
+        const icon = document.createElement('img');
+        icon.src = isUnique ? this.media.uniqueStar : this.media.standardStar;
+        icon.className = `skill-icon-sm mr-2`;
+
+        container.appendChild(icon);
+
+        const list = document.createElement('ul');
+        list.className = `nav-main nav-main-horizontal nav-main-horizontal-override`;
+
+        for (let i = 0; i < modifier.maxCount; i++) {
+            const item = document.createElement('li');
+
+            item.className = `mcs-constellation-${constellation.localID.toLowerCase()} ${isUnique ? 'unique': 'standard'}-index-${index} modifier-${i + 1} astro-mod inactive m-1`;
+            item.dataset.tippyContent = this.getConstellationModifierDescription(modifier, i + 1, constellation);
+
+            item.onclick = () => {
+                const items = Array.from(list.querySelectorAll('li'));
+
+                for (const li of items) {
+                    li.classList.remove('active');
+                    li.classList.toggle('inactive', true);
+                }
+
+                if (!isUnique) {
+                    if (constellation.standardModsBought[index] === i + 1) {
+                        constellation.standardModsBought[index] = 0;
+                    } else {
+                        constellation.standardModsBought[index] = i + 1;
+                    }
+
+                    if (constellation.standardModsBought[index] > 0) {
+                        for (const [liIndex, li] of items.entries()) {
+                            if (liIndex <= i) {
+                                li.classList.remove('inactive');
+                                li.classList.add('active');
+                            }
+                        }
+                    }
+                } else {
+                    if (constellation.uniqueModsBought[index] === i + 1) {
+                        constellation.uniqueModsBought[index] = 0;
+                    } else {
+                        constellation.uniqueModsBought[index] = i + 1;
+                    }
+
+                    if (constellation.uniqueModsBought[index] > 0) {
+                        for (const [liIndex, li] of items.entries()) {
+                            if (liIndex <= i) {
+                                li.classList.remove('inactive');
+                                li.classList.add('active');
+                            }
+                        }
+                    }
+                }
+
+                // @ts-expect-error
+                this.game.astrology.computeProvidedStats(false);
+                this.updateCombatStats();
+                this.updateAstrologyTooltips();
+            }
+
+            list.appendChild(item);
+        }
+
+        container.append(list);
+
+        card.container.appendChild(container);
+    }
+
+    updateAstrologyMods() {
+        const container = document.querySelector(`.astrology-card-container`);
+
+        if (!container) {
+            return;
+        }
+
+        for (const constellation of this.game.astrology.actions.allObjects.filter((constellation, index) => !this.skipConstellations.includes(index))) {
+            for (const [index, modifier] of constellation.standardModifiers.entries()) {
+                const items = container.querySelectorAll(`.mcs-constellation-${constellation.localID.toLowerCase()}.standard-index-${index}`);
+
+                for (let i = 0; i < modifier.maxCount; i++) {
+                    items[i].classList.remove('inactive', 'active');
+
+                    if (constellation.standardModsBought[index] > i) {
+                        items[i].classList.add('active');
+                    } else {
+                        items[i].classList.add('inactive');
+                    }
+                }
+            }
+
+            for (const [index, modifier] of constellation.uniqueModifiers.entries()) {
+                const items = container.querySelectorAll(`.mcs-constellation-${constellation.localID.toLowerCase()}.unique-index-${index}`);
+
+                for (let i = 0; i < modifier.maxCount; i++) {
+                    items[i].classList.remove('inactive', 'active');
+
+                    if (constellation.uniqueModsBought[index] > i) {
+                        items[i].classList.add('active');
+                    } else {
+                        items[i].classList.add('inactive');
+                    }
+                }
+            }
+        }
+    }
+
+    isConstellationComplete(constellation: AstrologyRecipe) {
+        let complete = true;
+
+        constellation.standardModsBought.forEach((count,index)=>{
+            if (count < constellation.standardModifiers[index].maxCount)
+                complete = false;
+        });
+
+        constellation.uniqueModsBought.forEach((count,index)=>{
+            if (count < constellation.uniqueModifiers[index].maxCount)
+                complete = false;
+        });
+
+        return complete;
+    }
+
+    updateAstrologyTooltips() {
+        const container = document.querySelector(`.astrology-card-container`);
+
+        if (!container) {
+            return;
+        }
+
+        for (const constellation of this.game.astrology.actions.allObjects.filter((constellation, index) => !this.skipConstellations.includes(index))) {
+            for (const [index, modifier] of constellation.standardModifiers.entries()) {
+                const items = container.querySelectorAll(`.mcs-constellation-${constellation.localID.toLowerCase()}.standard-index-${index}`);
+
+                for (let i = 0; i < modifier.maxCount; i++) {
+                    const content = this.getConstellationModifierDescription(modifier, i + 1, constellation);
+
+                    if (items[i]) {
+                        this.setTooltip(items[i] as HTMLElement, content);
+                    }
+                }
+            }
+
+            for (const [index, modifier] of constellation.uniqueModifiers.entries()) {
+                const items = container.querySelectorAll(`.mcs-constellation-${constellation.localID.toLowerCase()}.unique-index-${index}`);
+
+                for (let i = 0; i < modifier.maxCount; i++) {
+                    const content = this.getConstellationModifierDescription(modifier, i + 1, constellation);
+
+                    if (items[i]) {
+                        this.setTooltip(items[i] as HTMLElement, content);
+                    }
+                }
+            }
+        }
+    }
+
+    getConstellationModifierDescription(modifier: AstrologyModifier, buyCount: number, constellation: AstrologyRecipe) {
+        const multi = (<any>this.game.astrology).hasMasterRelic && this.isConstellationComplete(constellation) ? 2 : 1;
+        const modValue = buyCount * modifier.incrementValue * multi;
+        const mods = (<any>this.game.astrology).getModifierElement(modifier, modValue);
+        const precision = Number.isInteger(modValue) ? 0 : 2;
+
+        let text = '';
+
+        for (const [index, mod] of mods.entries()) {
+            let description;
+            if ('values' in mod) {
+                [description] = printPlayerModifier(mod.key, mod.values[0], precision);
+            } else {
+                [description] = printPlayerModifier(mod.key, mod.value, precision);
+            }
+
+            if (index > 0) {
+                text += '<br>'
+            }
+
+            text += description;
+        }
+
+        return text;
     }
 
     clearAstrology() {
@@ -1779,80 +2243,8 @@ class App {
         // @ts-expect-error
         this.game.astrology.computeProvidedStats(false);
         this.updateCombatStats();
-    }
-
-    createAstrologyModifiers(
-        card: Card,
-        constellation: AstrologyRecipe,
-        type: "standard" | "unique"
-    ) {
-        let title = "";
-        let modifiers: AstrologyModifier[];
-        let maxValue = 0;
-        switch (type) {
-            case "standard":
-                title = "Standard";
-                modifiers = constellation.standardModifiers;
-                maxValue = Astrology.standardModifierCosts.length;
-                break;
-            case "unique":
-                title = "Unique";
-                modifiers = constellation.uniqueModifiers;
-                maxValue = Astrology.uniqueModifierCosts.length;
-                break;
-            default:
-                throw new Error(`Unexpected type: ${type}`);
-        }
-
-        for (let modID = 0; modID < modifiers.length; modID++) {
-            const mod = modifiers[modID];
-            if (
-                true
-                // TODO: Filter modifiers
-                // mod.modifiers.some((v) => {
-                //     return "skill" in v && v.skill.isCombat;
-                // })
-            ) {
-                const input = card.addNumberInput(
-                    `${title}: ${modID + 1}`,
-                    0,
-                    0,
-                    maxValue,
-                    (event) => {
-                        this.constellationModifierOnChange(
-                            event,
-                            constellation,
-                            modID,
-                            type
-                        );
-                    }
-                );
-                input.classList.add("astrology-modifier");
-                input.id = `MCS_${constellation.id}_${type}_${modID}_Input`;
-            }
-        }
-    }
-
-    private constellationModifierOnChange(
-        event: Event,
-        constellation: AstrologyRecipe,
-        modID: number,
-        type: "standard" | "unique"
-    ) {
-        let bought: number[];
-        if (type === "standard") {
-            bought = constellation.standardModsBought;
-        } else if (type === "unique") {
-            bought = constellation.uniqueModsBought;
-        } else {
-            throw new Error(`Unexpected type: ${type}`);
-        }
-        bought[modID] = parseInt(
-            (event.currentTarget as HTMLInputElement).value
-        );
-        // @ts-expect-error
-        this.game.astrology.computeProvidedStats(false);
-        this.updateCombatStats();
+        this.updateAstrologyMods();
+        this.updateAstrologyTooltips();
     }
 
     createLootOptionsCard() {
@@ -2252,6 +2644,7 @@ class App {
         const menuItems = this.equipmentSubsets[equipmentSlot]
             .filter(filterFunction)
             .filter((x: any) => !!x.golbinRaidExclusive === golbinRaid);
+
         const sortKey = (item: any) => {
             const x = sortFunction(item);
             return x ? x : 0;
@@ -2264,13 +2657,14 @@ class App {
         const buttonCallbacks = menuItems.map(
             (item: any) => () => {
                 tippy.hideAll({ duration: 0 });
-                return this.equipItem(equipmentSlot, item);
+                this.equipItem(equipmentSlot, item);
+                container?.remove();
             }
         );
-        const tooltips = menuItems.map((item: any) =>
-            this.getEquipmentTooltip(equipmentSlot, item)
-        );
-        card.addImageButtons(
+
+        const tooltips = menuItems.map((item: any) => this.getEquipmentTooltip(equipmentSlot, item));
+
+        const container = card.addImageButtons(
             buttonMedia,
             buttonIds,
             "Small",
@@ -2528,6 +2922,7 @@ class App {
             "",
             "600px"
         );
+        equipmentSelectCard.addSearch(`${EquipmentSlots[equipmentSlot]}-search`, '.btn');
         const triSplit = [
             EquipmentSlots.Helmet,
             EquipmentSlots.Platebody,
@@ -2765,14 +3160,6 @@ class App {
         } else {
             throw Error(`Invalid equipmentSlot: ${equipmentSlot}`);
         }
-        equipmentSelectCard.addSectionTitle("Golbin Raid Exclusive");
-        this.addEquipmentMultiButton(
-            equipmentSelectCard,
-            equipmentSlot,
-            () => true,
-            (x) => x.name,
-            true
-        );
         return equipmentSelectPopup;
     }
 
@@ -3140,6 +3527,7 @@ class App {
         if (relicChanged) {
             this.updateCombatStats();
             this.agilityCourse.updateAllAgilityTooltips();
+            this.updateAstrologyTooltips();
         }
     }
 
@@ -3994,7 +4382,7 @@ class App {
                     this.simulator.slayerSimFilter[taskID] = false;
                 });
                 this.plotter.crossImagesPerSetting();
-                this.notify("Auto Slayer has been disabled", "danger");
+                this.notify("Slayer Task has been disabled and simulating not being on task.", "danger");
             }
             this.simulator.dungeonSimFilter[this.barMonsterIDs[imageID]] = newState;
         } else if (this.barIsTask(imageID)) {
@@ -4009,7 +4397,7 @@ class App {
                     this.simulator.dungeonSimFilter[dungeonID] = false;
                 });
                 this.plotter.crossImagesPerSetting();
-                this.notify("Auto Slayer has been enabled", "success");
+                this.notify("Slayer Task has been enabled and simulating as being on task.", "success");
             }
             this.simulator.slayerSimFilter[taskID] = newState;
         } else {
@@ -4046,7 +4434,7 @@ class App {
             this.micsr.taskIDs.forEach((taskID: string) => {
                 this.simulator.slayerSimFilter[taskID] = !newState;
             });
-            this.notify("Auto Slayer has been disabled", "danger");
+            this.notify("Slayer Task has been disabled and simulating not being on task.", "danger");
         }
 
         this.dungeonToggleState = newState;
@@ -4069,12 +4457,12 @@ class App {
             this.micsr.dungeonIDs.forEach((dungeonID: any) => {
                 this.simulator.dungeonSimFilter[dungeonID] = !newState;
             });
-            this.notify("Auto Slayer has been enabled", "success");
+            this.notify("Slayer Task has been enabled and simulating as being on task.", "success");
         } else if (!newState && this.player.isSlayerTask) {
             const checkbox = document.getElementById(`MCS Slayer Task Radio No`) as HTMLInputElement;
             checkbox.checked = true;
             this.player.isSlayerTask = newState;
-            this.notify("Auto Slayer has been disabled", "danger");
+            this.notify("Slayer Task has been disabled and simulating not being on task.", "danger");
         }
 
         this.slayerToggleState = newState;
@@ -4202,6 +4590,10 @@ class App {
     setTooltip(element: HTMLElement | null, tooltip: string) {
         // @ts-expect-error TS(2339): Property _tippy does not exist on type 'HTMLElement'.
         element._tippy.setContent(tooltip);
+        // @ts-ignore
+        element._tippy.disable();
+        // @ts-ignore
+        element._tippy.enable();
     }
 
     setPrayerTooltip(prayerXpPerSecond: any, ppConsumedPerSecond: any) {

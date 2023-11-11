@@ -190,6 +190,7 @@ class Card {
             newCCContainer.style.width = containerWidth;
         }
         this.container.appendChild(newCCContainer);
+        return newCCContainer;
     }
 
     /**
@@ -197,7 +198,7 @@ class Card {
      * @param {HTMLElement} showElement Element that should show the popup when clicked
      * @param {HTMLElement} popupMenuElement Element that should be displayed when the showElement is clicked
      */
-    registerPopupMenu(showElement: any, popupMenuElement: any) {
+    registerAgilityPopupMenu(showElement: any, popupMenuElement: any) {
         showElement.addEventListener("click", () => {
             let firstClick = true;
             tippy.hideAll({ duration: 0 });
@@ -221,6 +222,107 @@ class Card {
                 popupMenuElement.style.display = "";
             }
         });
+    }
+
+    private popups = new Map<string, HTMLElement>();
+
+    /**
+     * Assigns the onclick event to a popupmenu
+     * @param {HTMLElement} showElement Element that should show the popup when clicked
+     * @param {HTMLElement} popupMenuElement Element that should be displayed when the showElement is clicked
+     */
+    registerPopupMenu(showElement: any, slotId: string/* popupMenuElement: any */) {
+        showElement.addEventListener("click", () => {
+            let firstClick = true;
+            tippy.hideAll({ duration: 0 });
+
+            if (this.popups.has(slotId)) {
+                return;
+            }
+
+            const popup = slotId === 'Food'
+                ? (<any>window).micsr_app.createFoodPopup()
+                : (<any>window).micsr_app.createEquipmentPopup(slotId);
+
+            showElement.appendChild(popup);
+            this.popups.set(slotId, popup);
+
+            // @ts-ignore
+            if (!nativeManager.isMobile) {
+                setTimeout(() => {
+                    const search = popup.querySelector('.search-input');
+                    search?.focus();
+                }, 0);
+            }
+
+            // @ts-ignore
+            const tooltips = tippy('.mcsPopup [data-tippy-content]', (<any>window).micsr_app.tippyOptions);
+
+            const outsideClickListener = (event: any) => {
+                const ignoreElement = $.contains(popup, event.target) && !['MSC', 'Button'].some((name: string) => event.target.id.includes(name));
+
+                if (firstClick || ignoreElement) {
+                    firstClick = false;
+                    return;
+                }
+
+                tippy.hideAll({ duration: 0 });
+
+                if (this.popups.has(slotId)) {
+                    for (const tooltip of tooltips) {
+                        tooltip.destroy();
+                    }
+
+                    const element = this.popups.get(slotId);
+                    element?.remove();
+                    this.popups.delete(slotId);
+                    document.body.removeEventListener("click", outsideClickListener);
+                    return;
+                }
+            };
+
+            document.body.addEventListener("click", outsideClickListener);
+        });
+    }
+
+    /**
+     * Creates a multiple button popup menu Agility
+     * @param {string[]} sources
+     * @param {string[]} elIds
+     * @param {HTMLElement[]} popups
+     * @param {string[]} tooltips The tooltip contents
+     */
+    addMultiAgilityPopupMenu(
+        sources: any,
+        elIds: any,
+        popups: any,
+        tooltips: any,
+        newCCContainer?: HTMLDivElement
+    ) {
+        if (!newCCContainer) {
+            newCCContainer = document.createElement("div");
+        }
+        newCCContainer.className = "mcsEquipmentImageContainer";
+        for (let i = 0; i < sources.length; i++) {
+            const containerDiv = document.createElement("div");
+            containerDiv.style.position = "relative";
+            containerDiv.style.cursor = "pointer";
+            containerDiv.className = elIds[i] + ' Container';
+            const newImage = document.createElement("img");
+            newImage.id = elIds[i];
+            newImage.src = sources[i];
+            newImage.className =
+                "combat-equip-img border border-2x border-rounded-equip border-combat-outline p-1";
+            newImage.dataset.tippyContent = tooltips[i];
+            newImage.dataset.tippyHideonclick = "true";
+            containerDiv.appendChild(newImage);
+            containerDiv.appendChild(popups[i]);
+            newCCContainer.appendChild(containerDiv);
+            popups[i].style.display = "none";
+            this.registerAgilityPopupMenu(containerDiv, popups[i]);
+        }
+        this.container.appendChild(newCCContainer);
+        return newCCContainer;
     }
 
     /**
@@ -254,10 +356,10 @@ class Card {
             newImage.dataset.tippyContent = tooltips[i];
             newImage.dataset.tippyHideonclick = "true";
             containerDiv.appendChild(newImage);
-            containerDiv.appendChild(popups[i]);
+            //containerDiv.appendChild(popups[i]);
             newCCContainer.appendChild(containerDiv);
-            popups[i].style.display = "none";
-            this.registerPopupMenu(containerDiv, popups[i]);
+            //popups[i].style.display = "none";
+            this.registerPopupMenu(containerDiv, popups[i]/*  popups[i] */);
         }
         this.container.appendChild(newCCContainer);
         return newCCContainer;
@@ -609,6 +711,32 @@ class Card {
         // append container
         this.container.appendChild(newCCContainer);
         this.numOutputs.push(newOutput);
+    }
+
+    addSearch(id: string, itemSelector: string) {
+        const search = document.createElement('input');
+
+        search.id = id;
+        search.type = 'text';
+        search.className = `search-input form-control form-control-sm my-2 w-100`;
+        search.placeholder = 'Search';
+
+        search.oninput = event => {
+            const buttons: HTMLButtonElement[] = Array.from(this.container.querySelectorAll(itemSelector));
+
+            for (const button of buttons) {
+                // @ts-ignore
+                const value = event?.target?.value;
+
+                if (!value || button.id.toLowerCase().replace('mcs ', '').includes(value.toLowerCase())) {
+                    button.style.display = '';
+                } else {
+                    button.style.display = 'none';
+                }
+            }
+        }
+
+        this.container.appendChild(search);
     }
 
     /**
