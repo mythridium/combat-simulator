@@ -1,3 +1,6 @@
+v2.3.2
+    fixed solar eclipse always being enabled even when disabled when loading history after the actual game was loaded in eclipse
+
 v2.3.1
     fixed a missing check for slayer requirements
 

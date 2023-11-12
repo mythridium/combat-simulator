@@ -77,7 +77,6 @@ interface IImportSettings {
     version: string;
     // lists
     astrologyModifiers: Map<string, IImportAstrology>;
-    season: string;
     course: number[];
     courseMastery: boolean[];
     equipment: string[];
@@ -195,7 +194,6 @@ class Import {
 
         const equipmentSet = this.actualPlayer.equipmentSets[setID];
         const equipment = equipmentSet.equipment;
-        const season = (<any>this.app.actualGame.township.townData).season;
 
         // create settings object
         const settings: IImportSettings = {
@@ -204,7 +202,6 @@ class Import {
             astrologyModifiers: astrologyModifiers,
             course: chosenAgilityObstacles,
             courseMastery: courseMastery,
-            season: season.id,
             equipment: equipment.slotArray.map((x) => x.item.id),
             levels: new Map(
                 actualGame.skills.allObjects.map((skill) => [
@@ -236,7 +233,7 @@ class Import {
             foodSelected: foodSelected.id,
             healAfterDeath: this.simPlayer.healAfterDeath,
             isManualEating: this.simPlayer.isManualEating,
-            isSolarEclipse: this.simPlayer.isSolarEclipse,
+            isSolarEclipse: (<any>this.app.actualGame.township.townData).season.id === 'melvorF:SolarEclipse',
             isSynergyUnlocked: this.simPlayer.isSynergyUnlocked,
             isSlayerTask: this.simPlayer.isSlayerTask,
             slayer: this.app.getSlayerData(this.app.actualGame),
@@ -278,7 +275,6 @@ class Import {
             astrologyModifiers: this.getAstrologyFromGame(simGame),
             course: this.simPlayer.course,
             courseMastery: courseMastery,
-            season: (<any>this.simPlayer.game.township.townData).season.id,
             equipment: this.simPlayer.equipment.slotArray.map(
                 (x: any) => x.item.id
             ),
@@ -372,7 +368,7 @@ class Import {
         );
         this.importSlayer(settings.slayer);
         this.importAstrology(settings.astrologyModifiers);
-        this.importTownship(settings.season);
+        this.importTownship(settings.isSolarEclipse);
         // @ts-ignore
         if (cloudManager.hasAoDEntitlement) {
             this.importCartography(settings.cartographyWorldMap, settings.cartographyPointOfInterest, settings.cartographyMasteredHexes);
@@ -698,8 +694,8 @@ class Import {
         this.app.updateAstrologyTooltips();
     }
 
-    importTownship(seasonId: any) {
-        this.app.player.isSolarEclipse = seasonId === 'melvorF:SolarEclipse';
+    importTownship(isSolarEclipse: boolean) {
+        this.app.player.isSolarEclipse = isSolarEclipse;
         this.app.player.computeModifiers();
         this.checkRadio("MCS Solar Eclipse", this.app.player.isSolarEclipse);
     }
