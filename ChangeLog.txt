@@ -1,3 +1,6 @@
+v2.3.3
+    fixed error when loading from history
+
 v2.3.2
     fixed solar eclipse always being enabled even when disabled when loading history after the actual game was loaded in eclipse
 
