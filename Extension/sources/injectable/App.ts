@@ -2749,7 +2749,7 @@ class App {
     }
 
     filterByPlayerConsumable(item: EquipmentItem) {
-        const combatTypes = ['PlayerAttack', 'PrayerPointConsumption', 'RuneConsumption'];
+        const combatTypes = ['PlayerAttack', 'PlayerSummonAttack', 'PrayerPointConsumption', 'RuneConsumption'];
 
         return item.consumesOn?.some(consume => combatTypes.includes((<any>consume).type));
     }

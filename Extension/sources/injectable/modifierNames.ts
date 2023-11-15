@@ -221,6 +221,7 @@ class ShowModifiers {
             ],
             summoning: [
                 'SummoningMaxHit',
+                'SummoningAttackIntervalPercent'
             ],
             nonCBSummoning: [
                 'SummoningShardCost',
