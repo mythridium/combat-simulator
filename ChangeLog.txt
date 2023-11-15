@@ -1,3 +1,6 @@
+v2.3.4
+    version bump to support game version 1.2.2
+
 v2.3.3
     fixed error when loading from history
 
