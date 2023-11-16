@@ -786,7 +786,7 @@ class App {
             "isSolarEclipse",
             (<any>this.player).isSolarEclipse,
             25,
-            () => this.player.computeModifiers()
+            () => this.updateCombatStats()
         );
 
         // game mode
@@ -1055,6 +1055,7 @@ class App {
             "Min Hit",
             "Max Hit",
             "Summoning Max Hit",
+            "Summoning Interval",
             "Accuracy Rating",
             "Evasion Rating",
             "Evasion Rating",
@@ -1062,6 +1063,7 @@ class App {
             "Max Hitpoints",
             "Damage Reduction",
             "Auto Eat Threshold",
+            "Respawn Interval",
             "Drop Doubling (%)",
             "GP Multiplier",
         ];
@@ -1084,6 +1086,7 @@ class App {
             "minHit",
             "maxHit",
             "summoningMaxHit",
+            "summoningInterval",
             "maxAttackRoll",
             "maxDefRoll",
             "maxRngDefRoll",
@@ -1091,6 +1094,7 @@ class App {
             "maxHitpoints",
             "damageReduction",
             "autoEatThreshold",
+            "respawnInterval",
             "lootBonusPercent",
             "gpBonus",
         ];
@@ -2368,6 +2372,11 @@ class App {
             lootMap.set(monster.bones.item.id, true);
             // TODO: some bones are upgradable, e.g. Earth_Shard
         }
+
+        if (monster.hasBarrier) {
+            lootMap.set('melvorAoD:Barrier_Dust', true);
+        }
+
         if (monster.rewards) {
             monster.rewards.forEach((reward: any) => {
                 lootMap.set(reward.id, true);
@@ -4886,12 +4895,22 @@ class App {
         this.combatData.updateCombatStats();
         // second update the view
         this.combatStatKeys.forEach((key: any) => {
-            if (key === "attackSpeed") {
-                const attackSpeed = this.combatData.playerAttackSpeed();
-                document.getElementById(`MCS ${key} CS Output`)!.textContent = attackSpeed.toLocaleString();
-            } else {
-                document.getElementById(`MCS ${key} CS Output`)!.textContent =
-                    (<any>this.combatData.combatStats)[key].toLocaleString();
+            switch(key) {
+                case 'attackSpeed':
+                    const attackSpeed = this.combatData.playerAttackSpeed();
+                    document.getElementById(`MCS ${key} CS Output`)!.textContent = attackSpeed.toLocaleString();
+                    break;
+                case 'summoningInterval':
+                    const summonInterval = (<any>this.game.combat.player).summonAttackInterval;
+                    document.getElementById(`MCS ${key} CS Output`)!.textContent = summonInterval.toString();
+                    break;
+                case 'respawnInterval':
+                    const respawnTime = this.game.combat.player.getMonsterSpawnTime();
+                    document.getElementById(`MCS ${key} CS Output`)!.textContent = respawnTime.toString();
+                    break;
+                default:
+                    document.getElementById(`MCS ${key} CS Output`)!.textContent =
+                        (<any>this.combatData.combatStats)[key].toLocaleString();
             }
         });
         this.setSummoningSynergyText();

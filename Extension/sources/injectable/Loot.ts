@@ -542,6 +542,23 @@ class Loot {
         // TODO: some bones are upgradable, e.g. Earth_Shard
     }
 
+    getAverageBarrierDustDropAmt(monsterID: string) {
+        const monster = this.micsr.monsters.getObjectByID(monsterID)!;
+
+        if (!(<any>monster).hasBarrier) {
+            return 0;
+        }
+
+        const enemy = new SimEnemy(this.micsr.game.combat, game);
+        enemy.setMonster(monster);
+
+        let qty = Math.max(Math.floor((<any>enemy).stats.maxBarrier / numberMultiplier / 20), 1);
+
+        qty = qty * this.lootBonus * this.noLoot;
+
+        return qty;
+    }
+
     getAverageDungeonDropAmt(dungeon: Dungeon) {
         // get expected loot per drop
         const expected = this.addLoot({ drops: dungeon.rewards.map((reward: any) => ({ weight: 1, item: reward, minQuantity: 1, maxQuantity: 1 })), totalWeight: 1 });
@@ -550,10 +567,14 @@ class Loot {
 
     getAverageDropAmt(monsterID: string) {
         let averageDropAmt = 0;
+
         // regular drops
         averageDropAmt += this.getAverageRegularDropAmt(monsterID);
         // bone drops
         averageDropAmt += this.getAverageBoneDropAmt(monsterID);
+        // barrier dust drops
+        averageDropAmt += this.getAverageBarrierDustDropAmt(monsterID);
+
         return averageDropAmt;
     }
 
