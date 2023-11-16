@@ -545,7 +545,7 @@ class Loot {
     getAverageBarrierDustDropAmt(monsterID: string) {
         const monster = this.micsr.monsters.getObjectByID(monsterID)!;
 
-        if (!(<any>monster).hasBarrier) {
+        if (!(<any>monster).hasBarrier || 'melvorAoD:Barrier_Dust' !== this.app.combatData.dropSelected) {
             return 0;
         }
 
