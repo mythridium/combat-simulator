@@ -34,6 +34,7 @@ import { Plotter } from './plotter';
 import { ISimData, ISimSave, Simulator } from './simulator';
 import { TabCard } from './tab-card';
 import { Util } from './util';
+import { Summary } from './summary';
 
 /**
  * Container Class for the Combat Simulator.
@@ -217,6 +218,7 @@ export class App {
             curse: 'assets/media/skills/combat/curses.svg',
             aurora: 'assets/media/skills/combat/auroras.svg',
             ancient: 'assets/media/skills/combat/ancient.svg',
+            archaic: 'assets/media/skills/magic/archaic_book.svg',
             emptyPotion: 'assets/media/skills/herblore/potion_empty.svg',
             pet: 'assets/media/pets/hitpoints.png',
             settings: 'assets/media/main/settings_header.svg',
@@ -247,7 +249,9 @@ export class App {
             fletching: 'assets/media/skills/fletching/fletching.svg',
             astrology: 'assets/media/skills/astrology/astrology.svg',
             standardStar: 'assets/media/skills/astrology/star_standard.svg',
-            uniqueStar: 'assets/media/skills/astrology/star_unique.svg'
+            uniqueStar: 'assets/media/skills/astrology/star_unique.svg',
+            solarEclipse: 'assets/media/skills/township/eclipse.png',
+            autoEat: 'assets/media/shop/autoeat.svg'
         };
 
         // default spell is wind strike
@@ -338,7 +342,7 @@ export class App {
         };
 
         const feedbackDiv = document.createElement('div');
-        let message = `<div class="pl-4 mb-2">`;
+        let message = `<div class="pl-4 mb-2 font-size-xs">`;
         if (this.micsr.wrongVersion) {
             message += `<span style="color:red">These values are for reference only! Since you are using a beta version they are not guaranteed to be accurate and you may experience different results in the actual game.&nbsp;</span>`;
         }
@@ -500,9 +504,7 @@ export class App {
             style: 'text-align: left;'
         };
         const printedModifiers = this.printRelevantModifiers(modifiers, options);
-        SwalLocale.fire({
-            html: printedModifiers.header + printedModifiers.passives
-        });
+        SwalLocale.fire({ html: printedModifiers.header + printedModifiers.passives });
     }
 
     setSummoningSynergyText() {
@@ -700,6 +702,16 @@ export class App {
             )
         );
         this.equipmentSelectCard.container.appendChild(modifierCCContainer);
+
+        // summary button
+        const summaryCCContainer = this.equipmentSelectCard.createCCContainer();
+        summaryCCContainer.appendChild(
+            this.equipmentSelectCard.addButton('Show Summary', () => {
+                const summary = new Summary(this.micsr, this);
+                summary.show();
+            })
+        );
+        this.equipmentSelectCard.container.appendChild(summaryCCContainer);
     }
 
     createFoodPopup() {
@@ -862,7 +874,15 @@ export class App {
     }
 
     createCombatStatDisplayCard() {
-        this.combatStatCard = new Card(this.micsr, this.topContent, '', '60px', true);
+        this.combatStatCard = new Card(
+            this.micsr,
+            this.topContent,
+            '',
+            '60px',
+            true,
+            undefined,
+            'mcs-out-of-combat-stats-container'
+        );
         this.combatStatCard.addSectionTitle('Out-of-Combat Stats');
         const combatStatNames = [
             'Attack Interval',
@@ -952,7 +972,15 @@ export class App {
         this.infoPlaceholder = this.zoneInfoCard.addInfoText(
             'Click on a bar for detailed information on a Monster/Dungeon!'
         );
-        this.subInfoCard = new Card(this.micsr, this.zoneInfoCard.container, '', '80px');
+        this.subInfoCard = new Card(
+            this.micsr,
+            this.zoneInfoCard.container,
+            '',
+            '80px',
+            undefined,
+            undefined,
+            'mcs-simulation-results-container'
+        );
         this.subInfoCard.addImage(this.media.combat, 48, 'MCS Info Image');
         this.failureLabel = this.subInfoCard.addInfoText('');
         this.failureLabel.style.color = 'red';
@@ -1067,7 +1095,7 @@ export class App {
         );
         this.spellSelectCard.addPremadeTab(
             'Archaic Magic',
-            this.media.ancient,
+            this.media.archaic,
             this.createSpellSelectCard(
                 'Archaic Magic',
                 'archaic',
@@ -1186,6 +1214,11 @@ export class App {
 
                 newCard.addImageButtons(relicImages, relicNames, 'Medium', relicCallbacks, tooltips, '300px');
             });
+
+        this.ancientRelicSelectCard.addButton('Clear All Relics', () => {
+            this.import.importAncientRelics([]);
+            this.updateCombatStats();
+        });
     }
 
     /**
@@ -3020,7 +3053,6 @@ export class App {
     }
 
     cartographyHexMasteryButtonOnClick(event: any, mastery: any, map: any) {
-        const cartography = (<any>this.micsr.game).cartography;
         const bonus = map.sortedMasteryBonuses.find((bonus: any) => bonus.id === mastery.id);
 
         if (bonus.masteredHexes === map.masteredHexes) {
@@ -3052,7 +3084,7 @@ export class App {
             });
         }
 
-        cartography.computeProvidedStats(false);
+        this.micsr.game.cartography.computeProvidedStats(false);
         this.updateCombatStats();
     }
 

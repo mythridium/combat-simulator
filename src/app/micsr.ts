@@ -35,6 +35,11 @@ export class MICSR {
         false
     );
 
+    icons: {
+        cancel: string;
+        check: string;
+    };
+
     wrongVersion: boolean;
     name: string;
     shortName: string;
@@ -102,6 +107,13 @@ export class MICSR {
     ];
 
     constructor(private readonly context?: Modding.ModContext) {
+        if (this.context) {
+            this.icons = {
+                cancel: this.context.getResourceUrl('assets/cancel.svg'),
+                check: this.context.getResourceUrl('assets/check.svg')
+            };
+        }
+
         this.wrongVersion = false;
         // combat sim name
         this.name = '[Myth] Combat Simulator';

@@ -22,7 +22,7 @@ import { App } from './app';
 import { Card } from './card';
 import { MICSR } from './micsr';
 
-interface IObstacle {
+export interface IObstacle {
     [index: string]: any;
     category: ObstacleCategories | -1;
     index: number;

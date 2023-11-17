@@ -295,6 +295,7 @@ export class SimPlayer extends Player {
     }
 
     resetToBlankState() {
+        this.setDefaultAttackStyles();
         this.changeEquipmentSet(0);
         this.equipment.unequipAll();
         this.unequipFoodAll();

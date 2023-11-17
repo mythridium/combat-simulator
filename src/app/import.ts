@@ -494,8 +494,8 @@ export class Import {
                 const button = this.document.getElementById(`MCS ${relic.relic.localID} Button`);
                 const skillData = ancientRelicsSelected.find(data => data[0] === skill.localID);
 
-                if (button && skillData) {
-                    if (skillData[1].includes(relic.relic.localID)) {
+                if (button) {
+                    if (skillData && skillData[1].includes(relic.relic.localID)) {
                         this.app.selectButton(button);
                         skill.ancientRelicsFound.set(relic.relic, 1);
                         skill.numberOfRelicsFound++;

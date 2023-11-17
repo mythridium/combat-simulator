@@ -528,12 +528,19 @@ export class SimGame extends Game {
             constellation.uniqueModsBought.fill(0);
         });
 
-        this.skills
-            .filter(skill => this.micsr.ancientRelicSkillKeys.includes(skill.localID))
-            .forEach(skill => {
-                (<any>skill).ancientRelicsFound.clear();
-                (<any>skill).numberOfRelicsFound = 0;
-            });
+        this.skills.forEach(skill => {
+            skill._level = skill.startingLevel;
+            skill._xp = 0;
+
+            if (this.micsr.ancientRelicSkillKeys.includes(skill.localID)) {
+                skill.ancientRelicsFound.clear();
+                skill.numberOfRelicsFound = 0;
+            }
+        });
+
+        this.cartography?.worldMaps.forEach(map => {
+            map._playerPosition = map.startingLocation;
+        });
 
         this.astrology.computeProvidedStats(false);
         this.potions.computeProvidedStats(false);

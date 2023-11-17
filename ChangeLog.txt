@@ -1,4 +1,6 @@
 v2.4.0
+    added a button to clear all ancient relics
+    added a show summary button which shows a summary of your loadout
 
 v2.3.7
     fixed bug introduced in last release that resulted in drops being calculated incorrectly

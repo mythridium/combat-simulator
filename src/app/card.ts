@@ -87,7 +87,7 @@ export class Card {
         const newButton = document.createElement('button');
         newButton.type = 'button';
         newButton.id = `MCS ${buttonText} Button`;
-        newButton.className = 'btn btn-primary m-1';
+        newButton.className = 'btn btn-primary font-size-sm m-1';
         newButton.style.width = `100%`;
         newButton.textContent = buttonText;
         newButton.onclick = onclickCallback;
@@ -680,6 +680,8 @@ export class Card {
         // append container
         this.container.appendChild(newCCContainer);
         this.numOutputs.push(newOutput);
+
+        return newOutput;
     }
 
     addSearch(id: string, itemSelector: string) {
@@ -918,9 +920,12 @@ export class Card {
      * @param {number} height in pixels
      * @return {HTMLImageElement} The newly created image element
      */
-    createImage(imageSrc: string, height: number) {
+    createImage(imageSrc: string, height: number, width?: number) {
         const newImage = document.createElement('img');
         newImage.style.height = `${height}px`;
+        if (width) {
+            newImage.style.width = `${width}px`;
+        }
         newImage.src = imageSrc;
         return newImage;
     }

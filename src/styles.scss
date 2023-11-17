@@ -17,6 +17,78 @@
     }
 }
 
+.mcs-summary-swal-container {
+    .mcsCCContainer {
+        font-size: 12px;
+
+        &.synergy {
+            display: none;
+        }
+    }
+
+    .mcsCardContainer.mcsOuter {
+        padding: 0 13px;
+    }
+
+    .MCS.Image.Container {
+        cursor: default !important;
+    }
+
+    .combat-equip-img {
+        margin: 2px;
+    }
+
+    .mcs-summary-items-outer-container {
+        flex-direction: row;
+    }
+
+    .mcs-summary-items-container {
+        margin: 0 -2px;
+    }
+
+    .mcs-summary-out-of-combat-stats-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+
+        .mcs-summary-version-display {
+            font-size: 9px;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: end;
+        }
+    }
+
+    .mcs-summary-levels-container {
+        align-self: flex-start;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        font-size: 12px;
+        gap: 10px;
+    }
+
+    .mcs-summary-group {
+        margin-bottom: 5px;
+        padding: 3px 0;
+        font-size: 12px;
+
+        .mcs-summary-image-label {
+            display: flex;
+            align-items: center;
+            max-width: 200px;
+            padding: 1px 0;
+
+            .mcsLabel {
+                text-align: left;
+                white-space: inherit;
+            }
+        }
+    }
+}
+
 .mcsTabContent {
     width: 100%;
     border-color: black;
@@ -307,7 +379,7 @@
 }
 
 .mcsButton:disabled {
-    background-color: #3359A0;
+    background-color: #3359a0;
     color: #bbbbbb;
 }
 
@@ -401,7 +473,7 @@
 
 .mcsBar {
     position: relative;
-    background-color: #0072BD;
+    background-color: #0072bd;
     width: 15px;
     margin-right: 1px;
     margin-left: 1px;
@@ -481,49 +553,49 @@
         color: whitesmoke !important;
         border-color: whitesmoke !important;
     }
-    
+
     .mcsGridline {
         border-color: lightslategray;
     }
-    
+
     .mcsOption {
         background-color: #2c343f;
     }
-    
+
     .mcsBar {
         background-color: steelblue;
     }
-    
+
     .mcsPopup {
         background-color: #3e4856;
         color: whitesmoke;
     }
-    
+
     .mcsImageButton {
         background-color: #3e4856;
     }
-    
+
     .mcsButtonImageSelected {
-        background-color: #252A33;
+        background-color: #252a33;
     }
-    
+
     .mcsImageButton:hover {
-        background-color: #252A33;
+        background-color: #252a33;
     }
-    
+
     .mcsTabButton {
         background-color: #3e4856;
         border-color: #3e4856;
     }
-    
+
     .mcsTabButton:hover {
-        background-color: #252A33;
+        background-color: #252a33;
     }
-    
+
     .mcsTabContainer {
         border-color: #3e4856;
     }
-    
+
     .form-control {
         border-color: #343a40;
     }
@@ -540,7 +612,6 @@
         }
     }
 }
-
 
 .MCS.Platelegs.Image.Container {
     margin-right: 52px;
@@ -579,7 +650,7 @@
         align-items: center;
     }
 
-    .synergy {
+    &.synergy {
         justify-content: center;
     }
 
