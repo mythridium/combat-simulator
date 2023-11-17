@@ -102,7 +102,7 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
     "include": [
-        "sources/**/*",
+        "src/sources/**/*",
         "node_modules/melvor-types"
     ]
 }
