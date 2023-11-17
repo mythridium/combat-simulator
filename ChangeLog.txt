@@ -1,3 +1,5 @@
+v2.4.0
+
 v2.3.7
     fixed bug introduced in last release that resulted in drops being calculated incorrectly
 

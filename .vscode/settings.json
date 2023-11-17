@@ -3,6 +3,14 @@
     "files.trimTrailingWhitespace": true,
     "html.format.wrapAttributes": "force-aligned",
     "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "editor.formatOnSaveMode": "file",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
     "editor.detectIndentation": false,
     "typescript.tsdk": "./node_modules/typescript/lib",
     "typescript.reportStyleChecksAsWarnings": false,
@@ -10,12 +18,12 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/coverage": true,
-        "**/dist": true,
-        "**/.output": true,
-        "**/documentation": true
+        "node_modules": true,
+        "bower_components": true,
+        "coverage": true,
+        "dist": true,
+        ".output": true,
+        "documentation": true
     },
     "eslint.format.enable": true
 }
