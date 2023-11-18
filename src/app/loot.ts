@@ -382,6 +382,12 @@ export class Loot {
             if (!data) {
                 return;
             }
+
+            if (this.app.combatData.dropSelected === 'micsr:none') {
+                data.dropChance = (this.lootBonus * this.noLoot) / data.killTimeS;
+                return;
+            }
+
             const dropCount = this.getAverageDropAmt(monsterID);
             const itemDoubleChance = this.lootBonus * this.noLoot;
             data.dropChance = (dropCount * itemDoubleChance) / data.killTimeS;
@@ -391,6 +397,12 @@ export class Loot {
             if (!data) {
                 return;
             }
+
+            if (this.app.combatData.dropSelected === 'micsr:none') {
+                data.dropChance = (this.lootBonus * this.noLoot) / data.killTimeS;
+                return;
+            }
+
             const dropCount = this.getDungeonAverageDropAmt(dungeon);
             const itemDoubleChance = this.lootBonus * this.noLoot;
             data.dropChance = (dropCount * itemDoubleChance) / data.killTimeS;
@@ -404,16 +416,21 @@ export class Loot {
         this.micsr.dungeons.forEach((dungeon: any) => {
             const monsterList = dungeon.monsters;
             if (this.godDungeonIDs.includes(dungeon.id)) {
-                dungeon.monsters.forEach((monster: any) => {
-                    const simID = this.simulator.simID(monster.id, dungeon.id);
-                    updateMonsterDropChance(monster.id, this.simulator.monsterSimData[simID]);
-                });
-                this.setMonsterListAverageDropRate(
-                    'dropChance',
-                    this.simulator.dungeonSimData[dungeon.id],
-                    monsterList,
-                    dungeon.id
-                );
+                if (this.app.combatData.dropSelected === 'micsr:none') {
+                    updateDungeonDropChance(dungeon, this.simulator.dungeonSimData[dungeon.id]);
+                } else {
+                    dungeon.monsters.forEach((monster: any) => {
+                        const simID = this.simulator.simID(monster.id, dungeon.id);
+                        updateMonsterDropChance(monster.id, this.simulator.monsterSimData[simID]);
+                    });
+
+                    this.setMonsterListAverageDropRate(
+                        'dropChance',
+                        this.simulator.dungeonSimData[dungeon.id],
+                        monsterList,
+                        dungeon.id
+                    );
+                }
             } else {
                 const monster = monsterList[monsterList.length - 1];
                 updateMonsterDropChance(monster.id, this.simulator.dungeonSimData[dungeon.id]);
@@ -439,6 +456,7 @@ export class Loot {
         }
         let drops = 0;
         let killTime = 0;
+
         for (const monster of monsterList) {
             const simID = this.simulator.simID(monster.id, dungeonID);
             if (!this.simulator.monsterSimData[simID]) {
@@ -447,6 +465,7 @@ export class Loot {
             drops += this.simulator.monsterSimData[simID][property] * this.simulator.monsterSimData[simID].killTimeS;
             killTime += this.simulator.monsterSimData[simID].killTimeS;
         }
+
         simData[property] = drops / killTime;
     }
 

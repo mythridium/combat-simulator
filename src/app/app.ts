@@ -1008,9 +1008,12 @@ export class App {
             const child = this.subInfoCard.container.children[idx].lastChild;
             if (
                 child &&
-                ['MCS prayerXpPerSecond Output', 'MCS runesUsedPerSecond Output', 'MCS deathRate Output'].includes(
-                    child.id
-                )
+                [
+                    'MCS prayerXpPerSecond Output',
+                    'MCS runesUsedPerSecond Output',
+                    'MCS deathRate Output',
+                    'MCS dropChance Output'
+                ].includes(child.id)
             ) {
                 // @ts-expect-error TS(2554): Expected 2 arguments, but got 1.
                 this.addNoSingletonTippy(child);
@@ -3925,6 +3928,7 @@ export class App {
             document.getElementById('MCS deathRate Output').style.color = '';
         }
 
+        this.setDropsTooltip();
         this.setDeathRateTooltip(data.deathRate, data.killTimeS);
         this.setRuneTooltip(data.usedRunesBreakdown, data.killTimeS);
         this.setPrayerTooltip(data.prayerXpPerSecond, data.ppConsumedPerSecond);
@@ -3950,6 +3954,15 @@ export class App {
         element._tippy.setContent(tooltip);
         element._tippy.disable();
         element._tippy.enable();
+    }
+
+    setDropsTooltip() {
+        this.setTooltipById(
+            `MCS dropChance Output`,
+            this.combatData.dropSelected === 'micsr:none'
+                ? 'Kills multiplied by doubling chance. (includes chance to receive no drops)'
+                : 'Drop chance for selected item.'
+        );
     }
 
     setPrayerTooltip(prayerXpPerSecond: any, ppConsumedPerSecond: any) {
