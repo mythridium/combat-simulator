@@ -357,6 +357,7 @@ import { SimClasses } from 'src/app/sim';
 
                         if (gamemode) {
                             gamemode.hitpointMultiplier = gamemodeData.hitpointMultiplier;
+                            gamemode.hasRegen = gamemodeData.hasRegen;
                         }
                     }
                 });

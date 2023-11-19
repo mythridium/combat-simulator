@@ -118,6 +118,7 @@ export class App {
     trackHistory: any;
     viewedDungeonID?: string;
     zoneInfoCard!: Card;
+    disableOverwrite: boolean;
 
     micsr: MICSR;
     manager: SimManager;
@@ -175,6 +176,7 @@ export class App {
                 scale: scale && isTime
             });
         };
+        this.disableOverwrite = false;
         this.potionTier = 0;
         this.astrologySelected = undefined;
         this.skipConstellations = [0, 2, 7, 11, 12];
@@ -776,14 +778,13 @@ export class App {
         const that = this;
         const saveSlot = this.saveSlots[index];
 
+        if (saveSlot && this.disableOverwrite) {
+            this.import.importSettings(this.import.convertStringToObject(saveSlot.data));
+            return;
+        }
+
         const container = document.createElement('div');
         container.id = 'mcs-save-slot-container';
-
-        const information = document.createElement('div');
-
-        information.textContent = saveSlot
-            ? `This save slot already contains data. Do you want to overwrite this save slot?`
-            : 'There is no data in this save slot. Would you like to save the current settings to this save slot?';
 
         if (saveSlot) {
             const information = document.createElement('div');
@@ -2313,6 +2314,13 @@ export class App {
             this.player.healAfterDeath
         );
         this.simOptionsCard.addToggleRadio('Has Runes', 'hasRunes', this.player, 'hasRunes', this.player.hasRunes);
+        this.simOptionsCard.addToggleRadio(
+            'Disable Save Slot Overwrite',
+            'disableOverwrite',
+            this,
+            'disableOverwrite',
+            this.disableOverwrite
+        );
         // settings export and import
         this.simOptionsCard.container.appendChild(document.createElement('br'));
         this.simOptionsCard.addSectionTitle('Settings Export - Import');
