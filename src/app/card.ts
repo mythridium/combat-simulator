@@ -739,7 +739,9 @@ export class Card {
         buttonText: any,
         buttonCallbacks: ((this: GlobalEventHandlers, ev: MouseEvent) => any)[],
         container = this.container,
-        id = ''
+        id = '',
+        ids: string[] = [],
+        tooltips: string[] = []
     ) {
         let newButton;
         const newCCContainer = document.createElement('div');
@@ -755,6 +757,15 @@ export class Card {
             newButton.style.width = '100%';
             newButton.textContent = buttonText[i];
             newButton.onclick = buttonCallbacks[i];
+
+            if (ids.length) {
+                newButton.id += ` ${ids[i]}`;
+            }
+
+            if (tooltips[i]) {
+                newButton.dataset.tippyContent = tooltips[i];
+            }
+
             newCCContainer.appendChild(newButton);
         }
         container.appendChild(newCCContainer);

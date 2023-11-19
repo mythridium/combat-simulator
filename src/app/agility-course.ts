@@ -423,7 +423,7 @@ export class AgilityCourse {
             this.parent.selectButton(event.currentTarget as HTMLButtonElement);
         }
         // update tool tips
-        this.updateAgilityTooltips(category);
+        setTimeout(() => this.updateAgilityTooltips(category), 10);
         // callback
         this.parent.agilityCourseCallback();
     }
@@ -477,6 +477,6 @@ export class AgilityCourse {
             }
         });
 
-        this.updateAllAgilityTooltips();
+        setTimeout(() => this.updateAllAgilityTooltips(), 10);
     }
 }

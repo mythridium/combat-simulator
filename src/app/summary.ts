@@ -13,6 +13,7 @@ export class Summary {
             titleText: 'Summary',
             html,
             width: 'auto',
+            returnFocus: false,
             customClass: {
                 title: 'swal2-title font-size-lg',
                 confirmButton: 'btn btn-primary m-1 font-size-xs',

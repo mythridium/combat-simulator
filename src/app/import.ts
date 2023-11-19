@@ -385,7 +385,7 @@ export class Import {
             if (itemID === 'melvorD:Empty_Equipment') {
                 continue;
             }
-            this.app.equipItem(slotID, this.micsr.game.items.getObjectByID(itemID), false);
+            this.app.equipItem(slotID, this.micsr.game.items.getObjectByID(itemID), false, true);
         }
 
         if (!this.simPlayer.equipment.slots.Summon1.isEmpty && !this.simPlayer.equipment.slots.Summon2.isEmpty) {
@@ -419,7 +419,7 @@ export class Import {
     }
 
     importStyle(styles: any) {
-        ['melee', 'ranged', 'magic'].forEach(cbStyle => {
+        ['melee', 'ranged', 'magic'].forEach((cbStyle: AttackType) => {
             let attackStyle = this.micsr.game.attackStyles.getObjectByID(styles[cbStyle])!;
 
             if (!attackStyle) {
@@ -427,10 +427,10 @@ export class Import {
             }
 
             const index = this.micsr.attackStylesIdx[attackStyle.id];
-            // @ts-expect-error
-            this.simPlayer.setAttackStyle(cbStyle, attackStyle);
+            this.simPlayer.attackStyles[cbStyle] = attackStyle;
             this.document.getElementById(`MCS ${cbStyle} Style Dropdown`).selectOption(index % 3);
         });
+        this.app.updateCombatStats();
     }
 
     importSpells(spellSelection: IImportSpells) {
@@ -637,7 +637,7 @@ export class Import {
 
         this.app.game.astrology.computeProvidedStats(false);
         this.app.updateAstrologyMods();
-        this.app.updateAstrologyTooltips();
+        setTimeout(() => this.app.updateAstrologyTooltips(), 10);
     }
 
     importTownship(isSolarEclipse: boolean) {
@@ -701,7 +701,7 @@ export class Import {
         }
 
         if (didUpdate) {
-            this.app.updateCartographyTooltips();
+            setTimeout(() => this.app.updateCartographyTooltips(), 10);
             cartography.computeProvidedStats(false);
         }
     }

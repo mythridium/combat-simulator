@@ -36,6 +36,12 @@ import { TabCard } from './tab-card';
 import { Util } from './util';
 import { Summary } from './summary';
 
+interface SaveSlot {
+    index: number;
+    name: string;
+    data: string;
+}
+
 /**
  * Container Class for the Combat Simulator.
  * A single instance of this is initiated on load.
@@ -119,6 +125,10 @@ export class App {
     game: SimGame;
     actualGame: Game;
     initializing: boolean;
+
+    private readonly saveSlotsCount = 5;
+    private readonly saveSlotsKey = 'save-slots';
+    private saveSlots: SaveSlot[] = [];
 
     /**
      * Constructs an instance of mcsApp
@@ -325,6 +335,19 @@ export class App {
     }
 
     async initialize(urls: any, modal: HTMLDivElement) {
+        try {
+            for (let i = 0; i < this.saveSlotsCount; i++) {
+                const saveString: string | null = localStorage.getItem(`${this.saveSlotsKey}-${i}-${currentCharacter}`);
+
+                if (saveString) {
+                    const saveSlot: SaveSlot = JSON.parse(saveString);
+                    this.saveSlots[i] = saveSlot;
+                }
+            }
+        } catch (error) {
+            console.error(`Failed to load save slots`, error);
+        }
+
         // Simulation Object
         this.simulator = new Simulator(this, urls.simulationWorker);
         await this.simulator.createWorkers();
@@ -375,14 +398,14 @@ export class App {
             if ((<any>this.game.currentGamemode).allowAncientRelicDrops) {
                 this.createAncientRelicSelectCards();
             }
-            this.createCartographySelectCards();
+            await Promise.resolve(this.createCartographySelectCards());
         }
 
         this.createPotionSelectCard();
         this.createPetSelectCard();
-        this.createAgilitySelectCard();
+        await Promise.resolve(this.createAgilitySelectCard());
         this.createSlayerSelectCard();
-        this.createAstrologySelectCard();
+        await Promise.resolve(this.createAstrologySelectCard());
         this.createLootOptionsCard();
         this.createSimulationAndExportCard();
         this.createCompareCard();
@@ -439,13 +462,18 @@ export class App {
         this.modalContent.append(this.botContent);
 
         // Finalize tooltips
-        this.tippyInstances = tippy('#mcsModal [data-tippy-content]', this.tippyOptions);
-        this.tippySingleton = tippy.createSingleton(this.tippyInstances, {
-            ...this.tippyOptions
+        await Promise.resolve().then(() => {
+            this.tippyInstances = tippy('#mcsModal [data-tippy-content]', this.tippyOptions);
+            this.tippySingleton = tippy.createSingleton(this.tippyInstances, {
+                ...this.tippyOptions
+            });
         });
-        for (const bar of this.plotter.bars) {
-            this.addNoSingletonTippy(bar, { triggerTarget: bar.parentElement });
-        }
+
+        await Promise.resolve().then(() => {
+            for (const bar of this.plotter.bars) {
+                this.addNoSingletonTippy(bar, { triggerTarget: bar.parentElement });
+            }
+        });
 
         // Setup the default state of the UI
         this.plotter.timeDropdown.selectOption(this.initialTimeUnitIndex);
@@ -453,7 +481,7 @@ export class App {
         this.plotter.petSkillDropdown.parentElement.style.display = 'none';
         document.getElementById(`MCS  Pet (%)/${this.timeShorthand[this.initialTimeUnitIndex]} Label`)!.textContent =
             this.loot.petSkill + ' Pet (%)/' + this.selectedTimeShorthand;
-        this.updateUi();
+        await Promise.resolve(this.updateUi());
         // slayer sim is off by default, so toggle auto slayer off
         this.toggleSlayerSims(!this.slayerToggleState, false);
         // load from local storage
@@ -694,6 +722,7 @@ export class App {
             'MCS_import_set'
         );
         this.equipmentSelectCard.container.appendChild(importSetCCContainer);
+
         // add button to show all modifiers
         const modifierCCContainer = this.equipmentSelectCard.createCCContainer();
         modifierCCContainer.appendChild(
@@ -712,6 +741,138 @@ export class App {
             })
         );
         this.equipmentSelectCard.container.appendChild(summaryCCContainer);
+
+        // import save slots
+        const saveSlotCCContainer = this.equipmentSelectCard.createCCContainer();
+        saveSlotCCContainer.appendChild(this.equipmentSelectCard.createLabel('Save Slot', ''));
+
+        let saveSlotButtonText = [];
+        let saveSlotButtonFunc = [];
+        let saveSlotButtonTooltips = [];
+        let saveSlotButtonIds = [];
+
+        for (let i = 0; i < this.saveSlotsCount; i++) {
+            const saveSlot = this.saveSlots[i];
+
+            saveSlotButtonText.push(`${i + 1}`);
+            saveSlotButtonFunc.push(() => this.showSaveSlotModal(i));
+            saveSlotButtonTooltips.push(saveSlot?.name ?? 'Available');
+            saveSlotButtonIds.push(`save-slot-${i}`);
+        }
+
+        this.equipmentSelectCard.addMultiButton(
+            saveSlotButtonText,
+            saveSlotButtonFunc,
+            saveSlotCCContainer,
+            'MCS-save-slot',
+            saveSlotButtonIds,
+            saveSlotButtonTooltips
+        );
+
+        this.equipmentSelectCard.container.appendChild(saveSlotCCContainer);
+    }
+
+    showSaveSlotModal(index: number) {
+        const that = this;
+        const saveSlot = this.saveSlots[index];
+
+        const container = document.createElement('div');
+        container.id = 'mcs-save-slot-container';
+
+        const information = document.createElement('div');
+
+        information.textContent = saveSlot
+            ? `This save slot already contains data. Do you want to overwrite this save slot?`
+            : 'There is no data in this save slot. Would you like to save the current settings to this save slot?';
+
+        if (saveSlot) {
+            const information = document.createElement('div');
+
+            information.textContent = 'This save slot already contains data. Would you like to load this data?';
+
+            const load = document.createElement('button');
+
+            load.id = 'mcs-load-save-slot-button';
+            load.className = 'btn btn-primary m-3';
+            load.textContent = 'Load Save Slot';
+
+            container.appendChild(information);
+            container.appendChild(load);
+
+            const overwrite = document.createElement('div');
+
+            overwrite.textContent = 'Would you like to overwrite the save slot with the current settings instead?';
+
+            container.appendChild(overwrite);
+        } else {
+            const information = document.createElement('div');
+
+            information.textContent =
+                'There is no data in this save slot. Would you like to save the current settings to this save slot?';
+
+            container.appendChild(information);
+        }
+
+        SwalLocale.fire({
+            titleText: saveSlot?.name ?? `Save Slot ${index + 1}`,
+            customClass: {
+                container: 'mcs-save-slot-swal-container',
+                confirmButton: 'btn btn-primary m-1',
+                cancelButton: 'btn btn-danger m-1'
+            },
+            html: container,
+            showCancelButton: true,
+            confirmButtonText: saveSlot ? 'Overwrite' : 'Save',
+            returnFocus: false,
+            input: 'text',
+            inputValue: saveSlot?.name ?? `Save Slot ${index + 1}`,
+            inputLabel: 'Save Slot Name',
+            inputPlaceholder: `Enter a name to remember this save slot`,
+            inputAttributes: {
+                maxlength: '50'
+            },
+            inputAutoFocus: true,
+            inputValidator(inputValue: string) {
+                if (!inputValue) {
+                    return 'Save slot name cannot be empty.';
+                }
+
+                if (inputValue.length > 50) {
+                    return 'Save slot name cannot be longer then 50 characters.';
+                }
+            },
+            willOpen(popup) {
+                const load = popup.querySelector<HTMLButtonElement>('#mcs-load-save-slot-button');
+
+                if (load) {
+                    load.onclick = () => {
+                        that.import.importSettings(that.import.convertStringToObject(saveSlot.data));
+                        SwalLocale.close();
+                    };
+                }
+            },
+            preConfirm(inputValue: string) {
+                const saveSlot: SaveSlot = {
+                    index,
+                    name: inputValue,
+                    data: that.import.convertObjectToJson(that.import.exportSettings())
+                };
+
+                try {
+                    localStorage.setItem(`${that.saveSlotsKey}-${index}-${currentCharacter}`, JSON.stringify(saveSlot));
+                } catch (error) {
+                    console.error(`Failed to save slot to localstorage.`, error);
+                }
+
+                that.saveSlots[index] = saveSlot;
+
+                const button = document.querySelector<HTMLElement>(`[id='MCS ${index + 1} Button save-slot-${index}']`);
+
+                if (button) {
+                    that.setTooltip(button, inputValue);
+                }
+            }
+        });
     }
 
     createFoodPopup() {
@@ -1130,11 +1291,7 @@ export class App {
     ) {
         const newCard = new Card(this.micsr, this.spellSelectCard.container, '', '100px');
         newCard.addSectionTitle(title);
-        const spellImages = spells.map(
-            spell =>
-                // spell.getMediaURL(spell.media)
-                spell.media
-        );
+        const spellImages = spells.map(spell => spell.media);
         const spellNames = spells.map(spell => spell.localID);
         const spellCallbacks = spells.map(spell => (event: any) => this.spellButtonOnClick(event, spell, spellType));
         const tooltips = spells.map(spell => {
@@ -1791,7 +1948,7 @@ export class App {
 
                 this.game.astrology.computeProvidedStats(false);
                 this.updateCombatStats();
-                this.updateAstrologyTooltips();
+                setTimeout(() => this.updateAstrologyTooltips(), 10);
             };
 
             list.appendChild(item);
@@ -1938,7 +2095,8 @@ export class App {
         this.game.astrology.computeProvidedStats(false);
         this.updateCombatStats();
         this.updateAstrologyMods();
-        this.updateAstrologyTooltips();
+
+        setTimeout(() => this.updateAstrologyTooltips(), 10);
     }
 
     createLootOptionsCard() {
@@ -2723,7 +2881,7 @@ export class App {
     /**
      * Equips an item to an equipment slot
      */
-    equipItem(slotID: any, item: any, updateStats = true) {
+    equipItem(slotID: any, item: any, updateStats = true, skipUnequip = false) {
         const activePrayers = new Set(this.player.activePrayers);
         let slot = EquipmentSlots[slotID] as SlotTypes;
         // determine equipment slot
@@ -2733,19 +2891,22 @@ export class App {
         }
 
         // clear previous item
-        let slots = [slot];
-        if (item.occupiesSlots) {
-            slots = [slot, ...item.occupiesSlots];
-        }
-        slots.forEach(slotToOccupy => {
-            const equipment = this.player.equipment;
-            const prevSlot = equipment['getRootSlot'](slotToOccupy) as SlotTypes;
-            equipment.slots[prevSlot].occupies.forEach((occupied: any) => {
-                this.setEquipmentImage((<any>this.micsr.equipmentSlotData)[occupied].id);
+        if (!skipUnequip) {
+            let slots = [slot];
+            if (item.occupiesSlots) {
+                slots = [slot, ...item.occupiesSlots];
+            }
+            slots.forEach(slotToOccupy => {
+                const equipment = this.player.equipment;
+                const prevSlot = equipment['getRootSlot'](slotToOccupy) as SlotTypes;
+                equipment.slots[prevSlot].occupies.forEach((occupied: any) => {
+                    this.setEquipmentImage((<any>this.micsr.equipmentSlotData)[occupied].id);
+                });
+                this.player.unequipItem(0, prevSlot);
+                this.setEquipmentImage((<any>this.micsr.equipmentSlotData)[prevSlot].id);
             });
-            this.player.unequipItem(0, prevSlot);
-            this.setEquipmentImage((<any>this.micsr.equipmentSlotData)[prevSlot].id);
-        });
+        }
+
         // equip new item
         this.player.equipItem(item, 0, slot);
         this.setEquipmentImage(slotID, item);
@@ -2968,7 +3129,7 @@ export class App {
      * @param {Event} event The change event for a dropdown
      * @param {string} combatType The key of styles to change
      */
-    styleDropdownOnChange(event: any, combatType: any) {
+    styleDropdownOnChange(event: any, combatType: AttackType) {
         let idx = parseInt(event.currentTarget.value);
         if (this.player.attackType === 'magic') {
             idx += 3;
@@ -2976,7 +3137,7 @@ export class App {
         if (this.player.attackType === 'ranged') {
             idx += 5;
         }
-        this.player['setAttackStyle'](combatType, this.micsr.game.attackStyles.allObjects[idx]);
+        this.player.attackStyles[combatType] = this.micsr.game.attackStyles.allObjects[idx];
         this.updateCombatStats();
     }
 
@@ -3050,8 +3211,11 @@ export class App {
 
         if (relicChanged) {
             this.updateCombatStats();
-            this.agilityCourse.updateAllAgilityTooltips();
-            this.updateAstrologyTooltips();
+
+            setTimeout(() => {
+                this.agilityCourse.updateAllAgilityTooltips();
+                this.updateAstrologyTooltips();
+            }, 10);
         }
     }
 
@@ -3424,7 +3588,8 @@ export class App {
             this.player.petUnlocked.push(pet);
             this.selectButton(event.currentTarget);
         }
-        this.updateCartographyTooltips(pet);
+
+        setTimeout(() => this.updateCartographyTooltips(pet), 10);
         this.updateCombatStats();
     }
 

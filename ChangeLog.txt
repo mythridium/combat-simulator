@@ -1,3 +1,13 @@
+v2.4.2
+    improved ui performance when importing equipment sets
+    improved ui performance during character load
+    slightly increased the font size of the summary screen
+    added save slots which allow you to save and quickly switch between combat sim setups
+        you have 5 slots available to use
+        these are persisted per character locally on the device only
+        save slots can be named so you can remember what is saved in the slot
+        basically functions the same as export/import settings
+
 v2.4.1
     when no drop is selected, the drops calculation will now show kills * drop doubling (also considers chance for no drops modifier)
 
