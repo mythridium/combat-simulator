@@ -1,3 +1,6 @@
+v2.4.4
+    fixed incorrect attack style being used when switching weapon type after import
+
 v2.4.3
     added a new option in the settings tab for disabling the save slot overwrite prompt, clicking a save slot with data already saved will load the data without any prompts, to save over an existing save slot the setting needs to be disabled
 

@@ -3139,10 +3139,10 @@ export class App {
      */
     styleDropdownOnChange(event: any, combatType: AttackType) {
         let idx = parseInt(event.currentTarget.value);
-        if (this.player.attackType === 'magic') {
+        if (combatType === 'magic') {
             idx += 3;
         }
-        if (this.player.attackType === 'ranged') {
+        if (combatType === 'ranged') {
             idx += 5;
         }
         this.player.attackStyles[combatType] = this.micsr.game.attackStyles.allObjects[idx];
