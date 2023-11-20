@@ -1,3 +1,6 @@
+v2.4.6
+    fixed out of combat stat icons being aligned with the incorrect line items
+
 v2.4.5
     fixed freezing touch body being sorted into melee instead of magic
 

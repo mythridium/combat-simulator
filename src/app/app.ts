@@ -1070,6 +1070,7 @@ export class App {
             '',
             '',
             '',
+            '',
             this.media.attack,
             this.media.ranged,
             this.media.magic,
