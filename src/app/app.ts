@@ -276,7 +276,8 @@ export class App {
             [this.micsr.skillIDs.Magic]: [
                 'melvorF:Slayer_Wizard_Hat_Basic',
                 'melvorF:Slayer_Wizard_Robes_Basic',
-                'melvorF:Enchanted_Shield'
+                'melvorF:Enchanted_Shield',
+                'melvorTotH:Freezing_Touch_Body'
             ]
         };
 
@@ -2476,6 +2477,14 @@ export class App {
         if (this.force[skillID].includes(item.id)) {
             return true;
         }
+
+        const forcedItems = Object.values<string[]>(this.force).flat();
+
+        // the item has already been forced, otherwise ignore it
+        if (forcedItems.includes(item.id)) {
+            return false;
+        }
+
         return this.getItemLevelReq(item, skillID) > 0;
     }
 
