@@ -33,6 +33,7 @@ export class CombatData {
         minHit: number;
         maxHit: number;
         summoningMaxHit: number;
+        summoningBarrierMaxHit: number;
         maxAttackRoll: number;
         maxDefRoll: number;
         maxRngDefRoll: number;
@@ -82,6 +83,7 @@ export class CombatData {
             minHit: 0,
             maxHit: 0,
             summoningMaxHit: 0,
+            summoningBarrierMaxHit: 0,
             maxAttackRoll: 0,
             maxDefRoll: 0,
             maxRngDefRoll: 0,
@@ -142,7 +144,12 @@ export class CombatData {
         this.combatStats.minHit = this.player.stats.minHit;
 
         // max summ roll
-        this.combatStats.summoningMaxHit = this.player.stats.summoningMaxHit;
+        const maxHit = this.player.stats.summoningMaxHit;
+
+        // @ts-ignore
+        this.combatStats.summoningMaxHit = this.player.getSummonMaxHitWithoutBarrier(maxHit);
+        // @ts-ignore
+        this.combatStats.summoningBarrierMaxHit = Math.floor(this.player.modifySummonAttackDamage(maxHit, true));
 
         // max defence roll
         this.combatStats.maxDefRoll = this.player.stats.evasion.melee;

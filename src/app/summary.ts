@@ -110,7 +110,7 @@ export class Summary {
         card.addSectionTitle('Out-of-Combat Stats');
 
         for (const { label, value, img } of stats) {
-            card.addNumberOutput(label, value, 20, img ?? '', `MCS Summary ${label} CS Output`);
+            card.addNumberOutput(label, value, 16, img ?? '', `MCS Summary ${label} CS Output`);
         }
 
         const food = this.app.player.food?.currentSlot?.item;

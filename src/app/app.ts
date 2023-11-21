@@ -263,7 +263,8 @@ export class App {
             standardStar: 'assets/media/skills/astrology/star_standard.svg',
             uniqueStar: 'assets/media/skills/astrology/star_unique.svg',
             solarEclipse: 'assets/media/skills/township/eclipse.png',
-            autoEat: 'assets/media/shop/autoeat.svg'
+            autoEat: 'assets/media/shop/autoeat.svg',
+            barrier: 'assets/media/skills/combat/barrier.svg'
         };
 
         // default spell is wind strike
@@ -1052,6 +1053,7 @@ export class App {
             'Min Hit',
             'Max Hit',
             'Summoning Max Hit',
+            'Barrier Max Hit',
             'Summoning Interval',
             'Accuracy Rating',
             'Evasion Rating',
@@ -1068,7 +1070,8 @@ export class App {
             '',
             '',
             '',
-            '',
+            this.media.summoning,
+            this.media.barrier,
             '',
             '',
             this.media.attack,
@@ -1084,6 +1087,7 @@ export class App {
             'minHit',
             'maxHit',
             'summoningMaxHit',
+            'summoningBarrierMaxHit',
             'summoningInterval',
             'maxAttackRoll',
             'maxDefRoll',
@@ -1100,7 +1104,7 @@ export class App {
             this.combatStatCard.addNumberOutput(
                 combatStatNames[i],
                 0,
-                20,
+                16,
                 combatStatIcons[i] !== '' ? combatStatIcons[i] : '',
                 `MCS ${this.combatStatKeys[i]} CS Output`
             );

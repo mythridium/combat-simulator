@@ -1,3 +1,8 @@
+v2.4.7
+    added summoning max barrier hit to out of combat stats
+    added icons for summoning max hit and barrier max hit line items
+    slightly reduced the icon size for out of combat stats
+
 v2.4.6
     fixed out of combat stat icons being aligned with the incorrect line items
 
