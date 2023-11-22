@@ -402,14 +402,14 @@ export class App {
             if ((<any>this.game.currentGamemode).allowAncientRelicDrops) {
                 this.createAncientRelicSelectCards();
             }
-            await Promise.resolve(this.createCartographySelectCards());
+            await this.runAsync(() => this.createCartographySelectCards());
         }
 
         this.createPotionSelectCard();
         this.createPetSelectCard();
-        await Promise.resolve(this.createAgilitySelectCard());
+        await this.runAsync(() => this.createAgilitySelectCard());
         this.createSlayerSelectCard();
-        await Promise.resolve(this.createAstrologySelectCard());
+        await this.runAsync(() => this.createAstrologySelectCard());
         this.createLootOptionsCard();
         this.createSimulationAndExportCard();
         this.createCompareCard();
@@ -466,14 +466,14 @@ export class App {
         this.modalContent.append(this.botContent);
 
         // Finalize tooltips
-        await Promise.resolve().then(() => {
+        await this.runAsync(() => {
             this.tippyInstances = tippy('#mcsModal [data-tippy-content]', this.tippyOptions);
             this.tippySingleton = tippy.createSingleton(this.tippyInstances, {
                 ...this.tippyOptions
             });
         });
 
-        await Promise.resolve().then(() => {
+        await this.runAsync(() => {
             for (const bar of this.plotter.bars) {
                 this.addNoSingletonTippy(bar, { triggerTarget: bar.parentElement });
             }
@@ -485,7 +485,7 @@ export class App {
         this.plotter.petSkillDropdown.parentElement.style.display = 'none';
         document.getElementById(`MCS  Pet (%)/${this.timeShorthand[this.initialTimeUnitIndex]} Label`)!.textContent =
             this.loot.petSkill + ' Pet (%)/' + this.selectedTimeShorthand;
-        await Promise.resolve(this.updateUi());
+        await this.runAsync(() => this.updateUi());
         // slayer sim is off by default, so toggle auto slayer off
         this.toggleSlayerSims(!this.slayerToggleState, false);
         // load from local storage
@@ -1050,11 +1050,12 @@ export class App {
         this.combatStatCard.addSectionTitle('Out-of-Combat Stats');
         const combatStatNames = [
             'Attack Interval',
+            'Summoning Interval',
+            'Respawn Interval',
             'Min Hit',
             'Max Hit',
             'Summoning Max Hit',
             'Barrier Max Hit',
-            'Summoning Interval',
             'Accuracy Rating',
             'Evasion Rating',
             'Evasion Rating',
@@ -1062,7 +1063,6 @@ export class App {
             'Max Hitpoints',
             'Damage Reduction',
             'Auto Eat Threshold',
-            'Respawn Interval',
             'Drop Doubling (%)',
             'GP Multiplier'
         ];
@@ -1070,9 +1070,10 @@ export class App {
             '',
             '',
             '',
+            '',
+            '',
             this.media.summoning,
             this.media.barrier,
-            '',
             '',
             this.media.attack,
             this.media.ranged,
@@ -1080,15 +1081,17 @@ export class App {
             this.media.hitpoints,
             '',
             '',
+            '',
             ''
         ];
         this.combatStatKeys = [
             'attackInterval',
+            'summoningInterval',
+            'respawnInterval',
             'minHit',
             'maxHit',
             'summoningMaxHit',
             'summoningBarrierMaxHit',
-            'summoningInterval',
             'maxAttackRoll',
             'maxDefRoll',
             'maxRngDefRoll',
@@ -1096,7 +1099,6 @@ export class App {
             'maxHitpoints',
             'damageReduction',
             'autoEatThreshold',
-            'respawnInterval',
             'lootBonusPercent',
             'gpBonus'
         ];
@@ -4186,52 +4188,67 @@ export class App {
      * Updates the zone info card text fields
      */
     updateZoneInfoCard() {
-        if (this.barSelected) {
+        const data = this.getZoneInfoCardData();
+
+        if (data) {
             this.subInfoCard.container.style.display = '';
             this.infoPlaceholder.style.display = 'none';
-            if (!this.isViewingDungeon && this.barIsDungeon(this.selectedBar)) {
-                const dungeonID = this.barMonsterIDs[this.selectedBar];
-                this.setZoneInfoCard(
-                    this.getDungeonName(dungeonID),
-                    dungeonID,
-                    this.micsr.dungeons.getObjectByID(dungeonID)!.media,
-                    this.simulator.dungeonSimData[dungeonID]
-                );
-            } else if (!this.isViewingDungeon && this.barIsTask(this.selectedBar)) {
-                const taskID = this.barMonsterIDs[this.selectedBar];
-                this.setZoneInfoCard(
-                    taskID,
-                    taskID,
-                    this.micsr.game.slayer.media,
-                    this.simulator.slayerSimData[taskID],
-                    this.simulator.slayerTaskMonsters[taskID]
-                );
-            } else {
-                let monsterID;
-                let dungeonID;
-                if (this.isViewingDungeon) {
-                    dungeonID = this.viewedDungeonID!;
-                    monsterID = this.getSelectedDungeonMonsterID();
-                } else {
-                    monsterID = this.barMonsterIDs[this.selectedBar];
-                }
-                this.setZoneInfoCard(
-                    this.getMonsterName(monsterID),
-                    monsterID,
-                    this.micsr.monsters.getObjectByID(monsterID)!.media,
-                    this.simulator.monsterSimData[
-                        this.simulator.simID(
-                            monsterID,
-                            // @ts-ignore
-                            dungeonID >= this.micsr.dungeonCount ? undefined : dungeonID
-                        )
-                    ]
-                );
-            }
+
+            this.setZoneInfoCard(data.title, data.id, data.media, data.data, data.monsters);
         } else {
             document.getElementById('MCS Zone Info Title').textContent = 'Monster/Dungeon Info.';
             this.subInfoCard.container.style.display = 'none';
             this.infoPlaceholder.style.display = '';
+        }
+    }
+
+    getZoneInfoCardData() {
+        if (!this.barSelected) {
+            return;
+        }
+
+        if (!this.isViewingDungeon && this.barIsDungeon(this.selectedBar)) {
+            const dungeonID = this.barMonsterIDs[this.selectedBar];
+
+            return {
+                title: this.getDungeonName(dungeonID),
+                id: dungeonID,
+                media: this.micsr.dungeons.getObjectByID(dungeonID)!.media,
+                data: this.simulator.dungeonSimData[dungeonID]
+            };
+        } else if (!this.isViewingDungeon && this.barIsTask(this.selectedBar)) {
+            const taskID = this.barMonsterIDs[this.selectedBar];
+
+            return {
+                title: taskID,
+                id: taskID,
+                media: this.micsr.game.slayer.media,
+                data: this.simulator.slayerSimData[taskID],
+                monsters: this.simulator.slayerTaskMonsters[taskID]
+            };
+        } else {
+            let monsterID;
+            let dungeonID;
+
+            if (this.isViewingDungeon) {
+                dungeonID = this.viewedDungeonID!;
+                monsterID = this.getSelectedDungeonMonsterID();
+            } else {
+                monsterID = this.barMonsterIDs[this.selectedBar];
+            }
+
+            return {
+                title: this.getMonsterName(monsterID),
+                id: monsterID,
+                media: this.micsr.monsters.getObjectByID(monsterID)!.media,
+                data: this.simulator.monsterSimData[
+                    this.simulator.simID(
+                        monsterID,
+                        // @ts-ignore
+                        dungeonID >= this.micsr.dungeonCount ? undefined : dungeonID
+                    )
+                ]
+            };
         }
     }
 
@@ -4265,6 +4282,17 @@ export class App {
      */
     enableStyleDropdown(combatType: any) {
         document.getElementById(`MCS ${combatType} Style Dropdown`).style.display = 'inline';
+    }
+
+    runAsync(callback: Function) {
+        // run during micro tasks
+        return new Promise<void>(resolve => {
+            // move it to the next call stack in 10ms
+            setTimeout(() => {
+                callback();
+                resolve();
+            }, 10);
+        });
     }
 
     /**

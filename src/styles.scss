@@ -55,6 +55,17 @@ body.darkMode {
         margin: 0 -2px;
     }
 
+    .mcs-summary-general,
+    .mcs-summary-runes-section {
+        .mcs-summary-image-label {
+            margin: 3px 0;
+        }
+    }
+
+    .mcs-summary-runes-title {
+        font-size: 14px;
+    }
+
     .mcs-summary-out-of-combat-stats-container {
         display: flex;
         flex-direction: column;

@@ -1,3 +1,8 @@
+v2.4.8
+    re-ordered interval out of combat stats
+    added rune breakdown to summary
+    improved ui performance when loading into character
+
 v2.4.7
     added summoning max barrier hit to out of combat stats
     added icons for summoning max hit and barrier max hit line items

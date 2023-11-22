@@ -77,7 +77,7 @@ export interface ISimResult {
     ppConsumedPerSecond: number;
     ammoUsedPerSecond: number;
     runesUsedPerSecond: number;
-    usedRunesBreakdown: any;
+    usedRunesBreakdown: { [index: string]: number };
     combinationRunesUsedPerSecond: number;
     usedConsumablesPerSecond: number;
     potionsUsedPerSecond: number;

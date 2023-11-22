@@ -115,29 +115,28 @@ export class Summary {
 
         const food = this.app.player.food?.currentSlot?.item;
         const isEmpty = food?.localID === 'Empty_Food';
-
-        const foodContainer = this.addSimpleGroup(card, isEmpty ? 'No Food' : food.name, [
-            isEmpty ? this.app.media.cooking : food.media
-        ]);
-        foodContainer.container.className += ' mt-2';
-
         const autoEatText = document.querySelector<HTMLDivElement>('[id="MCS Auto Eat Tier Dropdown"')?.innerText;
-        this.addSimpleGroup(card, autoEatText ?? 'No Auto Eat', [this.app.media.autoEat]);
 
-        this.addSimpleGroup(card, 'Manually Eating', [
-            this.app.player.isManualEating ? this.micsr.icons.check : this.micsr.icons.cancel,
-            this.app.media.cooking
+        const general = this.addComplexGroup(card, [
+            this.imageWithLabel(card, isEmpty ? 'No Food' : food.name, [isEmpty ? this.app.media.cooking : food.media]),
+            this.imageWithLabel(card, autoEatText ?? 'No Auto Eat', [this.app.media.autoEat]),
+            this.imageWithLabel(card, 'Manually Eating', [
+                this.app.player.isManualEating ? this.micsr.icons.check : this.micsr.icons.cancel,
+                this.app.media.cooking
+            ]),
+            this.imageWithLabel(card, 'Slayer Task', [
+                this.app.player.isSlayerTask ? this.micsr.icons.check : this.micsr.icons.cancel,
+                this.app.media.slayer
+            ]),
+            this.imageWithLabel(card, 'Solar Eclipse', [
+                this.app.player.isSolarEclipse ? this.micsr.icons.check : this.micsr.icons.cancel,
+                this.app.media.solarEclipse
+            ])
         ]);
 
-        this.addSimpleGroup(card, 'Slayer Task', [
-            this.app.player.isSlayerTask ? this.micsr.icons.check : this.micsr.icons.cancel,
-            this.app.media.slayer
-        ]);
+        general.container.className += ' mcs-summary-general mt-2';
 
-        this.addSimpleGroup(card, 'Solar Eclipse', [
-            this.app.player.isSolarEclipse ? this.micsr.icons.check : this.micsr.icons.cancel,
-            this.app.media.solarEclipse
-        ]);
+        this.runes(card);
 
         const version = card.createLabel(this.micsr.version);
 
@@ -373,6 +372,48 @@ export class Summary {
         return group;
     }
 
+    private runes(card: Card) {
+        const zoneData = this.app.getZoneInfoCardData();
+
+        if (!zoneData?.data) {
+            return;
+        }
+
+        const { data } = zoneData;
+
+        if (!data.simSuccess || !Object.keys(data.usedRunesBreakdown).length) {
+            return;
+        }
+
+        let dataMultiplier = this.app.timeMultiplier;
+
+        if (dataMultiplier === -1) {
+            dataMultiplier = data.killTimeS;
+        }
+
+        const title = document.createElement('div');
+
+        title.textContent = `Runes / ${this.app.selectedTime}`;
+        title.className = 'mcs-summary-runes-title';
+
+        const group = this.group();
+
+        group.container.className += ' mcs-summary-runes-section';
+
+        for (const id in data.usedRunesBreakdown) {
+            const rune = this.app.game.items.getObjectByID(id)!;
+
+            group.add(
+                this.imageWithLabel(card, numberWithCommas((data.usedRunesBreakdown[id] * dataMultiplier).toFixed(2)), [
+                    rune.media
+                ])
+            );
+        }
+
+        card.container.appendChild(title);
+        card.container.appendChild(group.container);
+    }
+
     private cartography(card: Card) {
         if (!cloudManager.hasAoDEntitlement) {
             return;
@@ -435,6 +476,14 @@ export class Summary {
 
     private addSimpleGroup(card: Card, name: string, media: string[]) {
         const group = this.group(undefined, [this.imageWithLabel(card, name, media)]);
+
+        card.container.appendChild(group.container);
+
+        return group;
+    }
+
+    private addComplexGroup(card: Card, elements: HTMLDivElement[]) {
+        const group = this.group(undefined, elements);
 
         card.container.appendChild(group.container);
 
