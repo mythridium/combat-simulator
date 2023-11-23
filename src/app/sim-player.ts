@@ -53,6 +53,7 @@ export class SimPlayer extends Player {
     hasRunes: boolean;
     healAfterDeath: boolean;
     highestDamageTaken: any;
+    highestReflectDamageTaken: number;
     isManualEating: any;
     isSolarEclipse: boolean;
     isSynergyUnlocked: boolean;
@@ -74,6 +75,7 @@ export class SimPlayer extends Player {
     usedConsumables: number;
     usedRunes: { [index: string]: number };
     monsterSpawnTimer: number;
+    _isAttackingEnemy = false;
 
     micsr: MICSR;
 
@@ -127,6 +129,7 @@ export class SimPlayer extends Player {
             Summon2: 0
         };
         this.highestDamageTaken = 0;
+        this.highestReflectDamageTaken = 0;
         this.monsterSpawnTimer = this.baseSpawnInterval;
         // remove standard spell selection
         this.spellSelection.standard = undefined;
@@ -321,6 +324,7 @@ export class SimPlayer extends Player {
             Summon2: 0
         };
         this.highestDamageTaken = 0;
+        this.highestReflectDamageTaken = 0;
         this.lowestHitpoints = this.stats.maxHitpoints;
         // hack to avoid auto eating infinite birthday cakes
         const autoHealAmt = Math.floor(
@@ -373,6 +377,7 @@ export class SimPlayer extends Player {
             usedPrayerPoints: this.usedPrayerPoints / seconds,
             usedSummoningCharges: usedSummoningCharges / seconds,
             highestDamageTaken: this.highestDamageTaken,
+            highestReflectDamageTaken: this.highestReflectDamageTaken,
             lowestHitpoints: this.lowestHitpoints
         };
     }
@@ -651,9 +656,28 @@ export class SimPlayer extends Player {
             (allowMagic && !this.usingAncient) || this.equipment.checkForItemID('melvorTotH:Voodoo_Trinket');
     }
 
+    attack(target: Character, attack: SpecialAttack): number {
+        this._isAttackingEnemy = true;
+
+        const damage = super.attack(target, attack);
+
+        this._isAttackingEnemy = false;
+
+        return damage;
+    }
+
     damage(amount: number, source: SplashType, thieving?: boolean): void {
         super.damage(amount, source);
-        this.highestDamageTaken = Math.max(this.highestDamageTaken, amount);
+
+        if (
+            (this._isAttackingEnemy && !this.target.isAttacking) ||
+            (this._isAttackingEnemy && this.target.isAttacking && this.attackCount === 0)
+        ) {
+            this.highestReflectDamageTaken = Math.max(this.highestReflectDamageTaken, amount);
+        } else {
+            this.highestDamageTaken = Math.max(this.highestDamageTaken, amount);
+        }
+
         this.lowestHitpoints = Math.min(this.lowestHitpoints, this.hitpoints);
     }
 

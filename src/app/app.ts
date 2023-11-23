@@ -199,6 +199,7 @@ export class App {
         // survivability
         addPlotOption('Estimated Death Rate', false, 'deathRate', 'Est. Death Rate');
         addPlotOption('Highest Hit Taken', false, 'highestDamageTaken', 'Highest Hit Taken');
+        addPlotOption('Highest Reflect Taken', false, 'highestReflectDamageTaken', 'Highest Reflect Taken');
         addPlotOption('Lowest Hitpoints', false, 'lowestHitpoints', 'Lowest Hitpoints');
         // kill time
         addPlotOption('Average Kill Time (s)', false, 'killTimeS', 'Kill Time(s)');
@@ -4101,6 +4102,12 @@ export class App {
             });
 
             isNearDeath = monsters.some((data: ISimData) => data.highestDamageTaken >= data.lowestHitpoints);
+        }
+
+        if (data.highestReflectDamageTaken >= this.player.stats.maxHitpoints) {
+            document.getElementById('MCS highestReflectDamageTaken Output').style.color = 'orange';
+        } else {
+            document.getElementById('MCS highestReflectDamageTaken Output').style.color = '';
         }
 
         if (isNearDeath) {

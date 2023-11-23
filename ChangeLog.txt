@@ -1,3 +1,11 @@
+v2.4.9
+    slightly reduced the font size of the out of combat stats and the simulation results line items
+    [EXPERIMENTAL] highest hit taken line item no longer includes damage inflicted by the player to themself
+    [EXPERIMENTAL] added a new line item for highest reflect taken
+        this line item includes all damage that the player inflicts to themself, such as confusion, reflect, frostburn, lava lake area effect, etc
+        reflect damage is particularly difficult to detect and to split apart from damage taken from enemies
+        please report inaccuracies and note that this line item may need to be removed if it isn't possible to fix
+
 v2.4.8
     re-ordered interval out of combat stats
     added rune breakdown to summary

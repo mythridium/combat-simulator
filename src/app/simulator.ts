@@ -1246,6 +1246,7 @@ export class Simulator {
         // not time-weighted averages
         averageData.deathRate = 0;
         averageData.highestDamageTaken = 0;
+        averageData.highestReflectDamageTaken = 0;
         averageData.lowestHitpoints = Number.MAX_SAFE_INTEGER;
         averageData.killTimeS = 0;
         averageData.simulationTime = 0;
@@ -1261,6 +1262,10 @@ export class Simulator {
                 averageData.highestDamageTaken = Math.max(
                     averageData.highestDamageTaken,
                     monsterData.highestDamageTaken
+                );
+                averageData.highestReflectDamageTaken = Math.max(
+                    averageData.highestReflectDamageTaken,
+                    monsterData.highestReflectDamageTaken
                 );
                 averageData.lowestHitpoints = Math.min(averageData.lowestHitpoints, monsterData.lowestHitpoints);
                 averageData.killTimeS += monsterData.killTimeS;

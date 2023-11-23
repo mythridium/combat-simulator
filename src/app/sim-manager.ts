@@ -44,6 +44,7 @@ export interface ISimGains {
     gainedPrayerPoints: number;
     usedSummoningCharges: number;
     highestDamageTaken: number;
+    highestReflectDamageTaken: number;
     lowestHitpoints: number;
 }
 
@@ -86,6 +87,7 @@ export interface ISimResult {
     // survivability
     deathRate: number;
     highestDamageTaken: number;
+    highestReflectDamageTaken: number;
     lowestHitpoints: number;
     // kill time
     killTimeS: number;
@@ -247,6 +249,7 @@ export class SimManager extends CombatManager {
             // survivability
             deathRate: deathRate,
             highestDamageTaken: gps.highestDamageTaken,
+            highestReflectDamageTaken: gps.highestReflectDamageTaken,
             lowestHitpoints: gps.lowestHitpoints,
             // kill time
             killTimeS: killTimeS,
