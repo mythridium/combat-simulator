@@ -61,6 +61,7 @@ export class Plotter {
     xAxisImages: any;
     yAxis: any;
     micsr: MICSR;
+    search: HTMLInputElement;
 
     /**
      * Consctructs an instance of the plotting class
@@ -119,7 +120,7 @@ export class Plotter {
         this.barBottomLength.push(this.micsr.slayerTaskData.length);
         totBars += this.micsr.slayerTaskData.length;
         for (const slayerTask of this.micsr.slayerTaskData) {
-            this.barNames.push(slayerTask.display);
+            this.barNames.push(`${slayerTask.display} Slayer Tasks`);
             this.barImageSrc.push(this.micsr.game.slayer.media);
         }
 
@@ -136,9 +137,9 @@ export class Plotter {
         plotHeaderSelects.className = 'd-flex mr-auto';
         this.plotHeader.appendChild(plotHeaderSelects);
 
-        const test = new Card(this.micsr, plotHeaderSelects, '', '150px', false, '', 'plot-type-header-container');
+        const filters = new Card(this.micsr, plotHeaderSelects, '', '150px', false, '', 'plot-type-header-container');
 
-        const { dropdown: skillTypeSelect } = test.addDropdown(
+        const { dropdown: skillTypeSelect } = filters.addDropdown(
             'Pets',
             this.parent.skillKeys,
             this.parent.skillKeys,
@@ -147,19 +148,56 @@ export class Plotter {
 
         this.petSkillDropdown = skillTypeSelect;
 
-        const { dropdown: plotTypeSelect } = test.addDropdown(
+        filters.addDropdown(
             'PlotType',
             this.parent.plotTypes.map((t: any) => t.option),
             this.parent.plotTypes.map((t: any) => t.value),
             (event: any) => this.parent.plottypeDropdownOnChange(event)
         );
 
-        const { dropdown: timeDropdown } = test.addDropdown(
+        const { dropdown: timeDropdown } = filters.addDropdown(
             'Time',
             this.parent.timeOptions.map((t: any) => t),
             this.parent.timeOptions.map((t: any, index: number) => this.parent.timeMultipliers[index]),
             (event: any) => this.parent.timeUnitDropdownOnChange(event)
         );
+
+        // custom search for plotter as it breaks the mold
+        this.search = document.createElement('input');
+
+        this.search.id = 'mcs-filter-plotter';
+        this.search.type = 'text';
+        this.search.className = `search-input form-control form-control-sm my-2 mx-1 w-100`;
+        this.search.placeholder = 'Highlight Targets';
+
+        this.search.oninput = event => {
+            let items = this.bars.map((bar: any, index: number) => ({ index, bar }));
+
+            if (this.parent.isViewingDungeon) {
+                const selection = this.parent.getMonsterList(this.parent.viewedDungeonID);
+                const indices = selection.map((_monster, index) => this.bars.length - index - 1);
+
+                items = [];
+
+                for (const index of indices) {
+                    items.push({ index, bar: this.bars[index] });
+                }
+            }
+
+            for (const { index, bar } of items) {
+                // @ts-ignore
+                const value = event?.target?.value;
+                const name = this.getName(index);
+
+                if (value && name && name.toLowerCase().includes(value.toLowerCase())) {
+                    bar.parentElement.style.background = 'rgba(255, 255, 255, 0.5)';
+                } else {
+                    bar.parentElement.style.background = '';
+                }
+            }
+        };
+
+        filters.container.appendChild(this.search);
 
         this.timeDropdown = timeDropdown;
 
@@ -267,10 +305,14 @@ export class Plotter {
     addToggles(card: any) {
         // Add inspection buttons
         this.inspectButton = card.addButton('Inspect Dungeon', () => {
+            this.search.value = '';
+            this.search.dispatchEvent(new Event('input', { bubbles: true }));
             this.parent.inspectDungeonOnClick();
         });
         this.inspectButton.style.display = 'none';
         this.stopInspectButton = card.addButton('Stop Inspecting', () => {
+            this.search.value = '';
+            this.search.dispatchEvent(new Event('input', { bubbles: true }));
             this.parent.stopInspectOnClick();
         });
         this.stopInspectButton.style.display = 'none';
@@ -368,20 +410,7 @@ export class Plotter {
                 tooltipText = Util.mcsFormatNum(barData[dataIndex], 4);
             }
 
-            let barName = '';
-            if (this.parent.isViewingDungeon) {
-                const selection = this.parent.getMonsterList(this.parent.viewedDungeonID);
-                const monster = selection[barIndex + selection.length - this.bars.length];
-                barName = monster.name;
-            } else {
-                if (this.parent.barIsDungeon(barIndex)) {
-                    barName = this.micsr.dungeons.getObjectByID(this.parent.barMonsterIDs[barIndex])!.name;
-                } else if (this.parent.barIsTask(barIndex)) {
-                    barName = `${this.parent.barMonsterIDs[barIndex]} Tasks`;
-                } else {
-                    barName = this.micsr.monsters.getObjectByID(this.parent.barMonsterIDs[barIndex])!.name;
-                }
-            }
+            let barName = this.getName(barIndex);
             // open tooltip and set tooltip title
             let tooltip = `<div class="text-center">${barName}`;
             // set value if available
@@ -435,6 +464,24 @@ export class Plotter {
                 this.tickText[i].style.display = 'none';
             }
         }
+    }
+
+    private getName(barIndex: number) {
+        let barName = '';
+        if (this.parent.isViewingDungeon) {
+            const selection = this.parent.getMonsterList(this.parent.viewedDungeonID);
+            const monster = selection[barIndex + selection.length - this.bars.length];
+            barName = monster.name;
+        } else {
+            if (this.parent.barIsDungeon(barIndex)) {
+                barName = this.micsr.dungeons.getObjectByID(this.parent.barMonsterIDs[barIndex])!.name;
+            } else if (this.parent.barIsTask(barIndex)) {
+                barName = `${this.parent.barMonsterIDs[barIndex]} Tasks`;
+            } else {
+                barName = this.micsr.monsters.getObjectByID(this.parent.barMonsterIDs[barIndex])!.name;
+            }
+        }
+        return barName;
     }
 
     /**

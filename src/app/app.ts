@@ -1152,9 +1152,15 @@ export class App {
             undefined,
             'mcs-simulation-results-container'
         );
-        this.subInfoCard.addImage(this.media.combat, 48, 'MCS Info Image');
+        const monsterImage = this.subInfoCard.addImage(this.media.combat, 48, 'MCS Info Image');
+        const combatStyle = document.createElement('img');
+        combatStyle.style.display = 'none';
+        combatStyle.id = 'mcs-combat-style-info';
+        monsterImage.parentElement.id = 'mcs-monster-info-image';
+        monsterImage.parentElement.prepend(combatStyle);
         this.failureLabel = this.subInfoCard.addInfoText('');
         this.failureLabel.style.color = 'red';
+        this.failureLabel.style.margin = '10px auto';
         const zoneInfoLabelNames = [];
         for (let i = 0; i < this.plotTypes.length; i++) {
             if (this.plotTypes[i].isTime) {
@@ -4079,9 +4085,20 @@ export class App {
         return '';
     }
 
-    setZoneInfoCard(title: any, id: any, media: any, data: any, monsterData?: any) {
+    setZoneInfoCard(title: any, media: any, data: any, combatStyle?: AttackType | 'random', monsterData?: any) {
         document.getElementById('MCS Zone Info Title').textContent = `${title}`;
         (document.getElementById('MCS Info Image') as any).src = media;
+
+        if (combatStyle) {
+            const icon = `assets/media/${MonsterSelectTableElement.attackTypeMedia[combatStyle]}.svg`;
+            const img = <HTMLImageElement>document.getElementById('mcs-combat-style-info');
+            img.src = icon;
+            img.style.display = 'block';
+        } else {
+            const img = <HTMLImageElement>document.getElementById('mcs-combat-style-info');
+            img.style.display = 'none';
+        }
+
         this.failureLabel.textContent = this.getSimFailureText(data);
         const updateInfo = data.simSuccess;
         for (let i = 0; i < this.plotTypes.length; i++) {
@@ -4201,7 +4218,7 @@ export class App {
             this.subInfoCard.container.style.display = '';
             this.infoPlaceholder.style.display = 'none';
 
-            this.setZoneInfoCard(data.title, data.id, data.media, data.data, data.monsters);
+            this.setZoneInfoCard(data.title, data.media, data.data, data.combatStyle, data.monsters);
         } else {
             document.getElementById('MCS Zone Info Title').textContent = 'Monster/Dungeon Info.';
             this.subInfoCard.container.style.display = 'none';
@@ -4219,7 +4236,6 @@ export class App {
 
             return {
                 title: this.getDungeonName(dungeonID),
-                id: dungeonID,
                 media: this.micsr.dungeons.getObjectByID(dungeonID)!.media,
                 data: this.simulator.dungeonSimData[dungeonID]
             };
@@ -4228,7 +4244,6 @@ export class App {
 
             return {
                 title: taskID,
-                id: taskID,
                 media: this.micsr.game.slayer.media,
                 data: this.simulator.slayerSimData[taskID],
                 monsters: this.simulator.slayerTaskMonsters[taskID]
@@ -4244,10 +4259,12 @@ export class App {
                 monsterID = this.barMonsterIDs[this.selectedBar];
             }
 
+            const monster = this.micsr.monsters.getObjectByID(monsterID)!;
+
             return {
                 title: this.getMonsterName(monsterID),
-                id: monsterID,
-                media: this.micsr.monsters.getObjectByID(monsterID)!.media,
+                media: monster.media,
+                combatStyle: <AttackType | 'random'>monster.attackType,
                 data: this.simulator.monsterSimData[
                     this.simulator.simID(
                         monsterID,
@@ -4267,7 +4284,7 @@ export class App {
     /**
      * get list of monsters for dungeon (or slayer task, where task IDs start at this.micsr.dungeonCount)
      */
-    getMonsterList(dungeonID: any) {
+    getMonsterList(dungeonID: any): Monster[] {
         if (this.micsr.isDungeonID(dungeonID)) {
             return this.micsr.dungeons.getObjectByID(this.viewedDungeonID!)!.monsters;
         }

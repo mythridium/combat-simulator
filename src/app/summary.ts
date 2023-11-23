@@ -163,6 +163,7 @@ export class Summary {
 
             const monsterName = document.getElementById('MCS Zone Info Title')?.innerText;
             const image = resultsContainer.querySelector<HTMLImageElement>('[id="MCS Info Image"]');
+            const attackType = resultsContainer.querySelector<HTMLImageElement>('#mcs-combat-style-info');
             const info = resultsContainer.querySelector('.mcsInfoText');
             const stats = Array.from(resultsContainer.querySelectorAll('.mcsCCContainer')).map(container => {
                 const label = container.querySelector<HTMLElement>('.mcsLabel')?.innerText;
@@ -172,7 +173,14 @@ export class Summary {
             });
 
             card.addSectionTitle(monsterName);
-            card.addImage(image.src, 48, 'MCS Summary Info Image');
+            const monsterImage = card.addImage(image.src, 48, 'MCS Summary Info Image');
+
+            const combatStyle = document.createElement('img');
+            combatStyle.style.display = attackType.style.display;
+            combatStyle.src = attackType.src;
+            combatStyle.id = 'mcs-combat-style-info';
+            monsterImage.parentElement.id = 'mcs-monster-info-image';
+            monsterImage.parentElement.prepend(combatStyle);
 
             const failureLabel = card.addInfoText(info.textContent);
             failureLabel.style.color = 'red';

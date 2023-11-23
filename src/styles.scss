@@ -26,6 +26,21 @@ body.darkMode {
     }
 }
 
+#mcs-filter-plotter {
+    height: 33px;
+}
+
+#mcs-monster-info-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#mcs-combat-style-info {
+    height: 20px;
+    margin: 0 5px;
+}
+
 .mcs-out-of-combat-stats-container,
 .mcs-simulation-results-container {
     font-size: 14px;

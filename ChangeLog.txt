@@ -1,3 +1,7 @@
+v2.4.10
+    selecting a monster now displays its attack type next to the monsters image
+    added a 'highlight targets' search box, which highlights matching targets on the plotter
+
 v2.4.9
     slightly reduced the font size of the out of combat stats and the simulation results line items
     [EXPERIMENTAL] highest hit taken line item no longer includes damage inflicted by the player to themself

@@ -1,6 +1,6 @@
 {
     "name": "myth-combat-simulator",
-    "version": "2.4.9",
+    "version": "2.4.10",
     "description": "A browser extension to simulate combat in the game Melvor Idle",
     "scripts": {
         "zip": "ts-node-esm -P tsconfig.node.json tools/zip.mts",
