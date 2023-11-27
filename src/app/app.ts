@@ -93,7 +93,8 @@ export class App {
     prayerSelectCard!: TabCard;
     ancientRelicSelectCard!: Card;
     slayerSelectCard!: Card;
-    savedSimulations: ISimSave[];
+    savedSimulations: { save: ISimSave; name: string }[];
+    simulationCount = 0;
     selectedBar: any;
     selectedTime: any;
     selectedTimeShorthand: any;
@@ -2386,6 +2387,7 @@ export class App {
         }
         this.compareCard.addButton('Clear History', () => {
             this.savedSimulations = [];
+            this.simulationCount = 0;
             this.createCompareCard();
         });
         this.compareCard.addRadio(
@@ -2398,8 +2400,25 @@ export class App {
         );
 
         this.compareCard.addSectionTitle('Saved Simulations');
-        this.savedSimulations.forEach((_: any, i: any) => {
-            this.compareCard.addButton(`Load simulation ${i}`, () => this.loadSavedSimulation(i));
+        this.savedSimulations.forEach((saved: any, i: any) => {
+            const load = this.compareCard.addButton(saved.name, () => this.loadSavedSimulation(i));
+
+            const clear = document.createElement('button');
+
+            clear.type = 'button';
+            clear.className = 'btn font-size-sm m-1 btn-danger';
+            clear.textContent = 'X';
+            clear.onclick = () => this.clearSavedSimulation(i);
+
+            const rename = document.createElement('button');
+
+            rename.type = 'button';
+            rename.className = 'btn font-size-sm m-1 btn-info mcs-rename-simulation';
+            rename.innerHTML = `<img src="${this.micsr.icons.pencil}" />`;
+            rename.onclick = () => this.renameSavedSimulation(i);
+
+            load.parentElement.appendChild(rename);
+            load.parentElement.appendChild(clear);
         });
     }
 
@@ -2410,15 +2429,60 @@ export class App {
             return;
         }
         // load settings
-        this.import.importSettings(simulation.settings);
+        this.import.importSettings(simulation.save.settings);
         // load results
-        for (const id in simulation.monsterSimData) {
+        for (const id in simulation.save.monsterSimData) {
             this.simulator.monsterSimData[id] = {
-                ...simulation.monsterSimData[id]
+                ...simulation.save.monsterSimData[id]
             };
         }
         this.simulator.performPostSimAnalysis();
         this.updateDisplayPostSim();
+    }
+
+    clearSavedSimulation(index: number) {
+        this.savedSimulations.splice(index, 1);
+        this.createCompareCard();
+    }
+
+    renameSavedSimulation(index: number) {
+        if (!this.savedSimulations[index]) {
+            return;
+        }
+
+        const that = this;
+
+        SwalLocale.fire({
+            titleText: `Rename`,
+            customClass: {
+                container: 'mcs-rename-history-swal-container',
+                confirmButton: 'btn btn-primary m-1',
+                cancelButton: 'btn btn-danger m-1'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Rename',
+            returnFocus: false,
+            input: 'text',
+            inputValue: this.savedSimulations[index].name,
+            inputLabel: 'Enter a name to remember this saved simulation',
+            inputAttributes: {
+                maxlength: '30'
+            },
+            inputAutoFocus: true,
+            inputValidator(inputValue: string) {
+                if (!inputValue) {
+                    return 'Name cannot be empty.';
+                }
+
+                if (inputValue.length > 30) {
+                    return 'Name cannot be longer then 30 characters.';
+                }
+            },
+            preConfirm(inputValue: string) {
+                that.savedSimulations[index].name = inputValue;
+                that.createCompareCard();
+            }
+        });
     }
 
     createConsumablesCard() {

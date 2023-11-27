@@ -1400,7 +1400,7 @@ export class Simulator {
             dungeonSimData: JSON.parse(JSON.stringify(this.dungeonSimData)),
             slayerSimData: JSON.parse(JSON.stringify(this.slayerSimData))
         };
-        this.parent.savedSimulations.push(save);
+        this.parent.savedSimulations.push({ save, name: `Load simulation ${++this.parent.simulationCount}` });
         this.parent.createCompareCard();
     }
 

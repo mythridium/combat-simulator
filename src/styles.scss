@@ -18,7 +18,8 @@
 }
 
 body.darkMode {
-    .mcs-save-slot-swal-container {
+    .mcs-save-slot-swal-container,
+    .mcs-rename-history-swal-container {
         .swal2-input-label,
         .swal2-input {
             color: #f5f5f5 !important;
@@ -28,6 +29,18 @@ body.darkMode {
 
 #mcs-filter-plotter {
     height: 33px;
+}
+
+.mcs-rename-simulation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px;
+
+    img {
+        height: 15px;
+        width: 15px;
+    }
 }
 
 #mcs-monster-info-image {

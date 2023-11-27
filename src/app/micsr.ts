@@ -38,6 +38,7 @@ export class MICSR {
     icons: {
         cancel: string;
         check: string;
+        pencil: string;
     };
 
     wrongVersion: boolean;
@@ -110,7 +111,8 @@ export class MICSR {
         if (this.context) {
             this.icons = {
                 cancel: this.context.getResourceUrl('assets/cancel.svg'),
-                check: this.context.getResourceUrl('assets/check.svg')
+                check: this.context.getResourceUrl('assets/check.svg'),
+                pencil: this.context.getResourceUrl('assets/pencil.svg')
             };
         }
 
