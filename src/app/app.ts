@@ -836,7 +836,6 @@ export class App {
             inputAttributes: {
                 maxlength: '50'
             },
-            inputAutoFocus: true,
             inputValidator(inputValue: string) {
                 if (!inputValue) {
                     return 'Save slot name cannot be empty.';
@@ -2468,7 +2467,6 @@ export class App {
             inputAttributes: {
                 maxlength: '30'
             },
-            inputAutoFocus: true,
             inputValidator(inputValue: string) {
                 if (!inputValue) {
                     return 'Name cannot be empty.';

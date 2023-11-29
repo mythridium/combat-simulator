@@ -1,3 +1,6 @@
+v2.4.12
+    improved enforcement of window stacking order for popup modals
+
 v2.4.11
     added button to remove individual saved simulations
     added button to rename individual saved simulations

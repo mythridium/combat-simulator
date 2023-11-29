@@ -1,4 +1,6 @@
 #mcsModal {
+    z-index: 1050 !important;
+
     &.show {
         display: flex !important;
     }
@@ -15,6 +17,11 @@
     .combat-equip-img {
         margin: 2px;
     }
+}
+
+.mcs-save-slot-swal-container,
+.mcs-rename-history-swal-container {
+    z-index: 1060 !important;
 }
 
 body.darkMode {
