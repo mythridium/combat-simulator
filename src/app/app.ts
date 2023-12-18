@@ -401,7 +401,7 @@ export class App {
         this.createPrayerSelectCards();
         // @ts-ignore
         if (cloudManager.hasAoDEntitlement) {
-            if ((<any>this.game.currentGamemode).allowAncientRelicDrops) {
+            if ((<any>this.actualGame.currentGamemode).allowAncientRelicDrops) {
                 this.createAncientRelicSelectCards();
             }
             await this.runAsync(() => this.createCartographySelectCards());
@@ -705,7 +705,13 @@ export class App {
             (event: any) => {
                 const gamemode = this.micsr.gamemodes[parseInt(event.currentTarget.value)];
 
+                this.game.currentGamemode = gamemode;
                 this.player.currentGamemodeID = gamemode.id;
+
+                this.updateCombatStats();
+                this.updateAstrologyTooltips();
+                this.updateCartographyTooltips();
+                this.agilityCourse.updateAllAgilityTooltips();
             }
         );
         const gameModeContainer = this.equipmentSelectCard.createCCContainer();
@@ -1961,6 +1967,8 @@ export class App {
                         }
                     }
                 }
+
+                this.game.astrology.actionMastery.set(constellation, { xp: 13034432, level: 99 });
 
                 this.game.astrology.computeProvidedStats(false);
                 this.updateCombatStats();

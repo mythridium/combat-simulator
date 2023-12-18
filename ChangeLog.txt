@@ -1,3 +1,8 @@
+v2.4.13
+    fixed astrology master ancient relic not doubling modifiers
+    fixed changing gamemode not reflecting in the sim results
+        note: hp multiplier remains unchanged from the current gamemode of your actual character
+
 v2.4.12
     improved enforcement of window stacking order for popup modals
 
