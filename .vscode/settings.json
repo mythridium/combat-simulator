@@ -9,7 +9,7 @@
     "editor.formatOnType": false,
     "editor.formatOnSaveMode": "file",
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "explicit"
     },
     "editor.detectIndentation": false,
     "typescript.tsdk": "./node_modules/typescript/lib",

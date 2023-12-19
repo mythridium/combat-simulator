@@ -153,9 +153,13 @@ export class App {
             delay: 1,
             duration: 1,
             onCreate(instance: TippyTooltip) {
-                instance.popper.addEventListener('touchstart', (event: Event) => {
-                    event.preventDefault();
-                });
+                instance.popper.addEventListener(
+                    'touchstart',
+                    (event: Event) => {
+                        event.preventDefault();
+                    },
+                    { passive: true }
+                );
             },
             onTrigger(instance: TippyTooltip, event: MouseEvent) {
                 const element = <HTMLElement>event.target;

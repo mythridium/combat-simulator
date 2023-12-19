@@ -1,3 +1,6 @@
+v2.4.14
+    fixed export data button not functioning
+
 v2.4.13
     fixed astrology master ancient relic not doubling modifiers
     fixed changing gamemode not reflecting in the sim results

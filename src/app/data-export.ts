@@ -42,13 +42,10 @@ export class DataExport {
             dungeonMonsters: true,
             nonSimmed: false
         };
-        // this.header = Object.getOwnPropertyNames(this.app.manager.convertSlowSimToResult(this.app.manager.getSimStats())).filter(prop =>
-        //     ![
-        //         'simSuccess',
-        //         'reason',
-        //         'inQueue',
-        //     ].includes(prop)
-        // );
+
+        this.header = this.app.plotTypes
+            .map((type: any) => type.value)
+            .filter((prop: any) => !['simSuccess', 'reason', 'inQueue'].includes(prop));
     }
 
     skip(filter: any, data: any) {
@@ -132,28 +129,31 @@ export class DataExport {
             if (this.exportOptions.dungeonMonsters) {
                 // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                 (exportData.dungeonMonsters[dungeonID] = {}),
-                    dungeon.monsters.forEach((monsterID: any) =>
+                    dungeon.monsters.forEach((monster: any) =>
                         this.exportEntity(
                             // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                             exportData.dungeonMonsters[dungeonID],
-                            monsterID,
+                            monster.id,
                             this.simulator.dungeonSimFilter[dungeonID],
                             {
-                                name: this.app.getMonsterName(monsterID),
+                                name: this.app.getMonsterName(monster.id),
                                 dungeonID: dungeonID,
-                                monsterID: monsterID
+                                monsterID: monster.id
                             },
-                            this.simulator.monsterSimData[this.simulator.simID(monsterID, dungeonID)]
+                            this.simulator.monsterSimData[this.simulator.simID(monster.id, dungeonID)]
                         )
                     );
             }
         });
 
         // export slayer tasks
-        SlayerTask.data.forEach((task: any, taskID: any) => {
+        SlayerTask.data.forEach((task: any) => {
+            const taskID = task.engDisplay;
+
             if (this.skip(this.simulator.slayerSimFilter[taskID], this.simulator.slayerSimData[taskID])) {
                 return;
             }
+
             // task list
             this.exportEntity(
                 exportData.autoSlayer,
@@ -162,21 +162,21 @@ export class DataExport {
                 {
                     name: task.display,
                     taskID: taskID,
-                    monsterList: this.simulator.slayerTaskMonsters[taskID]
+                    monsterList: this.simulator.slayerTaskMonsters[taskID].map((monster: Monster) => monster.id)
                 },
                 this.simulator.slayerSimData[taskID]
             );
             // task monsters
-            this.simulator.slayerTaskMonsters[taskID].forEach((monsterID: any) => {
+            this.simulator.slayerTaskMonsters[taskID].forEach((monster: any) => {
                 this.exportEntity(
                     exportData.monsters,
-                    monsterID,
+                    monster.id,
                     true,
                     {
-                        name: this.app.getMonsterName(monsterID),
-                        monsterID: monsterID
+                        name: this.app.getMonsterName(monster.id),
+                        monsterID: monster.id
                     },
-                    this.simulator.monsterSimData[monsterID]
+                    this.simulator.monsterSimData[monster.id]
                 );
             });
         });
