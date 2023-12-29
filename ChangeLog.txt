@@ -1,3 +1,6 @@
+v2.4.15
+    improve resilience to cloudManager changes
+
 v2.4.14
     fixed export data button not functioning
 
