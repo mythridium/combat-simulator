@@ -24,6 +24,10 @@
     z-index: 1060 !important;
 }
 
+.mcs-select-active-target {
+    height: 35px;
+}
+
 body.darkMode {
     .mcs-save-slot-swal-container,
     .mcs-rename-history-swal-container {

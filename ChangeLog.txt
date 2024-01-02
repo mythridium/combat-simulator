@@ -1,3 +1,15 @@
+v2.4.16
+    added 'select active target' button to the plotter filters which will enable and select the plotter bar for the enemy you are currently in combat with in the actual game
+        does nothing if not in combat
+        does nothing if the target is already selected
+        does nothing if the target cannot be found for any reason
+        automatically enables the bar if disabled
+        if the current monster is the current slayer task will select the slayer tier
+        if the current monster is inside a dungeon will select the dungeon
+        if not slayer or dungeon selects the monster
+        will automatically switch auto slayer on/off just as if you had clicked the respective image on the plotter
+        the button is hidden if inspecting a dungeon
+
 v2.4.15
     improve resilience to cloudManager changes
 

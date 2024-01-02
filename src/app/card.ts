@@ -83,16 +83,31 @@ export class Card {
      * @param {Function} onclickCallback Callback to excute when pressed
      * @param {string} idTag Optional ID Tag
      */
-    addButton(buttonText: any, onclickCallback: (this: GlobalEventHandlers, ev: MouseEvent) => any) {
+    addButton(
+        buttonText: any,
+        onclickCallback: (this: GlobalEventHandlers, ev: MouseEvent) => any,
+        containerClasses?: string,
+        buttonClasses?: string
+    ) {
         const newButton = document.createElement('button');
         newButton.type = 'button';
         newButton.id = `MCS ${buttonText} Button`;
         newButton.className = 'btn btn-primary font-size-sm m-1';
+
+        if (buttonClasses) {
+            newButton.className += ` ${buttonClasses}`;
+        }
+
         newButton.style.width = `100%`;
         newButton.textContent = buttonText;
         newButton.onclick = onclickCallback;
         const buttonContainer = document.createElement('div');
         buttonContainer.className = 'd-flex';
+
+        if (containerClasses) {
+            buttonContainer.className += ` ${containerClasses}`;
+        }
+
         buttonContainer.appendChild(newButton);
         this.container.appendChild(buttonContainer);
         return newButton;

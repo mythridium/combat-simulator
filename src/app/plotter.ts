@@ -62,6 +62,7 @@ export class Plotter {
     yAxis: any;
     micsr: MICSR;
     search: HTMLInputElement;
+    selectActiveTargetButton: HTMLButtonElement;
 
     /**
      * Consctructs an instance of the plotting class
@@ -199,6 +200,68 @@ export class Plotter {
 
         filters.container.appendChild(this.search);
 
+        this.selectActiveTargetButton = filters.addButton(
+            'Select Active Target',
+            () => {
+                const combat = this.parent.actualGame.combat;
+
+                if (!combat.isActive) {
+                    this.parent.notify('You are not in combat in the actual game, could not select anything', 'danger');
+                    return;
+                }
+
+                let index = -1;
+
+                const task = combat.slayerTask;
+
+                if (
+                    task.active &&
+                    task.monster?.id === combat.selectedMonster?.id &&
+                    combat.selectedArea instanceof SlayerArea
+                ) {
+                    // slayer
+                    index = this.parent.barMonsterIDs.findIndex(id => id === SlayerTierID[combat.slayerTask.tier]);
+                } else if (combat.selectedArea instanceof Dungeon) {
+                    // dungeon
+                    index = this.parent.barMonsterIDs.findIndex(id => id === combat.selectedArea.id);
+                } else if (combat.selectedMonster) {
+                    // monster
+                    index = this.parent.barMonsterIDs.findIndex(id => id === combat.selectedMonster.id);
+                }
+
+                // already selected
+                if (this.parent.barSelected && this.parent.selectedBar === index) {
+                    return;
+                }
+
+                // not found
+                if (index === -1) {
+                    this.parent.notify('Could not locate a target to select', 'danger');
+                    return;
+                }
+
+                if (this.parent.plotter.bars[index]) {
+                    this.parent.plotter.bars[index].click();
+
+                    if (this.parent.barIsDungeon(index)) {
+                        if (!this.parent.simulator.dungeonSimFilter[this.parent.barMonsterIDs[index]]) {
+                            this.parent.barImageOnClick(index);
+                        }
+                    } else if (this.parent.barIsTask(index)) {
+                        const taskID = this.parent.barMonsterIDs[index];
+
+                        if (!this.parent.simulator.slayerSimFilter[taskID]) {
+                            this.parent.barImageOnClick(index);
+                        }
+                    } else if (!this.parent.simulator.monsterSimFilter[this.parent.barMonsterIDs[index]]) {
+                        this.parent.barImageOnClick(index);
+                    }
+                }
+            },
+            'align-items-center',
+            'mcs-select-active-target'
+        );
+
         this.timeDropdown = timeDropdown;
 
         this.plotTopContainer = document.createElement('div');
@@ -308,12 +371,14 @@ export class Plotter {
             this.search.value = '';
             this.search.dispatchEvent(new Event('input', { bubbles: true }));
             this.parent.inspectDungeonOnClick();
+            this.selectActiveTargetButton.style.display = 'none';
         });
         this.inspectButton.style.display = 'none';
         this.stopInspectButton = card.addButton('Stop Inspecting', () => {
             this.search.value = '';
             this.search.dispatchEvent(new Event('input', { bubbles: true }));
             this.parent.stopInspectOnClick();
+            this.selectActiveTargetButton.style.display = 'block';
         });
         this.stopInspectButton.style.display = 'none';
         // Add toggle buttons
