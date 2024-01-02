@@ -214,11 +214,7 @@ export class Plotter {
 
                 const task = combat.slayerTask;
 
-                if (
-                    task.active &&
-                    task.monster?.id === combat.selectedMonster?.id &&
-                    combat.selectedArea instanceof SlayerArea
-                ) {
+                if (task.active && task.autoSlayer && task.monster?.id === combat.selectedMonster?.id) {
                     // slayer
                     index = this.parent.barMonsterIDs.findIndex(id => id === SlayerTierID[combat.slayerTask.tier]);
                 } else if (combat.selectedArea instanceof Dungeon) {

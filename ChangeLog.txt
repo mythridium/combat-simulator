@@ -1,3 +1,6 @@
+v2.4.17
+    select active target button now only targets slayer task if auto slayer is enabled and you are in combat with the slayer task monster
+
 v2.4.16
     added 'select active target' button to the plotter filters which will enable and select the plotter bar for the enemy you are currently in combat with in the actual game
         does nothing if not in combat
