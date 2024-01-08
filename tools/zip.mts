@@ -34,7 +34,7 @@ class Zip {
     deleteSync('build');
 
     if (existsSync('.output')) {
-        await zip.run('build', '.output', `${pkg.name}.${time}.zip`);
+        await zip.run('build', '.output', `${pkg.name}.${pkg.version}--${time % 10000}.zip`);
     }
 
     deleteSync('.output');

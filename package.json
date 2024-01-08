@@ -3,7 +3,7 @@
     "version": "3.0.0",
     "description": "Melvor Idle mod that adds a combat simulator",
     "scripts": {
-        "zip": "ts-node-esm -P tsconfig.node.json tools/zip.mts",
+        "zip": "cross-env TS_NODE_PROJECT=\"tsconfig.node.json\" node --loader ts-node/esm tools/zip.mts",
         "build": "webpack && npm run zip",
         "prod": "webpack --mode production && npm run zip"
     },
@@ -25,6 +25,7 @@
         "archiver": "6.0.1",
         "buffer": "6.0.3",
         "copy-webpack-plugin": "11.0.0",
+        "cross-env": "7.0.3",
         "css-loader": "6.8.1",
         "del": "7.1.0",
         "dexie": "3.2.4",

@@ -14,7 +14,6 @@ export abstract class Scripts {
         'sidebar',
         'minibar',
         'ifvisible',
-        'petite-vue',
         'Sortable',
         'sweetalert2',
         'tippy-bundle'
