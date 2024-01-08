@@ -13,11 +13,11 @@ export class Logger {
     public verbose: (...args: any[]) => void;
 
     constructor(private entity: string, private readonly color: Color, private readonly isVerbose: boolean) {
-        this.setEntity(this.entity);
+        this.set(this.entity);
         this.bind();
     }
 
-    public setEntity(entity: string) {
+    public set(entity: string) {
         this.entity = entity;
         this.prefix = `[Myth] CS - ${this.entity} |`;
 

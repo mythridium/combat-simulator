@@ -1,4 +1,4 @@
-import type { SimManager } from './sim-manager';
+import type { SimCombatManager } from './sim-combat-manager';
 import type { SimGame } from './sim-game';
 import type { SimPlayer } from './sim-player';
 import type { SimEnemy } from './sim-enemy';
@@ -16,37 +16,37 @@ import type { SimEnemy } from './sim-enemy';
  */
 export abstract class SimClasses {
     public static SimGame: typeof SimGame;
-    public static SimManager: typeof SimManager;
+    public static SimCombatManager: typeof SimCombatManager;
     public static SimPlayer: typeof SimPlayer;
     public static SimEnemy: typeof SimEnemy;
 
     public static async init() {
         this.SimGame = await this.simGame();
-        this.SimManager = await this.simManager();
+        this.SimCombatManager = await this.simCombatManager();
         this.SimPlayer = await this.simPlayer();
         this.SimEnemy = await this.simEnemy();
     }
 
     private static async simGame() {
-        const { SimGame } = await import(/* webpackMode: "eager" */ './sim-game');
+        const { SimGame } = await import(/* webpackMode: "eager" */ 'src/worker/melvor/sim-game');
 
         return SimGame;
     }
 
-    private static async simManager() {
-        const { SimManager } = await import(/* webpackMode: "eager" */ './sim-manager');
+    private static async simCombatManager() {
+        const { SimCombatManager } = await import(/* webpackMode: "eager" */ 'src/worker/melvor/sim-combat-manager');
 
-        return SimManager;
+        return SimCombatManager;
     }
 
     private static async simPlayer() {
-        const { SimPlayer } = await import(/* webpackMode: "eager" */ './sim-player');
+        const { SimPlayer } = await import(/* webpackMode: "eager" */ 'src/worker/melvor/sim-player');
 
         return SimPlayer;
     }
 
     private static async simEnemy() {
-        const { SimEnemy } = await import(/* webpackMode: "eager" */ './sim-enemy');
+        const { SimEnemy } = await import(/* webpackMode: "eager" */ 'src/worker/melvor/sim-enemy');
 
         return SimEnemy;
     }

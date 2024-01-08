@@ -1,4 +1,4 @@
-import { Tippy, CreateSingleton, HideAll } from 'tippy.js';
+import { Tippy } from 'tippy.js';
 
 declare global {
     const tippy: TippyGlobal;
@@ -12,8 +12,7 @@ declare global {
     }
 
     interface TippyGlobal extends Tippy {
-        hideAll: HideAll;
-        createSingleton: CreateSingleton;
+        hideAll: () => void;
     }
 }
 

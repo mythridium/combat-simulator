@@ -29,11 +29,12 @@ class Zip {
 
 (async () => {
     const zip = new Zip();
+    const time = Date.now();
 
     deleteSync('build');
 
     if (existsSync('.output')) {
-        await zip.run('build', '.output', `${pkg.name}-${pkg.version}.zip`);
+        await zip.run('build', '.output', `${pkg.name}-${pkg.version}--${time % 10000}.zip`);
     }
 
     deleteSync('.output');

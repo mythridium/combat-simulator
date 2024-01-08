@@ -1,6 +1,8 @@
 import './styles.scss';
-import { Main } from './main';
+import { App } from './app/app';
 
 export function setup(context: Modding.ModContext) {
-    new Main(context).init();
+    const app = new App(context);
+
+    app.init();
 }
