@@ -6,4 +6,5 @@ export interface InitRequest {
         toth: boolean;
         aod: boolean;
     };
+    moddedModifierData: string;
 }

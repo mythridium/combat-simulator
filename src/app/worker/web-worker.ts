@@ -3,6 +3,7 @@ import { MessageAction, MessageRequest } from 'src/shared/messaging/message';
 import { Messaging } from 'src/shared/messaging/messaging';
 import { InitRequest } from 'src/shared/messaging/type/init';
 import { Scripts } from './scripts';
+import { ModifierData } from 'src/app/mods/modifiers';
 
 export class WebWorker {
     private readonly url: string;
@@ -26,6 +27,8 @@ export class WebWorker {
     }
 
     public async init() {
+        const moddedModifierData = ModifierData.init();
+
         let isSuccess = false;
 
         try {
@@ -36,7 +39,8 @@ export class WebWorker {
                     full: cloudManager.hasFullVersionEntitlement,
                     toth: cloudManager.hasTotHEntitlement,
                     aod: cloudManager.hasAoDEntitlement
-                }
+                },
+                moddedModifierData
             };
 
             await this.send({ action: MessageAction.Init, data });

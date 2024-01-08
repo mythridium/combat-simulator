@@ -1,6 +1,13 @@
 import { InitRequest } from 'src/shared/messaging/type/init';
 import { Global } from './global';
 import { SimClasses } from './melvor/sim-classes';
+import { ModifierDataKey } from 'src/shared/_types/modifier-data';
+
+declare global {
+    interface ObjectConstructor {
+        entries<TKey, TValue>(obj: NumberDictionary<TValue>): [TKey, TValue][];
+    }
+}
 
 export abstract class Environment {
     public static async init(data: InitRequest) {
@@ -32,8 +39,9 @@ export abstract class Environment {
         await SimClasses.init();
 
         Global.this.game = Global.game = new SimClasses.SimGame();
-
         this.evalGlobal(`game = self.game;`);
+
+        this.applyModdedModifierData(data.moddedModifierData);
 
         await this.loadGameData(data.origin);
         Global.game.postDataRegistration();
@@ -57,6 +65,23 @@ export abstract class Environment {
         }
     }
 
+    private static applyModdedModifierData(modifierDataAsString: string) {
+        eval(`self.tempModifierData = (${modifierDataAsString})`);
+
+        const entries: [ModifierDataKey, SkillModifierTemplate & StandardModifierTemplate][] = Object.entries(
+            Global.this.tempModifierData
+        );
+
+        for (const [key, value] of entries) {
+            if (!modifierData[key]) {
+                modifierData[key] = value;
+            }
+        }
+
+        // no reason to keep this in memory, never using again.
+        delete Global.this.tempModifierData;
+    }
+
     private static detach() {
         Global.this.addModalToQueue = () => {};
         Global.this.openNextModal = () => {};
@@ -65,7 +90,7 @@ export abstract class Environment {
     }
 
     /**
-     * When calling eval in a module, eval executes in scope of the modal, by calling eval indirectly,
+     * When calling eval in a module, eval executes in scope of the module, by calling eval indirectly,
      * it shifts the scope to the global object.
      */
     private static evalGlobal(script: string) {

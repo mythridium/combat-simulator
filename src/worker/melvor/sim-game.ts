@@ -35,7 +35,8 @@ export class SimGame extends Game {
 
     public postDataRegistration(): void {
         if (this.cartography) {
-            this.cartography.postDataRegistration = () => {};
+            // don't bother with map post data registration, leads to computing ui
+            this.cartography.worldMaps.forEach(map => (map.postDataRegistration = () => {}));
         }
 
         super.postDataRegistration();
