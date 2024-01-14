@@ -249,7 +249,7 @@ export class Import {
         };
 
         // import settings
-        this.importSettings(settings);
+        this.importSettings(settings, false);
     }
 
     exportSettings(): IImportSettings {
@@ -322,7 +322,7 @@ export class Import {
         };
     }
 
-    importSettings(settings: IImportSettings) {
+    importSettings(settings: IImportSettings, retainSynergy: boolean) {
         if (settings.version !== this.micsr.version) {
             this.micsr.logger.warn(`Importing MICSR ${settings.version} settings in MICSR ${this.micsr.version}.`);
         }
@@ -336,7 +336,6 @@ export class Import {
         //     }
         // }
         // import settings
-        this.simPlayer.isSynergyUnlocked = true;
         this.importLevels(settings.levels);
         this.importEquipment(settings.equipment);
         this.importStyle(settings.styles);
@@ -363,6 +362,8 @@ export class Import {
                 settings.cartographyMasteredHexes
             );
         }
+
+        this.simPlayer.isSynergyUnlocked = retainSynergy ? settings.isSynergyUnlocked : true;
 
         // update and compute values
         this.app.updateUi();
@@ -563,7 +564,10 @@ export class Import {
         this.simPlayer.petUnlocked = [];
         this.app.game.petManager['unlocked'].clear();
         this.app.game.pets.forEach(pet => {
-            this.app.unselectButton(this.document.getElementById(`MCS ${pet.name} Button`));
+            const element = this.document.getElementById(`MCS ${pet.name} Button`);
+            if (element) {
+                this.app.unselectButton(element);
+            }
         });
         // Import pets
         petUnlocked.forEach(petID => {
@@ -578,9 +582,12 @@ export class Import {
             this.app.game.petManager['unlocked'].add(realPet);
             this.app.player.petUnlocked.push(pet);
             this.app.player.petUnlocked.push(realPet);
-            this.app.selectButton(this.document.getElementById(`MCS ${pet.name} Button`));
-            // if (petID === 4 && owned)
-            //     this.document.getElementById("MCS Rock").style.display = "";
+
+            const element = this.document.getElementById(`MCS ${pet.name} Button`);
+
+            if (element) {
+                this.app.selectButton(element);
+            }
         });
     }
 
@@ -631,6 +638,7 @@ export class Import {
     importAstrology(astrologyModifiers: Map<string, IImportAstrology>) {
         astrologyModifiers.forEach((value, key) => {
             const constellation = this.app.game.astrology.actions.getObjectByID(key)!;
+            this.app.game.astrology.actionMastery.set(constellation, { xp: 13034432, level: 99 });
             constellation.standardModsBought = value.standardModsBought;
             constellation.uniqueModsBought = value.uniqueModsBought;
         });

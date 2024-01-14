@@ -101,7 +101,7 @@ export class App {
     simOptionsCard!: Card;
     simulator!: Simulator;
     skillKeys: string[];
-    skipConstellations: number[];
+    skipConstellations: string[];
     slayerToggleState: any;
     spellSelectCard!: TabCard;
     subInfoCard!: Card;
@@ -184,7 +184,14 @@ export class App {
         this.disableOverwrite = false;
         this.potionTier = 0;
         this.astrologySelected = undefined;
-        this.skipConstellations = [0, 2, 7, 11, 12];
+        this.skipConstellations = [
+            'melvorF:Deedree',
+            'melvorF:Ameria',
+            'melvorF:Ko',
+            'melvorTotH:Variel',
+            'melvorTotH:Haemir',
+            'melvorAoD:Nysa'
+        ];
         // xp gains
         addPlotOption('XP per ', true, 'xpPerSecond', 'XP/');
         addPlotOption('HP XP per ', true, 'hpXpPerSecond', 'HP XP/');
@@ -793,7 +800,7 @@ export class App {
         const saveSlot = this.saveSlots[index];
 
         if (saveSlot && this.disableOverwrite) {
-            this.import.importSettings(this.import.convertStringToObject(saveSlot.data));
+            this.import.importSettings(this.import.convertStringToObject(saveSlot.data), true);
             return;
         }
 
@@ -860,7 +867,7 @@ export class App {
 
                 if (load) {
                     load.onclick = () => {
-                        that.import.importSettings(that.import.convertStringToObject(saveSlot.data));
+                        that.import.importSettings(that.import.convertStringToObject(saveSlot.data), true);
                         SwalLocale.close();
                     };
                 }
@@ -1480,7 +1487,34 @@ export class App {
     }
 
     createPetSelectCard() {
-        const combatPets = this.game.pets.allObjects;
+        const skillingModifiers = [
+            'increasedChanceToDoubleItemsSkill',
+            'increasedMiningNodeHP',
+            'increasedSkillPreservationChance',
+            'increasedFlatFarmingYield',
+            'increasedGlobalMasteryXP',
+            'golbinRaidStartingWeapon',
+            'golbinRaidIncreasedStartingRuneCount',
+            'increasedGPFromThieving',
+            'decreasedSkillInterval',
+            'increasedGPFromAgility',
+            'decreasedSummoningShardCost',
+            'increasedChanceGoldenStardust',
+            'increasedTownshipMaxStorage',
+            'increasedSkillXP',
+            'increasedTownshipResourceProduction',
+            'increasedTownshipHappiness',
+            'increasedTownshipEducation',
+            'increasedChanceAdditionalSkillResource',
+            'increasedChanceToPreserveMapCharges',
+            'decreasedHexTravelCost'
+        ];
+        const combatPets = this.game.pets.allObjects.filter(
+            pet =>
+                !skillingModifiers.some(modifier =>
+                    Object.keys(pet.modifiers).some(petModifier => petModifier === modifier)
+                )
+        );
         this.petSelectCard = this.mainTabCard.addTab('Pets', this.media.pet, '', '100px');
         this.petSelectCard.addSectionTitle('Pets');
         const petImageSources = combatPets.map(pet => pet.media);
@@ -1854,7 +1888,7 @@ export class App {
         this.astrologySelectCard.addTabMenu();
 
         this.game.astrology.actions.allObjects
-            .filter((constellation, index) => !this.skipConstellations.includes(index))
+            .filter(constellation => !this.skipConstellations.includes(constellation.id))
             .sort((a, b) => a.level - b.level)
             .forEach(constellation => {
                 this.astrologySelectCard.addPremadeTab(
@@ -1995,7 +2029,7 @@ export class App {
         }
 
         for (const constellation of this.game.astrology.actions.allObjects.filter(
-            (constellation, index) => !this.skipConstellations.includes(index)
+            constellation => !this.skipConstellations.includes(constellation.id)
         )) {
             for (const [index, modifier] of constellation.standardModifiers.entries()) {
                 const items = container.querySelectorAll(
@@ -2053,7 +2087,7 @@ export class App {
         }
 
         for (const constellation of this.game.astrology.actions.allObjects.filter(
-            (constellation, index) => !this.skipConstellations.includes(index)
+            constellation => !this.skipConstellations.includes(constellation.id)
         )) {
             for (const [index, modifier] of constellation.standardModifiers.entries()) {
                 const items = container.querySelectorAll(
@@ -2366,7 +2400,7 @@ export class App {
                 this.notify('No settings to import.', 'danger');
                 return;
             }
-            this.import.importSettings(this.importedSettings);
+            this.import.importSettings(this.importedSettings, false);
         });
         // data export
         this.simOptionsCard.container.appendChild(document.createElement('br'));
@@ -2440,7 +2474,7 @@ export class App {
             return;
         }
         // load settings
-        this.import.importSettings(simulation.save.settings);
+        this.import.importSettings(simulation.save.settings, true);
         // load results
         for (const id in simulation.save.monsterSimData) {
             this.simulator.monsterSimData[id] = {
