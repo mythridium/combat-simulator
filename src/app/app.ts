@@ -1509,12 +1509,61 @@ export class App {
             'increasedChanceToPreserveMapCharges',
             'decreasedHexTravelCost'
         ];
+
+        const combatModifiers = [
+            'increasedGlobalSkillXP',
+            'increasedHiddenSkillLevel',
+            'increasedDamageReduction',
+            'increasedFlatMaxHitpoints',
+            'increasedChanceToDoubleLootCombat',
+            'increasedGlobalAccuracy',
+            'increasedGPFromMonsters',
+            'increasedRangedMaxHit',
+            'increasedMagicMaxHit',
+            'increasedSlayerCoins',
+            'increasedAmmoPreservation',
+            'increasedRunePreservation',
+            'increasedChanceToPreservePrayerPoints',
+            'increasedMeleeEvasion',
+            'increasedRangedEvasion',
+            'increasedMagicEvasion',
+            'decreasedAttackInterval',
+            'increasedDamageToCombatAreaMonsters',
+            'increasedDamageToSlayerAreaMonsters',
+            'increasedDamageToDungeonMonsters',
+            'increasedDamageToAllMonsters',
+            'increasedChanceToDoubleItemsGlobal',
+            'increasedMaxHitPercent',
+            'increasedSummoningChargePreservation',
+            'increasedGPGlobal',
+            'increasedLifesteal',
+            'increasedSummoningMaxHit',
+            'increasedFlatPrayerCostReduction',
+            'decreasedMonsterRespawnTimer',
+            'increasedChanceToPreservePotionCharge',
+            'increasedGlobalEvasion',
+            'increasedMinHitBasedOnMaxHit',
+            'decreasedBurnDOTDamage',
+            'increasedReflectDamage',
+            'increasedChanceToPreserveUnholyPrayerPoints',
+            'doubleActiveModifiersCartography'
+        ];
+
+        const hasModifier = (modifiers: string[], pet: Pet) => {
+            return modifiers.some(modifier => Object.keys(pet.modifiers).some(petModifier => petModifier === modifier));
+        };
+
+        const hasSkillModifier = (pet: Pet) => hasModifier(skillingModifiers, pet);
+        const hasCombatModifier = (pet: Pet) => hasModifier(combatModifiers, pet);
+
+        // only get pets that have any modifiers, if they have a skill modifier, they must also have a combat modifier
+        // otherwise include by default
         const combatPets = this.game.pets.allObjects.filter(
             pet =>
-                !skillingModifiers.some(modifier =>
-                    Object.keys(pet.modifiers).some(petModifier => petModifier === modifier)
-                )
+                (pet.enemyModifiers ? Object.keys(pet.enemyModifiers).length : Object.keys(pet.modifiers).length) &&
+                (hasSkillModifier(pet) ? hasCombatModifier(pet) : true)
         );
+
         this.petSelectCard = this.mainTabCard.addTab('Pets', this.media.pet, '', '100px');
         this.petSelectCard.addSectionTitle('Pets');
         const petImageSources = combatPets.map(pet => pet.media);
