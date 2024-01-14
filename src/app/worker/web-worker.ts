@@ -35,6 +35,7 @@ export class WebWorker {
             const data: InitRequest = {
                 origin: this.origin,
                 scripts: Scripts.getScriptsForWorker(),
+                html: document.body.outerHTML,
                 entitlements: {
                     full: cloudManager.hasFullVersionEntitlement,
                     toth: cloudManager.hasTotHEntitlement,

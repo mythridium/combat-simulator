@@ -27,7 +27,7 @@ export abstract class Scripts {
         for (const script of allScripts) {
             const src = script.src.toLowerCase();
 
-            if (this.matches(this.include, src) && !this.matches(this.exclude, src)) {
+            if (this.matches(this.include, src) /* && !this.matches(this.exclude, src) */) {
                 scripts.push(script.src);
             }
         }

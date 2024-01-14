@@ -19,7 +19,7 @@ class StorageMock {
 /** this class mocks necessary requirements to get the game loading in the web worker */
 export abstract class WorkerMock {
     public static init() {
-        this.mockBrowser();
+        //this.mockBrowser();
         this.mockMelvor();
     }
 
