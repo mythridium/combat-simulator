@@ -13,14 +13,11 @@
     },
     "homepage": "https://github.com/mythridium/combat-simulator",
     "dependencies": {
-        "jsdom": "23.2.0",
-        "linkedom": "0.16.6",
         "serialize-javascript": "6.0.1"
     },
     "devDependencies": {
         "@types/archiver": "5.3.2",
         "@types/jquery": "3.5.19",
-        "@types/jsdom": "21.1.6",
         "@types/serialize-javascript": "5.0.2",
         "archiver": "6.0.1",
         "buffer": "6.0.3",

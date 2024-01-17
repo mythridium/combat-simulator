@@ -2,8 +2,6 @@ import { InitRequest } from 'src/shared/messaging/type/init';
 import { Global } from './global';
 import { SimClasses } from './melvor/sim-classes';
 import { ModifierDataKey } from 'src/shared/_types/modifier-data';
-import { parseHTML } from 'linkedom/worker';
-import { JSDOM } from 'jsdom';
 
 declare global {
     interface ObjectConstructor {
@@ -13,15 +11,15 @@ declare global {
 
 export abstract class Environment {
     public static async init(data: InitRequest) {
-        const { window } = new JSDOM(`
+        /* const { window } = new JSDOM(`
         <!doctype html>
   <html lang="en">
   ${data.html}
   </html>
-        `);
+        `); */
 
-        Global.this.document = window.document;
-        Global.this.window = <any>window;
+        /* Global.this.document = window.document;
+        Global.this.window = <any>window; */
         //(<any>Global.this.HTMLElement) = HTMLElement;
         /*  Global.this.DocumentFragment = <any>function DocumentFragment() {
             return Global.this.document.createDocumentFragment();
@@ -42,10 +40,10 @@ export abstract class Environment {
             return setTimeout(callback, timer, args);
         }; */
 
-        this.evalGlobal(`
+        /* this.evalGlobal(`
             document = self.document;
             window = self.window;
-        `);
+        `); */
 
         importScripts(...data.scripts);
 
