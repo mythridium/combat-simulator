@@ -191,11 +191,12 @@ export class Simulator {
                 this.micsr.logger.log(event);
             };
 
-            let href = location.origin;
+            // use the favicon to determine the base url
+            const favicon = '/assets/media/favicons/favicon.png';
 
-            if (cloudManager.isTest) {
-                href += '/lemvorIdle';
-            }
+            const href = document.head
+                .querySelector<HTMLLinkElement>('[rel="shortcut icon"]')
+                .href.replace(favicon, '');
 
             worker.postMessage({
                 action: 'SCRIPTS',

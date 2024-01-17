@@ -599,9 +599,7 @@ export class App {
             const rowPopups: any = [];
             const tooltips: any = [];
             row.forEach(slotID => {
-                rowSources.push(
-                    `assets/media/bank/${(<any>this.micsr.equipmentSlotData)[EquipmentSlots[slotID]].emptyMedia}.png`
-                );
+                rowSources.push((<any>this.micsr.equipmentSlotData)[EquipmentSlots[slotID]].emptyMedia);
                 rowIDs.push(`MCS ${EquipmentSlots[slotID]} Image`);
                 rowPopups.push(slotID);
                 tooltips.push(EquipmentSlots[slotID]);
@@ -3144,7 +3142,7 @@ export class App {
 
         const img = document.getElementById(`MCS ${slotKey} Image`);
         const slot = this.player.equipment.slots[slotKey];
-        let imgSrc = `assets/media/bank/${this.micsr.equipmentSlotData[slotKey].emptyMedia}.png`;
+        let imgSrc = this.micsr.equipmentSlotData[slotKey].emptyMedia;
         if (!slot.isEmpty) {
             imgSrc = slot.item.media;
         }
@@ -4247,7 +4245,7 @@ export class App {
         (document.getElementById('MCS Info Image') as any).src = media;
 
         if (combatStyle) {
-            const icon = `assets/media/${MonsterSelectTableElement.attackTypeMedia[combatStyle]}.svg`;
+            const icon = MonsterSelectTableElement.attackTypeMedia[combatStyle];
             const img = <HTMLImageElement>document.getElementById('mcs-combat-style-info');
             img.src = icon;
             img.style.display = 'block';

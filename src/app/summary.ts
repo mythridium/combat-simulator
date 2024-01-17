@@ -235,9 +235,7 @@ export class Summary {
                 const slot = this.app.player.equipment.slots[slotType];
 
                 if (slot.isEmpty) {
-                    newImage.src = `assets/media/bank/${
-                        (<any>this.micsr.equipmentSlotData)[EquipmentSlots[slotID]].emptyMedia
-                    }.png`;
+                    newImage.src = (<any>this.micsr.equipmentSlotData)[EquipmentSlots[slotID]].emptyMedia;
                 } else {
                     newImage.src = slot.item.media;
                 }

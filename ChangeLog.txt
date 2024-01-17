@@ -1,3 +1,6 @@
+v2.5.0
+    added support for game version 1.2.3
+
 v2.4.19
     fixed harold not showing in pets
     removed pets that provide no modifiers (holiday pets)
