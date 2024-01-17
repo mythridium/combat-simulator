@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
-        "outDir": "./build/",
+        "outDir": "build",
         "noImplicitAny": true,
         "module": "esnext",
         "target": "esnext",
         "allowJs": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
+        "allowUmdGlobalAccess": true,
         "allowSyntheticDefaultImports": true,
         "moduleResolution": "node",
         "baseUrl": ".",
@@ -16,7 +17,6 @@
         }
     },
     "include": ["src", "node_modules/melvor-types"],
-    "exclude": ["node_modules/melvor-types/src/libraryTypes/tippyGlobal.d.ts"],
     "ts-node": {
         "compilerOptions": {
             "module": "CommonJS"

@@ -1,6 +1,9 @@
 import './styles.scss';
-import { Main } from './main';
+import { Global } from './app/global';
+import { Main } from './app/main';
 
-export function setup(context: Modding.ModContext) {
-    new Main(context).init();
+export async function setup(context: Modding.ModContext) {
+    Global.context = context;
+
+    await Main.init();
 }

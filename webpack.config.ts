@@ -7,7 +7,7 @@ const isProduction = process.argv[process.argv.indexOf('--mode') + 1] === 'produ
 
 const config: Configuration = {
     mode: isProduction ? 'production' : 'development',
-    entry: { setup: 'src/setup.ts', simulator: 'src/app/worker/simulator.ts' },
+    entry: { setup: 'src/setup.ts', worker: 'src/worker/setup.ts' },
     output: {
         filename: '[name].mjs',
         path: resolve(__dirname, '.output'),
