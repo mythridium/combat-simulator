@@ -13,6 +13,7 @@ GameFiles/
 Extension/dist
 Extension/build
 .vs/
+.tsimp
 node_modules
 build
 .output
