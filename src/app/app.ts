@@ -292,7 +292,8 @@ export class App {
                 'melvorF:Slayer_Wizard_Robes_Basic',
                 'melvorF:Enchanted_Shield',
                 'melvorTotH:Freezing_Touch_Body'
-            ]
+            ],
+            ['Other']: ['melvorF:Sand_Treaders', 'melvorAoD:Elusive_Boots']
         };
 
         // Generate equipment subsets
@@ -2681,6 +2682,11 @@ export class App {
         if (item.id === -1) {
             return true;
         }
+
+        if (this.force['Other'].includes(item.id)) {
+            return true;
+        }
+
         const skillIDs = [this.micsr.skillIDs.Defence, this.micsr.skillIDs.Ranged, this.micsr.skillIDs.Magic];
         for (let skillID of skillIDs) {
             if (this.getItemLevelReq(item, skillID) || (this.force[skillID] && this.force[skillID].includes(item.id))) {

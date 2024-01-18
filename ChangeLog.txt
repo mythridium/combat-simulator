@@ -1,3 +1,6 @@
+v2.4.20
+    moved sand treaders and elusive boots to the 'other' category
+
 v2.4.19
     fixed harold not showing in pets
     removed pets that provide no modifiers (holiday pets)
