@@ -34,8 +34,13 @@ import { SimClasses } from 'src/app/sim';
 
     // spoof document
     const document = {
-        getElementById() {},
-        createElement() {}
+        getElementById() {
+            return {};
+        },
+        createElement() {},
+        querySelectorAll(): any[] {
+            return [];
+        }
     };
 
     // spoof $ so we get useful information regarding where the bugs are
@@ -147,12 +152,29 @@ import { SimClasses } from 'src/app/sim';
 
                 (<any>self).checkFileVersion = () => true;
 
+                // @ts-ignore
+                (1, eval)(`
+                document = {
+                    getElementById() {
+                        return {};
+                    },
+                    createElement() {},
+                    querySelectorAll() {
+                        return [];
+                    }
+                }
+                require = () => null;
+                parent = {};
+                `);
+
                 try {
                     importScripts(
                         `${event.data.href}/assets/js/fflate.min.js${event.data.gameFileVersion}`,
                         `${event.data.href}/assets/js/mitt.min.js${event.data.gameFileVersion}`,
                         `${event.data.href}/assets/js/pixi.min.js${event.data.gameFileVersion}`,
+                        `${event.data.href}/assets/js/built/nativeManager.js${event.data.gameFileVersion}`,
                         `${event.data.href}/assets/js/built/utils.js${event.data.gameFileVersion}`,
+                        `${event.data.href}/assets/js/built/assets.js${event.data.gameFileVersion}`,
                         `${event.data.href}/assets/js/built/effectRenderer.js${event.data.gameFileVersion}`,
                         `${event.data.href}/assets/js/built/attacks.js${event.data.gameFileVersion}`
                     );

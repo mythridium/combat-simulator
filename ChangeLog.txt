@@ -1,3 +1,6 @@
+v2.4.21
+    added support for game version ?8360
+
 v2.4.20
     moved sand treaders and elusive boots to the 'other' category
 
