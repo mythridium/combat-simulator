@@ -122,7 +122,7 @@ export class MICSR {
         this.shortName = 'Combat Simulator';
 
         // compatible game version
-        this.gameVersion = 'v1.2.3';
+        this.gameVersion = 'v1.2.2';
 
         this.version = `v${this.context?.version}`;
 

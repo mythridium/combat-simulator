@@ -163,7 +163,8 @@ import { SimClasses } from 'src/app/sim';
                         return [];
                     }
                 }
-                require = () => null
+                require = () => null;
+                parent = {};
                 `);
 
                 try {
