@@ -21,8 +21,8 @@
 
 import type { SimGame } from './sim-game';
 import type { ISimGains, SimManager } from './sim-manager';
-import { MICSR } from './micsr';
-import { Util } from './util';
+import { MICSR } from 'src/shared/micsr';
+import { Util } from 'src/shared/util';
 
 /**
  * SimPlayer class, allows creation of a functional Player object without affecting the game
@@ -248,14 +248,6 @@ export class SimPlayer extends Player {
         this._summonBar = undefined;
     }
 
-    addItemStat() {}
-
-    trackPrayerStats() {}
-
-    trackWeaponStat() {}
-
-    setCallbacks() {}
-
     processDeath() {
         this.removeAllEffects(true);
         this.setHitpoints(Math.floor(this.stats.maxHitpoints * 0.2));
@@ -304,8 +296,6 @@ export class SimPlayer extends Player {
         this.unequipFoodAll();
         this.activePrayers.clear();
     }
-
-    rollForSummoningMarks() {}
 
     resetGains() {
         this.gp = 0;
@@ -578,11 +568,6 @@ export class SimPlayer extends Player {
         return Math.min(skill.levelCap, this.skillLevel.get(skill.id)!) + this.modifiers.getHiddenSkillLevels(skill);
     }
 
-    // don't render anything
-    setRenderAll() {}
-
-    render() {}
-
     // track prayer point usage instead of consuming
     // @ts-ignore
     consumePrayerPoints(amount: any, isUnholy: boolean) {
@@ -608,8 +593,6 @@ export class SimPlayer extends Player {
     removeFromConsumable(qty: number) {
         // TODO
     }
-
-    onMagicAttackFailure() {}
 
     updateForEquipmentChange() {
         this.computeAllStats();
@@ -883,4 +866,34 @@ export class SimPlayer extends Player {
         this.petUnlocked = reader.getArray(r => r.getNamespacedObject(this.game.pets) as Pet);
         this.micsr.logger.verbose('decode petUnlocked', this.petUnlocked);
     }
+
+    public setRenderAll() {}
+    public render() {}
+    public renderFood() {}
+    public renderActiveSkillModifiers() {}
+    public renderAttackBar() {}
+    public renderAttackIcon() {}
+    public renderAttackStyle() {}
+    public renderAutoEat() {}
+    public renderBarrier() {}
+    public renderCombatLevel() {}
+    public renderCombatTriangle() {}
+    public renderDamageSplashes() {}
+    public renderDamageValues() {}
+    public renderEffects() {}
+    public renderEquipmentSets() {}
+    public renderHitchance() {}
+    public renderHitpoints() {}
+    public renderModifierEffect() {}
+    public renderPrayerPoints() {}
+    public renderPrayerSelection() {}
+    public renderStats() {}
+    public renderSummonBar() {}
+    public renderSummonMaxHit() {}
+    public addItemStat() {}
+    public trackPrayerStats() {}
+    public trackWeaponStat() {}
+    public setCallbacks() {}
+    public onMagicAttackFailure() {}
+    public rollForSummoningMarks() {}
 }

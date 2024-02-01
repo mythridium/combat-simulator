@@ -1,4 +1,4 @@
-import { Global } from './global';
+import { Global } from 'src/worker/global';
 
 class StorageMock {
     private data: { [index: string]: string } = {};
@@ -18,7 +18,7 @@ class StorageMock {
 
 /** this class mocks necessary requirements to get the game loading in the web worker */
 export abstract class WorkerMock {
-    public static mock() {
+    public static init() {
         this.mockBrowser();
         this.mockMelvor();
     }

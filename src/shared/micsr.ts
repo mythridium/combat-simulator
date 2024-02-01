@@ -17,23 +17,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { SimGame } from './sim-game';
-import { Color, Logger } from './logger';
+import type { SimGame } from 'src/shared/simulator/sim-game';
+import { Color, Logger } from 'src/shared/logger';
 import { ShowModifiers } from './modifier-names';
 import { Util } from './util';
-
-type PackageTypes = 'Demo' | 'Full' | 'TotH' | 'AoD';
-
-type IDataPackage = {
-    [packageName in PackageTypes]?: any;
-};
+import { IDataPackage, PackageTypes } from './_types/data-package';
 
 export class MICSR {
-    public logger = new Logger(
-        Util.isWebWorker ? self.name : 'Client',
-        Util.isWebWorker ? Color.Pink : Color.Green,
-        false
-    );
+    public logger = new Logger({
+        entity: Util.isWebWorker ? self.name : 'Client',
+        color: Util.isWebWorker ? Color.Pink : Color.Green
+    });
 
     icons: {
         cancel: string;

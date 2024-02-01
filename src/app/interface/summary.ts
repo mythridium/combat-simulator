@@ -1,10 +1,10 @@
 import { IObstacle } from './agility-course';
-import { App } from './app';
+import { Interface } from 'src/app/interface/interface';
 import { Card } from './card';
-import { MICSR } from './micsr';
+import { MICSR } from 'src/shared/micsr';
 
 export class Summary {
-    constructor(private readonly micsr: MICSR, private readonly app: App) {}
+    constructor(private readonly micsr: MICSR, private readonly app: Interface) {}
 
     public show() {
         const html = this.create();

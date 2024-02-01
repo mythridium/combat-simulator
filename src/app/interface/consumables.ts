@@ -19,18 +19,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { SimPlayer } from './sim-player';
-import { App } from './app';
+import type { SimPlayer } from 'src/shared/simulator/sim-player';
+import { Interface } from 'src/app/interface/interface';
 import { Card } from './card';
-import { MICSR } from './micsr';
-import { ISimData, Simulator } from './simulator';
+import { MICSR } from 'src/shared/micsr';
+import { ISimData, Simulator } from 'src/app/simulator';
 import { TabCard } from './tab-card';
 
 /**
  * Class to handle consumables
  */
 export class Consumables {
-    app: App;
     applyRates: any;
     card: TabCard;
     consumables: {
@@ -48,8 +47,7 @@ export class Consumables {
     simulator: Simulator;
     micsr: MICSR;
 
-    constructor(app: App) {
-        this.app = app;
+    constructor(public readonly app: Interface) {
         this.micsr = app.micsr;
         this.card = this.app.consumablesCard;
         this.player = this.app.player;

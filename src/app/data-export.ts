@@ -19,22 +19,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { App } from './app';
-import { MICSR } from './micsr';
+import { Interface } from 'src/app/interface/interface';
+import { MICSR } from 'src/shared/micsr';
 import { Simulator } from './simulator';
 
 /**
  * Class to handle data exporting
  */
 export class DataExport {
-    app: App;
     exportOptions: any;
     header: any;
     simulator: Simulator;
     micsr: MICSR;
 
-    constructor(app: App) {
-        this.app = app;
+    constructor(public readonly app: Interface) {
         this.micsr = app.micsr;
         this.simulator = this.app.simulator;
         // Data Export Settings

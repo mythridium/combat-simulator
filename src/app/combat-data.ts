@@ -19,10 +19,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { SimManager } from './sim-manager';
-import type { SimPlayer } from './sim-player';
-import { MICSR } from './micsr';
-import { Util } from './util';
+import type { SimManager } from 'src/shared/simulator/sim-manager';
+import type { SimPlayer } from 'src/shared/simulator/sim-player';
+import { MICSR } from 'src/shared/micsr';
+import { Util } from 'src/shared/util';
 
 /**
  * CombatData class, stores all the combat data of a simulation

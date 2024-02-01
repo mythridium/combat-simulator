@@ -1,70 +1,71 @@
-import { App } from './app/app';
-import { MICSR } from './app/micsr';
-import { Menu } from './app/menu';
-import { SimClasses } from './app/sim';
+import 'src/shared/constants';
+import { Interface } from 'src/app/interface/interface';
+import { MICSR } from './shared/micsr';
+import { Menu } from 'src/app/interface/menu';
+import { SimClasses } from 'src/shared/simulator/sim';
+import { Global } from './app/global';
 
-export class Main {
-    constructor(private readonly context: Modding.ModContext) {}
+export abstract class Main {
+    public static init(context: Modding.ModContext) {
+        Global.context = context;
 
-    public init() {
-        this.context.onInterfaceReady(() => {
+        Global.context.onInterfaceReady(() => {
             this.sidebar();
 
             return this.load();
         });
     }
 
-    private async load() {
+    private static async load() {
         const urls = {
-            crossedOut: this.context.getResourceUrl('assets/cross.svg'),
-            simulationWorker: this.context.getResourceUrl('simulator.mjs')
+            crossedOut: Global.context.getResourceUrl('assets/cross.svg')
         };
 
         await SimClasses.init();
 
-        const micsr = new MICSR(this.context);
+        Global.micsr = new MICSR(Global.context);
         const modalID = 'mcsModal';
-        const modal = Menu.addModal(`${micsr.name} ${micsr.version}`, modalID);
+        const modal = Menu.addModal(`${Global.micsr.name} ${Global.micsr.version}`, modalID);
 
-        let tryLoad = micsr.tryLoad();
+        let tryLoad = Global.micsr.tryLoad();
 
         if (tryLoad) {
             try {
                 const saveString = game.generateSaveString();
                 const reader = new SaveWriter('Read', 1);
                 const saveVersion = reader.setDataFromSaveString(saveString);
-                const simGame = new SimClasses.SimGame(micsr, game);
+                const simGame = new SimClasses.SimGame(Global.micsr);
 
-                await micsr.fetchData();
-                await micsr.initialize(simGame, game);
+                await Global.micsr.fetchData();
+                await Global.micsr.initialize(simGame, game);
 
                 simGame.decode(reader, saveVersion);
                 simGame.onLoad();
                 simGame.resetToBlankState();
 
-                const app = new App(game, simGame);
+                const app = new Interface(game, simGame);
                 await app.initialize(urls, modal);
 
-                if (micsr.wrongVersion) {
-                    micsr.logger.log(
-                        `${micsr.name} ${micsr.version} loaded, but simulation results may be inaccurate due to game version incompatibility.`
+                if (Global.micsr.wrongVersion) {
+                    Global.micsr.logger.log(
+                        `${Global.micsr.name} ${Global.micsr.version} loaded, but simulation results may be inaccurate due to game version incompatibility.`
                     );
 
-                    micsr.logger.log(
+                    Global.micsr.logger.log(
                         `No further warnings will be given when loading the simulator in Melvor ${gameVersion}`
                     );
 
                     localStorage.setItem('MICSR-gameVersion', gameVersion);
                 } else {
-                    micsr.logger.log(`${micsr.name} ${micsr.version} loaded.`);
+                    Global.micsr.logger.log(`${Global.micsr.name} ${Global.micsr.version} loaded.`);
                 }
 
                 // @ts-expect-error
                 window.micsr_app = app;
             } catch (error: any) {
-                let baseString = `${micsr.name} ${micsr.version} was not loaded due to the following error:`;
-                micsr.logger.warn(baseString);
-                micsr.logger.error(error);
+                let baseString = `${Global.micsr.name} ${Global.micsr.version} was not loaded due to the following error:`;
+                Global.micsr.logger.warn(baseString);
+                Global.micsr.logger.error(error);
                 const modalContent = $(modal).find('.modal-content');
                 modalContent.append(`${baseString} ${error}`);
                 if (error.stack) {
@@ -72,11 +73,13 @@ export class Main {
                 }
             }
         } else {
-            micsr.logger.warn(`${micsr.name} ${micsr.version} was not loaded due to game version incompatibility.`);
+            Global.micsr.logger.warn(
+                `${Global.micsr.name} ${Global.micsr.version} was not loaded due to game version incompatibility.`
+            );
         }
     }
 
-    private sidebar() {
+    private static sidebar() {
         sidebar.category('Modding').item('Combat Simulator', {
             icon: 'assets/media/skills/combat/combat.png',
             itemClass: 'micsr-open-button',

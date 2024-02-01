@@ -19,11 +19,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { App } from './app';
-import { MICSR } from './micsr';
-import { SimClasses } from './sim';
-import { Simulator } from './simulator';
-import { Util } from './util';
+import { Interface } from 'src/app/interface/interface';
+import { MICSR } from 'src/shared/micsr';
+import { SimClasses } from 'src/shared/simulator/sim';
+import { Simulator } from 'src/app/simulator';
+import { Util } from 'src/shared/util';
 
 /**
  * Loot class, used for all loot related work
@@ -31,7 +31,6 @@ import { Util } from './util';
 export class Loot {
     alchHighValueItems: any;
     alchemyCutoff: any;
-    app: App;
     computingAlchCount: any;
     convertShards: any;
     godDungeonIDs: any;
@@ -41,15 +40,12 @@ export class Loot {
     petSkill: any;
     player: any;
     sellBones: any;
-    simulator: Simulator;
     micsr: MICSR;
 
-    constructor(app: App, simulator: Simulator) {
-        this.app = app;
+    constructor(public readonly app: Interface, public readonly simulator: Simulator) {
         this.micsr = app.micsr;
         this.player = this.app.player;
         this.modifiers = this.player.modifiers;
-        this.simulator = simulator;
 
         this.lootBonus = Util.averageDoubleMultiplier(this.app.combatData.combatStats.lootBonusPercent);
 

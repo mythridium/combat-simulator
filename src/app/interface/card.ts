@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { MICSR } from './micsr';
+import { MICSR } from 'src/shared/micsr';
 
 /**
  * Class for the cards in the bottom of the ui

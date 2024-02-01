@@ -19,10 +19,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { App } from './app';
+import { Interface } from 'src/app/interface/interface';
 import { Card } from './card';
-import { MICSR } from './micsr';
-import { Util } from './util';
+import { MICSR } from 'src/shared/micsr';
+import { Util } from 'src/shared/util';
 
 /**
  * A Card Class that creates a bar plot
@@ -41,7 +41,6 @@ export class Plotter {
     gridLine: any;
     inspectButton: any;
     maskImageFile: any;
-    parent: App;
     petSkillDropdown: any;
     plotBox: any;
     plotContainer: any;
@@ -69,9 +68,8 @@ export class Plotter {
      * @param {McsApp} parent Reference to container class
      * @param {string} crossedOutURL URL from content script
      */
-    constructor(parent: App, crossedOutURL: any) {
+    constructor(public readonly parent: Interface, crossedOutURL: any) {
         this.micsr = parent.micsr;
-        this.parent = parent;
         this.barWidth = 20;
         this.barGap = 1;
         this.barImageSrc = [];

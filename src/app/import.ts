@@ -19,10 +19,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { SimGame } from './sim-game';
-import type { SimPlayer } from './sim-player';
-import { App } from './app';
-import { MICSR } from './micsr';
+import type { SimGame } from 'src/shared/simulator/sim-game';
+import type { SimPlayer } from 'src/shared/simulator/sim-player';
+import { Interface } from 'src/app/interface/interface';
+import { MICSR } from 'src/shared/micsr';
 
 // this.micsr.defaultSettings = {
 //     // version: this.micsr.version,
@@ -121,14 +121,12 @@ export interface IImportSettings {
  * Class to handle importing
  */
 export class Import {
-    app: App;
     document: any;
     actualPlayer: Player;
     simPlayer: SimPlayer;
     micsr: MICSR;
 
-    constructor(app: App) {
-        this.app = app;
+    constructor(public readonly app: Interface) {
         this.micsr = app.micsr;
         this.actualPlayer = app.actualGame.combat.player;
         this.simPlayer = app.player;

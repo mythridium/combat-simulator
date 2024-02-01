@@ -22,9 +22,9 @@
 import type { SimEnemy } from './sim-enemy';
 import type { SimGame } from './sim-game';
 import type { SimPlayer } from './sim-player';
-import { MICSR } from './micsr';
+import { MICSR } from 'src/shared/micsr';
 import { SimClasses } from './sim';
-import { Util } from './util';
+import { Util } from 'src/shared/util';
 
 export interface ISimGains {
     gp: number;
@@ -204,10 +204,6 @@ export class SimManager extends CombatManager {
         const ticksPerSecond = 1000 / TICK_INTERVAL;
         const trials = simResult.simStats.killCount + simResult.simStats.deathCount;
 
-        // if (!simResult.success || targetTrials - trials > 0) {
-        //     debugger;
-        // }
-
         let reason = '';
         if (!simResult.success && simResult.failMessage) {
             reason += simResult.failMessage;
@@ -273,15 +269,6 @@ export class SimManager extends CombatManager {
     }
 
     onEnemyDeath(): boolean {
-        // this.player.rewardGPForKill();
-        // if (this.selectedArea.type === 'Dungeon') {
-        //     this.progressDungeon();
-        // } else {
-        //     this.rewardForEnemyDeath();
-        // }
-        // // from baseManager
-        // this.enemy.processDeath();
-
         this.simStats.killCount++;
 
         const dungeonProgress = this.dungeonProgress;
@@ -300,27 +287,6 @@ export class SimManager extends CombatManager {
     dropEnemyBones() {}
 
     awardSkillLevelCapIncreaseForDungeonCompletion() {}
-
-    // dropEnemyLoot() {
-    // }
-
-    // rewardForEnemyDeath() {
-    //     this.dropEnemyBones();
-    //     this.dropSignetHalfB();
-    //     // @ts-expect-error
-    //     this.dropEnemyLoot();
-    //     this.dropEnemyGP(this.enemy.monster);
-    //     let slayerXPReward = 0;
-    //     if (this.areaType === 'Slayer') {
-    //         slayerXPReward += this.enemy.stats.maxHitpoints / numberMultiplier / 2;
-    //     }
-    //     if (this.onSlayerTask) {
-    //         this.player.rewardSlayerCoins();
-    //         slayerXPReward += this.enemy.stats.maxHitpoints / numberMultiplier;
-    //     }
-    //     if (slayerXPReward > 0)
-    //         this.player.addXP(this.micsr.skillIDs.Slayer, slayerXPReward);
-    // }
 
     selectMonster(monster: any, areaData: any) {
         // clone of combatManager.selectMonster
@@ -388,9 +354,12 @@ export class SimManager extends CombatManager {
 
     runTrials(monsterID: any, dungeonID: any, trials: any, tickLimit: any, verbose = false): ISimStats {
         this.resetSimStats();
+
         const startTimeStamp = performance.now();
         const monster = this.game.monsters.getObjectByID(monsterID);
+
         let areaData = this.game.getMonsterArea(monster!);
+
         if (dungeonID !== undefined) {
             areaData = this.micsr.dungeons.getObjectByID(dungeonID)!;
             this.dungeonProgress = 0;
@@ -399,43 +368,45 @@ export class SimManager extends CombatManager {
             }
         }
         const totalTickLimit = trials * tickLimit;
-        // debugger;
+
         let success = this.game.checkRequirements(
             areaData.entryRequirements,
             true,
             undefined,
             areaData instanceof SlayerArea
         );
+
         let failMessage = success ? '' : 'Missing Slayer Area Requirements';
+
         if (success) {
             this.selectMonster(monster, areaData);
 
-            this.micsr.logger.log('Fighting:', monster?.name, areaData.name);
+            this.micsr.logger.log('Fighting:', monster?._name, areaData._name);
+
             while (this.simStats.killCount + this.simStats.deathCount < trials && this.tickCount < totalTickLimit) {
                 if (!this.isActive && !this.spawnTimer.active) {
                     this.selectMonster(monster, areaData);
                 }
+
                 if (this.paused) {
                     this.resumeDungeon();
                 }
+
                 this.tick();
-                if (this.spawnTimer.active) {
-                    if (this.spawnTimer.ticksLeft % 10 === 1) {
-                        //this.micsr.log('spawning', this.spawnTimer.ticksLeft);
-                    }
-                } else {
-                    //this.micsr.log('ticked', this.enemy.hitpoints, this.enemy.stats.maxHitpoints, this.player.hitpoints, this.player.stats.maxHitpoints);
-                }
             }
         }
+
         // TODO: Show the requirements necessary for a monster
         // However make sure that partial slayer tasks don't show the error
         // else {
         //     failMessage = `Failed one of the following requirements: ${areaData.entryRequirements.map(r => r.type).join(", ")}.`;
         // }
+
         this.stopCombat();
+
         const processingTime = performance.now() - startTimeStamp;
         const simStats = this.getSimStats(monsterID, dungeonID, success, failMessage);
+
         if (verbose) {
             this.micsr.logger.log(
                 `Processed ${this.simStats.killCount} / ${this.simStats.deathCount} k/d and ${
@@ -444,10 +415,7 @@ export class SimManager extends CombatManager {
                 simStats
             );
         }
+
         return simStats;
     }
-
-    // decode(reader: SaveWriter, version: number): void {
-
-    // }
 }

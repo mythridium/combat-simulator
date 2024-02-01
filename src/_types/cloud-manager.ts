@@ -4,10 +4,7 @@ declare global {
         hasTotHEntitlement: boolean;
         hasAoDEntitlement: boolean;
         hasExpansionEntitlement: boolean;
-        isBeta: boolean;
         isTest: boolean;
-        isOnAuthPage: boolean;
-        isBirthdayEvent2023Active(): boolean;
     }
 
     const cloudManager: CloudManager;

@@ -17,10 +17,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { SimPlayer } from './sim-player';
-import { App } from './app';
+import type { SimPlayer } from 'src/shared/simulator/sim-player';
+import { Interface } from 'src/app/interface/interface';
 import { Card } from './card';
-import { MICSR } from './micsr';
+import { MICSR } from 'src/shared/micsr';
 
 export interface IObstacle {
     [index: string]: any;
@@ -53,13 +53,13 @@ export class AgilityCourse {
     filters: IAgilityFilter[];
     id: any;
     media: any;
-    parent: App;
+    parent: Interface;
     tmpModifiers: any;
     micsr: MICSR;
     blueprints?: AgilityBlueprints;
     blueprintDropdown?: HTMLDivElement;
 
-    constructor(parent: App, player: SimPlayer, filters: IAgilityFilter[]) {
+    constructor(parent: Interface, player: SimPlayer, filters: IAgilityFilter[]) {
         this.parent = parent;
         this.micsr = parent.micsr;
         this.player = player;

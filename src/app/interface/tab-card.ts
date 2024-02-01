@@ -20,8 +20,8 @@
 */
 
 import { Card } from './card';
-import { MICSR } from './micsr';
-import { Util } from './util';
+import { MICSR } from 'src/shared/micsr';
+import { Util } from 'src/shared/util';
 
 /**
  * Class for cards with tabs

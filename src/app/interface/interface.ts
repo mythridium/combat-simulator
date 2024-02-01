@@ -19,22 +19,22 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { SimGame } from './sim-game';
-import type { SimManager } from './sim-manager';
-import type { SimPlayer } from './sim-player';
-import { AgilityCourse } from './agility-course';
-import { Card } from './card';
-import { CombatData } from './combat-data';
-import { Consumables } from './consumables';
-import { DataExport } from './data-export';
-import { IImportSettings, IImportSlayer, Import } from './import';
-import { Loot } from './loot';
-import { MICSR } from './micsr';
-import { Plotter } from './plotter';
-import { ISimData, ISimSave, Simulator } from './simulator';
-import { TabCard } from './tab-card';
-import { Util } from './util';
-import { Summary } from './summary';
+import type { SimGame } from 'src/shared/simulator/sim-game';
+import type { SimManager } from 'src/shared/simulator/sim-manager';
+import type { SimPlayer } from 'src/shared/simulator/sim-player';
+import { AgilityCourse } from 'src/app/interface/agility-course';
+import { Card } from 'src/app/interface/card';
+import { CombatData } from 'src/app/combat-data';
+import { Consumables } from 'src/app/interface/consumables';
+import { DataExport } from 'src/app/data-export';
+import { IImportSettings, IImportSlayer, Import } from 'src/app/import';
+import { Loot } from 'src/app/interface/loot';
+import { MICSR } from 'src/shared/micsr';
+import { Plotter } from 'src/app/interface/plotter';
+import { ISimData, ISimSave, Simulator } from 'src/app/simulator';
+import { TabCard } from 'src/app/interface/tab-card';
+import { Util } from 'src/shared/util';
+import { Summary } from 'src/app/interface/summary';
 
 interface SaveSlot {
     index: number;
@@ -46,7 +46,7 @@ interface SaveSlot {
  * Container Class for the Combat Simulator.
  * A single instance of this is initiated on load.
  */
-export class App {
+export class Interface {
     agilityCourse!: AgilityCourse;
     agilitySelectCard!: Card;
     astrologySelectCard!: TabCard;
@@ -367,7 +367,7 @@ export class App {
         }
 
         // Simulation Object
-        this.simulator = new Simulator(this, urls.simulationWorker);
+        this.simulator = new Simulator(this);
         await this.simulator.createWorkers();
         // Import Object
         this.import = new Import(this);

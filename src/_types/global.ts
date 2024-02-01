@@ -1,13 +1,23 @@
 import { Tippy, CreateSingleton, HideAll } from 'tippy.js';
 
 declare global {
+    interface Constants {
+        isDebug: boolean;
+        isVerbose: boolean;
+    }
+
     const tippy: TippyGlobal;
 
     interface Element {
         _tippy?: TippyTooltip;
     }
 
+    interface Window {
+        mcs: Constants;
+    }
+
     interface WorkerGlobalScope {
+        mcs: Constants;
         tippy: TippyGlobal;
     }
 
