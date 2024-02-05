@@ -4,6 +4,9 @@ v2.5.0
     refactored web worker game environment
         this should make it easier to maintain as future game updates are released... hopefully
 
+v2.4.22
+    updated origin check
+
 v2.4.21
     added support for game version ?8360
 
