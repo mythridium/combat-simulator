@@ -215,11 +215,9 @@ export class MICSR {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        let href = location.origin;
+        const favicon = '/assets/media/favicons/favicon.png';
 
-        if (cloudManager.isTest) {
-            href += '/lemvorIdle';
-        }
+        const href = document.head.querySelector<HTMLLinkElement>('[rel="shortcut icon"]').href.replace(favicon, '');
 
         const response = await fetch(`${href}${url}`, {
             method: 'GET',
