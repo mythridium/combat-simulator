@@ -58,14 +58,14 @@ export abstract class Environment {
 
         await Global.game.fetchAndRegisterDataPackage(url('melvorDemo'));
 
-        if (self.cloudManager.hasFullVersionEntitlement) {
+        if (Global.this.cloudManager.hasFullVersionEntitlement) {
             await Global.game.fetchAndRegisterDataPackage(url('melvorFull'));
 
-            if (self.cloudManager.hasTotHEntitlement) {
+            if (Global.this.cloudManager.hasTotHEntitlement) {
                 await Global.game.fetchAndRegisterDataPackage(url('melvorTotH'));
             }
 
-            if (self.cloudManager.hasAoDEntitlement) {
+            if (Global.this.cloudManager.hasAoDEntitlement) {
                 await Global.game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
             }
         }
