@@ -1,3 +1,6 @@
+v2.4.23
+    added expansion icons
+
 v2.4.22
     updated origin check
 

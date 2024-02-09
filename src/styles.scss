@@ -38,6 +38,26 @@ body.darkMode {
     }
 }
 
+.mcs-expansion-icons {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 5px;
+    width: 100%;
+    padding: 10px 15px;
+    height: 100%;
+
+    .mcs-expansion-icon {
+        display: flex;
+        align-items: center;
+
+        img {
+            width: 25px;
+            height: 24px;
+        }
+    }
+}
+
 #mcs-filter-plotter {
     height: 33px;
 }
@@ -121,8 +141,15 @@ body.darkMode {
             flex-grow: 1;
             display: flex;
             align-items: flex-end;
-            justify-content: end;
-            margin-bottom: 15px;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            gap: 5px;
+
+            .mcs-expansion-icons {
+                height: auto;
+                width: auto;
+                padding: 0;
+            }
         }
     }
 

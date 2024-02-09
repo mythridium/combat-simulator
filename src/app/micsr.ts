@@ -39,6 +39,8 @@ export class MICSR {
         cancel: string;
         check: string;
         pencil: string;
+        aod: string;
+        toth: string;
     };
 
     wrongVersion: boolean;
@@ -112,7 +114,9 @@ export class MICSR {
             this.icons = {
                 cancel: this.context.getResourceUrl('assets/cancel.svg'),
                 check: this.context.getResourceUrl('assets/check.svg'),
-                pencil: this.context.getResourceUrl('assets/pencil.svg')
+                pencil: this.context.getResourceUrl('assets/pencil.svg'),
+                aod: this.context.getResourceUrl('assets/50px-AoD.png'),
+                toth: this.context.getResourceUrl('assets/TotH.svg')
             };
         }
 

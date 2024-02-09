@@ -138,11 +138,19 @@ export class Summary {
 
         this.runes(card);
 
-        const version = card.createLabel(this.micsr.version);
+        const footer = document.createElement('div');
 
-        version.className += ' mcs-summary-version-display';
+        footer.className = 'mcs-summary-version-display';
 
-        card.container.appendChild(version);
+        const expansionIcons = statsContainer.nextSibling as HTMLDivElement;
+
+        if (expansionIcons?.className.includes('mcs-expansion-icons')) {
+            footer.appendChild(expansionIcons.cloneNode(true));
+        }
+
+        footer.appendChild(card.createLabel(this.micsr.version));
+
+        card.container.appendChild(footer);
 
         return card;
     }

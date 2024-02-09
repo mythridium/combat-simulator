@@ -1151,6 +1151,30 @@ export class App {
         this.combatStatCard.addSectionTitle('');
         this.combatStatCard.addButton('Simulate All', () => this.simulateButtonOnClick(false));
         this.combatStatCard.addButton('Simulate Selected', () => this.simulateButtonOnClick(true));
+
+        const expansionIcons = document.createElement('div');
+
+        expansionIcons.className = 'mcs-expansion-icons';
+
+        if (cloudManager.hasTotHEntitlement) {
+            const toth = document.createElement('div');
+
+            toth.className = 'mcs-expansion-icon toth';
+            toth.innerHTML = `<img src="${this.micsr.icons.toth}" />`;
+
+            expansionIcons.appendChild(toth);
+        }
+
+        if (cloudManager.hasAoDEntitlement) {
+            const aod = document.createElement('div');
+
+            aod.className = 'mcs-expansion-icon aod';
+            aod.innerHTML = `<img src="${this.micsr.icons.aod}" />`;
+
+            expansionIcons.appendChild(aod);
+        }
+
+        this.combatStatCard.outerContainer.appendChild(expansionIcons);
     }
 
     createIndividualInfoCard() {
