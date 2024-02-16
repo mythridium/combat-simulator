@@ -3,6 +3,7 @@ import { Global } from './global';
 import { MessageAction } from 'src/shared/transport/message';
 import { WorkerMock } from './context/mock';
 import { Environment } from './context/environment';
+import { RequirementConverter } from 'src/shared/converter/requirement';
 
 export abstract class Main {
     public static async init() {
@@ -19,7 +20,6 @@ export abstract class Main {
             const start = performance.now();
 
             const result = await Global.simulator.simulateMonster(
-                data.saveString,
                 data.monsterId,
                 data.dungeonId,
                 data.trials,
@@ -29,8 +29,18 @@ export abstract class Main {
             return { monsterId: data.monsterId, dungeonId: data.dungeonId, result, time: performance.now() - start };
         });
 
-        Global.transport.on(MessageAction.Cancel, async () => {
-            Global.simulator.cancelSimulation();
-        });
+        Global.transport.on(MessageAction.Cancel, async () => Global.simulator.cancelSimulation());
+
+        Global.transport.on(
+            MessageAction.CheckRequirements,
+            async ({ requirements, notifyOnFailure, slayerLevelReq, checkSlayer }) => {
+                return Global.game.checkRequirements(
+                    RequirementConverter.fromData(Global.game, requirements),
+                    notifyOnFailure,
+                    slayerLevelReq,
+                    checkSlayer
+                );
+            }
+        );
     }
 }

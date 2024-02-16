@@ -1,22 +1,34 @@
+import { CheckRequirementsRequest } from './type/check-requirements';
+import { ImportRequest, ImportResponse } from './type/import';
 import { InitRequest } from './type/init';
 import { SimulateRequest, SimulateResponse } from './type/simulate';
+import { UpdateRequest, UpdateResponse } from './type/update';
 
 export enum MessageAction {
     Init = 'init',
     Simulate = 'simulate',
-    Cancel = 'cancel'
+    Cancel = 'cancel',
+    CheckRequirements = 'check-requirements',
+    Update = 'update',
+    Import = 'import'
 }
 
 export interface RequestData {
     [MessageAction.Init]: InitRequest;
     [MessageAction.Simulate]: SimulateRequest;
     [MessageAction.Cancel]: void;
+    [MessageAction.CheckRequirements]: CheckRequirementsRequest;
+    [MessageAction.Update]: UpdateRequest;
+    [MessageAction.Import]: ImportRequest;
 }
 
 export interface ResponseData {
     [MessageAction.Init]: void;
     [MessageAction.Simulate]: SimulateResponse;
     [MessageAction.Cancel]: void;
+    [MessageAction.CheckRequirements]: boolean;
+    [MessageAction.Update]: UpdateResponse;
+    [MessageAction.Import]: ImportResponse;
 }
 
 export type MessageRequest<K extends MessageAction> = { [P in K]: { action: K; data: RequestData[K] } }[K];

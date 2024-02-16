@@ -7,7 +7,7 @@ export interface InitRequest {
         toth: boolean;
         aod: boolean;
     };
-    gameData: GameData;
+    //gameData: GameData;
 }
 
 export interface GameData {
