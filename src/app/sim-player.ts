@@ -75,6 +75,7 @@ export class SimPlayer extends Player {
     usedConsumables: number;
     usedRunes: { [index: string]: number };
     monsterSpawnTimer: number;
+    ignoreAllSlayerRequirements: boolean;
     _isAttackingEnemy = false;
 
     micsr: MICSR;
@@ -110,6 +111,7 @@ export class SimPlayer extends Player {
         this.isManualEating = false;
         this.isSolarEclipse = false;
         this.isSynergyUnlocked = true;
+        this.ignoreAllSlayerRequirements = false;
         // runes in bank
         this.hasRunes = true;
 
@@ -151,6 +153,7 @@ export class SimPlayer extends Player {
                 'isManualEating',
                 'isSolarEclipse',
                 'isSynergyUnlocked',
+                'ignoreAllSlayerRequirements',
                 'isSlayerTask',
                 'hasRunes'
             ],

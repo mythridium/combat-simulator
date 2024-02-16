@@ -554,6 +554,10 @@ export class SimGame extends Game {
         slayerLevelReq?: number,
         checkSlayer?: boolean
     ): boolean {
+        if (this.combat.player.ignoreAllSlayerRequirements) {
+            return true;
+        }
+
         return requirements.every((req: any) =>
             this.checkRequirement(req, notifyOnFailure, slayerLevelReq, checkSlayer)
         );

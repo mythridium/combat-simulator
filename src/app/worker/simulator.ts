@@ -187,6 +187,11 @@ import { SimClasses } from 'src/app/sim';
                     importScripts(`https://steam.melvoridle.com/assets/js/pako.min.js${event.data.gameFileVersion}`);
                 } catch {}
 
+                // @ts-ignore
+                (1, eval)(`
+                notifyPlayer = () => {};
+                `);
+
                 postMessage({ action: 'SCRIPTS_DONE', error });
                 break;
             case 'RECEIVE_GAMEDATA':

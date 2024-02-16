@@ -105,6 +105,7 @@ export interface IImportSettings {
     isManualEating: boolean;
     isSolarEclipse: boolean;
     isSynergyUnlocked: boolean;
+    ignoreAllSlayerRequirements: boolean;
     isSlayerTask: boolean;
     pillarID: string;
     pillarEliteID: string;
@@ -221,6 +222,7 @@ export class Import {
             isManualEating: this.simPlayer.isManualEating,
             isSolarEclipse: (<any>this.app.actualGame.township.townData).season.id === 'melvorF:SolarEclipse',
             isSynergyUnlocked: this.simPlayer.isSynergyUnlocked,
+            ignoreAllSlayerRequirements: this.simPlayer.ignoreAllSlayerRequirements,
             isSlayerTask: this.simPlayer.isSlayerTask,
             slayer: this.app.getSlayerData(this.app.actualGame),
             pillarID: actualGame.agility['builtPassivePillar']?.id || '',
@@ -302,6 +304,7 @@ export class Import {
             isManualEating: this.simPlayer.isManualEating,
             isSolarEclipse: this.simPlayer.isSolarEclipse,
             isSynergyUnlocked: this.simPlayer.isSynergyUnlocked,
+            ignoreAllSlayerRequirements: this.simPlayer.ignoreAllSlayerRequirements,
             isSlayerTask: this.simPlayer.isSlayerTask,
             pillarID: this.simPlayer.pillarID,
             pillarEliteID: this.simPlayer.pillarEliteID,
@@ -348,6 +351,7 @@ export class Import {
         this.importManualEating(settings.isManualEating);
         this.importHealAfterDeath(settings.healAfterDeath);
         this.importSlayerTask(settings.isSlayerTask);
+        this.importIgnoreRequirements(settings.ignoreAllSlayerRequirements);
         this.importGameMode(settings.currentGamemodeID);
         this.importUseCombinationRunes(settings.useCombinationRunes);
         this.importAgilityCourse(settings.course, settings.courseMastery, settings.pillarID, settings.pillarEliteID);
@@ -617,6 +621,11 @@ export class Import {
         this.checkRadio('MCS Slayer Task', isSlayerTask);
         this.simPlayer.isSlayerTask = isSlayerTask;
         this.app.slayerTaskSimsToggle();
+    }
+
+    importIgnoreRequirements(ignoreAllSlayerRequirements: boolean) {
+        this.checkRadio('MCS Ignore Requirements', ignoreAllSlayerRequirements);
+        this.simPlayer.ignoreAllSlayerRequirements = ignoreAllSlayerRequirements;
     }
 
     importGameMode(gamemodeID: string) {

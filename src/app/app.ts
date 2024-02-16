@@ -1828,6 +1828,15 @@ export class App {
             items.map(item => item.name),
             '300px'
         );
+
+        const ignoreRadioContainer = newCard.addToggleRadio(
+            'Ignore Requirements',
+            'ignoreAllSlayerRequirements',
+            this.player,
+            'ignoreAllSlayerRequirements'
+        );
+
+        ignoreRadioContainer.className += ' mcs-ignore-requirements';
     }
 
     getSlayerRequirementData(game: Game | SimGame) {
@@ -2246,7 +2255,7 @@ export class App {
             'selectedMonster',
             this.dropListFilters,
             'selectedMonster',
-            this.dropListFilters.selectedMonster, // default
+            true, // default
             25, // default
             () => {
                 this.createLootOptionsCard();

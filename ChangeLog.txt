@@ -1,3 +1,7 @@
+v2.4.25
+    drop chance options now defaults to only selected monster
+    added a new option in the slayer tab to ignore all slayer requirements allowing you to sim all monsters in the task regardless of the requirement
+
 v2.4.24
     fixed bypass slayer item modifier ignoring slayer levels
 

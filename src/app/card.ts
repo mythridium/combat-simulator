@@ -833,7 +833,7 @@ export class Card {
             callBack();
         };
         const initialRadio = initialYes ? 0 : 1;
-        this.addRadio(labelText, height, radioName, ['Yes', 'No'], [yesToggle, noToggle], initialRadio);
+        return this.addRadio(labelText, height, radioName, ['Yes', 'No'], [yesToggle, noToggle], initialRadio);
     }
 
     /**
@@ -877,6 +877,8 @@ export class Card {
             );
         }
         this.container.appendChild(newCCContainer);
+
+        return newCCContainer;
     }
 
     /**
