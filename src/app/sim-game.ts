@@ -554,7 +554,9 @@ export class SimGame extends Game {
         slayerLevelReq?: number,
         checkSlayer?: boolean
     ): boolean {
-        return requirements.every((req: any) => this.checkRequirement(req, notifyOnFailure, undefined, checkSlayer));
+        return requirements.every((req: any) =>
+            this.checkRequirement(req, notifyOnFailure, slayerLevelReq, checkSlayer)
+        );
     }
 
     checkRequirement(
@@ -573,11 +575,8 @@ export class SimGame extends Game {
             case 'DungeonCompletion':
                 return checkSlayer ? super.checkRequirement(requirement, false, slayerLevelReq) : true;
             case 'Completion':
-            // @ts-ignore
             case 'CartographyHexDiscovery':
-            // @ts-ignore
             case 'CartographyPOIDiscovery':
-            // @ts-ignore
             case 'ArchaeologyItemsDonated':
                 return true;
         }

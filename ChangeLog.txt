@@ -1,3 +1,6 @@
+v2.4.24
+    fixed bypass slayer item modifier ignoring slayer levels
+
 v2.4.23
     added expansion icons
 
