@@ -421,7 +421,7 @@ export class Simulator {
                 !this.parent.game.checkRequirements(
                     area.entryRequirements,
                     undefined,
-                    undefined,
+                    area instanceof SlayerArea ? area.slayerLevelRequired : undefined,
                     area instanceof SlayerArea
                 )
             ) {
@@ -460,7 +460,7 @@ export class Simulator {
                 !this.micsr.game.checkRequirements(
                     area.entryRequirements,
                     undefined,
-                    undefined,
+                    area.slayerLevelRequired,
                     area instanceof SlayerArea
                 )
             ) {
@@ -964,7 +964,7 @@ export class Simulator {
                     this.parent.game.checkRequirements(
                         area.entryRequirements,
                         undefined,
-                        undefined,
+                        area.slayerLevelRequired,
                         area instanceof SlayerArea
                     )
                 );

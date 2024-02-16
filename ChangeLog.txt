@@ -4,6 +4,9 @@ v2.5.0
     refactored web worker game environment
         this should make it easier to maintain as future game updates are released... hopefully
 
+v2.4.24
+    fixed bypass slayer item modifier ignoring slayer levels
+
 v2.4.23
     added expansion icons
 

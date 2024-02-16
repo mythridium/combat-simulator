@@ -372,7 +372,7 @@ export class SimManager extends CombatManager {
         let success = this.game.checkRequirements(
             areaData.entryRequirements,
             true,
-            undefined,
+            areaData instanceof SlayerArea ? areaData.slayerLevelRequired : undefined,
             areaData instanceof SlayerArea
         );
 
