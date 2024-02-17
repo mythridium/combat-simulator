@@ -378,7 +378,7 @@ export class App {
 
         // drop list filters
         this.dropListFilters = {
-            selectedMonster: false,
+            selectedMonster: true,
             onlyUndiscovered: false
         };
 
@@ -2255,7 +2255,7 @@ export class App {
             'selectedMonster',
             this.dropListFilters,
             'selectedMonster',
-            true, // default
+            this.dropListFilters.selectedMonster, // default
             25, // default
             () => {
                 this.createLootOptionsCard();
@@ -2371,7 +2371,7 @@ export class App {
     buildItemDropList() {
         // construct map
         let lootMap = new Map();
-        if (this.dropListFilters.selectedMonster) {
+        if (this.dropListFilters.selectedMonster && this.selectedBar) {
             if (!this.isViewingDungeon) {
                 if (this.barIsDungeon(this.selectedBar)) {
                     const dungeonID = this.barMonsterIDs[this.selectedBar];
