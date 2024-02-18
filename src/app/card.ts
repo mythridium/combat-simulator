@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { ImageLoader } from './image-loader';
 import { MICSR } from './micsr';
 
 /**
@@ -161,7 +162,7 @@ export class Card {
         const newImage = document.createElement('img');
         newImage.className = `mcsButtonImage mcsImage${size}`;
         newImage.id = `MCS ${idText} Button Image`;
-        newImage.src = imageSource;
+        ImageLoader.register(newImage, imageSource);
         newButton.appendChild(newImage);
         return newButton;
     }
@@ -231,18 +232,59 @@ export class Card {
     }
 
     private popups = new Map<string, HTMLElement>();
+    private isRegistered = false;
+    private open: { element: HTMLElement; slotId: string } | undefined;
+    private firstClick = true;
 
     /**
      * Assigns the onclick event to a popupmenu
      * @param {HTMLElement} showElement Element that should show the popup when clicked
      * @param {HTMLElement} popupMenuElement Element that should be displayed when the showElement is clicked
      */
-    registerPopupMenu(showElement: any, slotId: string /* popupMenuElement: any */) {
-        showElement.addEventListener('click', () => {
-            let firstClick = true;
+    registerPopupMenu(popupElement: any, slotId: string) {
+        const focus = (popup: any) => {
+            setTimeout(() => {
+                const search = popup.querySelector('.search-input');
+
+                if (search) {
+                    search.value = '';
+                    search.dispatchEvent(new InputEvent('input'));
+
+                    // @ts-ignore
+                    if (!nativeManager.isMobile) {
+                        search.focus();
+                    }
+                }
+            }, 0);
+        };
+
+        const close = () => {
+            if (this.popups.has(this.open.slotId)) {
+                const element = this.popups.get(this.open.slotId);
+                element.style.display = 'none';
+                this.open = undefined;
+                this.firstClick = true;
+            }
+        };
+
+        popupElement.addEventListener('click', () => {
             tippy.hideAll({ duration: 0 });
 
+            if (this.open) {
+                const openSlotId = this.open?.slotId;
+
+                close();
+
+                if (openSlotId === slotId) {
+                    return;
+                }
+            }
+
             if (this.popups.has(slotId)) {
+                const element = this.popups.get(slotId);
+                element.style.display = 'block';
+                focus(element);
+                this.open = { element, slotId };
                 return;
             }
 
@@ -251,46 +293,39 @@ export class Card {
                     ? (<any>window).micsr_app.createFoodPopup()
                     : (<any>window).micsr_app.createEquipmentPopup(slotId);
 
-            showElement.appendChild(popup);
-            this.popups.set(slotId, popup);
+            popup.className += ` mcs-popup-${slotId}`;
 
-            // @ts-ignore
-            if (!nativeManager.isMobile) {
-                setTimeout(() => {
-                    const search = popup.querySelector('.search-input');
-                    search?.focus();
-                }, 0);
+            popupElement.appendChild(popup);
+            this.popups.set(slotId, popup);
+            this.open = { element: popup, slotId };
+
+            focus(popup);
+
+            tippy(`.mcs-popup-${slotId} [data-tippy-content]`, (<any>window).micsr_app.tippyOptions);
+        });
+
+        if (this.isRegistered) {
+            return;
+        }
+
+        this.isRegistered = true;
+
+        document.body.addEventListener('click', (event: any) => {
+            if (!this.open) {
+                return;
             }
 
-            // @ts-ignore
-            const tooltips = tippy('.mcsPopup [data-tippy-content]', (<any>window).micsr_app.tippyOptions);
+            const ignoreElement =
+                $.contains(this.open.element, event.target) &&
+                !['MSC', 'Button'].some((name: string) => event.target.id.includes(name));
 
-            const outsideClickListener = (event: any) => {
-                const ignoreElement =
-                    $.contains(popup, event.target) &&
-                    !['MSC', 'Button'].some((name: string) => event.target.id.includes(name));
+            if (this.firstClick || ignoreElement) {
+                this.firstClick = false;
+                return;
+            }
 
-                if (firstClick || ignoreElement) {
-                    firstClick = false;
-                    return;
-                }
-
-                tippy.hideAll({ duration: 0 });
-
-                if (this.popups.has(slotId)) {
-                    for (const tooltip of tooltips) {
-                        tooltip.destroy();
-                    }
-
-                    const element = this.popups.get(slotId);
-                    element?.remove();
-                    this.popups.delete(slotId);
-                    document.body.removeEventListener('click', outsideClickListener);
-                    return;
-                }
-            };
-
-            document.body.addEventListener('click', outsideClickListener);
+            tippy.hideAll({ duration: 0 });
+            close();
         });
     }
 
@@ -720,6 +755,10 @@ export class Card {
                     button.style.display = 'none';
                 }
             }
+        };
+
+        search.onclick = event => {
+            event.stopPropagation();
         };
 
         this.container.appendChild(search);

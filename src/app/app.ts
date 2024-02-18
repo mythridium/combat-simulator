@@ -2655,12 +2655,11 @@ export class App {
         const buttonCallbacks = menuItems.map((item: any) => () => {
             tippy.hideAll({ duration: 0 });
             this.equipItem(equipmentSlot, item);
-            container?.remove();
         });
 
         const tooltips = menuItems.map((item: any) => this.getEquipmentTooltip(equipmentSlot, item));
 
-        const container = card.addImageButtons(buttonMedia, buttonIds, 'Small', buttonCallbacks, tooltips, '100%');
+        card.addImageButtons(buttonMedia, buttonIds, 'Small', buttonCallbacks, tooltips, '100%');
     }
 
     /**

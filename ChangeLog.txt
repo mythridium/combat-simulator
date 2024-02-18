@@ -1,3 +1,8 @@
+v2.4.27
+    improved cpu usage after changing equipment
+    improved fps when opening equipment popups
+        equipment images are now streamed in instead of loaded at once
+
 v2.4.26
     fixed only selected monster not functioning
 
