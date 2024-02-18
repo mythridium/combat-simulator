@@ -155,8 +155,6 @@ export class Simulator {
      */
     async createWorkers() {
         for (let i = 0; i < this.maxThreads; i++) {
-            Global.worker = new WebWorker();
-
             this.intializeWorker();
 
             const newWorker = {
@@ -221,81 +219,7 @@ export class Simulator {
             }
         });
 
-        class InitPayload {
-            private readonly include = ['melvor', 'cdnjs', 'polyfill'];
-            private readonly exclude = [
-                'oneui',
-                'ion.rangeSlider',
-                'animations',
-                'jquery',
-                'pixi',
-                'basis',
-                'viewport',
-                'cloud.js',
-                'cloudManager',
-                'cartographyMenu',
-                'sidebar',
-                'minibar',
-                'ifvisible',
-                'Sortable',
-                'sweetalert2',
-                'tippy-bundle'
-            ];
-
-            public get origin() {
-                let origin = location.origin;
-
-                if (cloudManager.isTest) {
-                    origin += '/lemvoridle';
-                }
-
-                return origin;
-            }
-
-            public get scripts() {
-                const scripts: string[] = [];
-
-                const allScripts = Array.from(document.querySelectorAll('script'));
-
-                for (const script of allScripts) {
-                    const src = script.src.toLowerCase();
-
-                    if (this.matches(this.include, src) && !this.matches(this.exclude, src)) {
-                        scripts.push(script.src);
-                    }
-                }
-
-                return scripts;
-            }
-
-            private matches(inclusions: string[], src: string) {
-                return inclusions.some(lookup => src.includes(lookup.toLowerCase()));
-            }
-        }
-
-        const init = new InitPayload();
-
-        return Global.worker.send({
-            action: MessageAction.Init,
-            data: {
-                origin: init.origin,
-                scripts: init.scripts,
-                entitlements: {
-                    toth: cloudManager.hasTotHEntitlement,
-                    aod: cloudManager.hasAoDEntitlement
-                },
-                gameData: {
-                    slayerTaskData: SlayerTask.data,
-                    dataPackage: this.micsr.dataPackage,
-                    summoningMarkLevels: Array.from(Summoning.markLevels),
-                    namespaces,
-                    gamemodes,
-                    agilityActions,
-                    agilityPillars,
-                    agilityElitePillars
-                }
-            }
-        });
+        return Global.simulation.init();
     }
 
     /**
@@ -746,15 +670,12 @@ export class Simulator {
             this.simulationWorkers[workerID].inUse = true;
             this.currentJob++;
 
-            const response = await Global.worker.send({
-                action: MessageAction.Simulate,
-                data: {
-                    monsterId: monsterID,
-                    dungeonId: dungeonID,
-                    saveString: saveString,
-                    trials: this.micsr.trials,
-                    maxTicks: this.micsr.maxTicks
-                }
+            const response = await Global.simulation.simulate({
+                monsterId: monsterID,
+                dungeonId: dungeonID,
+                //saveString: saveString,
+                trials: this.micsr.trials,
+                maxTicks: this.micsr.maxTicks
             });
 
             this.simulationWorkers[workerID].inUse = false;
@@ -798,9 +719,9 @@ export class Simulator {
      */
     cancelSimulation() {
         this.simCancelled = true;
-        this.simulationWorkers.forEach((simWorker: any) => {
+        this.simulationWorkers.forEach(async (simWorker: any) => {
             if (simWorker.inUse) {
-                Global.worker.send({ action: MessageAction.Cancel, data: undefined });
+                await Global.simulation.cancel();
                 //simWorker.worker.postMessage({ action: 'CANCEL_SIMULATION' });
             }
         });

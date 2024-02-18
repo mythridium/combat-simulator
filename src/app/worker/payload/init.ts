@@ -20,13 +20,9 @@ export class InitPayload {
     ];
 
     public get origin() {
-        let origin = location.origin;
+        const favicon = '/assets/media/favicons/favicon.png';
 
-        if (cloudManager.isTest) {
-            origin += '/lemvoridle';
-        }
-
-        return origin;
+        return document.head.querySelector<HTMLLinkElement>('[rel="shortcut icon"]').href.replace(favicon, '');
     }
 
     public get scripts() {

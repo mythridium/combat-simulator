@@ -33,9 +33,7 @@ export abstract class Environment {
                     setButtonCallbacks: () => {}
                 }
             };
-
             firstSkillAction = true;
-            saveData = () => {};
             deleteScheduledPushNotification = () => {};
         `);
 
@@ -50,7 +48,7 @@ export abstract class Environment {
         await this.loadGameData(data.origin);
         Global.game.postDataRegistration();
 
-        await GameData.init(data.gameData);
+        // await GameData.init(data.gameData);
     }
 
     private static async loadGameData(origin: string) {
@@ -76,6 +74,8 @@ export abstract class Environment {
         Global.this.openNextModal = () => {};
         Global.this.showBaneCompletionModal = () => {};
         Global.this.setDiscordRPCDetails = async () => {};
+        Global.this.saveData = () => {};
+        Global.this.notifyPlayer = () => {};
     }
 
     /**

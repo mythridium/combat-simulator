@@ -3,6 +3,9 @@ import { InitPayload } from './payload/init';
 import { WebWorker } from './web-worker';
 import { SimulateRequest } from 'src/shared/transport/type/simulate';
 import { CheckRequirementsRequest } from 'src/shared/transport/type/check-requirements';
+import { Global } from 'src/app/global';
+import { UpdateRequest } from 'src/shared/transport/type/update';
+import { BaseStore } from 'src/shared/stores/base.store';
 
 export class Simulator {
     private readonly worker = new WebWorker();
@@ -43,11 +46,17 @@ export class Simulator {
         return this.worker.send({ action: MessageAction.CheckRequirements, data: request });
     }
 
-    public update() {
-        return this.worker.send({ action: MessageAction.Update, data: undefined });
+    public update<TKey extends keyof typeof Global.stores>(data: UpdateRequest<TKey>) {
+        return this.worker.send({ action: MessageAction.Update, data });
     }
 
     public import() {
-        return this.worker.send({ action: MessageAction.Import, data: undefined });
+        const stores = {} as any;
+
+        for (const [key, value] of Object.entries(Global.stores) as [string, BaseStore<any>][]) {
+            stores[key] = value.state;
+        }
+
+        return this.worker.send({ action: MessageAction.Import, data: stores });
     }
 }

@@ -1,41 +1,28 @@
-export class EquipmentStore {
-    public passive?: EquipSlot;
-    public helmet?: EquipSlot;
-    public consumable?: EquipSlot;
-    public cape?: EquipSlot;
-    public amulet?: EquipSlot;
-    public quiver?: EquipSlot;
-    public weapon?: EquipSlot;
-    public platebody?: EquipSlot;
-    public shield?: EquipSlot;
-    public gem?: EquipSlot;
-    public platelegs?: EquipSlot;
-    public gloves?: EquipSlot;
-    public boots?: EquipSlot;
-    public ring?: EquipSlot;
-    public summon1?: EquipSlot;
-    public summon2?: EquipSlot;
+import { BaseStore } from './base.store';
 
-    public combatStyle: AttackStyle;
+export interface EquipmentState {
+    passive?: string;
+    helmet?: string;
+    consumable?: string;
+    cape?: string;
+    amulet?: string;
+    quiver?: string;
+    weapon?: string;
+    platebody?: string;
+    shield?: string;
+    gem?: string;
+    platelegs?: string;
+    gloves?: string;
+    boots?: string;
+    ring?: string;
+    summon1?: string;
+    summon2?: string;
+
+    attackStyle: string;
 }
 
-export interface EquipmentStoreData {
-    passive?: string | AnyItemData;
-    helmet?: string | AnyItemData;
-    consumable?: string | AnyItemData;
-    cape?: string | AnyItemData;
-    amulet?: string | AnyItemData;
-    quiver?: string | AnyItemData;
-    weapon?: string | AnyItemData;
-    platebody?: string | AnyItemData;
-    shield?: string | AnyItemData;
-    gem?: string | AnyItemData;
-    platelegs?: string | AnyItemData;
-    gloves?: string | AnyItemData;
-    boots?: string | AnyItemData;
-    ring?: string | AnyItemData;
-    summon1?: string | AnyItemData;
-    summon2?: string | AnyItemData;
-
-    combatStyle?: string | AttackStyleData;
+export class EquipmentStore extends BaseStore<EquipmentState> {
+    constructor() {
+        super({ attackStyle: '' });
+    }
 }

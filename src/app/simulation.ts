@@ -1,6 +1,8 @@
 import { SimulateRequest } from 'src/shared/transport/type/simulate';
 import { Simulator } from './worker/simulator';
 import { RequirementConverter } from 'src/shared/converter/requirement';
+import { Global } from './global';
+import { UpdateRequest } from 'src/shared/transport/type/update';
 
 export interface CheckRequirements {
     requirements: AnyRequirement[];
@@ -34,8 +36,8 @@ export class Simulation {
         });
     }
 
-    public update() {
-        return this.simulator.update();
+    public update<TKey extends keyof typeof Global.stores>(request: UpdateRequest<TKey>) {
+        return this.simulator.update(request);
     }
 
     public import() {
