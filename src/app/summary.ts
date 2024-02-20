@@ -190,7 +190,7 @@ export class Summary {
             monsterImage.parentElement.id = 'mcs-monster-info-image';
             monsterImage.parentElement.prepend(combatStyle);
 
-            const failureLabel = card.addInfoText(info.textContent);
+            const failureLabel = card.addInfoText(info.textContent.replace('More Info?', ''));
             failureLabel.style.color = 'red';
 
             for (const { label, value, color } of stats) {

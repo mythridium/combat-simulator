@@ -1080,6 +1080,7 @@ export class App {
             'Max Hitpoints',
             'Damage Reduction',
             'Auto Eat Threshold',
+            'Slayer Area Negation',
             'Drop Doubling (%)',
             'GP Multiplier'
         ];
@@ -1098,6 +1099,7 @@ export class App {
             this.media.hitpoints,
             '',
             '',
+            this.media.slayer,
             '',
             ''
         ];
@@ -1116,6 +1118,7 @@ export class App {
             'maxHitpoints',
             'damageReduction',
             'autoEatThreshold',
+            'slayerAreaNegation',
             'lootBonusPercent',
             'gpBonus'
         ];
@@ -4268,7 +4271,7 @@ export class App {
         const prefix = 'No valid simulation data';
         if (data.reason) {
             if (data.tickCount >= this.micsr.maxTicks * this.micsr.trials) {
-                return `Insufficient simulation time: ${data.reason}.`;
+                return `Insufficient simulation time: ${data.reason}. <a class="mcs-more-info-link">More Info?</a>`;
             }
             return `${prefix}: ${data.reason}.`;
         }
@@ -4292,7 +4295,19 @@ export class App {
             img.style.display = 'none';
         }
 
-        this.failureLabel.textContent = this.getSimFailureText(data);
+        this.failureLabel.innerHTML = this.getSimFailureText(data);
+        const moreInfo = this.failureLabel.querySelector('.mcs-more-info-link');
+        if (moreInfo) {
+            moreInfo.onclick = () => {
+                SwalLocale.fire({
+                    html: `<h5>Insufficient simulation time</h5>
+                <div class="mcs-more-info-description font-size-sm">
+                    This error means that the simulation result may not be accurate. This is because the simulation hit the exit condition (ticks x trials) before it successfully completed the simulation.<br /><br />This is typically the result of not killing the target fast enough.<br /><br />To resolve this, either increase the ticks and trials found in the simulation options tab, or tweak your gear/stats to kill the target faster.
+                </div>
+                `
+                });
+            };
+        }
         const updateInfo = data.simSuccess;
         for (let i = 0; i < this.plotTypes.length; i++) {
             const dataKey = this.plotTypes[i].value;
@@ -4638,6 +4653,12 @@ export class App {
                 case 'respawnInterval':
                     const respawnTime = this.game.combat.player.getMonsterSpawnTime();
                     document.getElementById(`MCS ${key} CS Output`)!.textContent = respawnTime.toString();
+                    break;
+                case 'slayerAreaNegation':
+                    document.getElementById(`MCS ${key} CS Output`)!.textContent = `${
+                        this.game.combat.player.modifiers.increasedSlayerAreaEffectNegationFlat -
+                        this.game.combat.player.modifiers.decreasedSlayerAreaEffectNegationFlat
+                    }`;
                     break;
                 default:
                     document.getElementById(`MCS ${key} CS Output`)!.textContent = (<any>this.combatData.combatStats)[

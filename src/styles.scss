@@ -85,6 +85,21 @@ body.darkMode {
     margin: 0 5px;
 }
 
+.mcs-more-info-link {
+    color: yellow;
+    text-decoration: underline;
+    display: block;
+    cursor: pointer;
+
+    &:hover {
+        color: darken(yellow, 5);
+    }
+}
+
+.mcs-more-info-description {
+    line-height: 1.2;
+}
+
 .mcs-out-of-combat-stats-container,
 .mcs-simulation-results-container {
     font-size: 14px;

@@ -1,3 +1,7 @@
+v2.4.28
+    added slayer area negation to out of combat stats pane
+    added a more info link to the 'insufficient simulation time' error which explains this message in more detail
+
 v2.4.27
     improved cpu usage after changing equipment
     improved fps when opening equipment popups
