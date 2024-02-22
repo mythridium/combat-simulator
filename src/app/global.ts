@@ -6,6 +6,9 @@ import { Simulation } from './simulation';
 export abstract class Global extends SharedGlobal {
     public static logger = new Logger({ entity: 'Client', color: Color.Green });
     public static context: Modding.ModContext;
-    public static simulation = new Simulation();
+    public static simulation: Simulation;
     public static micsr: MICSR;
+
+    public static skills: { name: string; namespace: DataNamespace }[] = [];
+    public static dataPackages: GameDataPackage[] = [];
 }

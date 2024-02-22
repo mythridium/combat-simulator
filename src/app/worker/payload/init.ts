@@ -1,4 +1,8 @@
+import serialize from 'serialize-javascript';
+
 export class InitPayload {
+    private static melvorModifierData = { ...modifierData };
+
     private readonly include = ['melvor', 'cdnjs', 'polyfill'];
     private readonly exclude = [
         'oneui',
@@ -43,5 +47,17 @@ export class InitPayload {
 
     private matches(inclusions: string[], src: string) {
         return inclusions.some(lookup => src.includes(lookup.toLowerCase()));
+    }
+
+    public get modifierData() {
+        const data = {};
+
+        for (const [key, value] of Object.entries(modifierData)) {
+            if (!InitPayload.melvorModifierData[key]) {
+                (<any>data)[key] = value;
+            }
+        }
+
+        return serialize(data);
     }
 }

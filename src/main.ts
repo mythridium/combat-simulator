@@ -4,15 +4,33 @@ import { MICSR } from './shared/micsr';
 import { Menu } from 'src/app/interface/menu';
 import { SimClasses } from 'src/shared/simulator/sim';
 import { Global } from './app/global';
+import { Simulation } from './app/simulation';
 
 export abstract class Main {
     public static init(context: Modding.ModContext) {
         Global.context = context;
+        Global.simulation = new Simulation();
 
         Global.context.onInterfaceReady(() => {
             this.sidebar();
 
             return this.load();
+        });
+
+        Global.context.patch(Game, 'registerDataPackage').after((_, dataPackage) => {
+            if (dataPackage.namespace.startsWith('melvor')) {
+                return;
+            }
+
+            Global.dataPackages.push(dataPackage);
+        });
+
+        Global.context.patch(Game, 'registerSkill').after((instance, namespace) => {
+            if (!namespace.isModded) {
+                return;
+            }
+
+            Global.skills.push({ name: instance.name, namespace });
         });
     }
 

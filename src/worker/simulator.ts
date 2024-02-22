@@ -1,6 +1,6 @@
 import { MICSR } from 'src/shared/micsr';
 
-export class CombatSimulator {
+export class Simulator {
     cancelStatus: any;
     micsr: MICSR;
 

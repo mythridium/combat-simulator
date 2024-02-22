@@ -21,7 +21,10 @@ export class Simulator {
                 entitlements: {
                     toth: cloudManager.hasTotHEntitlement,
                     aod: cloudManager.hasAoDEntitlement
-                }
+                },
+                dataPackage: Global.dataPackages,
+                skills: Global.skills,
+                modifierData: payload.modifierData
             }
         });
     }

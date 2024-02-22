@@ -1,5 +1,5 @@
 import { Global } from 'src/worker/global';
-import { CombatSimulator } from 'src/worker/simulator';
+import { Simulator } from 'src/worker/simulator';
 import { GameData as InitGameData } from 'src/shared/transport/type/init';
 
 export abstract class GameData {
@@ -65,6 +65,6 @@ export abstract class GameData {
             );
         });
 
-        Global.simulator = new CombatSimulator(Global.micsr);
+        Global.simulator = new Simulator(Global.micsr);
     }
 }

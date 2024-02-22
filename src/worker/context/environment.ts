@@ -3,6 +3,14 @@ import { Global } from 'src/worker/global';
 import { SimClasses } from 'src/shared/simulator/sim';
 import { MICSR } from 'src/shared/micsr';
 import { GameData } from './game-data';
+import { Simulator } from 'src/worker/simulator';
+import { EmptySkillFactory } from './empty-skill';
+
+declare global {
+    interface WorkerGlobalScope {
+        tempModifierData?: ModifierObject<SkillModifierTemplate, StandardModifierTemplate>;
+    }
+}
 
 export abstract class Environment {
     public static async init(data: InitRequest) {
@@ -45,8 +53,29 @@ export abstract class Environment {
         Global.this.game = Global.game = new SimClasses.SimGame(Global.micsr);
         this.evalGlobal(`game = self.game;`);
 
+        this.applyModifierData(data.modifierData);
+
         await this.loadGameData(data.origin);
+
+        for (const skill of data.skills) {
+            if (!Global.game.registeredNamespaces.hasNamespace(skill.namespace.name)) {
+                Global.game.registeredNamespaces.registerNamespace(
+                    skill.namespace.name,
+                    skill.namespace.displayName,
+                    skill.namespace.isModded
+                );
+            }
+
+            Global.game.registerSkill(skill.namespace, EmptySkillFactory(skill.name));
+        }
+
+        for (const dataPackage of data.dataPackage) {
+            Global.game.registerDataPackage(dataPackage);
+        }
+
         Global.game.postDataRegistration();
+
+        Global.simulator = new Simulator(Global.micsr);
 
         // await GameData.init(data.gameData);
     }
@@ -67,6 +96,19 @@ export abstract class Environment {
                 await Global.game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
             }
         }
+    }
+
+    private static applyModifierData(modifierDataAsString: string) {
+        eval(`self.tempModifierData = (${modifierDataAsString})`);
+
+        for (const [key, value] of Object.entries(Global.this.tempModifierData)) {
+            if (!modifierData[key]) {
+                (<any>modifierData)[key] = value;
+            }
+        }
+
+        // no reason to keep this in memory, never using again.
+        delete Global.this.tempModifierData;
     }
 
     private static detach() {

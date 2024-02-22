@@ -7,6 +7,9 @@ export interface InitRequest {
         toth: boolean;
         aod: boolean;
     };
+    dataPackage: GameDataPackage[];
+    skills: { name: string; namespace: DataNamespace }[];
+    modifierData: string;
     //gameData: GameData;
 }
 

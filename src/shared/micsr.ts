@@ -479,8 +479,8 @@ export class MICSR {
         }
 
         // dg array
-        this.dungeons = this.game.dungeons;
-        this.dungeonIDs = this.game.dungeonDisplayOrder.map(dungeon => dungeon.id);
+        this.dungeons = this.actualGame.dungeons;
+        this.dungeonIDs = this.actualGame.dungeonDisplayOrder.map(dungeon => dungeon.id);
         this.dungeonCount = this.dungeonIDs.length;
 
         // TODO filter special dungeons
@@ -489,35 +489,35 @@ export class MICSR {
         //  this.dungeons[Dungeons.Into_the_Mist].monsters = [147, 148, 149];
         // monsters
         this.bardID = 'melvorF:WanderingBard';
-        this.monsters = this.game.monsters;
-        this.monsterList = this.game.monsters.allObjects;
-        this.combatAreas = this.game.combatAreas;
-        this.slayerAreas = this.game.slayerAreas;
+        this.monsters = this.actualGame.monsters;
+        this.monsterList = this.actualGame.monsters.allObjects;
+        this.combatAreas = this.actualGame.combatAreas;
+        this.slayerAreas = this.actualGame.slayerAreas;
         this.monsterIDs = [
-            ...this.game.combatAreaDisplayOrder
+            ...this.actualGame.combatAreaDisplayOrder
                 .map((area: any) => area.monsters.map((monster: any) => monster.id))
                 .reduce((a: any, b: any) => a.concat(b), []),
             this.bardID,
-            ...this.game.slayerAreaDisplayOrder
+            ...this.actualGame.slayerAreaDisplayOrder
                 .map((area: any) => area.monsters.map((monster: any) => monster.id))
                 .reduce((a: any, b: any) => a.concat(b), [])
         ];
         // potions
-        this.herblorePotionRecipes = this.game.herblore.actions;
+        this.herblorePotionRecipes = this.actualGame.herblore.actions;
         // items
-        this.items = this.game.items;
+        this.items = this.actualGame.items;
         // spells
-        this.standardSpells = this.game.standardSpells;
-        this.curseSpells = this.game.curseSpells;
-        this.auroraSpells = this.game.auroraSpells;
-        this.ancientSpells = this.game.ancientSpells;
-        this.archaicSpells = this.game.archaicSpells;
+        this.standardSpells = this.actualGame.standardSpells;
+        this.curseSpells = this.actualGame.curseSpells;
+        this.auroraSpells = this.actualGame.auroraSpells;
+        this.ancientSpells = this.actualGame.ancientSpells;
+        this.archaicSpells = this.actualGame.archaicSpells;
         // prayers
-        this.prayers = this.game.prayers;
+        this.prayers = this.actualGame.prayers;
         // attackStyles
         this.attackStylesIdx = {};
         const attackStyleGrouping: { [index: string]: number } = {};
-        this.game.attackStyles.allObjects.forEach((a, i) => {
+        this.actualGame.attackStyles.allObjects.forEach((a, i) => {
             let index = attackStyleGrouping[a.attackType];
             if (!index) {
                 index = 0;
