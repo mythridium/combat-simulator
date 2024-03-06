@@ -1,8 +1,18 @@
 v2.5.0
-    no functional changes
-    refactored message bridge between web worker and browser client
-    refactored web worker game environment
-        this should make it easier to maintain as future game updates are released... hopefully
+    fixed equipment popup closing when clicking the popup background
+    refactored web worker, messaging layer and game environment to make future maintenance easier
+    the following mod functionality has received basic support
+        data added/modified through json or the builder before the interface is ready
+        custom modifierData is pushed into the simulator
+        mod skills 'exist' in the simulator but as dummy skills that do nothing
+    the following mod functionality is NOT supported
+        data added/modified after the interface has loaded
+        patched functions
+        mod skill functionality
+
+    PLEASE NOTE: Mod functionality will not be fully supported or as accurate as the normal game.
+    I will not endeavour to get mod data accurate, there are too many limitations in technology
+    and breadth of functionality to have this work like the normal game itself.
 
 v2.4.28
     added slayer area negation to out of combat stats pane

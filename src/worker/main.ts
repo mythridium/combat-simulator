@@ -3,7 +3,6 @@ import { Global } from './global';
 import { MessageAction } from 'src/shared/transport/message';
 import { WorkerMock } from './context/mock';
 import { Environment } from './context/environment';
-import { OutOfCombatStats } from 'src/shared/_types/out-of-combat-stats';
 
 export abstract class Main {
     public static async init() {

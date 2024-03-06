@@ -3801,8 +3801,6 @@ export class Interface {
      * @param {Pet} pet
      */
     petButtonOnClick(event: any, pet: Pet) {
-        const realPet = this.actualGame.pets.getObjectByID(pet.id)!;
-
         if (this.game.petManager['unlocked'].has(pet)) {
             this.game.petManager['unlocked'].delete(pet);
             this.player.petUnlocked = this.player.petUnlocked.filter(unlockedPet => unlockedPet.id !== pet.id);

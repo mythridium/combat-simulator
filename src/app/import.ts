@@ -575,7 +575,6 @@ export class Import {
         // Import pets
         petUnlocked.forEach(petID => {
             const pet = this.app.game.pets.getObjectByID(petID)!;
-            const realPet = this.app.actualGame.pets.getObjectByID(petID)!;
 
             if (!pet) {
                 return;
