@@ -267,10 +267,17 @@ export class Card {
             }
         };
 
-        popupElement.addEventListener('click', () => {
-            tippy.hideAll({ duration: 0 });
-
+        popupElement.addEventListener('click', (event: any) => {
             if (this.open) {
+                const ignoreElement =
+                    $.contains(this.open.element, event.target) &&
+                    !['MSC', 'Button'].some(name => event.target.id.includes(name));
+
+                if (ignoreElement) {
+                    return;
+                }
+
+                tippy.hideAll({ duration: 0 });
                 const openSlotId = this.open?.slotId;
 
                 close();
@@ -279,6 +286,8 @@ export class Card {
                     return;
                 }
             }
+
+            tippy.hideAll({ duration: 0 });
 
             if (this.popups.has(slotId)) {
                 const element = this.popups.get(slotId);

@@ -571,6 +571,7 @@ export class Import {
                 this.app.unselectButton(element);
             }
         });
+
         // Import pets
         petUnlocked.forEach(petID => {
             const pet = this.app.game.pets.getObjectByID(petID)!;
@@ -581,9 +582,7 @@ export class Import {
             }
 
             this.app.game.petManager['unlocked'].add(pet);
-            this.app.game.petManager['unlocked'].add(realPet);
             this.app.player.petUnlocked.push(pet);
-            this.app.player.petUnlocked.push(realPet);
 
             const element = this.document.getElementById(`MCS ${pet.name} Button`);
 
@@ -591,6 +590,8 @@ export class Import {
                 this.app.selectButton(element);
             }
         });
+
+        this.app.game.petManager.computeProvidedStats(false);
     }
 
     importAutoEat(autoEatTier: number, foodSelected: string, cookingPool: boolean, cookingMastery: boolean) {

@@ -2,9 +2,7 @@ import { InitRequest } from 'src/shared/transport/type/init';
 import { Global } from 'src/worker/global';
 import { SimClasses } from 'src/shared/simulator/sim';
 import { MICSR } from 'src/shared/micsr';
-import { GameData } from './game-data';
 import { Simulator } from 'src/worker/simulator';
-import { EmptySkillFactory } from './empty-skill';
 
 declare global {
     interface WorkerGlobalScope {
@@ -52,32 +50,23 @@ export abstract class Environment {
         Global.micsr = new MICSR();
         Global.this.game = Global.game = new SimClasses.SimGame(Global.micsr);
         this.evalGlobal(`game = self.game;`);
+        Global.micsr.game = Global.this.game;
+        Global.micsr.actualGame = Global.this.game;
 
         this.applyModifierData(data.modifierData);
 
         await this.loadGameData(data.origin);
 
-        for (const skill of data.skills) {
-            if (!Global.game.registeredNamespaces.hasNamespace(skill.namespace.name)) {
-                Global.game.registeredNamespaces.registerNamespace(
-                    skill.namespace.name,
-                    skill.namespace.displayName,
-                    skill.namespace.isModded
-                );
-            }
-
-            Global.game.registerSkill(skill.namespace, EmptySkillFactory(skill.name));
-        }
-
-        for (const dataPackage of data.dataPackage) {
-            Global.game.registerDataPackage(dataPackage);
-        }
-
         Global.game.postDataRegistration();
+        Global.micsr.setup(Global.game, Global.game, {
+            namespaces: data.namespaces,
+            skills: data.skills,
+            dataPackage: data.dataPackage,
+            agility: data.agility,
+            gamemodes: data.gamemodes
+        });
 
-        Global.simulator = new Simulator(Global.micsr);
-
-        // await GameData.init(data.gameData);
+        Global.simulator = new Simulator();
     }
 
     private static async loadGameData(origin: string) {
@@ -118,6 +107,7 @@ export abstract class Environment {
         Global.this.setDiscordRPCDetails = async () => {};
         Global.this.saveData = () => {};
         Global.this.notifyPlayer = () => {};
+        Global.this.showFireworks = () => {};
     }
 
     /**

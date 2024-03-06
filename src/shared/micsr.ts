@@ -22,6 +22,11 @@ import { Color, Logger } from 'src/shared/logger';
 import { ShowModifiers } from './modifier-names';
 import { Util } from './util';
 import { IDataPackage, PackageTypes } from './_types/data-package';
+import { EmptySkillFactory } from './empty-skill';
+import { InitGameData } from './transport/type/init';
+import { Global } from 'src/app/global';
+import { AgilityConverter } from './converter/agility';
+import { GamemodeConverter } from './converter/gamemode';
 
 export class MICSR {
     public logger = new Logger({
@@ -205,7 +210,19 @@ export class MICSR {
             game.registerDataPackage(this.dataPackage['AoD']);
         }
         game.postDataRegistration();
-        this.setupGame(game, actualGame);
+        this.setup(game, actualGame, {
+            dataPackage: Global.dataPackages,
+            skills: Global.skills,
+            namespaces: Array.from(actualGame.registeredNamespaces.registeredNamespaces.values()).filter(
+                namespace => namespace.isModded
+            ),
+            agility: AgilityConverter.toData(
+                actualGame.agility.actions.allObjects,
+                actualGame.agility.pillars.allObjects,
+                actualGame.agility.elitePillars.allObjects
+            ),
+            gamemodes: actualGame.gamemodes.allObjects.map(gamemode => GamemodeConverter.toData(gamemode))
+        });
         this.showModifiersInstance = new ShowModifiers(this, '', 'MICSR', false /* TODO */);
     }
 
@@ -264,112 +281,6 @@ export class MICSR {
         this.dataPackage[id].data.skillData = skillData;
     }
 
-    gamemodeToData = (gm: Gamemode): GamemodeData => {
-        let playerModifierArray: Array<[keyof PlayerModifierObject, PlayerModifierObject]> = Object.entries(
-            gm.playerModifiers
-        ) as Array<[keyof PlayerModifierObject, PlayerModifierObject]>; // For reasons I don't really understand, Typescript cannot guarantee the type of Object.keys() so we have to cast it. https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript
-        let playerModifierObj: PlayerModifierData = {};
-
-        playerModifierArray.forEach((modifierPair: [keyof PlayerModifierObject, PlayerModifierObject]) => {
-            // @ts-ignore
-            if (modifierPair[1] instanceof Array<SkillModifierData>) {
-                // Check for modifiers like decreasedSkillIntervalPercent which affect multiple skills and are an array.
-                playerModifierObj[modifierPair[0]] = modifierPair[1].map((skillModifier: SkillModifier) => ({
-                    skillID: skillModifier.skill.id,
-                    value: skillModifier.value
-                })) as SkillModifierData[] & number; // I don't understand why I've had to typecast this, but I have done so to shut the compiler up. I don't know how to guarantee the type is Array & number
-            }
-        });
-
-        return {
-            //@ts-ignore Ignore warning about accessing private variables. I don't think there's any workaround for this since we *need* to access these private version of these specific variables (for initalisation purposes) and not the getter version that's publically available
-            name: gm._name,
-            //@ts-ignore
-            id: gm._localID,
-            //@ts-ignore
-            description: gm._description,
-            //@ts-ignore
-            rules: gm._rules,
-            //@ts-ignore
-            media: gm._media,
-            textClass: gm.textClass,
-            btnClass: gm.btnClass,
-            isPermaDeath: gm.isPermaDeath,
-            isEvent: gm.isEvent,
-            startDate: gm.startDate,
-            endDate: gm.endDate,
-            //@ts-ignore
-            combatTriangle: Object.entries(COMBAT_TRIANGLE_IDS).filter(x => x[1] == gm._combatTriangle)[0][0],
-            hitpointMultiplier: gm.hitpointMultiplier,
-            hasRegen: gm.hasRegen,
-            capNonCombatSkillLevels: gm.capNonCombatSkillLevels,
-            startingPage: 'melvorD:ActiveSkill',
-            startingItems: [],
-            allowSkillUnlock: gm.allowSkillUnlock,
-            skillUnlockCost: gm.skillUnlockCost,
-            playerModifiers: playerModifierObj,
-            enemyModifiers: gm.enemyModifiers,
-            hasTutorial: gm.hasTutorial,
-            // @ts-ignore
-            allowAncientRelicDrops: gm.allowAncientRelicDrops,
-            // @ts-ignore
-            allowDungeonLevelCapIncrease: gm.allowDungeonLevelCapIncrease,
-            // @ts-ignore
-            allowXPOverLevelCap: gm.allowXPOverLevelCap
-        };
-    };
-
-    obstacleToData(obstacle: AgilityObstacle): AgilityObstacleData {
-        let modifiers: MappedModifiers = obstacle.modifiers as any;
-
-        if (!(obstacle.modifiers instanceof MappedModifiers)) {
-            modifiers = game.agility.getObstacleModifiers(obstacle);
-        }
-
-        return {
-            // @ts-ignore
-            name: obstacle._name,
-            // @ts-ignore
-            id: obstacle._localID,
-            baseExperience: obstacle.baseExperience,
-            baseInterval: obstacle.baseInterval,
-            category: obstacle.category,
-            gpCost: obstacle.gpCost,
-            gpReward: obstacle.gpReward,
-            skillRequirements: [],
-            itemCosts: [],
-            itemRewards: [],
-            scCost: 0,
-            scReward: 0,
-            // @ts-ignore
-            modifiers: this.cloneSafeModifiers(modifiers),
-            // @ts-ignore
-            media: obstacle._media
-        };
-    }
-
-    pillarToData(obstacle: AgilityPillar): BaseAgilityObjectData {
-        let modifiers: MappedModifiers = obstacle.modifiers as any;
-
-        if (!(obstacle.modifiers instanceof MappedModifiers)) {
-            modifiers = game.agility.getPillarModifiers(obstacle);
-        }
-
-        return {
-            // @ts-ignore
-            name: obstacle._name,
-            // @ts-ignore
-            id: obstacle._localID,
-            gpCost: obstacle.gpCost,
-            itemCosts: [],
-            scCost: 0,
-            // @ts-ignore
-            modifiers: this.cloneSafeModifiers(modifiers),
-            // @ts-ignore
-            media: obstacle._media
-        };
-    }
-
     cloneSafeModifiers(modifiers: MappedModifiers) {
         const clonedModifiers: any = {};
 
@@ -387,9 +298,57 @@ export class MICSR {
     }
 
     // any setup that requires a game object
-    setupGame(game: SimGame, actualGame: Game) {
+    setup(game: SimGame, actualGame: Game, data: InitGameData) {
         this.actualGame = actualGame;
         this.game = game;
+
+        // Modded Namespaces.
+        for (const namespace of data.namespaces) {
+            if (!this.game.registeredNamespaces.hasNamespace(namespace.name)) {
+                this.game.registeredNamespaces.registerNamespace(
+                    namespace.name,
+                    namespace.displayName,
+                    namespace.isModded
+                );
+            }
+        }
+
+        // Modded Skills.
+        for (const skill of data.skills) {
+            this.game.registerSkill(skill.namespace, EmptySkillFactory(skill.name, skill.media));
+        }
+
+        // All agility and gamemodes - even base game to account for bypass agility cost mod and modifications of core gamemodes.
+        this.game.gamemodes = new NamespaceRegistry(this.game.registeredNamespaces);
+        this.game.agility.actions = new NamespaceRegistry(this.game.registeredNamespaces);
+        this.game.agility.pillars = new NamespaceRegistry(this.game.registeredNamespaces);
+        this.game.agility.elitePillars = new NamespaceRegistry(this.game.registeredNamespaces);
+
+        for (const gamemode of data.gamemodes) {
+            this.game.gamemodes.registerObject(new Gamemode(gamemode.namespace, gamemode.gamemode, this.game));
+        }
+
+        for (const obstacle of data.agility.obstacles) {
+            this.game.agility.actions.registerObject(
+                new AgilityObstacle(obstacle.namespace, obstacle.obstacle, this.game)
+            );
+        }
+
+        for (const pillar of data.agility.pillars) {
+            this.game.agility.pillars.registerObject(new AgilityPillar(pillar.namespace, pillar.pillar, this.game));
+        }
+
+        for (const pillar of data.agility.elitePillars) {
+            this.game.agility.elitePillars.registerObject(
+                new AgilityPillar(pillar.namespace, pillar.pillar, this.game)
+            );
+        }
+
+        // Modded Data Packages.
+        for (const dataPackage of data.dataPackage) {
+            this.game.registerDataPackage(dataPackage);
+        }
+
         let namespace = this.game.registeredNamespaces.getNamespace('mythCombatSimulator');
         if (namespace === undefined) {
             namespace = this.game.registeredNamespaces.registerNamespace(
@@ -421,10 +380,6 @@ export class MICSR {
         // pets array
         this.pets = this.game.pets;
 
-        if ((<any>self).game) {
-            (<any>self).game.pets = this.pets;
-        }
-
         const impendingDarkness = this.game.dungeons.getObjectByID('melvorF:Impending_Darkness');
 
         if (impendingDarkness) {
@@ -433,7 +388,10 @@ export class MICSR {
 
             if (originalBane && originalBiggerBane) {
                 const getBane = (attackType: AttackType) => {
-                    const bane = Object.assign(Object.create(Object.getPrototypeOf(originalBane)), originalBane);
+                    const bane: Monster = Object.assign(
+                        Object.create(Object.getPrototypeOf(originalBane)),
+                        originalBane
+                    );
                     bane.attackType = attackType;
                     bane['_namespace'] = {
                         name: 'mythCombatSimulator',
@@ -449,7 +407,7 @@ export class MICSR {
                 };
 
                 const getBiggerBane = (attackType: AttackType) => {
-                    const biggerBane = Object.assign(
+                    const biggerBane: Monster = Object.assign(
                         Object.create(Object.getPrototypeOf(originalBiggerBane)),
                         originalBiggerBane
                     );
@@ -479,8 +437,8 @@ export class MICSR {
         }
 
         // dg array
-        this.dungeons = this.actualGame.dungeons;
-        this.dungeonIDs = this.actualGame.dungeonDisplayOrder.map(dungeon => dungeon.id);
+        this.dungeons = this.game.dungeons;
+        this.dungeonIDs = this.game.dungeonDisplayOrder.map(dungeon => dungeon.id);
         this.dungeonCount = this.dungeonIDs.length;
 
         // TODO filter special dungeons
@@ -489,35 +447,35 @@ export class MICSR {
         //  this.dungeons[Dungeons.Into_the_Mist].monsters = [147, 148, 149];
         // monsters
         this.bardID = 'melvorF:WanderingBard';
-        this.monsters = this.actualGame.monsters;
-        this.monsterList = this.actualGame.monsters.allObjects;
-        this.combatAreas = this.actualGame.combatAreas;
-        this.slayerAreas = this.actualGame.slayerAreas;
+        this.monsters = this.game.monsters;
+        this.monsterList = this.game.monsters.allObjects;
+        this.combatAreas = this.game.combatAreas;
+        this.slayerAreas = this.game.slayerAreas;
         this.monsterIDs = [
-            ...this.actualGame.combatAreaDisplayOrder
-                .map((area: any) => area.monsters.map((monster: any) => monster.id))
-                .reduce((a: any, b: any) => a.concat(b), []),
+            ...this.game.combatAreaDisplayOrder
+                .map(area => area.monsters.map(monster => monster.id))
+                .reduce((a, b) => a.concat(b), []),
             this.bardID,
-            ...this.actualGame.slayerAreaDisplayOrder
-                .map((area: any) => area.monsters.map((monster: any) => monster.id))
-                .reduce((a: any, b: any) => a.concat(b), [])
+            ...this.game.slayerAreaDisplayOrder
+                .map(area => area.monsters.map(monster => monster.id))
+                .reduce((a, b) => a.concat(b), [])
         ];
         // potions
-        this.herblorePotionRecipes = this.actualGame.herblore.actions;
+        this.herblorePotionRecipes = this.game.herblore.actions;
         // items
-        this.items = this.actualGame.items;
+        this.items = this.game.items;
         // spells
-        this.standardSpells = this.actualGame.standardSpells;
-        this.curseSpells = this.actualGame.curseSpells;
-        this.auroraSpells = this.actualGame.auroraSpells;
-        this.ancientSpells = this.actualGame.ancientSpells;
-        this.archaicSpells = this.actualGame.archaicSpells;
+        this.standardSpells = this.game.standardSpells;
+        this.curseSpells = this.game.curseSpells;
+        this.auroraSpells = this.game.auroraSpells;
+        this.ancientSpells = this.game.ancientSpells;
+        this.archaicSpells = this.game.archaicSpells;
         // prayers
-        this.prayers = this.actualGame.prayers;
+        this.prayers = this.game.prayers;
         // attackStyles
         this.attackStylesIdx = {};
         const attackStyleGrouping: { [index: string]: number } = {};
-        this.actualGame.attackStyles.allObjects.forEach((a, i) => {
+        this.game.attackStyles.allObjects.forEach((a, i) => {
             let index = attackStyleGrouping[a.attackType];
             if (!index) {
                 index = 0;

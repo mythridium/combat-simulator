@@ -131,6 +131,23 @@ export class SimManager extends CombatManager {
         };
         this.detachGlobals();
         this.replaceGlobals();
+
+        game.skills.forEach(skill => {
+            if (this.isStatProvider(skill)) {
+                this.player.registerStatProvider(skill);
+            }
+        });
+    }
+
+    private isStatProvider(anySkill: AnySkill | StatProvider): anySkill is StatProvider {
+        const skill = anySkill as StatProvider;
+
+        return (
+            skill.modifiers !== undefined ||
+            skill.enemyModifiers !== undefined ||
+            skill.conditionalModifiers !== undefined ||
+            skill.equipmentStats !== undefined
+        );
     }
 
     get onSlayerTask() {

@@ -492,24 +492,11 @@ export class SimPlayer extends Player {
         super.computeModifiers();
 
         // Custom
-        this.addPetModifiers();
         this.addAgilityModifiers();
+
         if (this.isSolarEclipse) {
             this.modifiers.addModifiers({ decreasedMonsterRespawnTimer: 1000 });
         }
-        this.game.astrology['computeProvidedStats'](false);
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
-            (<any>this.game).cartography.computeProvidedStats(false);
-        }
-    }
-
-    addPetModifiers() {
-        this.game.pets.allObjects.forEach((pet, i) => {
-            if (this.petUnlocked.includes(pet) && !pet.activeInRaid && pet.modifiers !== undefined) {
-                this.modifiers.addModifiers(pet.modifiers);
-            }
-        });
     }
 
     addAgilityModifiers() {

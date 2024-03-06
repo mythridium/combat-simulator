@@ -25,9 +25,6 @@ export class SimGame extends Game {
     declare combat: SimManager;
 
     autoEatTiers: string[];
-    agilityObstacles: [string, AgilityObstacle][] = [];
-    agilityPillars: [string, AgilityPillar][] = [];
-    agilityElitePillars: [string, AgilityPillar][] = [];
     itemFoundFromSlayer = new Set<AnyItem>();
 
     constructor(micsr: MICSR) {
@@ -38,17 +35,13 @@ export class SimGame extends Game {
 
         this.combat = new SimClasses.SimManager(this, this.registeredNamespaces.getNamespace('melvorD'));
 
-        this.actions.registeredObjects.set(this.combat.namespace, this.combat);
-        this.activeActions.registeredObjects.set(this.combat.namespace, this.combat);
-        this.passiveActions.registeredObjects.set(this.combat.namespace, this.combat);
+        this.actions.registeredObjects.set(this.combat.id, this.combat);
+        this.activeActions.registeredObjects.set(this.combat.id, this.combat);
+        this.passiveActions.registeredObjects.set(this.combat.id, this.combat);
 
         this.combat.player.registerStatProvider(this.petManager);
         this.combat.player.registerStatProvider(this.shop);
         this.combat.player.registerStatProvider(this.potions);
-
-        this.agilityObstacles = Array.from(this.agility.actions['registeredObjects']);
-        this.agilityPillars = Array.from(this.agility.pillars['registeredObjects']);
-        this.agilityElitePillars = Array.from(this.agility.elitePillars['registeredObjects']);
 
         this.detachGlobals();
     }
@@ -148,6 +141,15 @@ export class SimGame extends Game {
         this.summoning.isSynergyUnlocked = () => {
             return this.combat.player.isSynergyUnlocked;
         };
+
+        if (this.cartography) {
+            Object.defineProperty(this.cartography, 'hasCarthuluPet', {
+                get: () => {
+                    const pet = this.pets.getObjectByID('melvorAoD:MapMasteryPet');
+                    return pet !== undefined ? this.petManager.isPetUnlocked(pet) : false;
+                }
+            });
+        }
     }
 
     public scheduleSave() {}
@@ -162,71 +164,16 @@ export class SimGame extends Game {
     public postDataRegistration(): void {
         if (this.cartography) {
             // don't bother with map post data registration, leads to computing ui
-            this.cartography.worldMaps.forEach(map => (map.postDataRegistration = () => {}));
+            this.cartography.worldMaps.forEach(
+                map =>
+                    (map.postDataRegistration = () => {
+                        map.sortedMasteryBonuses = map.masteryBonuses.allObjects;
+                        map.sortedMasteryBonuses.sort((a, b) => a.masteredHexes - b.masteredHexes);
+                    })
+            );
         }
 
         super.postDataRegistration();
-
-        game.registeredNamespaces.forEach((ns: DataNamespace) => {
-            if (ns.isModded && this.registeredNamespaces.getNamespace(ns.name) === undefined) {
-                // Only register modded namespaces that aren't already registered
-                this.registeredNamespaces.registerNamespace(ns.name, ns.displayName, ns.isModded);
-            }
-        });
-
-        game.gamemodes.forEach(gm => {
-            if (gm.isModded) {
-                this.gamemodes.registerObject(
-                    new Gamemode(
-                        { name: gm.namespace, displayName: gm.name, isModded: gm.isModded },
-                        this.micsr.gamemodeToData(gm),
-                        game
-                    )
-                );
-            }
-        });
-
-        this.agilityObstacles
-            .map(action => action[1])
-            .forEach(action => {
-                if (action.isModded) {
-                    this.agility.actions.registerObject(
-                        new AgilityObstacle(
-                            { name: action.namespace, displayName: action.name, isModded: true },
-                            this.micsr.obstacleToData(action),
-                            game
-                        )
-                    );
-                }
-            });
-
-        this.agilityPillars
-            .map(action => action[1])
-            .forEach(action => {
-                if (action.isModded) {
-                    this.agility.pillars.registerObject(
-                        new AgilityPillar(
-                            { name: action.namespace, displayName: action.name, isModded: true },
-                            this.micsr.pillarToData(action),
-                            game
-                        )
-                    );
-                }
-            });
-
-        this.agilityElitePillars
-            .map(action => action[1])
-            .forEach(action => {
-                if (action.isModded) {
-                    this.agility.elitePillars.registerObject(
-                        new AgilityPillar(
-                            { name: action.namespace, displayName: action.name, isModded: true },
-                            this.micsr.pillarToData(action),
-                            game
-                        )
-                    );
-                }
-            });
 
         for (const area of this.slayerAreas.allObjects) {
             for (const requirement of area.entryRequirements) {

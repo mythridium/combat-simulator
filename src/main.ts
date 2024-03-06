@@ -7,6 +7,8 @@ import { Global } from './app/global';
 import { Simulation } from './app/simulation';
 
 export abstract class Main {
+    private static loading = false;
+
     public static init(context: Modding.ModContext) {
         Global.context = context;
         Global.simulation = new Simulation();
@@ -18,7 +20,7 @@ export abstract class Main {
         });
 
         Global.context.patch(Game, 'registerDataPackage').after((_, dataPackage) => {
-            if (dataPackage.namespace.startsWith('melvor')) {
+            if (dataPackage.namespace.startsWith('melvor') || this.loading) {
                 return;
             }
 
@@ -26,15 +28,17 @@ export abstract class Main {
         });
 
         Global.context.patch(Game, 'registerSkill').after((instance, namespace) => {
-            if (!namespace.isModded) {
+            if (!namespace.isModded || this.loading) {
                 return;
             }
 
-            Global.skills.push({ name: instance.name, namespace });
+            Global.skills.push({ name: instance.name, namespace, media: instance._media });
         });
     }
 
     private static async load() {
+        this.loading = true;
+
         const urls = {
             crossedOut: Global.context.getResourceUrl('assets/cross.svg')
         };

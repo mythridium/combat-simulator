@@ -2629,7 +2629,7 @@ export class Interface {
      * @param {Function} sortFunction Sort equipment by this key
      */
     addEquipmentMultiButton(
-        card: any,
+        card: Card,
         equipmentSlot: any,
         filterFunction: any,
         sortFunction = (item: any) => item.id,
@@ -3805,16 +3805,15 @@ export class Interface {
 
         if (this.game.petManager['unlocked'].has(pet)) {
             this.game.petManager['unlocked'].delete(pet);
-            this.game.petManager['unlocked'].delete(realPet);
             this.player.petUnlocked = this.player.petUnlocked.filter(unlockedPet => unlockedPet.id !== pet.id);
             this.unselectButton(event.currentTarget);
         } else {
-            this.game.petManager['unlocked'].add(realPet);
             this.game.petManager['unlocked'].add(pet);
-            this.player.petUnlocked.push(realPet);
             this.player.petUnlocked.push(pet);
             this.selectButton(event.currentTarget);
         }
+
+        this.game.petManager.computeProvidedStats(false);
 
         setTimeout(() => this.updateCartographyTooltips(pet), 10);
         this.updateCombatStats();
@@ -4630,14 +4629,6 @@ export class Interface {
         // first update the values
         // needed so ancient relics update
         this.player.computeAllStats();
-
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
-            (<any>this.game).cartography.computeProvidedStats(false);
-        }
-
-        this.game.astrology.computeProvidedStats(false);
-
         this.combatData.updateCombatStats();
         // second update the view
         this.combatStatKeys.forEach((key: any) => {

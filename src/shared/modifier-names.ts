@@ -609,10 +609,10 @@ export class ShowModifiers {
                 ...new Set([
                     ...setNames
                         .map((name: any) => this.creasedModifiers[name])
-                        .reduce((a: any, x: any) => [...a, ...x], []),
+                        .reduce((a: any, x: any) => [...a, ...(x ?? [])], []),
                     ...setNames
                         .map((name: any) => this.singletonModifiers[name])
-                        .reduce((a: any, x: any) => [...a, ...x], [])
+                        .reduce((a: any, x: any) => [...a, ...(x ?? [])], [])
                 ])
             ],
             skillIDs: skillIDs

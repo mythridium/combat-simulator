@@ -1,8 +1,10 @@
-export function EmptySkillFactory(name: string) {
+import { Util } from './util';
+
+export function EmptySkillFactory(name: string, media: string) {
     class EmptySkill extends GatheringSkill<EmptyAction, EmptySkillData> {
         public actionInterval = 3000;
         public actionLevel = 1;
-        public _media = '';
+        public _media = media;
         public renderQueue = new GatheringSkillRenderQueue<EmptyAction>();
 
         constructor(namespace: DataNamespace, public readonly game: Game) {
@@ -21,6 +23,10 @@ export function EmptySkillFactory(name: string) {
             return this.actionInterval;
         }
 
+        public get name() {
+            return name;
+        }
+
         public render() {}
         public preAction() {}
         public postAction() {}
@@ -31,6 +37,17 @@ export function EmptySkillFactory(name: string) {
 
         public getTotalUnlockedMasteryActions() {
             return 0;
+        }
+
+        public decode(reader: SaveWriter, version: number) {
+            if (!Util.isWebWorker) {
+                const skill = game.skills.getObjectByID(this.id);
+                skill.decode(reader, version);
+            }
+        }
+
+        public encode(writer: SaveWriter) {
+            return writer;
         }
     }
 

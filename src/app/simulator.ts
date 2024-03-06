@@ -167,58 +167,6 @@ export class Simulator {
     }
 
     intializeWorker() {
-        // Stringify and store both namespaces and gamemodes to pass to the webWorkers
-        const namespaces: { [key: string]: string } = {};
-        const gamemodes: { [key: string]: string } = {};
-        const agilityActions: { [key: string]: string } = {};
-        const agilityPillars: { [key: string]: string } = {};
-        const agilityElitePillars: { [key: string]: string } = {};
-
-        game.registeredNamespaces.forEach((ns: DataNamespace) => {
-            if (ns.isModded) {
-                namespaces[ns.name] = JSON.stringify(ns);
-            }
-        });
-
-        game.gamemodes.forEach((gm: Gamemode) => {
-            const gmNamespace: string = gm.namespace;
-            const gmName: string = gm.name;
-            const gmIsModded: boolean = gm.isModded;
-            const gmData: GamemodeData = this.micsr.gamemodeToData(gm);
-
-            gamemodes[gm.id] = JSON.stringify([
-                { name: gmNamespace, displayName: gmName, isModded: gmIsModded },
-                gmData
-            ]);
-        });
-
-        game.agility.actions.forEach(action => {
-            if (action.isModded) {
-                agilityActions[action.id] = JSON.stringify([
-                    { name: action.namespace, displayName: action.name, isModded: true },
-                    this.micsr.obstacleToData(action)
-                ]);
-            }
-        });
-
-        game.agility.pillars.forEach(action => {
-            if (action.isModded) {
-                agilityPillars[action.id] = JSON.stringify([
-                    { name: action.namespace, displayName: action.name, isModded: true },
-                    this.micsr.pillarToData(action)
-                ]);
-            }
-        });
-
-        game.agility.elitePillars.forEach(action => {
-            if (action.isModded) {
-                agilityElitePillars[action.id] = JSON.stringify([
-                    { name: action.namespace, displayName: action.name, isModded: true },
-                    this.micsr.pillarToData(action)
-                ]);
-            }
-        });
-
         return Global.simulation.init();
     }
 
@@ -673,7 +621,7 @@ export class Simulator {
             const response = await Global.simulation.simulate({
                 monsterId: monsterID,
                 dungeonId: dungeonID,
-                //saveString: saveString,
+                saveString: saveString,
                 trials: this.micsr.trials,
                 maxTicks: this.micsr.maxTicks
             });

@@ -1,6 +1,7 @@
 import { ISimResult } from 'src/shared/simulator/sim-manager';
 
 export interface SimulateRequest {
+    saveString: string;
     monsterId: string;
     dungeonId: string;
     trials: number;

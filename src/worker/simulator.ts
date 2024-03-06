@@ -1,13 +1,7 @@
-import { MICSR } from 'src/shared/micsr';
+import { Global } from './global';
 
 export class Simulator {
-    cancelStatus: any;
-    micsr: MICSR;
-
-    constructor(micsr: MICSR) {
-        this.micsr = micsr;
-        this.cancelStatus = false;
-    }
+    public cancelStatus = false;
 
     /** Simulation Method for a single monster */
     public async simulateMonster(
@@ -21,16 +15,18 @@ export class Simulator {
             const reader = new SaveWriter('Read', 1);
             const saveVersion = reader.setDataFromSaveString(saveString);
 
-            this.micsr.game.decodeSimple(reader, saveVersion);
-            this.micsr.game.onLoad();
-            this.micsr.game.combat.player.initForWebWorker();
+            Global.micsr.game.decodeSimple(reader, saveVersion);
+            Global.micsr.game.onLoad();
+            Global.micsr.game.combat.player.initForWebWorker();
 
-            return this.micsr.game.combat.convertSlowSimToResult(
-                this.micsr.game.combat.runTrials(monsterID, dungeonID, trials, maxTicks, undefined),
+            return Global.micsr.game.combat.convertSlowSimToResult(
+                Global.micsr.game.combat.runTrials(monsterID, dungeonID, trials, maxTicks, undefined),
                 trials
             );
         } catch (error) {
-            this.micsr.logger.error(`Error while simulating monster ${monsterID} in dungeon ${dungeonID}: ${error}`);
+            Global.micsr.logger.error(
+                `Error while simulating monster ${monsterID} in dungeon ${dungeonID}: ${error.stack}`
+            );
             let reason = 'simulation error';
 
             if (error instanceof Error) {

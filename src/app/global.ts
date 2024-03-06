@@ -9,6 +9,6 @@ export abstract class Global extends SharedGlobal {
     public static simulation: Simulation;
     public static micsr: MICSR;
 
-    public static skills: { name: string; namespace: DataNamespace }[] = [];
+    public static skills: { name: string; namespace: DataNamespace; media: string }[] = [];
     public static dataPackages: GameDataPackage[] = [];
 }

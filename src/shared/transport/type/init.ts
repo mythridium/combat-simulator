@@ -1,29 +1,20 @@
-import { IDataPackage } from 'src/shared/_types/data-package';
+import { AgilityConvertedData } from 'src/shared/converter/agility';
+import { GamemodeConvertedData } from 'src/shared/converter/gamemode';
 
-export interface InitRequest {
+export interface InitRequest extends InitGameData {
     origin: string;
     scripts: string[];
     entitlements: {
         toth: boolean;
         aod: boolean;
     };
-    dataPackage: GameDataPackage[];
-    skills: { name: string; namespace: DataNamespace }[];
     modifierData: string;
-    //gameData: GameData;
 }
 
-export interface GameData {
-    slayerTaskData: SlayerTaskData[];
-    dataPackage: IDataPackage;
-    summoningMarkLevels: number[];
-    namespaces: DataObject;
-    gamemodes: DataObject;
-    agilityActions: DataObject;
-    agilityPillars: DataObject;
-    agilityElitePillars: DataObject;
-}
-
-export interface DataObject {
-    [key: string]: string;
+export interface InitGameData {
+    dataPackage: GameDataPackage[];
+    skills: { name: string; namespace: DataNamespace; media: string }[];
+    namespaces: DataNamespace[];
+    agility: AgilityConvertedData;
+    gamemodes: GamemodeConvertedData[];
 }
