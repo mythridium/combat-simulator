@@ -435,8 +435,8 @@ export class App {
 
         // Bar Chart Card
         this.monsterToggleState = true;
-        this.dungeonToggleState = true;
-        this.slayerToggleState = true;
+        this.dungeonToggleState = false;
+        this.slayerToggleState = false;
         // Setup plotter bar clicking
         this.selectedBar = 0;
         this.barSelected = false;
@@ -500,8 +500,7 @@ export class App {
         document.getElementById(`MCS  Pet (%)/${this.timeShorthand[this.initialTimeUnitIndex]} Label`)!.textContent =
             this.loot.petSkill + ' Pet (%)/' + this.selectedTimeShorthand;
         await this.runAsync(() => this.updateUi());
-        // slayer sim is off by default, so toggle auto slayer off
-        this.toggleSlayerSims(!this.slayerToggleState, false);
+        this.plotter.crossImagesPerSetting();
         // load from local storage
         this.consumables.loadRates();
         this.initializing = false;

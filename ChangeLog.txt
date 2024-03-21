@@ -1,3 +1,7 @@
+v2.4.30
+    fixed dungeon toggle button needing to be clicked twice to function for the first time
+    dungeons and slayer tasks start disabled on load
+
 v2.4.29
     fixed barrier dust applying doubling twice
 

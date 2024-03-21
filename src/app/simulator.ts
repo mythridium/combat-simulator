@@ -111,7 +111,7 @@ export class Simulator {
         this.micsr.slayerTaskData.forEach((task: any) => {
             this.slayerTaskMonsters[task.display] = [];
             this.slayerSimData[task.display] = this.newSimData(false);
-            this.slayerSimFilter[task.display] = true;
+            this.slayerSimFilter[task.display] = false;
         });
         /** Variables of currently stored simulation */
         this.currentSim = this.initCurrentSim();
