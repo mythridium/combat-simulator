@@ -536,8 +536,6 @@ export class Loot {
 
         let qty = Math.max(Math.floor((<any>enemy).stats.maxBarrier / numberMultiplier / 20), 1);
 
-        qty = qty * this.lootBonus * this.noLoot;
-
         return qty;
     }
 
