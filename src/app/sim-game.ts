@@ -502,7 +502,10 @@ export class SimGame extends Game {
     setAutoEatTier(tier: number) {
         this.clearShop();
         for (let t = 0; t <= tier; t++) {
-            this.shop.upgradesPurchased.set(this.shop.purchases.getObjectByID(this.autoEatTiers[t])!, 1);
+            const purchase = this.shop.purchases.getObjectByID(this.autoEatTiers[t]);
+            if (purchase) {
+                this.shop.upgradesPurchased.set(purchase, 1);
+            }
         }
         this.shop.computeProvidedStats(false);
     }

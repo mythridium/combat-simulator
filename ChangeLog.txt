@@ -1,3 +1,6 @@
+v2.4.31
+    fixed certain shop purchases from mods breaking simulation
+
 v2.4.30
     fixed dungeon toggle button needing to be clicked twice to function for the first time
     dungeons and slayer tasks start disabled on load

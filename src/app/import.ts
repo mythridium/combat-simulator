@@ -472,17 +472,24 @@ export class Import {
 
         for (const dungeonId of slayer.dungeonCompletion) {
             const dungeon = this.app.game.dungeons.getObjectByID(dungeonId);
-            this.app.game.combat['dungeonCompletion'].set(dungeon, 1);
+            if (dungeon) {
+                this.app.game.combat['dungeonCompletion'].set(dungeon, 1);
+            }
         }
 
         for (const purchaseId of slayer.shopPurchase) {
             const purchase = this.app.game.shop.purchases.getObjectByID(purchaseId)!;
-            this.app.game.shop.upgradesPurchased.set(purchase, 1);
+
+            if (purchase) {
+                this.app.game.shop.upgradesPurchased.set(purchase, 1);
+            }
         }
 
         for (const itemId of slayer.foundItem) {
             const item = this.app.game.items.getObjectByID(itemId)!;
-            this.app.game.stats.Items.add(item, ItemStats.TimesFound, 1);
+            if (item) {
+                this.app.game.stats.Items.add(item, ItemStats.TimesFound, 1);
+            }
         }
     }
 
