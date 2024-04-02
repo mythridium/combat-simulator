@@ -242,13 +242,21 @@ export class Simulator {
                 name: 'cloudManager',
                 data: {
                     hasAoDEntitlement: cloudManager.hasAoDEntitlement,
+                    hasAoDEntitlementAndIsEnabled: cloudManager.hasAoDEntitlementAndIsEnabled,
                     hasExpansionEntitlement: cloudManager.hasExpansionEntitlement,
+                    hasExpansionEntitlementAndIsEnabled: cloudManager.hasExpansionEntitlementAndIsEnabled,
                     hasFullVersionEntitlement: cloudManager.hasFullVersionEntitlement,
                     hasTotHEntitlement: cloudManager.hasTotHEntitlement,
+                    hasTotHEntitlementAndIsEnabled: cloudManager.hasTotHEntitlementAndIsEnabled,
+                    isAprilFoolsEvent2024Active:
+                        cloudManager.isAprilFoolsEvent2024Active !== undefined
+                            ? cloudManager.isAprilFoolsEvent2024Active()
+                            : false,
                     isAllowedToSaveToPlayFab: false,
                     isBeta: cloudManager.isBeta,
                     isOnAuthPage: cloudManager.isOnAuthPage,
-                    isTest: cloudManager.isTest
+                    isTest: cloudManager.isTest,
+                    currentGamemodeId: game.currentGamemode.id
                 }
             },
             { name: 'COMBAT_TRIANGLE_IDS', data: COMBAT_TRIANGLE_IDS },

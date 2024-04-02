@@ -19,6 +19,8 @@
 import type { SimManager } from './sim-manager';
 import { MICSR } from './micsr';
 import { SimClasses } from './sim';
+import { Util } from './util';
+import { Entitlments } from './entitlments';
 
 export class SimGame extends Game {
     micsr: MICSR;
@@ -105,7 +107,7 @@ export class SimGame extends Game {
         this.softDataRegQueue = [];
         this.bank = new Bank(this as any, 12, 12);
         const demoNamespace = this.registeredNamespaces.getNamespace('melvorD')!;
-        if (cloudManager.hasFullVersionEntitlement) {
+        if (Entitlments.full) {
             this.combatPassives.registerObject(
                 new ControlledAffliction(this.registeredNamespaces.getNamespace('melvorF')!, this as any)
             );
@@ -275,11 +277,8 @@ export class SimGame extends Game {
         this.astrology = this.registerSkill(demoNamespace, Astrology);
         this.township = this.registerSkill(demoNamespace, Township);
 
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
-            // @ts-ignore
+        if (Entitlments.aodEnabled) {
             this.archaeology = this.registerSkill(this.registeredNamespaces.getNamespace('melvorAoD')!, Archaeology);
-            // @ts-ignore
             this.cartography = this.registerSkill(this.registeredNamespaces.getNamespace('melvorAoD')!, Cartography);
         }
 
@@ -461,6 +460,30 @@ export class SimGame extends Game {
         // this.settings.postDataRegistration();
     }
 
+    _clearCombatAreaNotInGamemode(entities: NamespaceRegistry<CombatArea>, array?: NamespacedArray<CombatArea>) {
+        const toRemove: string[] = [];
+
+        for (const entity of entities.allObjects) {
+            // @ts-ignore
+            const gamemodes = Array.from(entity.allowedGamemodes?.values() ?? []) as Gamemode[];
+            const gamemodeId = Util.isWebWorker ? cloudManager.currentGamemodeId : game.currentGamemode.id;
+
+            if (gamemodes.find(gamemode => gamemode.id !== gamemodeId)) {
+                toRemove.push(entity.id);
+            }
+        }
+
+        for (const entityId of toRemove) {
+            const entity = entities.registeredObjects.get(entityId);
+            entities.registeredObjects.delete(entityId);
+
+            if (array) {
+                const index = array.indexOf(entity);
+                array.splice(index, 1);
+            }
+        }
+    }
+
     // Override to prevent saving
     clearActiveAction(save?: boolean): void {
         if (!this.disableClearOffline) {
@@ -474,8 +497,8 @@ export class SimGame extends Game {
         //     skill.onLoad();
         //   });
         this.astrology.computeProvidedStats(false);
-        if (cloudManager.hasAoDEntitlement) {
-            (<any>this).cartography.computeProvidedStats(false);
+        if (Entitlments.aodEnabled) {
+            this.cartography.computeProvidedStats(false);
         }
 
         // this.completion.onLoad();

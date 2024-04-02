@@ -1,6 +1,7 @@
 import { IObstacle } from './agility-course';
 import { App } from './app';
 import { Card } from './card';
+import { Entitlments } from './entitlments';
 import { MICSR } from './micsr';
 
 export class Summary {
@@ -220,9 +221,7 @@ export class Summary {
             [EquipmentSlots.Passive, EquipmentSlots.Helmet, EquipmentSlots.Consumable],
             [EquipmentSlots.Cape, EquipmentSlots.Amulet, EquipmentSlots.Quiver],
             [EquipmentSlots.Weapon, EquipmentSlots.Platebody, EquipmentSlots.Shield],
-            cloudManager.hasAoDEntitlement
-                ? [EquipmentSlots.Gem, EquipmentSlots.Platelegs]
-                : [EquipmentSlots.Platelegs],
+            Entitlments.aodEnabled ? [EquipmentSlots.Gem, EquipmentSlots.Platelegs] : [EquipmentSlots.Platelegs],
             [EquipmentSlots.Gloves, EquipmentSlots.Boots, EquipmentSlots.Ring],
             [EquipmentSlots.Summon1, EquipmentSlots.Summon2]
         ];
@@ -429,7 +428,7 @@ export class Summary {
     }
 
     private cartography(card: Card) {
-        if (!cloudManager.hasAoDEntitlement) {
+        if (!Entitlments.aodEnabled) {
             return;
         }
 

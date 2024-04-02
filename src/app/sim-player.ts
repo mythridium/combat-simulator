@@ -23,6 +23,7 @@ import type { SimGame } from './sim-game';
 import type { ISimGains, SimManager } from './sim-manager';
 import { MICSR } from './micsr';
 import { Util } from './util';
+import { Entitlments } from './entitlments';
 
 /**
  * SimPlayer class, allows creation of a functional Player object without affecting the game
@@ -508,9 +509,9 @@ export class SimPlayer extends Player {
             this.modifiers.addModifiers({ decreasedMonsterRespawnTimer: 1000 });
         }
         this.game.astrology['computeProvidedStats'](false);
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
-            (<any>this.game).cartography.computeProvidedStats(false);
+
+        if (Entitlments.aodEnabled) {
+            this.game.cartography.computeProvidedStats(false);
         }
     }
 

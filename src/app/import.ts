@@ -23,6 +23,7 @@ import type { SimGame } from './sim-game';
 import type { SimPlayer } from './sim-player';
 import { App } from './app';
 import { MICSR } from './micsr';
+import { Entitlments } from './entitlments';
 
 // this.micsr.defaultSettings = {
 //     // version: this.micsr.version,
@@ -238,16 +239,11 @@ export class Import {
                     ];
                 }),
             useCombinationRunes: actualGame.settings.useCombinationRunes,
-            // @ts-ignore
-            cartographyWorldMap: cloudManager.hasAoDEntitlement ? (<any>actualGame).cartography.activeMap?.id : '',
-            // @ts-ignore
-            cartographyPointOfInterest: cloudManager.hasAoDEntitlement
-                ? (<any>actualGame).cartography.activeMap?.playerPosition?.pointOfInterest?.id
+            cartographyWorldMap: Entitlments.aodEnabled ? actualGame.cartography.activeMap?.id : '',
+            cartographyPointOfInterest: Entitlments.aodEnabled
+                ? actualGame.cartography.activeMap?.playerPosition?.pointOfInterest?.id
                 : '',
-            // @ts-ignore
-            cartographyMasteredHexes: cloudManager.hasAoDEntitlement
-                ? (<any>actualGame).cartography.activeMap?.masteredHexes
-                : 0
+            cartographyMasteredHexes: Entitlments.aodEnabled ? actualGame.cartography.activeMap?.masteredHexes : 0
         };
 
         // import settings
@@ -311,16 +307,14 @@ export class Import {
             potionID: this.simPlayer.potion?.id,
             useCombinationRunes: this.simPlayer.useCombinationRunes,
             // @ts-ignore
-            cartographyWorldMap: cloudManager.hasAoDEntitlement
-                ? (<any>this.simPlayer.game).cartography.activeMap?.id
+            cartographyWorldMap: Entitlments.aodEnabled ? this.simPlayer.game.cartography.activeMap?.id : '',
+            // @ts-ignore
+            cartographyPointOfInterest: Entitlments.aodEnabled
+                ? this.simPlayer.game.cartography.activeMap?.playerPosition?.pointOfInterest?.id
                 : '',
             // @ts-ignore
-            cartographyPointOfInterest: cloudManager.hasAoDEntitlement
-                ? (<any>this.simPlayer.game).cartography.activeMap?.playerPosition?.pointOfInterest?.id
-                : '',
-            // @ts-ignore
-            cartographyMasteredHexes: cloudManager.hasAoDEntitlement
-                ? (<any>this.simPlayer.game).cartography.activeMap?.masteredHexes
+            cartographyMasteredHexes: Entitlments.aodEnabled
+                ? this.simPlayer.game.cartography.activeMap?.masteredHexes
                 : 0
         };
     }
@@ -358,8 +352,8 @@ export class Import {
         this.importSlayer(settings.slayer);
         this.importAstrology(settings.astrologyModifiers);
         this.importTownship(settings.isSolarEclipse);
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
+
+        if (Entitlments.aodEnabled) {
             this.importCartography(
                 settings.cartographyWorldMap,
                 settings.cartographyPointOfInterest,

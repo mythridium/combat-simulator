@@ -166,6 +166,8 @@ export class SimManager extends CombatManager {
 
     setCallbacks() {}
 
+    setButtonVisibility() {}
+
     // replace globals with properties
     replaceGlobals() {
         this.resetSimStats();
@@ -380,6 +382,23 @@ export class SimManager extends CombatManager {
     }
 
     tick() {
+        const ticksToClick = this.tickCount % 20;
+        // @ts-ignore
+        if (this.game.currentGamemode.enableInstantActions && ticksToClick < 7) {
+            if (this.enemy.monster !== undefined) {
+                // @ts-ignore
+                const actionsToPerform = this.game.modifiers.getInstantActionsToPerform();
+
+                for (let i = 0; i < actionsToPerform; i++) {
+                    // @ts-ignore
+                    this.player.actOnClick();
+                }
+
+                // @ts-ignore
+                this.enemy.actOnClick();
+            }
+        }
+
         this.passiveTick();
         this.activeTick();
         this.checkDeath();

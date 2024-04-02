@@ -21,8 +21,9 @@ import type { SimGame } from './sim-game';
 import { Color, Logger } from './logger';
 import { ShowModifiers } from './modifier-names';
 import { Util } from './util';
+import { Entitlments } from './entitlments';
 
-type PackageTypes = 'Demo' | 'Full' | 'TotH' | 'AoD';
+type PackageTypes = 'Demo' | 'Full' | 'TotH' | 'AoD' | 'melvorAprilFools2024';
 
 type IDataPackage = {
     [packageName in PackageTypes]?: any;
@@ -186,30 +187,39 @@ export class MICSR {
 
     async fetchData() {
         await this.fetchDataPackage('Demo', `/assets/data/melvorDemo.json?${this.DATA_VERSION}`);
-        if (cloudManager.hasFullVersionEntitlement) {
+        if (Entitlments.full) {
             await this.fetchDataPackage('Full', `/assets/data/melvorFull.json?${this.DATA_VERSION}`);
         }
-        if (cloudManager.hasTotHEntitlement) {
+        if (Entitlments.aprilFools) {
+            await this.fetchDataPackage(
+                'melvorAprilFools2024',
+                `/assets/data/melvorAprilFools2024.json?${this.DATA_VERSION}`
+            );
+        }
+        if (Entitlments.tothEnabled) {
             await this.fetchDataPackage('TotH', `/assets/data/melvorTotH.json?${this.DATA_VERSION}`);
         }
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
+        if (Entitlments.aodEnabled) {
             await this.fetchDataPackage('AoD', `/assets/data/melvorExpansion2.json?${this.DATA_VERSION}`);
         }
     }
 
     async initialize(game: SimGame, actualGame: Game) {
         game.registerDataPackage(this.dataPackage['Demo']);
-        if (cloudManager.hasFullVersionEntitlement) {
+
+        if (Entitlments.full) {
             game.registerDataPackage(this.dataPackage['Full']);
         }
-        if (cloudManager.hasTotHEntitlement) {
+        if (Entitlments.aprilFools) {
+            game.registerDataPackage(this.dataPackage['melvorAprilFools2024']);
+        }
+        if (Entitlments.tothEnabled) {
             game.registerDataPackage(this.dataPackage['TotH']);
         }
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
+        if (Entitlments.aodEnabled) {
             game.registerDataPackage(this.dataPackage['AoD']);
         }
+
         game.postDataRegistration();
         this.setupGame(game, actualGame);
         this.showModifiersInstance = new ShowModifiers(this, '', 'MICSR', false /* TODO */);
@@ -257,13 +267,13 @@ export class MICSR {
                 altSpells?: any[];
             };
         }[] = this.dataPackage[id].data.skillData;
-        skillData = skillData.filter(
+        skillData = skillData?.filter(
             skill => !this.bannedSkills.map((bannedSkill: string) => `melvorD:${bannedSkill}`).includes(skill.skillID)
         );
-        skillData = skillData.filter(
+        skillData = skillData?.filter(
             skill => !this.bannedSkills.map((bannedSkill: string) => `melvorAoD:${bannedSkill}`).includes(skill.skillID)
         );
-        const magicSkillData = skillData.find(skill => skill.skillID === 'melvorD:Magic');
+        const magicSkillData = skillData?.find(skill => skill.skillID === 'melvorD:Magic');
         if (magicSkillData) {
             magicSkillData.data.altSpells = [];
         }
@@ -396,6 +406,20 @@ export class MICSR {
     setupGame(game: SimGame, actualGame: Game) {
         this.actualGame = actualGame;
         this.game = game;
+
+        this.game._clearCombatAreaNotInGamemode(this.game.combatAreas, this.game.combatAreaDisplayOrder);
+        this.game._clearCombatAreaNotInGamemode(
+            this.game.combatAreaDisplayOrder.registery,
+            this.game.combatAreaDisplayOrder
+        );
+        this.game._clearCombatAreaNotInGamemode(this.game.slayerAreas, this.game.slayerAreaDisplayOrder);
+        this.game._clearCombatAreaNotInGamemode(
+            this.game.slayerAreaDisplayOrder.registery,
+            this.game.slayerAreaDisplayOrder
+        );
+        this.game._clearCombatAreaNotInGamemode(this.game.dungeons, this.game.dungeonDisplayOrder);
+        this.game._clearCombatAreaNotInGamemode(this.game.dungeonDisplayOrder.registery, this.game.dungeonDisplayOrder);
+
         let namespace = this.game.registeredNamespaces.getNamespace('mythCombatSimulator');
         if (namespace === undefined) {
             namespace = this.game.registeredNamespaces.registerNamespace(

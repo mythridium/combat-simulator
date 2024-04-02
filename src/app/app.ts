@@ -35,6 +35,7 @@ import { ISimData, ISimSave, Simulator } from './simulator';
 import { TabCard } from './tab-card';
 import { Util } from './util';
 import { Summary } from './summary';
+import { Entitlments } from './entitlments';
 
 interface SaveSlot {
     index: number;
@@ -412,7 +413,7 @@ export class App {
         this.createSpellSelectCards();
         this.createPrayerSelectCards();
         // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
+        if (Entitlments.aodEnabled) {
             if ((<any>this.actualGame.currentGamemode).allowAncientRelicDrops) {
                 this.createAncientRelicSelectCards();
             }
@@ -587,9 +588,7 @@ export class App {
             [EquipmentSlots.Cape, EquipmentSlots.Amulet, EquipmentSlots.Quiver],
             [EquipmentSlots.Weapon, EquipmentSlots.Platebody, EquipmentSlots.Shield],
             // @ts-ignore
-            cloudManager.hasAoDEntitlement
-                ? [EquipmentSlots.Gem, EquipmentSlots.Platelegs]
-                : [EquipmentSlots.Platelegs],
+            Entitlments.aodEnabled ? [EquipmentSlots.Gem, EquipmentSlots.Platelegs] : [EquipmentSlots.Platelegs],
             [EquipmentSlots.Gloves, EquipmentSlots.Boots, EquipmentSlots.Ring],
             [EquipmentSlots.Summon1, EquipmentSlots.Summon2]
         ];
@@ -1158,7 +1157,7 @@ export class App {
 
         expansionIcons.className = 'mcs-expansion-icons';
 
-        if (cloudManager.hasTotHEntitlement) {
+        if (Entitlments.tothEnabled) {
             const toth = document.createElement('div');
 
             toth.className = 'mcs-expansion-icon toth';
@@ -1167,7 +1166,7 @@ export class App {
             expansionIcons.appendChild(toth);
         }
 
-        if (cloudManager.hasAoDEntitlement) {
+        if (Entitlments.aodEnabled) {
             const aod = document.createElement('div');
 
             aod.className = 'mcs-expansion-icon aod';
@@ -1381,7 +1380,7 @@ export class App {
             )
         );
         // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
+        if (Entitlments.aodEnabled) {
             this.prayerSelectCard.addPremadeTab(
                 'Unholy Prayers',
                 this.media.unholy,
@@ -3176,7 +3175,7 @@ export class App {
         const slotKey = EquipmentSlots[equipmentSlot] as SlotTypes;
 
         // @ts-ignore
-        if (!cloudManager.hasAoDEntitlement && slotKey === 'Gem') {
+        if (!Entitlments.aodEnabled && slotKey === 'Gem') {
             return;
         }
 
@@ -4630,9 +4629,8 @@ export class App {
         // needed so ancient relics update
         this.player.computeAllStats();
 
-        // @ts-ignore
-        if (cloudManager.hasAoDEntitlement) {
-            (<any>this.game).cartography.computeProvidedStats(false);
+        if (Entitlments.aodEnabled) {
+            this.game.cartography.computeProvidedStats(false);
         }
 
         this.game.astrology.computeProvidedStats(false);

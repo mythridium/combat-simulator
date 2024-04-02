@@ -1,3 +1,6 @@
+v2.4.32
+    added support for a???? f????
+
 v2.4.31
     fixed certain shop purchases from mods breaking simulation
 

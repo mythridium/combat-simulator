@@ -22,6 +22,7 @@
 import { CloneData } from 'src/app/clone-data';
 import { MICSR } from 'src/app/micsr';
 import { SimClasses } from 'src/app/sim';
+import { Entitlments } from 'src/app/entitlments';
 
 (async () => {
     // spoof MICSR
@@ -215,7 +216,7 @@ import { SimClasses } from 'src/app/sim';
                     eval(event.data.classes[name]);
                 });
 
-                (<any>cloudManager).isBirthdayEvent2023Active = () => false;
+                cloudManager.isBirthdayEvent2023Active = () => false;
 
                 (<any>self).flatHexOrient = {
                     // @ts-ignore
@@ -315,12 +316,6 @@ import { SimClasses } from 'src/app/sim';
                 // Save off global object
                 // @ts-expect-error
                 self.exp = new ExperienceCalculator();
-                const full = event.data.dataPackage.Full;
-                const toth = event.data.dataPackage.TotH;
-                const aod = event.data.dataPackage.AoD;
-                cloudManager.hasTotHEntitlement = !!toth;
-                cloudManager.hasAoDEntitlement = !!aod;
-                cloudManager.hasFullVersionEntitlement = !!full;
 
                 // @ts-expect-error I'm muting these errors because that seems to be the approach taken above
                 self._game = new Game();
@@ -346,13 +341,16 @@ import { SimClasses } from 'src/app/sim';
                 self.game = simGame;
                 micsr.dataPackage = event.data.dataPackage;
                 micsr.cleanupDataPackage('Demo');
-                if (cloudManager.hasFullVersionEntitlement) {
+                if (Entitlments.full) {
                     micsr.cleanupDataPackage('Full');
                 }
-                if (cloudManager.hasTotHEntitlement) {
+                if (Entitlments.aprilFools) {
+                    micsr.cleanupDataPackage('melvorAprilFools2024');
+                }
+                if (Entitlments.tothEnabled) {
                     micsr.cleanupDataPackage('TotH');
                 }
-                if (cloudManager.hasAoDEntitlement) {
+                if (Entitlments.aodEnabled) {
                     micsr.cleanupDataPackage('AoD');
                 }
 
