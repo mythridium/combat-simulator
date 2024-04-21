@@ -545,6 +545,7 @@ export class SimGame extends Game {
     }
 
     resetToBlankState() {
+        this.combat.resetEventState();
         this.combat.player.resetToBlankState();
         this.combat.player.setPotion(undefined);
         this.clearShop();

@@ -175,6 +175,12 @@ export class SimManager extends CombatManager {
 
     // don't render anything
     render() {}
+    renderEventAreas() {}
+    renderEventMenu() {}
+    renderDungeonRelicCount() {}
+    renderSlayerAreaEffects() {}
+    renderAreaRequirements() {}
+    renderPause() {}
 
     // reset sim stats
     resetSimStats() {

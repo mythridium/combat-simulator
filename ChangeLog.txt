@@ -1,3 +1,6 @@
+v2.4.33
+    fixed areaMenus is not defined error when loading the game during a combat event
+
 v2.4.32
     added support for a???? f????
 
