@@ -513,7 +513,7 @@ export class Loot {
         }
         let amt = monsterData.bones?.quantity ?? 1;
 
-        if (this.app.player.modifiers.doubleBoneDrops > 0) {
+        if (this.app.player.modifiers.doubleBoneDrops > 0 && !isDisabledModifier('doubleBoneDrops')) {
             amt *= 2;
         }
 
