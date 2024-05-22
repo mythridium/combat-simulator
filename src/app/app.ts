@@ -3621,11 +3621,9 @@ export class App {
             this.unselectButton(event.currentTarget);
         } else {
             if (this.player.potion) {
-                recipe = this.micsr.game.herblore['potionToRecipeMap'].get(this.player.potion)!;
+                const potionRecipe = this.getPotionRecipe(this.player.potion);
                 // Change Potion
-                const button = document.getElementById(
-                    `MCS ${this.getPotionHtmlId(recipe) ?? this.player.potion.id} Button`
-                );
+                const button = document.getElementById(`MCS ${this.getPotionHtmlId(potionRecipe)} Button`);
 
                 if (button) {
                     this.unselectButton(button);
@@ -3654,11 +3652,9 @@ export class App {
             this.unselectButton(event.currentTarget);
         } else {
             if (this.player.potion) {
-                const recipe = this.micsr.game.herblore['potionToRecipeMap'].get(this.player.potion)!;
+                const recipe = this.getPotionRecipe(this.player.potion);
                 // Change Potion
-                const button = document.getElementById(
-                    `MCS ${this.getPotionHtmlId(recipe) ?? this.player.potion.id} Button`
-                );
+                const button = document.getElementById(`MCS ${this.getPotionHtmlId(recipe)} Button`);
                 if (button) {
                     this.unselectButton(button);
                 }
@@ -4787,8 +4783,18 @@ export class App {
      * @param {PotionItem} potion The potion
      * @return {string} The name of a potion
      */
-    getPotionHtmlId(recipe: HerbloreRecipe) {
+    getPotionHtmlId(recipe: HerbloreRecipe | PotionItem) {
         return recipe?.id;
+    }
+
+    getPotionRecipe(potion: PotionItem) {
+        const recipe = this.game.herblore['potionToRecipeMap'].get(potion);
+
+        if (recipe) {
+            return recipe;
+        }
+
+        return potion;
     }
 
     /**

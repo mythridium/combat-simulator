@@ -414,7 +414,7 @@ export class Import {
         this.app.skillKeys.forEach(key => {
             this.document.getElementById(`MCS ${key} Input`).value = levels.get(this.micsr.skillIDs[key]);
         });
-        this.simPlayer.skillLevel = levels;
+        this.simPlayer.skillLevel = new Map(levels);
     }
 
     importStyle(styles: any) {
@@ -543,7 +543,7 @@ export class Import {
     importPotion(potionID?: string) {
         // Deselect potion if selected
         if (this.simPlayer.potion) {
-            const recipe = this.app.game.herblore['potionToRecipeMap'].get(this.simPlayer.potion);
+            const recipe = this.app.getPotionRecipe(this.simPlayer.potion);
 
             if (recipe) {
                 this.app.unselectButton(this.document.getElementById(`MCS ${this.app.getPotionHtmlId(recipe)} Button`));
@@ -556,7 +556,7 @@ export class Import {
             const potion = this.simPlayer.game.items.potions.getObjectByID(potionID);
             this.simPlayer.setPotion(potion);
 
-            const recipe = this.app.game.herblore['potionToRecipeMap'].get(this.simPlayer.potion);
+            const recipe = this.app.getPotionRecipe(this.simPlayer.potion);
 
             if (this.simPlayer.potion && recipe) {
                 this.app.selectButton(this.document.getElementById(`MCS ${this.app.getPotionHtmlId(recipe)} Button`));

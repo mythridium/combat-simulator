@@ -1,3 +1,8 @@
+v2.4.35
+    fixed levels not updating when importing a configuration
+    fixed agility masteries not clearing existing mastery when importing a configuration
+    fixed potion highlight not displaying when importing a configuration with one of the 'other' category potions selected
+
 v2.4.34
     fixed necromancers crown doubling bone drops when the modifier is disabled
 

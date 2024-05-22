@@ -447,6 +447,13 @@ export class AgilityCourse {
                 if (obstacle) {
                     this.parent.game.agility['actionMastery'].set(obstacle, { level: 99, xp: 13100000 });
                 }
+            } else {
+                const obstacle = this.parent.game.agility.actions.allObjects.find(
+                    (_, i) => i === this.parent.player.course[category]
+                )!;
+                if (obstacle) {
+                    this.parent.game.agility['actionMastery'].set(obstacle, { level: 1, xp: 0 });
+                }
             }
         });
         this.player.pillarID = pillarID;
