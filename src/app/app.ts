@@ -36,12 +36,7 @@ import { TabCard } from './tab-card';
 import { Util } from './util';
 import { Summary } from './summary';
 import { Entitlments } from './entitlments';
-
-interface SaveSlot {
-    index: number;
-    name: string;
-    data: string;
-}
+import { SaveSlot, SaveSlotData } from './save-slot';
 
 /**
  * Container Class for the Combat Simulator.
@@ -131,7 +126,7 @@ export class App {
 
     private readonly saveSlotsCount = 5;
     private readonly saveSlotsKey = 'save-slots';
-    private saveSlots: SaveSlot[] = [];
+    private saveSlots: SaveSlotData[] = [];
 
     /**
      * Constructs an instance of mcsApp
@@ -356,15 +351,28 @@ export class App {
     async initialize(urls: any, modal: HTMLDivElement) {
         try {
             for (let i = 0; i < this.saveSlotsCount; i++) {
-                const saveString: string | null = localStorage.getItem(`${this.saveSlotsKey}-${i}-${currentCharacter}`);
+                try {
+                    const saveString: string | null = localStorage.getItem(
+                        `${this.saveSlotsKey}-${i}-${currentCharacter}`
+                    );
 
-                if (saveString) {
-                    const saveSlot: SaveSlot = JSON.parse(saveString);
-                    this.saveSlots[i] = saveSlot;
+                    // migrate existing data
+                    if (saveString) {
+                        await SaveSlot.save(`${this.saveSlotsKey}-${i}-${currentCharacter}`, JSON.parse(saveString));
+                        localStorage.removeItem(`${this.saveSlotsKey}-${i}-${currentCharacter}`);
+                    }
+                } catch (error) {
+                    this.micsr.logger.error('Failed to migrated existing save slot', error);
+                }
+
+                const save: SaveSlotData | null = await SaveSlot.get(`${this.saveSlotsKey}-${i}-${currentCharacter}`);
+
+                if (save) {
+                    this.saveSlots[i] = save;
                 }
             }
         } catch (error) {
-            console.error(`Failed to load save slots`, error);
+            this.micsr.logger.error(`Failed to load save slots`, error);
         }
 
         // Simulation Object
@@ -869,17 +877,17 @@ export class App {
                     };
                 }
             },
-            preConfirm(inputValue: string) {
-                const saveSlot: SaveSlot = {
+            async preConfirm(inputValue: string) {
+                const saveSlot: SaveSlotData = {
                     index,
                     name: inputValue,
                     data: that.import.convertObjectToJson(that.import.exportSettings())
                 };
 
                 try {
-                    localStorage.setItem(`${that.saveSlotsKey}-${index}-${currentCharacter}`, JSON.stringify(saveSlot));
+                    await SaveSlot.save(`${that.saveSlotsKey}-${index}-${currentCharacter}`, saveSlot);
                 } catch (error) {
-                    console.error(`Failed to save slot to localstorage.`, error);
+                    this.micsr.logger.error(`Failed to save slot to localstorage.`, error);
                 }
 
                 that.saveSlots[index] = saveSlot;

@@ -2,11 +2,18 @@ import { App } from './app/app';
 import { MICSR } from './app/micsr';
 import { Menu } from './app/menu';
 import { SimClasses } from './app/sim';
+import { SaveSlot } from './app/save-slot';
 
 export class Main {
     constructor(private readonly context: Modding.ModContext) {}
 
     public init() {
+        try {
+            SaveSlot.init();
+        } catch (error) {
+            console.error(error);
+        }
+
         this.context.onInterfaceReady(() => {
             this.sidebar();
 

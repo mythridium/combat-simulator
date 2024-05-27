@@ -1,3 +1,7 @@
+v2.4.36
+    save slots are now stored in indexeddb instead of localstorage
+    existing save slot data is automatically migrated over
+
 v2.4.35
     fixed levels not updating when importing a configuration
     fixed agility masteries not clearing existing mastery when importing a configuration
