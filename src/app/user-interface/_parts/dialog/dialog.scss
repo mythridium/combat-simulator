@@ -7,9 +7,6 @@ mcs-dialog {
     right: 0;
     top: 0;
     bottom: 0;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000;
 
     &.is-open {
         visibility: visible;

@@ -10,9 +10,6 @@
     background: #3c3c3c;
     border: solid 2px #4c4c4c;
     z-index: 10000;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000;
 
     &.is-closed {
         visibility: hidden;

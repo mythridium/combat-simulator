@@ -1,3 +1,6 @@
+v3.0.63
+    experimental change to address mobile zoom issues
+
 v3.0.62
     fixed stats failing to update after importing once
 

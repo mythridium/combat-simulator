@@ -20,9 +20,9 @@ Raise an [issue](https://github.com/mythridium/combat-simulator/issues) here on 
 5. Use the "Simulate Selected" button to simulate the selected entity.
 6. Alternatively, use the "Simulate All" button to simulate all entities that are not disabled.
 
-### Modding:
+### Modding
 v3 has added basic support for modded data. Any data that has been added through json or the data builder will be pushed into combat sim. This needs to be opted in by mod developers so that mods don't unintentionally break the sim. To do this, call the following `mod.api.mythCombatSimulator?.registerNamespace('your mods namespace');`
 
-This MUST be done before you register any json or data builders, this means if you load your json from the manifest, you'll need to shift it inside a setup file so you can register the namespace with combat sim first. This also needs to be done before the onInterfaceReady context callback as that's when combat sim is loaded.
+This MUST be done before you register any json or data builders, this means if you load your json from the manifest, you'll need to shift it inside a setup file so you can register the namespace with combat sim first. This also needs to be done before the `onInterfaceReady` context callback as that's when combat sim is loaded.
 
 Custom skills are not supported and mocked inside the simulator to prevent errors, patched functions are not supported, this is purely custom data, such as items, prayers, equipment slots, etc will flow into combat sim.
