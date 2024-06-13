@@ -1,0 +1,30 @@
+mcs-township {
+    mcs-switch {
+        display: block;
+        margin-top: 10px;
+    }
+
+    .mcs-township-building {
+        display: block;
+        margin-top: 20px;
+    }
+
+    .mcs-township-building-field {
+        margin-top: 5px;
+    }
+
+    .mcs-township-stats {
+        font-size: 70%;
+        margin-bottom: 10px;
+    }
+
+    .mcs-township-building-label {
+        margin-bottom: 10px;
+
+        img {
+            width: 20px;
+            height: 20px;
+            margin-left: 6px;
+        }
+    }
+}

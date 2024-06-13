@@ -1,0 +1,25 @@
+mcs-cartography {
+    .mcs-mastery-bonus-container,
+    .mcs-points-of-interest-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        .mcs-cartography-map-mastery-container,
+        .mcs-cartography-map-poi-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .mcs-cartography-mastery-container,
+            .mcs-cartography-poi-container {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                max-width: 500px;
+            }
+        }
+    }
+}

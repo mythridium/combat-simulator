@@ -1,0 +1,16 @@
+mcs-page-title {
+    display: block;
+    margin-bottom: 20px;
+
+    .mcs-page-description {
+        color: #c7c7c7;
+        font-size: 80%;
+    }
+}
+
+.mcs-header-with-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}

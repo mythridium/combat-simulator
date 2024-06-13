@@ -1,0 +1,25 @@
+mcs-save-slots {
+    mcs-dialog [slot='footer'] {
+        display: flex;
+        gap: 5px;
+        margin-left: initial;
+        width: 100%;
+    }
+
+    .mcs-save-slot-overwrite,
+    .mcs-save-slot-new {
+        margin-top: 10px;
+    }
+
+    .mcs-save-slots-title {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .mcs-save-slot-container {
+        display: flex;
+        gap: 5px;
+        margin-top: 10px;
+    }
+}

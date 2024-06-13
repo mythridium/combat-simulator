@@ -1,0 +1,206 @@
+<template id="mcs-information-template">
+    <div id="mcs-information-title" class="mcs-information-title mb-2">Information</div>
+
+    <div id="mcs-monster-information" class="mcs-monster-information">
+        <div class="mcs-monster">
+            <img id="mcs-monster-attack-style" class="mcs-monster-attack-style" />
+            <img id="mcs-monster-image" class="mcs-monster-image" />
+        </div>
+
+        <div id="mcs-monster-note" class="mcs-monster-note"></div>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-xp-label">XP</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-xp">0</span>
+            <div data-mcsTooltipContent id="mcs-information-xp-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-hp-xp-label">HP XP</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-hp-xp">0</span>
+            <div data-mcsTooltipContent id="mcs-information-hp-xp-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label">
+                <span id="mcs-information-prayer-xp-label">Prayer XP</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-prayer-xp">0</span>
+            <div data-mcsTooltipContent id="mcs-information-prayer-xp-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-slayer-xp-label">Slayer XP</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-slayer-xp">0</span>
+            <div data-mcsTooltipContent id="mcs-information-slayer-xp-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-summoning-xp-label">Summoning XP</span
+                ><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-summoning-xp">0</span>
+            <div data-mcsTooltipContent id="mcs-information-summoning-xp-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Corruption XP</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-corruption-xp">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-prayer-point-gained-label">Prayer P. Gained</span
+                ><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-prayer-point-gained">0</span>
+            <div data-mcsTooltipContent id="mcs-information-prayer-point-gained-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-prayer-point-used-label">Prayer P. Used</span
+                ><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-prayer-point-used">0</span>
+            <div data-mcsTooltipContent id="mcs-information-prayer-point-used-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Ammo</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-ammo">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label"><span>Runes</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-runes">0</span>
+            <div data-mcsTooltipContent id="mcs-information-runes-tooltip">No runes used.</div>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Comb. Runes</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-combination-runes">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Potions</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-potions">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Consumables</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-consumables">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Tablets per type</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-tablets">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Food</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-food">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label"><span>Est. Death Rate</span></span>
+            <span slot="value" id="mcs-information-estimated-death-rate">0</span>
+            <div data-mcsTooltipContent id="mcs-information-death-rate-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label"><span>Highest Hit Taken</span></span>
+            <span slot="value" id="mcs-information-highest-hit-taken">0</span>
+            <div data-mcsTooltipContent id="mcs-information-highest-hit-tooltip">Highest Hit Taken: 0</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label"><span>Highest Reflect Taken</span></span>
+            <span slot="value" id="mcs-information-highest-reflect-taken">0</span>
+            <div data-mcsTooltipContent id="mcs-information-highest-reflect-tooltip">Highest Reflect Taken: 0</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label"><span>Lowest Hitpoints</span></span>
+            <span slot="value" id="mcs-information-lowest-hitpoints">0</span>
+            <div data-mcsTooltipContent id="mcs-information-lowest-hitpoints-tooltip">Lowest Hitpoints: 0</div>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Kill Time (s)</span></span>
+            <span slot="value" id="mcs-information-kill-time">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Kills</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-kills">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-gp-label">GP</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-gp">0</span>
+            <div data-mcsTooltipContent id="mcs-information-gp-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-raw-gp-label">Raw GP</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-raw-gp">0</span>
+            <div data-mcsTooltipContent id="mcs-information-raw-gp-tooltip">N/A</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label">
+                <span id="mcs-information-drops-label">Drops</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-drops">0</span>
+            <div data-mcsTooltipContent id="mcs-information-drops-tooltip">
+                Kills multiplied by doubling chance. (includes chance to receive no drops)
+            </div>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label"><span>Signet (%)</span><span class="mcs-information-unit">/h</span></span>
+            <span slot="value" id="mcs-information-signet">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item id="mcs-information-pet-line-item" data-mcsTooltip>
+            <span slot="label">
+                <span id="mcs-information-pet-label">Pet (%)</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-pet">0</span>
+            <div data-mcsTooltipContent>The average percent chance for a pet to drop.</div>
+        </mcs-line-item>
+
+        <mcs-line-item id="mcs-information-mark-line-item" data-mcsTooltip>
+            <span slot="label">
+                <span id="mcs-information-mark-label">Mark (%)</span><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-mark">0</span>
+            <div data-mcsTooltipContent>
+                The average percent chance for any mark of this skill to drop. The chance for individual marks are
+                below.
+                <div id="mcs-information-mark-tooltip" class="mcs-information-mark-tooltip"></div>
+            </div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip data-mcsTooltipDisabled>
+            <span slot="label">
+                <span id="mcs-information-slayer-coins-label">Slayer Coins</span
+                ><span class="mcs-information-unit">/h</span>
+            </span>
+            <span slot="value" id="mcs-information-slayer-coins">0</span>
+            <div data-mcsTooltipContent id="mcs-information-slayer-coins-tooltip">N/A</div>
+        </mcs-line-item>
+    </div>
+</template>

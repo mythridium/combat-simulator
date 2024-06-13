@@ -1,0 +1,16 @@
+mcs-slayer {
+    .mcs-slayer-dungeon-completions,
+    .mcs-slayer-abyss-depth-completions,
+    .mcs-slayer-shop-purchases,
+    .mcs-slayer-found-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 10px 0;
+    }
+
+    .mcs-slayer-ignore-requirements {
+        display: block;
+        margin-top: 10px;
+    }
+}

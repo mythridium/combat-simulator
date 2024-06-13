@@ -1,0 +1,82 @@
+mcs-plotter {
+    &.mcs-small-plotter {
+        .mcs-plotter-bar {
+            width: 18px;
+        }
+
+        .mcs-x-axis-section {
+            top: 14px;
+        }
+
+        mcs-plotter-x-axis-label {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    .mcs-plot-container {
+        border: none;
+        position: relative;
+        font-size: 16px;
+        overflow-x: auto;
+        min-height: 440px;
+        padding: 0.25rem;
+        margin: 0.25rem !important;
+        min-width: 250px;
+    }
+
+    .mcs-plot-top-container {
+        display: flex;
+        position: relative;
+        height: 280px;
+        margin-top: 20px;
+        margin-right: 0.25rem;
+        border-color: inherit;
+        background-color: inherit;
+    }
+
+    .mcs-plot-y-axis {
+        position: relative;
+        height: 100%;
+        min-width: 80px;
+    }
+
+    .mcs-plot-x-axis {
+        position: absolute;
+        display: flex;
+        min-height: 88px;
+        left: 85px;
+        border-color: inherit;
+    }
+
+    .mcs-plot-box {
+        position: relative;
+        display: flex;
+        height: 100%;
+        border-width: thin;
+        border-style: solid;
+        border-color: inherit;
+        background-color: inherit;
+    }
+
+    .mcs-plot-label {
+        position: absolute;
+        top: 30px;
+        text-align: center;
+        text-align: right;
+        transform: rotate(-20deg);
+        transform-origin: top right;
+        white-space: nowrap;
+    }
+
+    .mcs-x-axis-section {
+        position: absolute;
+        top: 20px;
+        border-color: inherit;
+        border-width: thin;
+        height: 10px;
+        border-bottom-style: solid;
+        border-right-style: solid;
+        pointer-events: none;
+    }
+}

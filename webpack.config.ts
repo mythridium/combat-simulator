@@ -6,8 +6,8 @@ import { Configuration } from 'webpack';
 const isProduction = process.argv[process.argv.indexOf('--mode') + 1] === 'production';
 
 const config: Configuration = {
-    mode: isProduction ? 'production' : 'development',
-    entry: { setup: 'src/setup.ts', simulator: 'src/app/worker/simulator.ts' },
+    mode: 'development',
+    entry: { setup: 'src/setup.ts', worker: 'src/worker/setup.ts' },
     output: {
         filename: '[name].mjs',
         path: resolve(__dirname, '.output'),
@@ -44,6 +44,10 @@ const config: Configuration = {
                 use: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader']
+            },
+            {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/
@@ -64,6 +68,18 @@ if (!isProduction) {
                     keep_classnames: true,
                     keep_fnames: true,
                     sourceMap: false
+                }
+            })
+        ]
+    };
+} else {
+    config.optimization = {
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    mangle: false,
+                    keep_classnames: true,
+                    keep_fnames: true
                 }
             })
         ]

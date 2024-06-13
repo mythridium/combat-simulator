@@ -1,0 +1,130 @@
+#mcs-combat-simulator {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    position: fixed;
+    top: 20px;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: #3c3c3c;
+    border: solid 2px #4c4c4c;
+    z-index: 10000;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000;
+
+    &.is-closed {
+        visibility: hidden;
+    }
+
+    #mcs-main-container {
+        height: 100%;
+        overflow: hidden;
+
+        #mcs-scroll-container {
+            display: flex;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+        }
+    }
+
+    #mcs-mobile-configuration-menu {
+        display: none;
+        width: 100%;
+        height: 100%;
+        background: #3c3c3c;
+        overflow: auto;
+
+        mcs-configuration-menu {
+            button {
+                width: 100%;
+                margin: 0;
+            }
+
+            img {
+                padding-right: 10px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1200px) {
+    #mcs-main-container {
+        #mcs-scroll-container {
+            mcs-sidebar,
+            mcs-pages,
+            mcs-information {
+                display: block;
+                height: 100%;
+            }
+
+            mcs-out-of-combat-stats {
+                height: 100%;
+                min-width: 250px;
+            }
+
+            mcs-sidebar {
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+            }
+
+            mcs-pages {
+                min-width: calc(100% - 250px);
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+            }
+
+            mcs-information {
+                min-width: 270px;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+            }
+        }
+    }
+}
+
+@media (max-width: 991px) {
+    #mcs-combat-simulator {
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border: none;
+
+        mcs-sidebar {
+            display: none !important;
+        }
+
+        &.mobile-menu-open {
+            #mcs-mobile-configuration-menu {
+                display: block;
+            }
+
+            #mcs-main-container {
+                display: none;
+            }
+        }
+    }
+}
+
+@media (max-width: 700px) {
+    #mcs-main-container {
+        #mcs-scroll-container {
+            mcs-pages,
+            mcs-out-of-combat-stats.is-open,
+            mcs-information {
+                display: block;
+                height: 100%;
+                min-width: 100%;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+            }
+
+            mcs-information {
+                border-left: none;
+            }
+        }
+    }
+}

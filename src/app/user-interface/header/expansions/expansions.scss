@@ -1,0 +1,24 @@
+.mcs-header-expansions {
+    display: flex;
+    gap: 5px;
+    margin-right: 5px;
+
+    .mcs-header-expansion {
+        display: block;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+
+        &.toth {
+            background: #8a79fc;
+        }
+
+        &.aod {
+            background: #ffbb53;
+        }
+
+        &.ita {
+            background: #e52f24;
+        }
+    }
+}

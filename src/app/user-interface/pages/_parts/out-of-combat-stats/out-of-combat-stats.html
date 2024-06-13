@@ -1,0 +1,126 @@
+<template id="mcs-out-of-combat-stats-template">
+    <div class="mb-2">Out of Combat Stats</div>
+
+    <div class="mcs-out-of-combat-stat-fields">
+        <mcs-line-item>
+            <span slot="label">Attack Interval</span>
+            <span slot="value" id="mcs-stat-attack-interval">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Summoning Interval</span>
+            <span slot="value" id="mcs-stat-summoning-interval">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Respawn Interval</span>
+            <span slot="value" id="mcs-stat-respawn-interval">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Min Hit</span>
+            <span slot="value" id="mcs-stat-min-hit">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Max Hit</span>
+            <span slot="value" id="mcs-stat-max-hit">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Summoning Max Hit</span>
+            <img slot="image" src="assets/media/skills/summoning/summoning.svg" />
+            <span slot="value" id="mcs-stat-summoning-max-hit">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Barrier Max Hit</span>
+            <img slot="image" src="assets/media/skills/combat/barrier.svg" />
+            <span slot="value" id="mcs-stat-barrier-max-hit">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Accuracy</span>
+            <span slot="value" id="mcs-stat-accuracy">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Crit Chance (%)</span>
+            <span slot="value" id="mcs-stat-crit-chance">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Crit Damage (%)</span>
+            <span slot="value" id="mcs-stat-crit-damage">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Melee Evasion</span>
+            <img slot="image" src="assets/media/skills/combat/attack.svg" />
+            <span slot="value" id="mcs-stat-melee-evasion">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Ranged Evasion</span>
+            <img slot="image" src="assets/media/skills/ranged/ranged.svg" />
+            <span slot="value" id="mcs-stat-ranged-evasion">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Magic Evasion</span>
+            <img slot="image" src="assets/media/skills/magic/magic.svg" />
+            <span slot="value" id="mcs-stat-magic-evasion">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label">Max Hitpoints</span>
+            <img slot="image" src="assets/media/skills/hitpoints/hitpoints.svg" />
+            <span slot="value" id="mcs-stat-max-hitpoints">0</span>
+            <div data-mcsTooltipContent id="mcs-stat-max-hitpoints-tooltip">Max Hitpoints: 0</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label">Damage Reduction</span>
+            <img slot="image" src="assets/media/skills/combat/normal_damage.svg" />
+            <span slot="value" id="mcs-stat-damage-reduction">0</span>
+            <div data-mcsTooltipContent id="mcs-stat-uncapped-damage-reduction">Uncapped Damage Reduction: 0</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip class="mcs-stat-abyssal-resistance-container">
+            <span slot="label">Abyssal Resistance</span>
+            <img slot="image" src="assets/media/skills/combat/abyssal_damage.svg" />
+            <span slot="value" id="mcs-stat-abyssal-resistance">0</span>
+            <div data-mcsTooltipContent id="mcs-stat-uncapped-abyssal-resistance">Uncapped Abyssal Resistance: 0</div>
+        </mcs-line-item>
+
+        <mcs-line-item data-mcsTooltip>
+            <span slot="label">Auto Eat Threshold</span>
+            <span slot="value" id="mcs-stat-auto-eat-threshold">0</span>
+            <div data-mcsTooltipContent id="mcs-stat-auto-eat-threshold-tooltip">Auto Eat Threshold: 0</div>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Slayer Negation</span>
+            <img slot="image" src="assets/media/skills/slayer/slayer.svg" />
+            <span slot="value" id="mcs-stat-slayer-area-negation">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item class="mcs-stat-abyssal-slayer-area-negation-container">
+            <span slot="label">A. Slayer Negation</span>
+            <img slot="image" src="assets/media/skills/slayer/slayer.svg" />
+            <span slot="value" id="mcs-stat-abyssal-slayer-area-negation">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">Drop Doubling (%)</span>
+            <span slot="value" id="mcs-stat-drop-doubling">0</span>
+        </mcs-line-item>
+
+        <mcs-line-item>
+            <span slot="label">GP Multiplier</span>
+            <span slot="value" id="mcs-stat-gp-multiplier">0</span>
+        </mcs-line-item>
+    </div>
+
+    <mcs-simulate-buttons></mcs-simulate-buttons>
+</template>

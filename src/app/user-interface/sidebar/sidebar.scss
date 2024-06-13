@@ -1,0 +1,65 @@
+mcs-sidebar {
+    min-width: 250px;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    border-right: solid 2px #4c4c4c;
+
+    .mcs-configuration-menu {
+        display: none;
+
+        &.is-open {
+            display: block;
+        }
+    }
+
+    .mcs-navigation-button {
+        width: 100%;
+        padding: 0 0 0 10px;
+        margin: 0;
+        justify-content: flex-start;
+
+        img {
+            padding: 10px;
+        }
+    }
+
+    mcs-configuration-menu {
+        .mcs-navigation-button {
+            padding-left: 25px;
+        }
+    }
+}
+
+.mcs-found-a-bug-sidebar,
+.mcs-found-a-bug-header {
+    i {
+        height: 44px;
+        width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+#mcs-combat-simulator.summary-open {
+    mcs-sidebar {
+        min-width: 90px;
+        width: 90px;
+
+        .mcs-navigation-button {
+            padding-left: 0;
+            justify-content: center;
+
+            span,
+            i {
+                display: none;
+            }
+        }
+
+        .mcs-navigation-button.mcs-found-a-bug-sidebar i {
+            display: flex;
+        }
+    }
+}

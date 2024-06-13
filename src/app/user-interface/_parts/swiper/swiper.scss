@@ -1,0 +1,22 @@
+mcs-swiper {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    z-index: 20000;
+    pointer-events: none;
+
+    .mcs-scroll-indicator {
+        display: flex;
+        gap: 5px;
+
+        .mcs-swiper-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
+            background: white;
+        }
+    }
+}

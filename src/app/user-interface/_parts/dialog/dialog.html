@@ -1,0 +1,63 @@
+<template id="mcs-dialog-template">
+    <style>
+        .mcs-dialog-container {
+            z-index: 10002;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            background: #494949;
+            border: solid 2px #6b6b6b;
+            max-height: 95%;
+            max-width: 95%;
+            width: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .mcs-dialog-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            min-height: 38px;
+            background: #6f6c68;
+        }
+
+        .mcs-dialog-content {
+            padding: 20px;
+            font-size: 85%;
+            overflow: auto;
+            flex-grow: 1;
+        }
+
+        .mcs-dialog-footer {
+            padding: 10px 20px;
+            border-top: solid 2px #6b6b6b;
+        }
+
+        slot[name='footer'] {
+            display: flex;
+        }
+
+        @media (max-width: 500px) {
+            .mcs-dialog-container {
+                width: 95%;
+                height: 95%;
+            }
+        }
+    </style>
+
+    <div id="mcs-dialog-container" class="mcs-dialog-container">
+        <div class="mcs-dialog-header">
+            <slot name="header"></slot>
+        </div>
+
+        <div class="mcs-dialog-content">
+            <slot name="content"></slot>
+        </div>
+
+        <div class="mcs-dialog-footer">
+            <slot name="footer"></slot>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,99 @@
+mcs-simulate {
+    .mcs-simulate-toggle-title {
+        margin-bottom: 5px;
+    }
+
+    .mcs-toggle-monsters,
+    .mcs-toggle-barrier-monsters,
+    .mcs-toggle-dungeons,
+    .mcs-toggle-strongholds,
+    .mcs-toggle-depths,
+    .mcs-toggle-slayer {
+        img {
+            width: 22px;
+            height: 22px;
+        }
+    }
+
+    .mcs-simulate-toggle {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .mcs-simulate-button-container {
+        display: flex;
+        gap: 20px;
+        background: #6f6c68;
+        margin: 20px -20px;
+        padding: 20px;
+    }
+
+    .mcs-header-with-button {
+        mcs-page-title {
+            margin-bottom: 0;
+        }
+    }
+
+    .mcs-simulate-slayer-task {
+        .mcs-switch-name {
+            text-wrap: nowrap;
+            margin-bottom: 5px;
+        }
+    }
+
+    .mcs-plotter-filter-container {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+
+        .mcs-plotter-filters,
+        .mcs-plotter-target {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mcs-dropdown-label,
+        .mcs-active-target {
+            text-wrap: nowrap;
+        }
+
+        .mcs-plotter-target {
+            flex-wrap: wrap;
+        }
+
+        .mcs-select-target .mcs-dropdown-button {
+            max-width: 150px;
+            overflow: hidden;
+        }
+    }
+
+    .mcs-inspect,
+    .mcs-stop-inspect {
+        text-wrap: nowrap;
+    }
+}
+
+@media (max-width: 850px) {
+    mcs-simulate {
+        .mcs-plotter-filter-container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .mcs-simulate-button-container {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        mcs-simulate-buttons {
+            order: 1;
+        }
+
+        .mcs-simulate-toggle-container {
+            order: 0;
+        }
+    }
+}

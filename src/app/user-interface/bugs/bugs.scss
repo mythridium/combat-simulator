@@ -1,0 +1,31 @@
+#mcs-bugs {
+    a {
+        color: #54a196;
+
+        &:hover {
+            color: darken(#54a196, 5%);
+            text-decoration: underline;
+        }
+    }
+
+    .mcs-bugs-content {
+        resize: none;
+        user-select: all;
+        background: #6f6c68 !important;
+        border-color: #ababab;
+        border-radius: 0;
+        font-size: 0.875rem;
+
+        &:focus {
+            box-shadow: none;
+        }
+
+        &::placeholder {
+            color: darken(#f5f5f5, 20%);
+        }
+
+        &::selection {
+            background: #54a196;
+        }
+    }
+}

@@ -1,0 +1,20 @@
+<template id="mcs-history-template">
+    <div class="mcs-header-with-button">
+        <mcs-page-title
+            page-title="History"
+            description="Keep a history of simulations to compare between."
+        ></mcs-page-title>
+        <button id="mcs-history-clear" class="mcs-button mcs-history-clear" disabled="disabled">Clear</button>
+    </div>
+
+    <mcs-switch
+        id="mcs-track-history"
+        class="mcs-track-history"
+        data-mcsName="Track History"
+        data-mcsDescription="Enable to keep track of simulations you run."
+    ></mcs-switch>
+
+    <div id="mcs-history-simulation-history" class="mcs-history-simulation-history">
+        <div id="mcs-history-empty" class="mcs-history-empty">No simulation history.</div>
+    </div>
+</template>

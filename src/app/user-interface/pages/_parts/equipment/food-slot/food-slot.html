@@ -1,0 +1,22 @@
+<template id="mcs-food-slot-template">
+    <div id="mcs-food-slot-container" class="mcs-food-slot-container" data-mcsTooltip>
+        <img id="mcs-food-slot-image" class="mcs-food-slot-image" />
+        <div data-mcsTooltipContent id="mcs-food-slot-tooltip">Empty</div>
+    </div>
+
+    <mcs-dialog id="mcs-food-slot-dialog">
+        <div slot="header">Food</div>
+
+        <div slot="content">
+            <div><input id="mcs-food-slot-search" class="form-control" type="text" placeholder="Search" /></div>
+
+            <div id="mcs-food-slot-container"></div>
+        </div>
+
+        <div slot="footer">
+            <button id="mcs-food-slot-unequip" class="mcs-button-secondary">Unequip</button>
+            <div class="mcs-flex-space"></div>
+            <button id="mcs-food-slot-cancel" class="mcs-button-secondary">Cancel</button>
+        </div>
+    </mcs-dialog>
+</template>

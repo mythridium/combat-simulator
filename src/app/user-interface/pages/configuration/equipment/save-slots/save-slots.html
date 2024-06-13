@@ -1,0 +1,44 @@
+<template id="mcs-save-slots-template">
+    <div class="mcs-save-slots-title">
+        <span>Save Slots</span>
+
+        <mcs-hint>
+            <span data-mcsTooltipContent>
+                Save slots are custom equipment sets specific to Combat Simulator. They store your entire configuration
+                so you can easily switch between them. They are stored per character per device.
+            </span>
+        </mcs-hint>
+    </div>
+
+    <div id="mcs-save-slot-container" class="mcs-save-slot-container"></div>
+
+    <mcs-dialog id="mcs-save-slot-dialog">
+        <div slot="header" id="mcs-save-slot-dialog-title">Save Slot</div>
+
+        <div slot="content">
+            <input
+                id="mcs-save-slot-name"
+                class="form-control"
+                type="text"
+                maxlength="30"
+                placeholder="Save Slot Name"
+            />
+
+            <div id="mcs-save-slot-overwrite" class="mcs-save-slot-overwrite">
+                This save slot has data, would you like to load or overwrite this save slot with your current
+                configuration?
+            </div>
+
+            <div id="mcs-save-slot-new" class="mcs-save-slot-new">
+                This save slot is empty, would you like to save your current configuration to this slot?
+            </div>
+        </div>
+
+        <div slot="footer">
+            <button id="mcs-save-slot-save" class="mcs-button-secondary">Save</button>
+            <div class="mcs-flex-space"></div>
+            <button id="mcs-save-slot-cancel" class="mcs-button-secondary">Cancel</button>
+            <button id="mcs-save-slot-load" class="mcs-button">Load</button>
+        </div>
+    </mcs-dialog>
+</template>

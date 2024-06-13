@@ -1,0 +1,102 @@
+<template id="mcs-simulate-template">
+    <div class="mcs-header-with-button">
+        <mcs-page-title
+            page-title="Simulate"
+            description="Simulate your configuration against targets to see the results."
+        ></mcs-page-title>
+        <button id="mcs-inspect" class="mcs-button mcs-inspect">Inspect</button>
+        <button id="mcs-stop-inspect" class="mcs-button mcs-stop-inspect">Stop Inspecting</button>
+    </div>
+
+    <div class="mcs-simulate-button-container">
+        <mcs-simulate-buttons></mcs-simulate-buttons>
+
+        <div class="mcs-flex-space"></div>
+
+        <mcs-switch
+            id="mcs-simulate-slayer-task"
+            class="mcs-simulate-slayer-task"
+            data-mcsOnText="Yes"
+            data-mcsOffText="No"
+            data-mcsName="On Slayer Task"
+        ></mcs-switch>
+
+        <div class="mcs-simulate-toggle-container">
+            <div class="mcs-simulate-toggle-title">Toggle</div>
+
+            <div class="mcs-simulate-toggle">
+                <mcs-button-image
+                    id="mcs-toggle-monsters"
+                    class="mcs-toggle-monsters"
+                    data-mcsTooltip
+                    data-mcsSrc="assets/media/skills/combat/combat.svg"
+                >
+                    <div data-mcsTooltipContent>Toggle Non Barrier Monsters</div>
+                </mcs-button-image>
+                <mcs-button-image
+                    id="mcs-toggle-barrier-monsters"
+                    class="mcs-toggle-barrier-monsters"
+                    data-mcsTooltip
+                    data-mcsSrc="assets/media/skills/combat/barrier.svg"
+                >
+                    <div data-mcsTooltipContent>Toggle Barrier Monsters</div>
+                </mcs-button-image>
+                <mcs-button-image
+                    id="mcs-toggle-dungeons"
+                    class="mcs-toggle-dungeons"
+                    data-mcsTooltip
+                    data-mcsSrc="assets/media/skills/combat/dungeon.svg"
+                >
+                    <div data-mcsTooltipContent>Toggle Dungeons</div>
+                </mcs-button-image>
+                <mcs-button-image
+                    id="mcs-toggle-strongholds"
+                    class="mcs-toggle-strongholds"
+                    data-mcsTooltip
+                    data-mcsSrc="assets/media/skills/combat/strongholds.svg"
+                >
+                    <div data-mcsTooltipContent>Toggle Strongholds</div>
+                </mcs-button-image>
+                <mcs-button-image
+                    id="mcs-toggle-depths"
+                    class="mcs-toggle-depths"
+                    data-mcsTooltip
+                    data-mcsSrc="assets/media/skills/combat/the_abyss.svg"
+                >
+                    <div data-mcsTooltipContent>Toggle Abyss Depths</div>
+                </mcs-button-image>
+                <mcs-button-image
+                    id="mcs-toggle-slayer"
+                    class="mcs-toggle-slayer"
+                    data-mcsTooltip
+                    data-mcsSrc="assets/media/skills/slayer/slayer.svg"
+                >
+                    <div data-mcsTooltipContent>Toggle Slayer</div>
+                </mcs-button-image>
+            </div>
+        </div>
+    </div>
+
+    <div class="mcs-plotter-filter-container">
+        <div class="mcs-plotter-filters">
+            <mcs-dropdown id="mcs-skill" class="mcs-skill"></mcs-dropdown>
+            <mcs-dropdown id="mcs-plot-type" class="mcs-plot-type"></mcs-dropdown>
+            <mcs-dropdown id="mcs-time" class="mcs-time"></mcs-dropdown>
+        </div>
+
+        <div class="mcs-flex-space"></div>
+
+        <div class="mcs-plotter-target">
+            <mcs-dropdown id="mcs-select-target" class="mcs-select-target"></mcs-dropdown>
+
+            <button id="mcs-active-target" class="mcs-button mcs-active-target" data-mcsTooltip>
+                Select Active Target
+                <div data-mcsTooltipContent>
+                    Select the target you are actively fighting in the actual game. If not in combat, does nothing.
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <mcs-plotter id="mcs-plotter"></mcs-plotter>
+</template>

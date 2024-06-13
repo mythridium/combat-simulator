@@ -1,0 +1,27 @@
+<template id="mcs-summary-template">
+    <div class="mcs-summary-equipment-container">
+        <div class="mcs-summary-equipment-column">
+            <div id="mcs-summary-gamemode" class="mcs-summary-gamemode"></div>
+            <mcs-equipment readonly id="mcs-summary-equipment" class="mcs-summary-equipment"></mcs-equipment>
+            <mcs-food-slot readonly id="mcs-summary-food" class="mcs-summary-food"></mcs-food-slot>
+            <div id="mcs-summary-player-information" class="mcs-summary-player-information"></div>
+
+            <div class="mcs-summary-header">
+                <mcs-header-expansions></mcs-header-expansions>
+                <mcs-header-version></mcs-header-version>
+            </div>
+        </div>
+    </div>
+
+    <div id="mcs-summary-skill-container" class="mcs-summary-skill-container"></div>
+
+    <div id="mcs-summary-anchor" class="mcs-summary-anchor"></div>
+
+    <mcs-out-of-combat-stats
+        id="mcs-summary-out-of-combat-stats"
+        class="mcs-summary-out-of-combat-stats"
+    ></mcs-out-of-combat-stats>
+    <mcs-information id="mcs-summary-information" class="mcs-summary-information"></mcs-information>
+
+    <mcs-swiper data-mcsPosition="summary"></mcs-swiper>
+</template>

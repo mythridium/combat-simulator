@@ -1,0 +1,14 @@
+.mcs-simulate-buttons-container {
+    display: flex;
+    flex-direction: column;
+
+    .mcs-simulate-button-title {
+        margin-bottom: 5px;
+    }
+
+    .mcs-simulate-buttons {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,18 @@
+mcs-potions {
+    .mcs-potions-combat-container,
+    .mcs-potions-other-container {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 500px;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .mcs-other-potions {
+        margin-top: 10px;
+    }
+
+    .mcs-potions-tier {
+        margin-bottom: 20px;
+    }
+}

@@ -1,0 +1,31 @@
+<template id="mcs-sidebar-template">
+    <button id="mcs-simulate-sidebar" class="mcs-simulate-sidebar mcs-navigation-button">
+        <img src="assets/media/main/statistics_header.svg" />
+        <span>Simulate</span>
+    </button>
+
+    <button id="mcs-configuration-sidebar" class="mcs-configuration-sidebar mcs-navigation-button">
+        <img src="assets/media/main/settings_header.svg" />
+        <span class="mcs-flex-space text-left">Configuration</span>
+        <i class="far fa-eye mr-3 pointer-enabled"></i>
+    </button>
+
+    <div id="mcs-configuration-menu" class="mcs-configuration-menu is-open">
+        <mcs-configuration-menu></mcs-configuration-menu>
+    </div>
+
+    <button id="mcs-summary-sidebar" class="mcs-summary-sidebar mcs-navigation-button">
+        <img src="assets/media/main/lore.svg" />
+        <span>Summary</span>
+    </button>
+
+    <button id="mcs-modifiers-sidebar" class="mcs-modifiers-sidebar mcs-navigation-button">
+        <img src="assets/media/skills/prayer/prayer.svg" />
+        <span>Modifiers</span>
+    </button>
+
+    <button id="mcs-found-a-bug-sidebar" class="mcs-found-a-bug-sidebar mcs-navigation-button">
+        <i class="fa fa-bug pointer-enabled"></i>
+        <span>Found a Bug?</span>
+    </button>
+</template>

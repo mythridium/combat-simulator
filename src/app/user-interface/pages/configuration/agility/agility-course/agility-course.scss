@@ -1,0 +1,37 @@
+mcs-agility-course {
+    .mcs-agility-course-blueprints {
+        margin-bottom: 20px;
+    }
+
+    &[readonly] {
+        .mcs-agility-course-blueprints {
+            display: none !important;
+        }
+    }
+
+    .mcs-agility-course-slots {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mcs-agility-obstacle {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .mcs-pillar-mastery-fill {
+        display: inline-block;
+        width: 44px;
+        height: 44px;
+
+        &.mcs-small {
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            min-height: 34px;
+        }
+    }
+}

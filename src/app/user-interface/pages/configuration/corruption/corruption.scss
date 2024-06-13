@@ -1,0 +1,14 @@
+mcs-corruption {
+    .mcs-corruption-effects-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        gap: 10px;
+        max-width: 500px;
+    }
+
+    .mcs-corruption-automatically-corrupt {
+        display: block;
+        margin-top: 20px;
+    }
+}

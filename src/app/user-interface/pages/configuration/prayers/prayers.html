@@ -1,0 +1,32 @@
+<template id="mcs-prayers-template">
+    <mcs-page-title
+        page-title="Prayers"
+        description="Modify your configuration for the prayers of your choice."
+    ></mcs-page-title>
+
+    <mcs-tabs id="mcs-prayer-tabs">
+        <div slot="tab-header" data-mcsTooltip>
+            <img src="assets/media/skills/prayer/prayer.svg" />
+            <div data-mcsTooltipContent>Prayers</div>
+        </div>
+        <div slot="tab-content">
+            <div id="mcs-prayer-container" class="mcs-prayer-container"></div>
+        </div>
+
+        <div slot="tab-header" data-mcsTooltip>
+            <img src="assets/media/skills/prayer/unholy_prayer.svg" />
+            <div data-mcsTooltipContent>Unholy Prayers</div>
+        </div>
+        <div slot="tab-content">
+            <div id="mcs-unholy-prayer-container" class="mcs-unholy-prayer-container"></div>
+        </div>
+
+        <div id="mcs-prayer-abyssal-tab-header" slot="tab-header" data-mcsTooltip>
+            <img src="assets/media/skills/combat/abyssal_damage.svg" />
+            <div data-mcsTooltipContent>Abyssal Prayers</div>
+        </div>
+        <div id="mcs-prayer-abyssal-tab-content" slot="tab-content">
+            <div id="mcs-abyssal-prayer-container" class="mcs-abyssal-prayer-container"></div>
+        </div>
+    </mcs-tabs>
+</template>

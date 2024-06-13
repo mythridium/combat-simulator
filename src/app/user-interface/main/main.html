@@ -1,0 +1,19 @@
+<template id="mcs-main-template">
+    <mcs-header></mcs-header>
+
+    <div id="mcs-main-container">
+        <div id="mcs-scroll-container">
+            <mcs-sidebar></mcs-sidebar>
+            <mcs-pages></mcs-pages>
+            <mcs-summary id="mcs-summary" class="mcs-page" style="display: none"></mcs-summary>
+            <mcs-out-of-combat-stats class="mcs-main-out-of-combat-stats"></mcs-out-of-combat-stats>
+            <mcs-information class="mcs-main-information"></mcs-information>
+        </div>
+
+        <mcs-swiper data-mcsPosition="main"></mcs-swiper>
+    </div>
+
+    <div id="mcs-mobile-configuration-menu">
+        <mcs-configuration-menu></mcs-configuration-menu>
+    </div>
+</template>

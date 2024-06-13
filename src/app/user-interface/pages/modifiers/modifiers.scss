@@ -1,0 +1,12 @@
+mcs-modifiers {
+    .mcs-modifiers-search {
+        margin-bottom: 20px;
+    }
+
+    .mcs-active-modifiers {
+        font-size: 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}

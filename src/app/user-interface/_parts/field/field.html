@@ -1,0 +1,42 @@
+<template id="mcs-field-template">
+    <style>
+        .mcs-field {
+            max-width: 270px;
+            width: 270px;
+            display: flex;
+            align-items: center;
+        }
+
+        .mcs-field-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 170px;
+        }
+
+        .mcs-field.mcs-small {
+            max-width: 200px;
+            width: 200px;
+            display: flex;
+            align-items: center;
+        }
+
+        .mcs-field-label.mcs-small {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 100px;
+        }
+    </style>
+
+    <div class="mcs-field">
+        <div class="mcs-field-label">
+            <slot name="image" class="mcs-field-image"></slot>
+            <slot name="text" class="mcs-field-text"></slot>
+        </div>
+
+        <slot class="mcs-field-slot"></slot>
+    </div>
+
+    <slot name="hint" class="mcs-field-hint"></slot>
+</template>

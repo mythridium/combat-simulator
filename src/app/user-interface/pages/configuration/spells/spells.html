@@ -1,0 +1,33 @@
+<template id="mcs-spells-template">
+    <mcs-page-title
+        page-title="Spells"
+        description="Modify your configuration for the spells of your choice."
+    ></mcs-page-title>
+
+    <mcs-tabs id="mcs-spells-tabs">
+        <div slot="tab-header" data-mcsTooltip>
+            <img src="assets/media/skills/combat/curses.svg" />
+            <div data-mcsTooltipContent>Curses</div>
+        </div>
+        <div slot="tab-content">
+            <div id="mcs-curses-container" class="mcs-curses-container mcs-spell-container"></div>
+        </div>
+
+        <div slot="tab-header" data-mcsTooltip>
+            <img src="assets/media/skills/combat/auroras.svg" />
+            <div data-mcsTooltipContent>Auroras</div>
+        </div>
+        <div slot="tab-content">
+            <div id="mcs-auroras-container" class="mcs-auroras-container mcs-spell-container"></div>
+        </div>
+    </mcs-tabs>
+
+    <mcs-switch
+        id="mcs-spells-combination-runes"
+        class="mcs-spells-combination-runes"
+        data-mcsOnText="Yes"
+        data-mcsOffText="No"
+        data-mcsName="Use Combination Runes"
+        data-mcsDescription="Enable to use combination runes instead of normal runes."
+    ></mcs-switch>
+</template>

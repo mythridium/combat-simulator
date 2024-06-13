@@ -1,0 +1,63 @@
+<template id="mcs-settings-template">
+    <mcs-page-title page-title="Settings" description="Advanced settings for your configuration."></mcs-page-title>
+
+    <div id="mcs-settings-container" class="mcs-settings-container">
+        <mcs-field data-mcssmall>
+            <span slot="text">Trials</span>
+            <input id="mcs-settings-trials" type="number" min="1" max="100000" class="form-control" />
+            <mcs-hint slot="hint">
+                <span data-mcsTooltipContent>
+                    Trials is how many times the simulator will attempt to either defeat the target or die trying. Lower
+                    trials means less accurate results.
+                </span>
+            </mcs-hint>
+        </mcs-field>
+
+        <mcs-field data-mcssmall>
+            <span slot="text">Ticks</span>
+            <input id="mcs-settings-ticks" type="number" min="1" max="100000000" class="form-control" />
+            <mcs-hint slot="hint">
+                <span data-mcsTooltipContent>
+                    Ticks is the maximum number of game ticks a single trial will run before giving up. This is a
+                    failsafe to prevent the simulator running forever.
+                </span>
+            </mcs-hint>
+        </mcs-field>
+    </div>
+
+    <mcs-switch
+        id="mcs-settings-small-plotter"
+        class="mcs-settings-small-plotter"
+        data-mcsName="Small Plotter"
+        data-mcsDescription="Enable to reduce the size of the plotter."
+    ></mcs-switch>
+
+    <mcs-switch
+        id="mcs-settings-filter-target-dropdown"
+        class="mcs-settings-filter-target-dropdown"
+        data-mcsName="Filter Target Dropdown"
+        data-mcsDescription="Enable to filter the target dropdown on the plotter to only enabled targets."
+    ></mcs-switch>
+
+    <mcs-dropdown id="mcs-gamemode" class="mcs-gamemode"></mcs-dropdown>
+
+    <div class="mcs-settings-import-export">
+        <mcs-page-title
+            class="mcs-settings-import-export-title"
+            page-title="Import/Export"
+            description="Import a configuration or export your own configuration."
+        ></mcs-page-title>
+
+        <div class="mcs-settings-import-export-buttons">
+            <button id="mcs-settings-import" class="mcs-button">Import</button>
+            <button id="mcs-settings-export" class="mcs-button">Export</button>
+        </div>
+    </div>
+
+    <mcs-import-dialog id="mcs-import-dialog"></mcs-import-dialog>
+    <mcs-export-dialog id="mcs-export-dialog"></mcs-export-dialog>
+
+    <div id="mcs-settings-tooltip-hint" class="mcs-settings-tooltip-hint">
+        Hint: You can use Alt + Mouse Wheel to scroll long tooltips.
+    </div>
+</template>

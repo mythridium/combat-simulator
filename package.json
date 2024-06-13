@@ -1,40 +1,42 @@
 {
     "name": "myth-combat-simulator",
-    "version": "2.4.36",
-    "description": "A browser extension to simulate combat in the game Melvor Idle",
+    "version": "3.0.62",
+    "description": "A Melvor Idle mod that adds a combat simulator to the game",
     "scripts": {
-        "zip": "cross-env TS_NODE_PROJECT=\"tsconfig.node.json\" node --loader ts-node/esm tools/zip.mts",
+        "zip": "node --import=tsimp/import tools/zip.mts",
         "build": "webpack && npm run zip",
-        "prod": "webpack --mode production && npm run zip"
+        "build:prod": "webpack --mode production && npm run zip"
     },
     "license": "GPL-3.0",
     "bugs": {
         "url": "https://github.com/mythridium/combat-simulator/issues"
     },
     "homepage": "https://github.com/mythridium/combat-simulator",
-    "devDependencies": {
-        "@types/archiver": "5.3.2",
-        "@types/jquery": "3.5.19",
-        "@types/serialize-javascript": "5.0.2",
-        "archiver": "6.0.1",
+    "dependencies": {
+        "@floating-ui/dom": "1.6.3",
         "buffer": "6.0.3",
-        "copy-webpack-plugin": "11.0.0",
-        "cross-env": "7.0.3",
-        "css-loader": "6.8.1",
-        "del": "7.1.0",
-        "dexie": "3.2.4",
-        "melvor-types": "https://github.com/GamesByMalcsPtyLtd/Melvor-Typing-Project/tarball/bd5611f",
-        "sass": "1.67.0",
-        "sass-loader": "13.3.2",
-        "serialize-javascript": "6.0.1",
-        "style-loader": "3.3.3",
+        "lodash-es": "4.17.21"
+    },
+    "devDependencies": {
+        "@types/archiver": "6.0.2",
+        "@types/jquery": "3.5.19",
+        "@types/lodash-es": "4.17.12",
+        "archiver": "6.0.1",
+        "copy-webpack-plugin": "12.0.1",
+        "css-loader": "6.9.0",
+        "dexie": "3.2.0",
+        "melvor-types": "https://github.com/GamesByMalcsPtyLtd/Melvor-Typing-Project/tarball/0bdf0f7",
+        "sass": "1.69.7",
+        "sass-loader": "14.0.0",
+        "style-loader": "3.3.4",
         "sweetalert2": "11.4.16",
-        "terser-webpack-plugin": "5.3.9",
+        "terser-webpack-plugin": "5.3.10",
         "tippy.js": "6.3.7",
-        "ts-loader": "9.4.4",
-        "ts-node": "10.9.1",
-        "typescript": "5.2.2",
-        "webpack": "5.88.2",
+        "ts-loader": "9.5.1",
+        "ts-node": "10.9.2",
+        "tsimp": "2.0.10",
+        "typescript": "5.3.3",
+        "webpack": "5.89.0",
         "webpack-cli": "5.1.4"
     }
 }

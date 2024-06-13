@@ -1,0 +1,24 @@
+<template id="mcs-corruption-template">
+    <div class="mcs-header-with-button">
+        <mcs-page-title
+            page-title="Corruption"
+            description="Modify your configuration for the corruption skill."
+        ></mcs-page-title>
+
+        <button id="mcs-corruption-toggle" class="mcs-button mcs-corruption-toggle" data-mcsTooltip>
+            Toggle
+            <div data-mcsTooltipContent>
+                Will clear all corruption effects, or toggle on all corruption effects if everything is already cleared.
+            </div>
+        </button>
+    </div>
+
+    <div id="mcs-corruption-effects-container" class="mcs-corruption-effects-container"></div>
+
+    <mcs-switch
+        id="mcs-corruption-automatically-corrupt"
+        class="mcs-corruption-automatically-corrupt"
+        data-mcsName="Automatically Corrupt"
+        data-mcsDescription="Enable to automatically corrupt monsters on spawn."
+    ></mcs-switch>
+</template>

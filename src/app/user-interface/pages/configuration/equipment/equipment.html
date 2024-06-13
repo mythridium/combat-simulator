@@ -1,0 +1,84 @@
+<template id="mcs-equipment-page-template">
+    <mcs-page-title page-title="Equipment" description="Modify the configuration for your equipment."></mcs-page-title>
+
+    <div class="mcs-equipment-page-container">
+        <div class="mcs-equipment-import">
+            <div class="mcs-equipment-import-wrapper">
+                <div class="mcs-equipment-import-equipment-set-container">
+                    <div class="mcs-equipment-import-equipment-set">
+                        <span>Import Equipment Set</span>
+
+                        <mcs-hint>
+                            <span data-mcsTooltipContent>
+                                Import an equipment set to load an entire configuration from the game.
+                            </span>
+                        </mcs-hint>
+                    </div>
+
+                    <div id="mcs-equipment-import-container" class="mcs-equipment-import-container"></div>
+                </div>
+
+                <div class="mcs-flex-space"></div>
+
+                <mcs-save-slots></mcs-save-slots>
+            </div>
+        </div>
+
+        <div class="mcs-equipment-container">
+            <div class="mcs-equipment-items">
+                <mcs-equipment id="mcs-equipment-equipment"></mcs-equipment>
+                <mcs-food-slot id="mcs-equipment-food" class="mcs-equipment-food"></mcs-food-slot>
+            </div>
+
+            <div class="mcs-equipment-settings">
+                <mcs-dropdown id="mcs-equipment-attack-style" class="mcs-equipment-attack-style"></mcs-dropdown>
+                <mcs-dropdown id="mcs-equipment-auto-eat" class="mcs-equipment-auto-eat"></mcs-dropdown>
+
+                <mcs-switch
+                    id="mcs-equipment-manually-eating"
+                    class="mcs-equipment-manually-eating"
+                    data-mcsOnText="Yes"
+                    data-mcsOffText="No"
+                    data-mcsName="Manually Eat"
+                    data-mcsDescription="Enable if you are manually eating."
+                ></mcs-switch>
+
+                <mcs-switch
+                    id="mcs-equipment-cooking-pool"
+                    class="mcs-equipment-cooking-pool"
+                    data-mcsOnText="Yes"
+                    data-mcsOffText="No"
+                    data-mcsName="95% Cooking Pool"
+                    data-mcsDescription="Enable if you have 95% Cooking Mastery Pool."
+                ></mcs-switch>
+
+                <mcs-switch
+                    id="mcs-equipment-abyssal-25-cooking-pool"
+                    class="mcs-equipment-abyssal-25-cooking-pool"
+                    data-mcsOnText="Yes"
+                    data-mcsOffText="No"
+                    data-mcsName="25% Abyssal Cooking Pool"
+                    data-mcsDescription="Enable if you have 25% Abyssal Cooking Mastery Pool."
+                ></mcs-switch>
+
+                <mcs-switch
+                    id="mcs-equipment-abyssal-95-cooking-pool"
+                    class="mcs-equipment-abyssal-95-cooking-pool"
+                    data-mcsOnText="Yes"
+                    data-mcsOffText="No"
+                    data-mcsName="95% Abyssal Cooking Pool"
+                    data-mcsDescription="Enable if you have 95% Abyssal Cooking Mastery Pool."
+                ></mcs-switch>
+
+                <mcs-switch
+                    id="mcs-equipment-cooking-mastery"
+                    class="mcs-equipment-cooking-mastery"
+                    data-mcsOnText="Yes"
+                    data-mcsOffText="No"
+                    data-mcsName="99 Cooking Mastery"
+                    data-mcsDescription="Enable if you have 99 Cooking Mastery for the selected food."
+                ></mcs-switch>
+            </div>
+        </div>
+    </div>
+</template>

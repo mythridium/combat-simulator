@@ -1,0 +1,63 @@
+mcs-agility-slot {
+    .mcs-agility-slot-container {
+        display: flex;
+        cursor: pointer;
+        border: solid 2px #b5afa6;
+        background: #555555;
+        padding: 5px;
+        width: 44px;
+        height: 44px;
+
+        &.mcs-small {
+            width: 34px;
+            height: 34px;
+        }
+    }
+
+    &[readonly] {
+        .mcs-agility-slot-container {
+            cursor: default;
+        }
+    }
+
+    .mcs-agility-slot-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .mcs-agility-slot-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0;
+
+        .mcs-agility-slot-item {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border: solid 1px #6f6c68;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                height: 100%;
+                width: 100%;
+            }
+        }
+    }
+
+    mcs-dialog [slot='footer'] {
+        display: flex;
+        gap: 5px;
+        margin-left: initial;
+        width: 100%;
+    }
+}
+
+@media (hover: hover) {
+    mcs-agility-slot .mcs-agility-slot-item:hover {
+        background: #3c3d3c;
+    }
+}

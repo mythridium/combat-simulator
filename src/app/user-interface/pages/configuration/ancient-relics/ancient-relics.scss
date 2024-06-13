@@ -1,0 +1,12 @@
+mcs-ancient-relics {
+    .mcs-ancient-relics-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .mcs-ancient-relic-skill-container {
+            display: flex;
+            gap: 10px;
+        }
+    }
+}

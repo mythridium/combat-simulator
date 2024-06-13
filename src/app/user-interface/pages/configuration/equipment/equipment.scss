@@ -1,0 +1,79 @@
+mcs-equipment-page {
+    mcs-dropdown {
+        label {
+            min-width: 90px;
+        }
+    }
+
+    mcs-switch,
+    mcs-food-slot,
+    mcs-equipment {
+        display: block;
+        margin-top: 10px;
+    }
+
+    .mcs-equipment-auto-eat {
+        margin-top: 10px;
+    }
+
+    .mcs-equipment-container {
+        display: flex;
+        flex-wrap: wrap;
+
+        .mcs-equipment-items,
+        .mcs-equipment-settings {
+            margin-top: 20px;
+            flex: 50%;
+        }
+    }
+
+    .mcs-equipment-import {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 0px -20px;
+        padding: 20px;
+        background: #6f6c68;
+    }
+
+    .mcs-equipment-import-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .mcs-equipment-import-wrapper {
+        width: 100%;
+        gap: 5px;
+    }
+
+    .mcs-equipment-page-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mcs-equipment-import-equipment-set {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .mcs-equipment-import-container {
+        display: flex;
+        gap: 5px;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    .mcs-equipment-container {
+        flex-direction: column;
+
+        .mcs-equipment-items,
+        .mcs-equipment-settings {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+}

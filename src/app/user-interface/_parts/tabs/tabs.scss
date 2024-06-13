@@ -1,0 +1,28 @@
+mcs-tabs {
+    [slot='tab-header'] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 70px;
+        padding: 5px;
+        cursor: pointer;
+        background: #6f6c68;
+
+        &.is-selected {
+            background: #54a196;
+        }
+
+        img {
+            width: 30px;
+            height: 30px;
+        }
+    }
+
+    [slot='tab-content'] {
+        display: none;
+
+        &.is-selected {
+            display: block;
+        }
+    }
+}

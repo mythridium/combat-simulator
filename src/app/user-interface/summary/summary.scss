@@ -1,0 +1,223 @@
+mcs-summary {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    padding: 20px;
+    overflow: auto;
+
+    .mcs-summary-anchor {
+        display: none;
+    }
+
+    .mcs-summary-header {
+        margin-top: 30px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .mcs-summary-gamemode {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .mcs-summary-equipment {
+        display: block;
+    }
+
+    .mcs-summary-food {
+        display: block;
+        margin-top: 10px;
+    }
+
+    mcs-synergy-slot,
+    .mcs-equipment-slot-container,
+    .mcs-food-slot-container {
+        width: 40px !important;
+        height: 40px !important;
+        padding: 3px !important;
+    }
+
+    .mcs-summary-player-information {
+        margin-top: 10px;
+    }
+
+    .mcs-summary-skill-column,
+    .mcs-summary-player-column {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .mcs-summary-skill-levels {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 10px;
+
+        .mcs-summary-melvor-skill-levels,
+        .mcs-summary-abyssal-skill-levels {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+    }
+
+    .mcs-summary-line-item-container {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+
+        .mcs-summary-line-item-image {
+            width: 20px;
+            height: 20px;
+        }
+
+        .mcs-summary-line-item-name {
+            font-size: 13px;
+        }
+    }
+
+    .mcs-summary-runes-container {
+        margin-top: 10px;
+        font-size: 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    mcs-agility-course {
+        display: block;
+        padding-bottom: 20px;
+    }
+
+    mcs-agility-course .mcs-agility-course-slots {
+        gap: 5px;
+    }
+
+    mcs-information,
+    mcs-out-of-combat-stats {
+        display: none !important;
+    }
+
+    .mcs-summary-agility-course-name {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .mcs-agility-course-name {
+        font-size: 12px;
+    }
+}
+
+.summary-open {
+    @media (max-width: 1500px) {
+        mcs-summary {
+            min-width: calc(100% - 250px - 90px);
+        }
+    }
+
+    @media (min-width: 1250px) {
+        mcs-summary {
+            .mcs-summary-equipment-container,
+            .mcs-summary-skill-container,
+            .mcs-summary-agility-container,
+            mcs-out-of-combat-stats,
+            mcs-information {
+                flex-grow: 1;
+            }
+
+            .mcs-summary-skill-container,
+            .mcs-summary-player-information {
+                min-width: 200px;
+            }
+        }
+    }
+
+    @media (max-width: 1200px) and (min-width: 1101px) {
+        mcs-summary {
+            min-width: calc(100% - 250px);
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+
+            .mcs-summary-equipment-container,
+            .mcs-summary-skill-container,
+            .mcs-summary-agility-container,
+            mcs-out-of-combat-stats,
+            mcs-information {
+                flex-grow: 1;
+            }
+        }
+    }
+
+    @media (max-width: 1100px) and (min-width: 700px) {
+        mcs-summary {
+            .mcs-summary-equipment-container,
+            .mcs-summary-skill-container,
+            .mcs-summary-agility-container,
+            mcs-out-of-combat-stats,
+            mcs-information {
+                flex-grow: 1;
+            }
+        }
+    }
+
+    @media (max-width: 1100px) {
+        mcs-summary {
+            min-width: 100%;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+
+        mcs-out-of-combat-stats {
+            scroll-snap-align: end;
+            scroll-snap-stop: always;
+        }
+    }
+
+    @media (max-width: 850px) {
+        mcs-summary {
+            height: 100%;
+            min-width: 100%;
+            padding: 0;
+            gap: 0;
+            scroll-snap-type: x mandatory;
+
+            .mcs-summary-equipment-container,
+            .mcs-summary-skill-container,
+            .mcs-summary-agility-container,
+            mcs-information,
+            mcs-out-of-combat-stats {
+                display: flex !important;
+                flex-direction: column;
+                height: 100% !important;
+                min-width: 33.34% !important;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+                padding: 20px;
+            }
+
+            mcs-information,
+            mcs-out-of-combat-stats {
+                display: block !important;
+            }
+        }
+
+        mcs-information,
+        mcs-out-of-combat-stats {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 700px) {
+        mcs-summary {
+            .mcs-summary-equipment-container,
+            .mcs-summary-skill-container,
+            .mcs-summary-agility-container,
+            mcs-information,
+            mcs-out-of-combat-stats {
+                align-items: center;
+                min-width: 100% !important;
+            }
+        }
+    }
+}

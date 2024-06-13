@@ -1,507 +1,60 @@
-/*  Melvor Idle Combat Simulator
+import { MessageAction } from 'src/shared/transport/message';
+import { InitPayload } from './payload/init';
+import { WebWorker } from './web-worker';
+import { SimulateRequest } from 'src/shared/transport/type/simulate';
+import { Global } from 'src/app/global';
+import { AgilityConverter } from 'src/shared/converter/agility';
+import { GamemodeConverter } from 'src/shared/converter/gamemode';
 
-    Copyright (C) <2020>  <Coolrox95>
-    Modified Copyright (C) <2020> <Visua0>
-    Modified Copyright (C) <2020, 2021> <G. Miclotte>
-    Modified Copyright (C) <2022, 2023> <Broderick Hyman>
+export class Simulator {
+    private readonly worker = new WebWorker();
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    public init() {
+        const payload = new InitPayload();
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-import { CloneData } from 'src/app/clone-data';
-import { MICSR } from 'src/app/micsr';
-import { SimClasses } from 'src/app/sim';
-import { Entitlments } from 'src/app/entitlments';
-
-(async () => {
-    // spoof MICSR
-    const logging = {
-        debug: (...args: any[]) => console.debug('MICSR:', ...args),
-        log: (...args: any[]) => console.log('MICSR:', ...args),
-        warn: (...args: any[]) => console.warn('MICSR:', ...args),
-        error: (...args: any[]) => console.error('MICSR:', ...args)
-    };
-
-    // spoof document
-    const document = {
-        getElementById() {
-            return {};
-        },
-        createElement() {},
-        querySelectorAll(): any[] {
-            return [];
-        }
-    };
-
-    // spoof $ so we get useful information regarding where the bugs are
-    const $ = (...args: any[]) => console.log(...args);
-
-    (<any>self).TODO_REPLACE_MEDIA = 'assets/media/main/missing_artwork.png';
-
-    // Fake globals
-    const combatMenus = {
-        eventMenu: {
-            setButtonCallbacks() {}
-        }
-    };
-
-    self.addModalToQueue = () => undefined;
-
-    (<any>self).window = {
-        clearTimeout: () => {},
-        setTimeout: () => 0
-    };
-    self.clearTimeout = () => {};
-    (<any>self).setTimeout = () => 0;
-
-    self.notifyPlayer = () => {};
-    (<any>self).CDNDIR = () => (<any>self).CDNDIR_ORIGINAL;
-
-    self.notifyPlayer = () => {};
-
-    // Hard to copy functions
-    const levelUnlockSum = (skill: Skill<BaseSkillData>) => (previous: number, current: Skill<BaseSkillData>) => {
-        if (skill.level >= current.level) previous++;
-        return previous;
-    };
-
-    let combatSimulator: CombatSimulator;
-
-    onmessage = async event => {
-        /*
-    // TODO: remove temporary reply
-    switch (event.data.action) {
-        case 'RECEIVE_GAMEDATA':
-            // constants
-            event.data.constantNames.forEach((name: any) => {
-                self[name] = event.data.constants[name];
-            });
-            // functions
-            event.data.functionNames.forEach((name: any) => {
-                eval(event.data.functions[name]);
-            });
-            // classes
-            event.data.classNames.forEach((name: any) => {
-                eval(event.data.classes[name]);
-            });
-            // create instances
-            return;
-        case 'START_SIMULATION':
-            postMessage({
-                action: 'FINISHED_SIM',
-                monsterID: event.data.monsterID,
-                dungeonID: event.data.dungeonID,
-                simResult: {
-                    // success
-                    simSuccess: true,
-                    reason: undefined,
-                    tickCount: 10,
-                    // xp rates
-                    xpPerSecond: 10,
-                    hpXpPerSecond: 10,
-                    slayerXpPerSecond: 10,
-                    prayerXpPerSecond: 10,
-                    summoningXpPerSecond: 10,
-                    // consumables
-                    ppConsumedPerSecond: 10,
-                    ammoUsedPerSecond: 0,
-                    runesUsedPerSecond: 0,
-                    usedRunesBreakdown: 0,
-                    combinationRunesUsedPerSecond: 0,
-                    potionsUsedPerSecond: 0, // TODO: divide by potion capacity
-                    tabletsUsedPerSecond: 0,
-                    atePerSecond: 0,
-                    // survivability
-                    deathRate: 0.5,
-                    highestDamageTaken: 10,
-                    lowestHitpoints: 10,
-                    // kill time
-                    killTimeS: 10,
-                    killsPerSecond: 0.1,
-                    // loot gains
-                    baseGpPerSecond: 10, // gpPerSecond is computed from this
-                    dropChance: NaN,
-                    signetChance: NaN,
-                    petChance: NaN,
-                    petRolls: [],
-                    slayerCoinsPerSecond: 0,
-                    // not displayed -> TODO: remove?
-                    simulationTime: NaN,
+        return this.worker.send({
+            action: MessageAction.Init,
+            data: {
+                origin: payload.origin,
+                scripts: payload.scripts,
+                entitlements: {
+                    toth: cloudManager.hasTotHEntitlement,
+                    aod: cloudManager.hasAoDEntitlement,
+                    ita: cloudManager.hasItAEntitlement,
+                    aprilFools2024: cloudManager.isAprilFoolsEvent2024Active(),
+                    birthday2023: cloudManager.isBirthdayEvent2023Active()
                 },
-                selfTime: 0,
-            });
-            return;
-        case 'CANCEL_SIMULATION':
-            combatSimulator.cancelSimulation();
-            return;
-    }
-     */
-        switch (event.data.action) {
-            case 'SCRIPTS':
-                let error: any;
-
-                (<any>self).checkFileVersion = () => true;
-
-                // @ts-ignore
-                (1, eval)(`
-                document = {
-                    getElementById() {
-                        return {};
-                    },
-                    createElement() {},
-                    querySelectorAll() {
-                        return [];
-                    }
-                }
-                require = () => null;
-                parent = {};
-                `);
-
-                try {
-                    importScripts(
-                        `${event.data.href}/assets/js/fflate.min.js${event.data.gameFileVersion}`,
-                        `${event.data.href}/assets/js/mitt.min.js${event.data.gameFileVersion}`,
-                        `${event.data.href}/assets/js/pixi.min.js${event.data.gameFileVersion}`,
-                        `${event.data.href}/assets/js/built/nativeManager.js${event.data.gameFileVersion}`,
-                        `${event.data.href}/assets/js/built/utils.js${event.data.gameFileVersion}`,
-                        `${event.data.href}/assets/js/built/assets.js${event.data.gameFileVersion}`,
-                        `${event.data.href}/assets/js/built/effectRenderer.js${event.data.gameFileVersion}`,
-                        `${event.data.href}/assets/js/built/attacks.js${event.data.gameFileVersion}`
-                    );
-                } catch (exception: any) {
-                    error = exception?.message ?? 'exception is blank, but loading files broke';
-                    console.error('Failed to download resources.', exception);
-                }
-
-                try {
-                    importScripts(`https://steam.melvoridle.com/assets/js/pako.min.js${event.data.gameFileVersion}`);
-                } catch {}
-
-                // @ts-ignore
-                (1, eval)(`
-                notifyPlayer = () => {};
-                `);
-
-                postMessage({ action: 'SCRIPTS_DONE', error });
-                break;
-            case 'RECEIVE_GAMEDATA':
-                // debugger;
-
-                // constants
-                event.data.constantNames.forEach((name: any) => {
-                    // this.micsr.log('constant', name, event.data.constants[name])
-                    // logging.log('constant', name)
-                    self[name] = event.data.constants[name];
-                });
-                // functions
-                event.data.functionNames.forEach((name: any) => {
-                    // this.micsr.log('function', name, event.data.functions[name])
-                    // logging.log('function', name)
-                    eval(event.data.functions[name]);
-                });
-                // classes
-                event.data.classNames.forEach((name: any) => {
-                    // logging.log('class', name)
-                    eval(event.data.classes[name]);
-                });
-
-                cloudManager.isBirthdayEvent2023Active = () => false;
-
-                (<any>self).flatHexOrient = {
-                    // @ts-ignore
-                    forward: [
-                        [3 / 2, 0],
-                        [HexCoords.SQRT3 / 2, HexCoords.SQRT3]
-                    ],
-                    // @ts-ignore
-                    inverse: [
-                        [2 / 3, 0],
-                        [-1 / 3, HexCoords.SQRT3 / 3]
-                    ]
-                };
-
-                // @ts-ignore
-                Cartography.BASE_SURVEY_XP = 1;
-                // @ts-ignore
-                Cartography.SURVEY_XP_PER_LEVEL = [0, 24, 108, 264, 504, 864];
-                // @ts-ignore
-                HexCoords.axialDirVectors = [
-                    new HexCoords(1, 0),
-                    new HexCoords(1, -1),
-                    new HexCoords(0, -1),
-                    new HexCoords(-1, 0),
-                    new HexCoords(-1, 1),
-                    new HexCoords(0, 1)
-                ];
-                // @ts-ignore
-                HexCoords.PI_3 = Math.PI / 3;
-                // @ts-ignore
-                HexCoords.SQRT3 = Math.sqrt(3);
-
-                // @ts-ignore
-                DigSiteMap.tiers = [
-                    {
-                        index: 0,
-                        get name() {
-                            // @ts-ignore
-                            return getLangString('MAP_TIER_NAME_POOR');
-                        },
-                        upgradeActions: 0,
-                        refinementSlots: 1
-                    },
-                    {
-                        index: 1,
-                        get name() {
-                            // @ts-ignore
-                            return getLangString('MAP_TIER_NAME_FINE');
-                        },
-                        upgradeActions: 1920,
-                        refinementSlots: 2
-                    },
-                    {
-                        index: 2,
-                        get name() {
-                            // @ts-ignore
-                            return getLangString('MAP_TIER_NAME_EXCELLENT');
-                        },
-                        upgradeActions: 3840,
-                        refinementSlots: 3
-                    },
-                    {
-                        index: 3,
-                        get name() {
-                            // @ts-ignore
-                            return getLangString('MAP_TIER_NAME_PERFECT');
-                        },
-                        upgradeActions: 5760,
-                        refinementSlots: 6
-                    }
-                ];
-                // @ts-ignore
-                DigSiteMap.CHARGES_PER_TIER = {
-                    min: 2000,
-                    max: 4000
-                };
-                // @ts-ignore
-                DigSiteMap.ARTEFACT_VALUE_PER_TIER = {
-                    min: 13,
-                    max: 23
-                };
-                // @ts-ignore
-                DigSiteMap.BASE_ARTEFACT_VALUES = {
-                    tiny: 69,
-                    small: 69,
-                    medium: 69,
-                    large: 69
-                };
-                // @ts-ignore
-                DigSiteMap.REFINEMENT_SELECTION_COUNT = 3;
-
-                // create instances
-                // restore data
-                const cloneData = new CloneData();
-                cloneData.restoreModifierData();
-                SlayerTask.data = event.data.slayerTaskData;
-                // Save off global object
-                // @ts-expect-error
-                self.exp = new ExperienceCalculator();
-
-                // @ts-expect-error I'm muting these errors because that seems to be the approach taken above
-                self._game = new Game();
-
-                // Minor workaround to easily use Object.values with Typescript. See https://stackoverflow.com/questions/42966362/how-to-use-object-values-with-typescript
-                const importedNamespaces = Object.keys(event.data.namespaces).map(key => event.data.namespaces[key]);
-                const impotedGamemodes = Object.keys(event.data.gamemodes).map(key => event.data.gamemodes[key]);
-                const importedAgilityActions = Object.keys(event.data.agilityActions).map(
-                    key => event.data.agilityActions[key]
-                );
-                const importedAgilityPillars = Object.keys(event.data.agilityPillars).map(
-                    key => event.data.agilityPillars[key]
-                );
-                const importedAgilityElitePillars = Object.keys(event.data.agilityElitePillars).map(
-                    key => event.data.agilityElitePillars[key]
-                );
-
-                await SimClasses.init();
-
-                const micsr = new MICSR();
-                const simGame = new SimClasses.SimGame(micsr, (<any>self)._game);
-                // @ts-ignore
-                self.game = simGame;
-                micsr.dataPackage = event.data.dataPackage;
-                micsr.cleanupDataPackage('Demo');
-                if (Entitlments.full) {
-                    micsr.cleanupDataPackage('Full');
-                }
-                if (Entitlments.aprilFools) {
-                    micsr.cleanupDataPackage('melvorAprilFools2024');
-                }
-                if (Entitlments.tothEnabled) {
-                    micsr.cleanupDataPackage('TotH');
-                }
-                if (Entitlments.aodEnabled) {
-                    micsr.cleanupDataPackage('AoD');
-                }
-
-                // @ts-expect-error
-                Summoning.markLevels = event.data.SummoningMarkLevels;
-                await micsr.initialize(simGame, simGame as any);
-
-                importedNamespaces.forEach((stringifiedNamespace: string) => {
-                    const namespace = JSON.parse(stringifiedNamespace);
-
-                    if (!simGame.registeredNamespaces.hasNamespace(namespace.name)) {
-                        simGame.registeredNamespaces.registerNamespace(
-                            namespace.name,
-                            namespace.displayName,
-                            namespace.isModded
-                        );
-                    }
-                });
-
-                impotedGamemodes.forEach((stringifiedGamemode: string) => {
-                    const [namespaceData, gamemodeData] = JSON.parse(stringifiedGamemode);
-
-                    if (namespaceData.isModded) {
-                        simGame.gamemodes.registerObject(new Gamemode(namespaceData, gamemodeData, simGame));
-                    } else {
-                        const gamemode = simGame.gamemodes.find(
-                            gamemode => gamemode.id === `${namespaceData.name}:${gamemodeData.id}`
-                        );
-
-                        if (gamemode) {
-                            gamemode.hitpointMultiplier = gamemodeData.hitpointMultiplier;
-                            gamemode.hasRegen = gamemodeData.hasRegen;
-                        }
-                    }
-                });
-
-                importedAgilityActions.forEach((stringifiedAction: string) => {
-                    const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
-                    simGame.agility.actions.registerObject(new AgilityObstacle(namespaceData, obstacleData, simGame));
-                });
-
-                importedAgilityPillars.forEach((stringifiedAction: string) => {
-                    const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
-                    simGame.agility.pillars.registerObject(new AgilityPillar(namespaceData, obstacleData, simGame));
-                });
-
-                importedAgilityElitePillars.forEach((stringifiedAction: string) => {
-                    const [namespaceData, obstacleData] = JSON.parse(stringifiedAction);
-                    simGame.agility.elitePillars.registerObject(
-                        // @ts-ignore
-                        new AgilityPillar(namespaceData, obstacleData, simGame)
-                    );
-                });
-
-                // @ts-expect-error
-                self.firstSkillAction = true;
-                self.saveData = () => {};
-                // @ts-expect-error
-                self.deleteScheduledPushNotification = () => {};
-
-                combatSimulator = new CombatSimulator(micsr);
-                break;
-            case 'START_SIMULATION':
-                const startTime = performance.now();
-                //settings
-                // run the simulation
-                combatSimulator
-                    .simulateMonster(
-                        event.data.saveString,
-                        event.data.monsterID,
-                        event.data.dungeonID,
-                        event.data.trials,
-                        event.data.maxTicks
-                    )
-                    .then((simResult: any) => {
-                        const timeTaken = performance.now() - startTime;
-                        postMessage({
-                            action: 'FINISHED_SIM',
-                            monsterID: event.data.monsterID,
-                            dungeonID: event.data.dungeonID,
-                            simResult: simResult,
-                            selfTime: timeTaken
-                        });
-                    });
-                break;
-            case 'CANCEL_SIMULATION':
-                combatSimulator.cancelSimulation();
-                break;
-        }
-    };
-
-    onerror = error => {
-        postMessage({
-            action: 'ERR_SIM',
-            error: error
-        });
-    };
-})();
-
-class CombatSimulator {
-    cancelStatus: any;
-    micsr: MICSR;
-
-    constructor(micsr: MICSR) {
-        this.micsr = micsr;
-        this.cancelStatus = false;
-    }
-
-    /**
-     * Simulation Method for a single monster
-     */
-    async simulateMonster(saveString: string, monsterID: string, dungeonID: string, trials: number, maxTicks: number) {
-        try {
-            // this.micsr.log("Creating manager");
-            const reader = new SaveWriter('Read', 1);
-            const saveVersion = reader.setDataFromSaveString(saveString);
-            this.micsr.game.decodeSimple(reader, saveVersion);
-            this.micsr.game.onLoad();
-            this.micsr.game.combat.player.initForWebWorker();
-
-            // this.micsr.log("Finished setup");
-            return this.micsr.game.combat.convertSlowSimToResult(
-                this.micsr.game.combat.runTrials(monsterID, dungeonID, trials, maxTicks, undefined),
-                trials
-            );
-        } catch (error) {
-            this.micsr.logger.error(`Error while simulating monster ${monsterID} in dungeon ${dungeonID}: ${error}`);
-            let reason = 'simulation error';
-            if (error instanceof Error) {
-                reason += `: ${error.message}`;
+                dataPackage: Global.dataPackages,
+                skills: Global.skills,
+                namespaces: Array.from(Global.melvor.registeredNamespaces.registeredNamespaces.values()).filter(
+                    namespace => namespace.isModded
+                ),
+                agility: AgilityConverter.toData(
+                    Global.melvor.agility.actions.allObjects,
+                    Global.melvor.agility.pillars.allObjects
+                ),
+                gamemodes: Global.melvor.gamemodes.allObjects
+                    .filter(gamemode => gamemode.id !== 'melvorD:Unset')
+                    .map(gamemode => GamemodeConverter.toData(gamemode)),
+                currentGamemodeId: Global.melvor.currentGamemode.id
             }
-            return {
-                simSuccess: false,
-                reason: reason
-            };
-        }
-    }
-
-    /**
-     * Checks if the simulation has been messaged to be cancelled
-     * @return {Promise<boolean>}
-     */
-    async isCanceled() {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve(this.cancelStatus);
-            });
         });
     }
 
-    cancelSimulation() {
-        this.cancelStatus = true;
+    public simulate(request: SimulateRequest) {
+        return this.worker.send({
+            action: MessageAction.Simulate,
+            data: {
+                monsterId: request.monsterId,
+                entityId: request.entityId,
+                saveString: request.saveString,
+                trials: request.trials,
+                maxTicks: request.maxTicks
+            }
+        });
+    }
+
+    public cancel() {
+        return this.worker.send({ action: MessageAction.Cancel, data: undefined });
     }
 }

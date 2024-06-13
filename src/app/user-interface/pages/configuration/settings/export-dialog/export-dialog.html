@@ -1,0 +1,23 @@
+<template id="mcs-settings-export-dialog-template">
+    <mcs-dialog id="mcs-settings-export-dialog" class="mcs-settings-export-dialog">
+        <div slot="header">Export</div>
+
+        <div slot="content">
+            <div>
+                Copy the text below, which is your configuration. This text can be imported by yourself later or by
+                someone else you share it with.
+            </div>
+
+            <textarea
+                id="mcs-settings-export-dialog-textarea"
+                readonly="readonly"
+                class="form-control mcs-code"
+                rows="4"
+            ></textarea>
+        </div>
+
+        <div slot="footer">
+            <button id="mcs-settings-export-dialog-close" class="mcs-button">Close</button>
+        </div>
+    </mcs-dialog>
+</template>

@@ -1,0 +1,26 @@
+mcs-out-of-combat-stats {
+    display: none;
+    padding: 20px;
+    min-width: 250px;
+    width: 250px;
+    overflow-y: auto;
+
+    mcs-simulate-buttons {
+        margin-top: 10px;
+        display: block;
+
+        .mcs-simulate-buttons {
+            font-size: 13px;
+        }
+    }
+
+    &.is-open {
+        display: block;
+    }
+}
+
+#mcs-combat-simulator.summary-open {
+    mcs-out-of-combat-stats mcs-simulate-buttons {
+        display: none;
+    }
+}

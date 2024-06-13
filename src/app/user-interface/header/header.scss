@@ -1,0 +1,37 @@
+mcs-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: #6f6c68;
+
+    .mcs-header-close {
+        color: white;
+        opacity: 0.7;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .mcs-header-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .mcs-mobile-buttons {
+        display: none;
+    }
+}
+
+@media (max-width: 991px) {
+    mcs-header {
+        .mcs-header-title {
+            display: none;
+        }
+
+        .mcs-mobile-buttons {
+            display: flex;
+        }
+    }
+}

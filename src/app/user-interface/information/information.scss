@@ -1,0 +1,76 @@
+mcs-information {
+    display: block;
+    padding: 20px;
+    min-width: 270px;
+    width: 270px;
+    border-left: solid 2px #4c4c4c;
+    overflow-y: auto;
+
+    .mcs-monster-information {
+        display: none;
+
+        .mcs-monster-note {
+            font-size: 80%;
+            padding: 10px 0;
+            color: red;
+
+            .mcs-monster-note-hint {
+                color: yellow;
+            }
+        }
+
+        .mcs-monster {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            justify-content: center;
+
+            .mcs-monster-attack-style,
+            .mcs-monster-image {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        &.is-open {
+            display: block;
+        }
+    }
+}
+
+mcs-tooltip {
+    .mcs-rune-line-item,
+    .mcs-mark-line-item,
+    .mcs-information-mark-tooltip {
+        margin-top: 5px;
+    }
+
+    .mcs-rune-image,
+    .mcs-mark-image {
+        margin-right: 5px;
+        height: 24px;
+        width: 24px;
+    }
+
+    .mcs-realmed-text {
+        margin-bottom: 10px;
+    }
+
+    .mcs-realmed-entry {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 0;
+
+        .mcs-realmed-image {
+            width: 20px;
+            height: 20px;
+        }
+
+        .mcs-realmed-line-item {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}

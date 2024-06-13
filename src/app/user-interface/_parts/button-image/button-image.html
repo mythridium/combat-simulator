@@ -1,0 +1,51 @@
+<template id="mcs-button-image-template">
+    <style>
+        .mcs-button-image-image {
+            width: 30px;
+            height: 30px;
+        }
+
+        .mcs-button-image-image.mcs-small {
+            width: 20px;
+            height: 20px;
+        }
+
+        .mcs-button-image-button {
+            display: inline-flex;
+            border: none;
+            padding: 7px;
+            text-decoration: none;
+            background-color: #5f5f5f;
+            outline: none !important;
+            outline-offset: -2px;
+            cursor: pointer;
+        }
+
+        .mcs-button-image-button.mcs-readonly {
+            cursor: default;
+        }
+
+        .mcs-button-image-button.mcs-selected:hover:not([disabled]):not(.mcs-readonly) {
+            background-color: #4b9086;
+        }
+
+        .mcs-button-image-button.mcs-selected {
+            background-color: #54a196;
+        }
+
+        .mcs-button-image-button:hover:not([disabled]):not(.mcs-selected):not(.mcs-readonly) {
+            outline: solid 2px white !important;
+        }
+
+        .mcs-button-image-button[disabled] {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <button id="mcs-button-image-button" class="mcs-button-image-button">
+        <img id="mcs-button-image-image" class="mcs-button-image-image" />
+    </button>
+
+    <slot></slot>
+</template>

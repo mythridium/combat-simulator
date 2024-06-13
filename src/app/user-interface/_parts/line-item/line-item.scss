@@ -1,0 +1,14 @@
+mcs-line-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-bottom: 1px;
+    border-bottom: dashed 1px #858585;
+
+    img[slot='image'] {
+        height: 15px;
+    }
+}

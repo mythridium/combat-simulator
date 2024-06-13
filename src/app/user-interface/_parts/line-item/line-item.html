@@ -1,0 +1,16 @@
+<template id="mcs-line-item-template">
+    <style>
+        .mcs-line-item-value {
+            width: 60px;
+            text-align: right;
+            margin-left: 5px;
+        }
+    </style>
+
+    <div class="mcs-line-item-label">
+        <span class="mcs-line-item-text"><slot name="label"></slot></span>
+        <span class="mcs-line-item-image"><slot name="image"></slot></span>
+    </div>
+
+    <div class="mcs-line-item-value"><slot name="value"></slot></div>
+</template>

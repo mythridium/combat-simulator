@@ -1,0 +1,13 @@
+mcs-spells {
+    .mcs-spell-container {
+        max-width: 220px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .mcs-spells-combination-runes {
+        display: block;
+        margin-top: 20px;
+    }
+}

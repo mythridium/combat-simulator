@@ -1,0 +1,30 @@
+<template id="mcs-simulation-history-template">
+    <button id="mcs-simulation-history-load" class="mcs-button mcs-simulation-history-load"></button>
+
+    <button id="mcs-simulation-history-rename" class="mcs-button-secondary mcs-simulation-history-rename">
+        Rename
+    </button>
+
+    <button id="mcs-simulation-history-delete" class="mcs-button-secondary mcs-simulation-history-delete">
+        Delete
+    </button>
+
+    <mcs-dialog id="mcs-simulation-history-rename-dialog" class="mcs-simulation-history-rename-dialog">
+        <div slot="header">Rename Simulation Record</div>
+
+        <div slot="content">
+            <div>Enter a new name for the simulation record.</div>
+            <input
+                id="mcs-simulation-history-name"
+                class="mcs-simulation-history-name form-control"
+                type="text"
+                maxlength="25"
+            />
+        </div>
+
+        <div slot="footer">
+            <button id="mcs-simulation-history-dialog-close" class="mcs-button-secondary">Cancel</button>
+            <button id="mcs-simulation-history-dialog-rename" class="mcs-button">Rename</button>
+        </div>
+    </mcs-dialog>
+</template>

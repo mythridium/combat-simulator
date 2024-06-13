@@ -1,0 +1,43 @@
+mcs-astrology {
+    mcs-tabs {
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .mcs-constellation-header {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        .mcs-constellation-skill-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        img {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    .mcs-constellation-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mcs-astrology-modifier-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .mcs-astrology-modifier-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    }
+}

@@ -1,0 +1,13 @@
+mcs-plotter-bar {
+    display: flex;
+    z-index: 1;
+
+    .mcs-plotter-bar {
+        position: relative;
+        background-color: #0072bd;
+        width: 25px;
+        margin-right: 1px;
+        margin-left: 1px;
+        align-self: flex-end;
+    }
+}

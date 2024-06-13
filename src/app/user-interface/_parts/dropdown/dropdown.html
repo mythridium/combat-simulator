@@ -1,0 +1,27 @@
+<template id="mcs-dropdown-template">
+    <label id="mcs-dropdown-label" class="mcs-dropdown-label font-size-sm"></label>
+
+    <div class="dropdown">
+        <button
+            id="mcs-dropdown-button"
+            data-toggle="dropdown"
+            class="mcs-dropdown-button dropdown-toggle font-size-sm"
+        ></button>
+
+        <div id="mcs-dropdown-menu" class="dropdown-menu font-size-sm">
+            <div id="mcs-dropdown-search" class="mcs-dropdown-search form-group" onsubmit="return false">
+                <input
+                    id="mcs-dropdown-search-input"
+                    class="form-control msc-dropdown-search-input"
+                    type="text"
+                    name="mcs-dropdown-content-search"
+                    placeholder="Search"
+                />
+            </div>
+
+            <div id="mcs-dropdown-divider" class="dropdown-divider"></div>
+
+            <div id="mcs-dropdown-items" class="mcs-dropdown-items"></div>
+        </div>
+    </div>
+</template>

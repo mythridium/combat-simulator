@@ -1,0 +1,40 @@
+mcs-tooltip {
+    pointer-events: none;
+
+    &.is-mobile {
+        pointer-events: auto;
+    }
+
+    .mcs-tooltip {
+        display: none;
+        width: max-content;
+        max-width: 350px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #3d3d3d;
+        border: solid 1px #b3b3b3;
+        color: white;
+        border-radius: 4px;
+        font-size: 14px;
+        z-index: 10010;
+
+        .mcs-tooltip-content {
+            max-height: min(40vh, 400px);
+            overflow: auto;
+            padding: 5px 10px;
+        }
+    }
+
+    .mcs-tooltip-arrow {
+        position: absolute;
+        background: #3d3d3d;
+        width: 8px;
+        height: 8px;
+        transform: rotate(45deg);
+    }
+}
+
+[data-mcsTooltipContent] {
+    display: none;
+}

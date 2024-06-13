@@ -1,0 +1,14 @@
+mcs-simulation-history {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+    .mcs-simulation-history-load {
+        width: 200px;
+        line-break: anywhere;
+    }
+
+    .mcs-simulation-history-name {
+        margin-top: 10px;
+    }
+}

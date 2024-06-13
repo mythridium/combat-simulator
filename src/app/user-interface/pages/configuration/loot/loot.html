@@ -1,0 +1,29 @@
+<template id="mcs-loot-template">
+    <mcs-page-title page-title="Loot" description="Modify settings focused on drops."></mcs-page-title>
+
+    <mcs-switch
+        id="mcs-loot-only-selected-target"
+        data-mcsOnText="Yes"
+        data-mcsOffText="No"
+        data-mcsName="Only Selected Target"
+        data-mcsDescription="Enable to only see items for the selected target in the dropdown."
+    ></mcs-switch>
+
+    <mcs-switch
+        id="mcs-loot-only-undiscovered"
+        data-mcsOnText="Yes"
+        data-mcsOffText="No"
+        data-mcsName="Only Undiscovered"
+        data-mcsDescription="Enable to only see undiscovered items in the dropdown."
+    ></mcs-switch>
+
+    <mcs-dropdown id="mcs-loot-items" class="mcs-loot-item"></mcs-dropdown>
+
+    <mcs-switch
+        id="mcs-loot-shards-to-chest"
+        data-mcsOnText="Calculate as loot from Scrolls"
+        data-mcsOffText="Calculate as Shards"
+        data-mcsName="Upgrade Shards to Scrolls"
+        data-mcsDescription="Enable to calculate gp for god dungeons using the loot from scrolls instead of the shards themselves."
+    ></mcs-switch>
+</template>

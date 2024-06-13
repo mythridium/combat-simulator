@@ -1,0 +1,30 @@
+<template id="mcs-header-template">
+    <div id="mcs-header-title" class="mcs-header-title">[Myth] Combat Simulator</div>
+
+    <div class="mcs-mobile-buttons">
+        <button id="mcs-simulate-header" class="mcs-simulate-header mcs-navigation-button">
+            <img src="assets/media/main/statistics_header.svg" />
+        </button>
+        <button id="mcs-configuration-header" class="mcs-configuration-header mcs-navigation-button">
+            <img src="assets/media/main/settings_header.svg" />
+        </button>
+        <button id="mcs-summary-header" class="mcs-summary-header mcs-navigation-button">
+            <img src="assets/media/main/lore.svg" />
+        </button>
+        <button id="mcs-modifiers-header" class="mcs-modifiers-header mcs-navigation-button">
+            <img src="assets/media/skills/prayer/prayer.svg" />
+        </button>
+    </div>
+
+    <div class="mcs-flex-space"></div>
+
+    <div class="mcs-header-right">
+        <mcs-header-expansions></mcs-header-expansions>
+
+        <mcs-header-version></mcs-header-version>
+
+        <button id="mcs-header-close" class="mcs-header-close mcs-navigation-button">
+            <i class="fa fa-fw fa-times"></i>
+        </button>
+    </div>
+</template>

@@ -1,0 +1,27 @@
+mcs-settings {
+    .mcs-settings-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .mcs-settings-small-plotter,
+    .mcs-settings-filter-target-dropdown {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .mcs-gamemode {
+        margin-bottom: 20px;
+    }
+
+    .mcs-settings-import-export-title {
+        margin-bottom: 10px;
+    }
+
+    .mcs-settings-tooltip-hint {
+        margin-top: 20px;
+        font-size: 13px;
+    }
+}

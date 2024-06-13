@@ -1,0 +1,18 @@
+<template id="mcs-settings-import-dialog-template">
+    <mcs-dialog id="mcs-settings-import-dialog" class="mcs-settings-import-dialog">
+        <div slot="header">Import</div>
+
+        <div slot="content">
+            <div>Paste a configuration to import.</div>
+            <textarea id="mcs-settings-import-dialog-textarea" class="form-control mcs-code" rows="4"></textarea>
+            <pre id="mcs-settings-import-dialog-pre" class="mcs-settings-import-dialog-pre">
+                <code id="mcs-settings-import-dialog-failure" class="mcs-settings-import-dialog-failure"></code>
+            </pre>
+        </div>
+
+        <div slot="footer">
+            <button id="mcs-settings-import-dialog-close" class="mcs-button-secondary">Cancel</button>
+            <button id="mcs-settings-import-dialog-import" class="mcs-button">Import</button>
+        </div>
+    </mcs-dialog>
+</template>

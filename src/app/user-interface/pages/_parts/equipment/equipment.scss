@@ -1,0 +1,13 @@
+mcs-equipment {
+    margin: -5px;
+
+    .mcs-equipment-container {
+        display: grid;
+        place-content: start;
+    }
+
+    .mcs-empty-slot {
+        width: 50px;
+        height: 50px;
+    }
+}

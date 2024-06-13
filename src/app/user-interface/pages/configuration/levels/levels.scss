@@ -1,0 +1,28 @@
+mcs-levels {
+    .mcs-player-level-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .mcs-levels-container,
+    .mcs-abyssal-levels-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 10px;
+        flex: 40%;
+    }
+
+    .mcs-level-field .mcs-level-label {
+        margin-bottom: 5px;
+    }
+
+    @media (max-width: 700px) {
+        .mcs-levels-container,
+        .mcs-abyssal-levels-container {
+            align-items: center;
+            flex: 100%;
+        }
+    }
+}

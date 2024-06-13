@@ -1,0 +1,13 @@
+mcs-configuration-menu {
+    .mcs-found-a-bug-header {
+        display: none;
+    }
+}
+
+#mcs-mobile-configuration-menu {
+    mcs-configuration-menu {
+        .mcs-found-a-bug-header {
+            display: flex;
+        }
+    }
+}

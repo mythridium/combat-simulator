@@ -1,0 +1,20 @@
+<template id="mcs-agility-slot-template">
+    <div id="mcs-agility-slot-container" class="mcs-agility-slot-container" data-mcsTooltip>
+        <img id="mcs-agility-slot-image" class="mcs-agility-slot-image" />
+        <div data-mcsTooltipContent id="mcs-agility-slot-tooltip">Empty</div>
+    </div>
+
+    <mcs-dialog id="mcs-agility-slot-dialog">
+        <div slot="header" id="mcs-agility-slot-dialog-title"></div>
+
+        <div slot="content">
+            <div id="mcs-agility-slot-container"></div>
+        </div>
+
+        <div slot="footer">
+            <button id="mcs-agility-slot-unequip" class="mcs-button-secondary">Unequip</button>
+            <div class="mcs-flex-space"></div>
+            <button id="mcs-agility-slot-cancel" class="mcs-button-secondary">Cancel</button>
+        </div>
+    </mcs-dialog>
+</template>

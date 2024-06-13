@@ -1,0 +1,37 @@
+mcs-dialog {
+    z-index: 10003;
+    color: white;
+    visibility: hidden;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000;
+
+    &.is-open {
+        visibility: visible;
+    }
+
+    [slot='footer'] {
+        margin-left: auto;
+    }
+}
+
+#mcs-dialog-backdrop {
+    display: none;
+    position: fixed;
+    top: -30px;
+    left: -30px;
+    bottom: -30px;
+    right: -30px;
+    background: black;
+    opacity: 0.3;
+    z-index: 10002;
+
+    &.is-open {
+        display: block;
+    }
+}

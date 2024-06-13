@@ -1,3 +1,339 @@
+v3.0.62
+    fixed stats failing to update after importing once
+
+v3.0.61
+    fixed curses and auroras not being selected on import
+    added visual swiper to assist with showing when combat sim can be swiped left or right at smaller screen sizes
+
+v3.0.60
+    fixed origin check failing in certain instances
+
+v3.0.59
+    adjusted origin lookup
+
+v3.0.58
+    added support for naver whale browser
+
+v3.0.57
+    fixed guardian amulet applying as low hitpoints on out of combat stats
+    fixed prayers asking for points in the simulator if you have none in game
+    added a new toggle to the settings page which filters the target dropdown by the targets you have filtered on the plotter
+    experimental fix for polyfill script error
+
+v3.0.56
+    fixed importing non ita exports into a game with ita throwing an error
+
+v3.0.55
+    fixed out of combat stats simulate buttons not updating information panel
+
+v3.0.54
+    fixed agility pillars exporting with incorrect category number
+    out of combat stats panel now has simulate buttons allowing simulation from all configuration pages
+    removed simulate buttons from equipment page header
+    added a new switch in settings that reduces the size of the plotter, this is stored across all characters and devices
+
+v3.0.53
+    added support for game version ?11265 - fixed currency error
+
+v3.0.52
+    fixed spells not being able to be de-selected
+    fixed spells that require items not being selectable
+
+v3.0.51
+    fixed shop purchase error when importing old save slots
+    fixed error being thrown on older mobile devices that don't support private variables
+    fixed spell selection not de-selecting spells when it is not valid to have them equipped
+    stronghold drops now only account for the stronghold drop when no specific item is selected
+
+v3.0.50
+    fixed curse spells not de-selecting when selecting ancient magic
+    fixed skills with translated names throwing an error
+    owned expansions and version number is now also displayed inline on the summary
+    attempting to simulate barrier monsters without summoning tablets equipped now returns an error instead of wasting time simulating
+
+v3.0.49
+    fixed prayers and spells not being de-selected when reducing levels
+
+v3.0.48
+    fixed stronghold enhancement drops being calculated incorrectly
+
+v3.0.47
+    corruptions are no longer imported from equipment sets if the corruption skill has not been unlocked yet
+
+v3.0.46
+    fixed toggle barrier monsters showing when aod is disabled
+
+v3.0.45
+    removed the [Beta] tag from the user interface
+    added support for modded equipment slots
+    modded equipment slots contain no section analysis (everything is lumped into a single section), but have the same search capabilities as normal equipment slots
+    equipment data is now a map of the slot id as the key and the item id
+    existing save slots and exports that contain equipment data as an array will be converted to a map on import to avoid errors, but should be re-exported/re-saved after import to avoid errors in the future
+
+v3.0.44
+    fixed ignore slayer requirements not being set on import
+
+v3.0.43
+    fixed bank space displaying multiple times on agility obstacles and pillars
+
+v3.0.42
+    fixed some agility obstacle modifiers not correctly displaying as positive/negative
+    fixed some ita agility obstacle modifiers not being displayed at all
+
+v3.0.41
+    strongholds now check if you have the required items equipped
+
+v3.0.40
+    celestial ray is now appropriately hidden
+
+v3.0.39
+    added support for game version ?11119
+
+v3.0.38
+    all tooltips now update their modifier disabled status when switching gamemodes
+    all ancient relics are now cleared when switching game modes
+    ancient relics menu item now shows/hides based on the gamemode supporting relic drops
+
+v3.0.37
+    added support for game version ?11089
+
+v3.0.36
+    fixed slayer abyss depth completion requirements not functioning
+
+v3.0.35
+    increased simulation history name length to 25 characters
+
+v3.0.34
+    added error notification when trying to simulate a slayer task that cannot select any monsters
+
+v3.0.33
+    added support for game version ?11020
+
+v3.0.32
+    replaced highlight target searching with a select target dropdown
+        selecting a target will scroll the plotter and select the target
+        can be used when both inspecting and not inspecting a target
+        for cases where duplicate monsters are present, only the first is selected
+        the dropdown has a max width, as some target names are quite long, this is intended
+        the dropdown value is cleared when manually selecting a bar on the plotter
+        selecting the none option does nothing, but serves as the empty default state, it does not clear the current selection
+
+v3.0.31
+    fixed abyssal arrows and abyssal bolts not showing
+
+v3.0.30
+    attack speed on items is now formatted as in game to seconds
+    equipment and food search now match the following criteria
+        partial matches for
+            item name
+            weapon damage type
+            weapon special attack
+            description
+            positive stats
+            resistances
+        exact matches for
+            expansion abreviations (demo, full, toth, aod, ita)
+            expansion full form (throne of the herald, atlas of discovery, into the abyss)
+            mod namespace (mythmusic)
+    all searches are case insensitive
+    matches include the stat value
+        eg. '8% damage reduction' will match items that grant 8% damage reduction
+
+v3.0.29
+    fixed agility pillars not applying during simulation
+    fixed unnecessary error messages when importing
+
+v3.0.28
+    fixed unholy prayers throwing an error
+
+v3.0.27
+    hid debug amulet
+    hid 'Skill Tree Node' text from skill tree node labels
+    added a new page for shop purchases
+    fixed agility obstacle modifiers not being applied during simulation
+    fixed simming with no expansions throwing an error
+
+v3.0.26
+    fixed agility tooltips not displaying mastery bonus correctly when importing
+
+v3.0.25
+    prayers are now de-selected when switching to a damage type that would prevent the prayer from being active
+
+v3.0.24
+    added abyssal cooking mastery pool 25% to equipment page
+    added abyssal cooking mastery pool 95% to equipment page
+    added a new page for township
+    added township buildings that add combat modifiers to the township page
+    solar eclipse and eternal darkness has been moved from equipment to township
+    fixed solar eclipse not applying when unequipping weapons
+
+v3.0.23
+    fixed spells being selectable in damage types they aren't allowed in
+    fixed curses not showing on the summary when allowed in non magic attack types
+
+v3.0.22
+    added support for game version ?10795
+
+v3.0.21
+    improved easter egg hidden logic
+
+v3.0.20
+    two easter egg items have been hidden until located in the game
+
+v3.0.19
+    non combat skill requirements no longer prevent equipping items
+    items from mods now ignore equip requirements
+    improved support for mod data packages
+    mods that add content are no longer loaded by default into combat simulator and must be opted in by mod developers
+        this is so that mods do not break combat simulator unknowingly
+        call `mod.api.mythCombatSimulator.registerNamespace` BEFORE loading any data.json or data builders
+        eg. `mod.api.mythCombatSimulator?.registerNamespace('mythMusic')`
+
+v3.0.18
+    selecting a target on the plotter now also highlights the background of the bar
+
+v3.0.17
+    fixed ticks and trials being out of sync with the ui and the underlying value when reloading with non default values
+    added level and item requirements to prayers and spells
+    cancelling a simulation now cancels as soon as possible instead of waiting for the current target to finish
+    inspecting an entity will reset the plotter scroll position to the left
+    when you stop inspecting the plotter will return to the same scroll position as when you started inspecting
+
+v3.0.16
+    fixed ancient relic dungeons throwing an exception in certain conditions
+
+v3.0.15
+    added eternal darkness toggle which is mutually exclusive with solar eclipse toggle
+    added error notification when trying to equip an item you don't have requirements for
+        typically this will occur when trying to equip an item without the level requirement
+        it's possible to import your equipment set, reduce your levels and have items equipped without the level requirements
+        this is not a bug I will fix, it is what it is, you got yourself into that situation
+    fixed unequipping an item throwing an exception
+    fixed abyssal levels showing on summary when ita is disabled
+
+v3.0.14
+    fixed combat simulator not loading if ita or aod expansions were not owned
+    fixed solar eclipse not working if you don't have a town built yet
+
+v3.0.13
+    updated abyssal prayer image to match the now implemented abyssal prayer image
+    items now respect equipment rules when trying to equip
+
+v3.0.12
+    fixed slayer page not wrapping
+
+v3.0.11
+    fixed astrology master relic not functioning
+    fixed ancient relic clear button not functioning
+    added crit chance to out of combat stats
+    added crit damage to out of combat stats
+    added toggle buttons to corruption, astrology and skill tree pages
+    converted clear buttons to toggle on/off all elements
+
+v3.0.10
+    fixed levels being capped to current level cap instead of max level cap
+
+v3.0.9
+    exposed mod api to export, import and a loaded promise
+
+v3.0.8
+    fixed enemy modifiers on agility obstacles not displaying
+    fixed disabled modifiers not being crossed out (should match the game)
+    fixed resistances from gear not functioning as intended
+    fixed formatting of gp multiplier
+    plotter toggles are now visually toggled on/off when clicked
+
+v3.0.7
+    added support for game version ?10575
+
+v3.0.6
+    pulled barrier monsters out of the toggle monsters button, they now have their own toggle barrier monsters button
+        to avoid confusion, toggling monsters has no affect on barrier monsters, use the toggle barrier monster button
+    select active target now works with strongholds and depths
+    added simulate buttons to the equipment page
+    modifiers that fail to generate a description will now be counted as +0
+    fixed agility mastery not toggling off
+    fixed potions not toggling correctly and not applying modifiers
+    fixed points of interest not de-selecting on import
+    fixed agility obstacles importing out of order
+
+v3.0.5
+    added support for game version ?10503
+
+v3.0.4
+    fixed cartography line items not showing on summary
+
+v3.0.3
+    added support for game version ?10478
+
+v3.0.2
+    BREAKING:
+        importing combat sim settings pre v3 will not import ancient relics
+        importing combat sim settings pre v3 will not import spells
+
+    added support for game version ?10406
+    the plotter now scrolls horizontally with the mouse wheel
+    fixed stronghold drops not working
+    fixed synergy being enabled when unequipping a summoning tablet
+
+v3.0.1
+    tooltips now have a max height
+    tooltips that are longer than the max height can be scrolled using Alt + Scroll Wheel
+    added hint to settings page to explain long tooltip scrolling
+    hint does not show on mobile devices which can already scroll tooltips due to them staying open
+    improved tooltip close event on mobile to only close when tapping and not when scrolling
+
+v3.0.0
+    BREAKING:
+        importing combat sim settings pre v3 will not import agility obstacles/pillars
+
+    web worker has been re-written to improve ease of maintainability
+    the user interface has been re-written and re-designed
+        mobile users should see an improved user experience
+        replaced tippy tooltips with a new library and custom implementation... because tippy sucks
+    exporting settings now outputs a base64 string (like the game save files)
+        importing is backwards compatible with settings in the old json format
+    trial and tick settings are now persisted and shared across all characters on your account
+    fixed equipment in occupied slots not being removed when equiping an item that occupied that slot
+    slayer tasks can now be inspected
+    de-selecting an inspected monster will re-select the entity being inspected
+    simulating all will no longer spam error notifications for each slayer area that cannot be accessed, instead a single generic message is now shown
+    replaced spider lair and into the mist random monsters with one of each possible random monster
+        this means that simulating these dungeons will not give accurate clear results, but it never did before with the random monsters either
+        this allows you to simulate against all possible options that the dungeon could potentially throw at you
+    added hints for into the mist, impending darkness and spider lair explaining why these dungeon results are not accurate
+    fixed dungeon gp calculation being incorrect
+        the source of this bug was that chests were not being opened, the gp calculation now calculates if the chests are opened and the loot sold
+        this can dramatically change gp calculations for dungeons, eg. lightning region with 92 clears / h was 10m/h now correctly calculates at 200m/h selling all loot from chests
+    fixed signet drop chance calculations not working for slayer tasks
+    fixed pet percentage calculations not working at all
+    added summoning mark percentage calculations to results
+        the line item shows the percentage of seeing any mark for the selected skill
+        hovering over the line item shows the percentage of seeing a specific mark for the selected skill
+        no validation is performed whether a mark is unlocked or completed
+    the skill dropdown now displays at all times instead of just for the pet plot type
+    switching between prayer types no longer prevents the switch if all other conditions of equiping the prayer are met, it now automatically de-selects the existing prayers and switches
+        ie. you have 2 normal prayers equipped, you have 2 unholy items equipped and you select an unholy prayer. the normal prayers will be unquipped and the unholy prayer is selected
+        previously you would have to manually unequip the normal prayers then equip the unholy prayer
+    removed the following functionality/options
+        consumable rates
+        gp/s options
+        data export
+        heal after death
+        has runes
+    implemented basic support for the following mod functionality
+        mod data added/modified through json or the builder before the interface is ready
+        mod skills 'exist' in the simulator but as dummy skills that do nothing
+
+    PLEASE NOTE: Mod functionality will not be fully supported or be as accurate as the normal game.
+    I will not endeavour to get mod data accurate, there are too many limitations in technology
+    and breadth of functionality to have this work like the normal game.
+
+    the following mod functionality is still NOT supported
+        mod data added/modified after the interface has loaded
+        mod patched functions
+        mod skill functionality
+
 v2.4.36
     save slots are now stored in indexeddb instead of localstorage
     existing save slot data is automatically migrated over

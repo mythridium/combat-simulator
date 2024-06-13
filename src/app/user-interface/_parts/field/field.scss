@@ -1,0 +1,19 @@
+mcs-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    [slot='text'] {
+        font-size: 0.875rem;
+    }
+
+    [slot='image'] {
+        width: 15px;
+        height: 15px;
+    }
+
+    [slot='hint'] img {
+        width: 10px;
+        height: 10px;
+    }
+}
