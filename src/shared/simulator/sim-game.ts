@@ -383,6 +383,7 @@ export class SimGame extends Game {
         this.clearShop();
 
         this.petManager.unlocked.clear();
+        this.potions.activePotions.clear();
 
         this.astrology.actions.allObjects.forEach(constellation => {
             for (const modifier of constellation.standardModifiers) {
@@ -464,6 +465,7 @@ export class SimGame extends Game {
 
         this.township.townData.townCreated = true;
         this.township.townData.season = this.township.defaultSeason ?? this.township.townData.season;
+        this.township.townData.worship = this.township.noWorship;
         this.township.biomes.forEach(biome => {
             biome.buildingEfficiency.clear();
             biome.buildingsBuilt.clear();

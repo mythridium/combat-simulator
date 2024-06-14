@@ -40,6 +40,7 @@ export abstract class SharedGlobal {
         'Firemaking',
         'Cooking',
         'Smithing',
+        'Herblore',
         'Agility',
         'Summoning',
         'Astrology'

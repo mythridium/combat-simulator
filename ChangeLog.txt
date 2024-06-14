@@ -1,3 +1,8 @@
+v3.0.66
+    fixed non combat related potions being loaded into sim on start up
+    fixed township worship being loaded into sim on start up
+    added melvor herblore ancient relics to account for the increased potion charge relic
+
 v3.0.65
     fixed importing pre v3 exports throwing an error
     fixed spells not defaulting to the correct spell on first load
