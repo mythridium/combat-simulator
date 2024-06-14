@@ -1,3 +1,6 @@
+v3.0.64
+    fixed currently active combat effects when loading a game while in combat also being active in the simulator
+
 v3.0.63
     experimental change to address mobile zoom issues
 

@@ -279,6 +279,7 @@ export class SimPlayer extends Player {
         this.equipment.unequipAll();
         this.unequipFoodAll();
         this.activePrayers.clear();
+        this.resetActionState();
     }
 
     resetGains() {
