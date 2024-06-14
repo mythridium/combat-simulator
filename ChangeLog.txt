@@ -1,3 +1,7 @@
+v3.0.65
+    fixed importing pre v3 exports throwing an error
+    fixed spells not defaulting to the correct spell on first load
+
 v3.0.64
     fixed currently active combat effects when loading a game while in combat also being active in the simulator
 

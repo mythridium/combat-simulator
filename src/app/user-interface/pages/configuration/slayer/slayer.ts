@@ -98,7 +98,7 @@ export class SlayerPage extends HTMLElement {
             const abyssDepth = Lookup.depths.getObjectByID(abyssDepthId);
 
             if (abyssDepth) {
-                const isSelected = settings.abyssDepthCompletion.includes(abyssDepthId);
+                const isSelected = settings.abyssDepthCompletion?.includes(abyssDepthId) ?? false;
 
                 element._toggle(isSelected);
                 // @ts-ignore // TODO: TYPES
@@ -110,7 +110,7 @@ export class SlayerPage extends HTMLElement {
             const purchase = Global.game.shop.purchases.getObjectByID(purchaseId);
 
             if (purchase) {
-                const isSelected = settings.shopPurchase.includes(purchaseId);
+                const isSelected = settings.shopPurchase?.includes(purchaseId) ?? false;
 
                 element._toggle(isSelected);
                 this._updateShopPurchase(purchase, isSelected);

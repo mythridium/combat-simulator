@@ -43,11 +43,16 @@ export class SpellsPage extends HTMLElement {
     public connectedCallback() {
         this.appendChild(this._content);
         this._init();
+        this._update();
     }
 
     public _import(settings: SpellSettings, useCombinationRunes: boolean) {
         // @ts-ignore // TODO: TYPES
-        Global.game.combat.player.spellSelection.attack = this._getSpell(settings.attack) as AttackSpell;
+        Global.game.combat.player.spellSelection.attack = this._getSpell(
+            // @ts-ignore // TODO: TYPES
+            settings.attack ?? Global.game.attackSpells.firstObject.id
+            // @ts-ignore // TODO: TYPES
+        ) as AttackSpell;
         Global.game.combat.player.spellSelection.curse = this._getSpell(settings.curse) as CurseSpell;
         Global.game.combat.player.spellSelection.aurora = this._getSpell(settings.aurora) as AuroraSpell;
 

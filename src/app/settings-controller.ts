@@ -222,7 +222,9 @@ export abstract class SettingsController {
             this._isImporting = true;
 
             Global.userInterface.main.querySelector('mcs-settings')._import(settings.currentGamemodeID);
-            Global.userInterface.main.querySelector('mcs-levels')._import(settings.levels, settings.abyssalLevels);
+            Global.userInterface.main
+                .querySelector('mcs-levels')
+                ._import(settings.levels ?? new Map(), settings.abyssalLevels ?? new Map());
 
             const equipment = Global.userInterface.main.querySelector('mcs-equipment-page');
 
@@ -258,7 +260,7 @@ export abstract class SettingsController {
 
             Global.userInterface.main
                 .querySelector('mcs-township')
-                ._import(settings.isSolarEclipse, settings.isEternalDarkness, settings.townshipBuildings);
+                ._import(settings.isSolarEclipse, settings.isEternalDarkness, settings.townshipBuildings ?? new Map());
 
             Global.userInterface.main
                 .querySelector('mcs-slayer')

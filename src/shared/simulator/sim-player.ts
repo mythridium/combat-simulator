@@ -275,6 +275,10 @@ export class SimPlayer extends Player {
 
     resetToBlankState() {
         this.setDefaultAttackStyles();
+        // @ts-ignore // TODO: TYPES
+        this.spellSelection.attack = Global.get.game.attackSpells.firstObject;
+        this.spellSelection.curse = undefined;
+        this.spellSelection.aurora = undefined;
         this.changeEquipmentSet(0);
         this.equipment.unequipAll();
         this.unequipFoodAll();
