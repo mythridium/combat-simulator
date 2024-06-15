@@ -1,3 +1,8 @@
+v3.0.67
+    astrology can now toggle melvor and abyssal realm constellations independantly
+    fixed potions for modded skills throwing an error
+    fixed active effect procs persisting between simulation runs
+
 v3.0.66
     fixed non combat related potions being loaded into sim on start up
     fixed township worship being loaded into sim on start up

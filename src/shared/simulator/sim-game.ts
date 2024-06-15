@@ -383,6 +383,11 @@ export class SimGame extends Game {
         this.clearShop();
 
         this.petManager.unlocked.clear();
+
+        for (const [action, activePotion] of this.potions.activePotions) {
+            this.events.unassignMatchers(activePotion.unassigners);
+        }
+
         this.potions.activePotions.clear();
 
         this.astrology.actions.allObjects.forEach(constellation => {

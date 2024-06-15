@@ -19,11 +19,17 @@ enum ModifierType {
     Abyssal = 'abyssal'
 }
 
+enum ToggleType {
+    Melvor,
+    Abyssal
+}
+
 @LoadTemplate('app/user-interface/pages/configuration/astrology/astrology.html')
 export class AstrologyPage extends HTMLElement {
     private readonly _content = new DocumentFragment();
 
-    private readonly _toggleButton: HTMLButtonElement;
+    private readonly _toggleButtonMelvor: HTMLButtonElement;
+    private readonly _toggleButtonAbyssal: HTMLButtonElement;
     private readonly _tabs = new Map<string, Tabs>();
 
     private readonly _modifiers = new Map<string, ButtonImage[]>();
@@ -45,7 +51,8 @@ export class AstrologyPage extends HTMLElement {
 
         this._content.append(getTemplateNode('mcs-astrology-template'));
 
-        this._toggleButton = getElementFromFragment(this._content, 'mcs-constellation-toggle', 'button');
+        this._toggleButtonMelvor = getElementFromFragment(this._content, 'mcs-constellation-toggle-melvor', 'button');
+        this._toggleButtonAbyssal = getElementFromFragment(this._content, 'mcs-constellation-toggle-abyssal', 'button');
     }
 
     public connectedCallback() {
@@ -133,44 +140,73 @@ export class AstrologyPage extends HTMLElement {
         }
     }
 
-    private _toggle() {
-        if (this._hasConstellations()) {
-            this._import(new Map());
-        } else {
-            const astrologyModifiers: Map<string, AstrologySettings> = new Map();
+    private _toggle(type: ToggleType) {
+        const astrologyModifiers: Map<string, AstrologySettings> = new Map();
 
+        if (type === ToggleType.Melvor) {
             for (const constellation of Global.game.astrology.actions.allObjects) {
                 astrologyModifiers.set(constellation.id, {
                     // @ts-ignore // TODO: TYPES
-                    standardModsBought: constellation.standardModifiers.map(modifier => modifier.maxCount),
+                    standardModsBought: constellation.standardModifiers.map(modifier =>
+                        this._hasConstellations(type) ? 0 : modifier.maxCount
+                    ),
                     // @ts-ignore // TODO: TYPES
-                    uniqueModsBought: constellation.uniqueModifiers.map(modifier => modifier.maxCount),
+                    uniqueModsBought: constellation.uniqueModifiers.map(modifier =>
+                        this._hasConstellations(type) ? 0 : modifier.maxCount
+                    ),
                     // @ts-ignore // TODO: TYPES
-                    abyssalModsBought: constellation.abyssalModifiers.map(modifier => modifier.maxCount)
+                    abyssalModsBought: constellation.abyssalModifiers.map(modifier => modifier.timesBought)
                 });
             }
-
-            this._import(astrologyModifiers);
         }
+
+        if (type === ToggleType.Abyssal) {
+            for (const constellation of Global.game.astrology.actions.allObjects) {
+                astrologyModifiers.set(constellation.id, {
+                    // @ts-ignore // TODO: TYPES
+                    standardModsBought: constellation.standardModifiers.map(modifier => modifier.timesBought),
+                    // @ts-ignore // TODO: TYPES
+                    uniqueModsBought: constellation.uniqueModifiers.map(modifier => modifier.timesBought),
+                    // @ts-ignore // TODO: TYPES
+                    abyssalModsBought: constellation.abyssalModifiers.map(modifier =>
+                        this._hasConstellations(type) ? 0 : modifier.maxCount
+                    )
+                });
+            }
+        }
+
+        this._import(astrologyModifiers);
 
         StatsController.update();
     }
 
-    private _hasConstellations() {
-        return Global.game.astrology.actions.allObjects.some(action => {
-            return (
-                // @ts-ignore // TODO: TYPES
-                action.standardModifiers.some(modifier => modifier.timesBought) ||
-                // @ts-ignore // TODO: TYPES
-                action.uniqueModifiers.some(modifier => modifier.timesBought) ||
-                // @ts-ignore // TODO: TYPES
-                action.abyssalModifiers.some(modifier => modifier.timesBought)
-            );
-        });
+    private _hasConstellations(type: ToggleType) {
+        if (type === ToggleType.Melvor) {
+            return Global.game.astrology.actions.allObjects.some(action => {
+                return (
+                    // @ts-ignore // TODO: TYPES
+                    action.standardModifiers.some(modifier => modifier.timesBought) ||
+                    // @ts-ignore // TODO: TYPES
+                    action.uniqueModifiers.some(modifier => modifier.timesBought)
+                );
+            });
+        }
+
+        if (type === ToggleType.Abyssal) {
+            return Global.game.astrology.actions.allObjects.some(action => {
+                return (
+                    // @ts-ignore // TODO: TYPES
+                    action.abyssalModifiers.some(modifier => modifier.timesBought)
+                );
+            });
+        }
+
+        return true;
     }
 
     private _init() {
-        this._toggleButton.onclick = () => this._toggle();
+        this._toggleButtonMelvor.onclick = () => this._toggle(ToggleType.Melvor);
+        this._toggleButtonAbyssal.onclick = () => this._toggle(ToggleType.Abyssal);
 
         const constellations = this._getConstellations();
 
