@@ -1318,7 +1318,10 @@ export abstract class Drops {
         }
 
         const enemy = new SimClasses.SimEnemy(Global.game.combat, Global.game);
-        enemy.setMonster(monster);
+        // @ts-ignore // TODO: TYPES
+        enemy.modifiers.init(Global.game);
+        // @ts-ignore // TODO: TYPES
+        enemy.setNewMonster(monster);
 
         return Math.max(Math.floor(enemy.stats.maxBarrier / numberMultiplier / 20), 1);
     }

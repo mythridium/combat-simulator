@@ -14,6 +14,7 @@ import { Bugs } from './app/user-interface/bugs/bugs';
 import { SettingsController, Settings } from './app/settings-controller';
 import { cloneDeep } from 'lodash-es';
 import { SaveSlot } from './app/utils/save-slot';
+import { StorageKey } from './app/utils/account-storage';
 
 export abstract class Main {
     private static loading = false;
@@ -128,6 +129,17 @@ export abstract class Main {
                     );
 
                     localStorage.setItem(this.versionKey, gameVersion);
+                }
+
+                try {
+                    if (Global.context.accountStorage.getItem(StorageKey.ImportOnStartup)) {
+                        SettingsController.importFromEquipmentSet(Global.melvor.combat.player.selectedEquipmentSet);
+                        Global.logger.log(
+                            `Successfully imported equipment set [${Global.melvor.combat.player.selectedEquipmentSet}] on startup.`
+                        );
+                    }
+                } catch (error) {
+                    Global.logger.error(`Failed to import equipment set on startup.`, error);
                 }
 
                 Global.logger.log(`Initialised in ${duration} ms [${Global.context.version}]`);

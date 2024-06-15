@@ -7,6 +7,7 @@ import type { ImportDialog } from './import-dialog/import-dialog';
 import type { ExportDialog } from './export-dialog/export-dialog';
 import { Switch } from 'src/app/user-interface/_parts/switch/switch';
 import { Plotter } from 'src/app/user-interface/pages/simulate/plotter/plotter';
+import { StorageKey } from 'src/app/utils/account-storage';
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -22,6 +23,7 @@ export class SettingsPage extends HTMLElement {
     private readonly _ticks: HTMLInputElement;
     private readonly _smallPlotter: Switch;
     private readonly _filterTargetDropdown: Switch;
+    private readonly _importOnStartup: Switch;
     private readonly _gamemode: Dropdown;
     private readonly _importButton: HTMLButtonElement;
     private readonly _importDialog: ImportDialog;
@@ -44,6 +46,7 @@ export class SettingsPage extends HTMLElement {
             'mcs-settings-filter-target-dropdown',
             'mcs-switch'
         );
+        this._importOnStartup = getElementFromFragment(this._content, 'mcs-settings-import-on-startup', 'mcs-switch');
         this._gamemode = getElementFromFragment(this._content, 'mcs-gamemode', 'mcs-dropdown');
         this._importButton = getElementFromFragment(this._content, 'mcs-settings-import', 'button');
         this._importDialog = getElementFromFragment(this._content, 'mcs-import-dialog', 'mcs-import-dialog');
@@ -61,7 +64,7 @@ export class SettingsPage extends HTMLElement {
         this._ticks.oninput = event => this._onChange(event, 'ticks');
 
         const isSmallPlotter =
-            Global.context.accountStorage.getItem('smallPlotter') ?? Global.stores.plotter.state.smallPlotter;
+            Global.context.accountStorage.getItem(StorageKey.SmallPlotter) ?? Global.stores.plotter.state.smallPlotter;
 
         this._plotter.classList.toggle('mcs-small-plotter', isSmallPlotter);
         this._smallPlotter._toggle(isSmallPlotter);
@@ -70,14 +73,14 @@ export class SettingsPage extends HTMLElement {
 
         this._smallPlotter._on(isChecked => {
             Global.stores.plotter.set({ smallPlotter: isChecked });
-            Global.context.accountStorage.setItem('smallPlotter', isChecked);
+            Global.context.accountStorage.setItem(StorageKey.SmallPlotter, isChecked);
 
             this._plotter.classList.toggle('mcs-small-plotter', isChecked);
             this._plotter._updateLabels();
         });
 
         const isFilterTargetDropdown =
-            Global.context.accountStorage.getItem('filter-target-dropdown') ??
+            Global.context.accountStorage.getItem(StorageKey.FilterTargetDropdown) ??
             Global.stores.plotter.state.filterTargetDropdown;
 
         Global.stores.plotter.set({ filterTargetDropdown: isFilterTargetDropdown });
@@ -85,9 +88,14 @@ export class SettingsPage extends HTMLElement {
         this._filterTargetDropdown._toggle(isFilterTargetDropdown);
         this._filterTargetDropdown._on(isChecked => {
             Global.stores.plotter.set({ filterTargetDropdown: isChecked });
-            Global.context.accountStorage.setItem('filter-target-dropdown', isChecked);
+            Global.context.accountStorage.setItem(StorageKey.FilterTargetDropdown, isChecked);
 
             Global.userInterface.main.querySelector('mcs-simulate')._updateSelectTarget();
+        });
+
+        this._importOnStartup._toggle(Global.context.accountStorage.getItem(StorageKey.ImportOnStartup));
+        this._importOnStartup._on(isChecked => {
+            Global.context.accountStorage.setItem(StorageKey.ImportOnStartup, isChecked);
         });
 
         this._gamemode._init({
@@ -105,10 +113,10 @@ export class SettingsPage extends HTMLElement {
         this._exportButton.onclick = () => this._exportDialog._open();
 
         this._trials.value =
-            Global.context.accountStorage.getItem('trials') ?? Global.stores.simulator.state.trials.toString();
+            Global.context.accountStorage.getItem(StorageKey.Trials) ?? Global.stores.simulator.state.trials.toString();
 
         this._ticks.value =
-            Global.context.accountStorage.getItem('ticks') ?? Global.stores.simulator.state.ticks.toString();
+            Global.context.accountStorage.getItem(StorageKey.Ticks) ?? Global.stores.simulator.state.ticks.toString();
 
         Global.stores.simulator.set({ trials: parseInt(this._trials.value), ticks: parseInt(this._ticks.value) });
 

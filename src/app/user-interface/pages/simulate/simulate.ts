@@ -8,6 +8,7 @@ import { Information } from 'src/app/user-interface/information/information';
 import { Drops } from 'src/app/drops';
 import { Switch } from 'src/app/user-interface/_parts/switch/switch';
 import { ButtonImage } from 'src/app/user-interface/_parts/button-image/button-image';
+import { StorageKey } from 'src/app/utils/account-storage';
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -116,6 +117,10 @@ export class SimulatePage extends HTMLElement {
 
         this._activeTarget.onclick = () => this._plotter._selectActiveTarget();
 
+        this._information = Global.userInterface.main.querySelector('mcs-information.mcs-main-information');
+
+        customElements.upgrade(this._information);
+
         const skillLocalIds = cloudManager.hasItAEntitlementAndIsEnabled
             ? Global.combatAbyssalSkillLocalIds
             : Global.combatSkillLocalIds;
@@ -131,29 +136,56 @@ export class SimulatePage extends HTMLElement {
             onChange: option => this._onSkillChange(option)
         });
 
+        if (
+            Global.context.accountStorage.getItem(StorageKey.PlotSkill) !== Global.stores.plotter.state.selectedSkill &&
+            skillLocalIds.includes(Global.context.accountStorage.getItem(StorageKey.PlotSkill))
+        ) {
+            this._skill._select(Global.context.accountStorage.getItem(StorageKey.PlotSkill));
+        }
+
+        const plotTypeOptions = Global.stores.plotter.state.plotTypes.map(plotType => ({
+            text: plotType.text,
+            value: plotType.key
+        }));
+
         this._plotType._init({
             search: false,
             label: 'Plot Type',
             default: Global.stores.plotter.plotType.key,
-            options: Global.stores.plotter.state.plotTypes.map(plotType => ({
-                text: plotType.text,
-                value: plotType.key
-            })),
+            options: plotTypeOptions,
             onChange: option => this._onPlotTypeChange(option)
         });
+
+        if (
+            Global.context.accountStorage.getItem(StorageKey.PlotType) !== Global.stores.plotter.plotType.key &&
+            plotTypeOptions.some(
+                plotType => plotType.value === Global.context.accountStorage.getItem(StorageKey.PlotType)
+            )
+        ) {
+            this._plotType._select(Global.context.accountStorage.getItem(StorageKey.PlotType));
+        }
+
+        const plotTimeOptions = Global.stores.plotter.state.timeOptions.map(time => ({
+            text: time,
+            value: time
+        }));
 
         this._time._init({
             search: false,
             label: 'Time',
             default: Global.stores.plotter.timeOption,
-            options: Global.stores.plotter.state.timeOptions.map(time => ({
-                text: time,
-                value: time
-            })),
+            options: plotTimeOptions,
             onChange: option => this._onTimeChange(option)
         });
 
-        this._information = Global.userInterface.main.querySelector('mcs-information.mcs-main-information');
+        if (
+            Global.context.accountStorage.getItem(StorageKey.PlotTime) !== Global.stores.plotter.timeOption &&
+            plotTimeOptions.some(
+                plotTime => plotTime.value === Global.context.accountStorage.getItem(StorageKey.PlotTime)
+            )
+        ) {
+            this._time._select(Global.context.accountStorage.getItem(StorageKey.PlotTime));
+        }
 
         this._slayer._toggle(Global.game.combat.player.isSlayerTask);
         this._slayer._on(isChecked => {
@@ -220,6 +252,8 @@ export class SimulatePage extends HTMLElement {
 
     private _onSkillChange(option: DropdownOption) {
         Global.stores.plotter.set({ selectedSkill: option.value });
+        Global.context.accountStorage.setItem(StorageKey.PlotSkill, option.value);
+
         Drops.updatePetChance();
         Drops.updateMarkChance();
 
@@ -238,6 +272,7 @@ export class SimulatePage extends HTMLElement {
         );
 
         Global.stores.plotter.set({ selectedPlotType: plotTypeIndex });
+        Global.context.accountStorage.setItem(StorageKey.PlotType, option.value);
 
         if (Global.stores.plotter.plotType.isTime) {
             this._time.style.display = '';
@@ -257,6 +292,7 @@ export class SimulatePage extends HTMLElement {
         const timeIndex = Global.stores.plotter.state.timeOptions.findIndex(time => time === option.value);
 
         Global.stores.plotter.set({ selectedTimeType: timeIndex });
+        Global.context.accountStorage.setItem(StorageKey.PlotTime, option.value);
 
         Drops.updateSignetChance();
         Drops.updatePetChance();
