@@ -1,5 +1,10 @@
+v3.0.68
+    experimental fix for horizontal plotter scroll on mac devices with natural scrolling
+    fixed melee defence not displaying on equipment
+    fixed attack type not updating when changing equipment in non weapon slots
+
 v3.0.67
-    astrology can now toggle melvor and abyssal realm constellations independantly
+    astrology can now toggle melvor and abyssal realm constellations independently
     fixed potions for modded skills throwing an error
     fixed active effect procs persisting between simulation runs
 

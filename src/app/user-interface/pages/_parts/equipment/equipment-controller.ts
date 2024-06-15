@@ -475,7 +475,7 @@ export abstract class EquipmentController {
             [
                 ['Damage Reduction', 'resistance', '%', 'melvorD:Normal'],
                 ['Abyssal Resistance', 'resistance', '%', 'melvorItA:Abyssal'],
-                ['Melee Defence', 'defenceBonus'],
+                ['Melee Defence', 'meleeDefenceBonus'],
                 ['Ranged Defence', 'rangedDefenceBonus'],
                 ['Magic Defence', 'magicDefenceBonus']
             ],

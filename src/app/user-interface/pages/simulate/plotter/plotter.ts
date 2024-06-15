@@ -111,7 +111,12 @@ export class Plotter extends HTMLElement {
 
         this._container.onwheel = event => {
             event.preventDefault();
-            this._container.scrollLeft += event.deltaY;
+
+            if (Math.abs(event.deltaX)) {
+                this._container.scrollLeft += event.deltaX;
+            } else {
+                this._container.scrollLeft += event.deltaY;
+            }
         };
     }
 

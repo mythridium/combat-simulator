@@ -124,11 +124,8 @@ export class EquipmentSlot extends HTMLElement {
             this._update();
             StatsController.update();
 
-            // @ts-ignore // TODO: TYPES
-            if (this._slot.slot.id === 'melvorD:Weapon') {
-                this._equipment._setAttackStyleDropdown();
-                this._equipment['_food']._update();
-            }
+            this._equipment._setAttackStyleDropdown();
+            this._equipment['_food']._update();
         };
     }
 
@@ -235,11 +232,8 @@ export class EquipmentSlot extends HTMLElement {
                     TooltipController.hide();
                     StatsController.update();
 
-                    // @ts-ignore // TODO: TYPES
-                    if (this._slot.slot.id === 'melvorD:Weapon') {
-                        this._equipment._setAttackStyleDropdown();
-                        this._equipment['_food']._update();
-                    }
+                    this._equipment._setAttackStyleDropdown();
+                    this._equipment['_food']._update();
                 };
 
                 const itemImage = createElement('img');
