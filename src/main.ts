@@ -131,17 +131,6 @@ export abstract class Main {
                     localStorage.setItem(this.versionKey, gameVersion);
                 }
 
-                try {
-                    if (Global.context.accountStorage.getItem(StorageKey.ImportOnStartup)) {
-                        SettingsController.importFromEquipmentSet(Global.melvor.combat.player.selectedEquipmentSet);
-                        Global.logger.log(
-                            `Successfully imported equipment set [${Global.melvor.combat.player.selectedEquipmentSet}] on startup.`
-                        );
-                    }
-                } catch (error) {
-                    Global.logger.error(`Failed to import equipment set on startup.`, error);
-                }
-
                 Global.logger.log(`Initialised in ${duration} ms [${Global.context.version}]`);
             } catch (error) {
                 Global.logger.error(

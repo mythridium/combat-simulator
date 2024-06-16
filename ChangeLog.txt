@@ -1,3 +1,7 @@
+v3.0.70
+    fixed default value of import on startup setting
+    changed import on startup setting to be import on first open and renamed accordingly
+
 v3.0.69
     fixed selecting barrier dust throwing an error
     plotter skill, type and time dropdowns are now persisted across all characters and devices

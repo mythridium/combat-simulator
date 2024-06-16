@@ -6,5 +6,5 @@ export enum StorageKey {
     PlotSkill = 'plot-skill',
     PlotType = 'plot-type',
     PlotTime = 'plot-type',
-    ImportOnStartup = 'import-on-startup'
+    ImportOnFirstOpen = 'import-on-first-open'
 }

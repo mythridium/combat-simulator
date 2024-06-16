@@ -23,7 +23,7 @@ export class SettingsPage extends HTMLElement {
     private readonly _ticks: HTMLInputElement;
     private readonly _smallPlotter: Switch;
     private readonly _filterTargetDropdown: Switch;
-    private readonly _importOnStartup: Switch;
+    private readonly _importOnFirstOpen: Switch;
     private readonly _gamemode: Dropdown;
     private readonly _importButton: HTMLButtonElement;
     private readonly _importDialog: ImportDialog;
@@ -46,7 +46,11 @@ export class SettingsPage extends HTMLElement {
             'mcs-settings-filter-target-dropdown',
             'mcs-switch'
         );
-        this._importOnStartup = getElementFromFragment(this._content, 'mcs-settings-import-on-startup', 'mcs-switch');
+        this._importOnFirstOpen = getElementFromFragment(
+            this._content,
+            'mcs-settings-import-on-first-open',
+            'mcs-switch'
+        );
         this._gamemode = getElementFromFragment(this._content, 'mcs-gamemode', 'mcs-dropdown');
         this._importButton = getElementFromFragment(this._content, 'mcs-settings-import', 'button');
         this._importDialog = getElementFromFragment(this._content, 'mcs-import-dialog', 'mcs-import-dialog');
@@ -93,9 +97,9 @@ export class SettingsPage extends HTMLElement {
             Global.userInterface.main.querySelector('mcs-simulate')._updateSelectTarget();
         });
 
-        this._importOnStartup._toggle(Global.context.accountStorage.getItem(StorageKey.ImportOnStartup));
-        this._importOnStartup._on(isChecked => {
-            Global.context.accountStorage.setItem(StorageKey.ImportOnStartup, isChecked);
+        this._importOnFirstOpen._toggle(Global.context.accountStorage.getItem(StorageKey.ImportOnFirstOpen) ?? false);
+        this._importOnFirstOpen._on(isChecked => {
+            Global.context.accountStorage.setItem(StorageKey.ImportOnFirstOpen, isChecked);
         });
 
         this._gamemode._init({
