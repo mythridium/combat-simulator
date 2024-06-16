@@ -64,11 +64,7 @@ export abstract class Main {
         });
 
         Global.context.patch(Game, 'registerDataPackage').before(dataPackage => {
-            if (
-                dataPackage.namespace.startsWith('melvor') ||
-                !this.registeredNamespaces.includes(dataPackage.namespace.toLowerCase()) ||
-                this.loading
-            ) {
+            if (dataPackage.namespace.startsWith('melvor') || this.loading) {
                 return;
             }
 
@@ -76,11 +72,7 @@ export abstract class Main {
         });
 
         Global.context.patch(Game, 'registerSkill').after((instance, namespace) => {
-            if (
-                !namespace.isModded ||
-                !this.registeredNamespaces.includes(namespace.name.toLowerCase()) ||
-                this.loading
-            ) {
+            if (!namespace.isModded || this.loading) {
                 return;
             }
 
@@ -107,6 +99,14 @@ export abstract class Main {
 
                     await Global.micsr.fetchData();
                     await Global.micsr.initialize();
+
+                    Global.dataPackages = Global.dataPackages.filter(dataPackage =>
+                        this.registeredNamespaces.includes(dataPackage.namespace.toLowerCase())
+                    );
+
+                    Global.skills = Global.skills.filter(skill =>
+                        this.registeredNamespaces.includes(skill.namespace.name.toLowerCase())
+                    );
 
                     this.setup();
 

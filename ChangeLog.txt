@@ -1,3 +1,6 @@
+v3.0.71
+    adjusted modded data opt in logic to be less strict about when mods opted in
+
 v3.0.70
     fixed default value of import on startup setting
     changed import on startup setting to be import on first open and renamed accordingly
