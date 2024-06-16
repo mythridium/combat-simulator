@@ -103,15 +103,19 @@ export class MICSR {
         }
 
         // All agility and gamemodes - even base game to account for bypass agility cost mod and modifications of core gamemodes.
-        Global.get.game.gamemodes = new NamespaceRegistry(Global.get.game.registeredNamespaces);
-        Global.get.game.agility.actions = new NamespaceRegistry(Global.get.game.registeredNamespaces);
-        Global.get.game.agility.pillars = new NamespaceRegistry(Global.get.game.registeredNamespaces);
+        Global.get.game.gamemodes = new NamespaceRegistry(Global.get.game.registeredNamespaces, Gamemode.name);
+        Global.get.game.agility.actions = new NamespaceRegistry(
+            Global.get.game.registeredNamespaces,
+            AgilityObstacle.name
+        );
+        Global.get.game.agility.pillars = new NamespaceRegistry(
+            Global.get.game.registeredNamespaces,
+            AgilityPillar.name
+        );
 
         for (const gamemode of data.gamemodes) {
-            // @ts-ignore // TODO: TYPES
-            gamemode.gamemode.initialLevelCap = undefined;
-            // @ts-ignore // TODO: TYPES
-            gamemode.gamemode.initialAbyssalLevelCap = undefined;
+            gamemode.gamemode.initialLevelCaps = undefined;
+            gamemode.gamemode.initialAbyssalLevelCaps = undefined;
             Global.get.game.gamemodes.registerObject(GamemodeConverter.fromData(Global.get.game, gamemode));
         }
 
@@ -143,11 +147,12 @@ export class MICSR {
             });
         }
 
-        // @ts-ignore // TODO: TYPES
-        this._updateStrongholds(Global.get.game.combatAreaCategories.getObjectByID('melvorF:Strongholds')?.areas ?? []);
         this._updateStrongholds(
-            // @ts-ignore // TODO: TYPES
-            Global.get.game.combatAreaCategories.getObjectByID('melvorItA:AbyssalStrongholds')?.areas ?? []
+            (Global.get.game.combatAreaCategories.getObjectByID('melvorF:Strongholds')?.areas as Stronghold[]) ?? []
+        );
+        this._updateStrongholds(
+            (Global.get.game.combatAreaCategories.getObjectByID('melvorItA:AbyssalStrongholds')
+                ?.areas as Stronghold[]) ?? []
         );
 
         const intoTheMist = Lookup.dungeons.getObjectByID('melvorF:Into_the_Mist');
@@ -193,11 +198,9 @@ export class MICSR {
             Global.get.skillIds[skill.localID] = skill.id;
         }
 
-        // @ts-ignore // TODO: TYPES
         for (const spellbook of Global.get.game.attackSpellbooks.allObjects) {
             for (const damageType of Array.from(spellbook.allowedDamageTypes)) {
                 spellbook.allowedDamageTypes.delete(damageType);
-                // @ts-ignore // TODO: TYPES
                 spellbook.allowedDamageTypes.add(Global.get.game.damageTypes.getObjectByID(damageType.id));
             }
         }
@@ -224,9 +227,7 @@ export class MICSR {
         return copy;
     }
 
-    // @ts-ignore // TODO: TYPES
-    private _updateStrongholds(strongholdAreas: Strongholds[]) {
-        // @ts-ignore // TODO: TYPES
+    private _updateStrongholds(strongholdAreas: Stronghold[]) {
         const strongholds: Stronghold[] = [];
         const strongholdIds: string[] = [];
 
@@ -239,7 +240,6 @@ export class MICSR {
 
         for (const strongholdId of strongholdIds) {
             Global.get.game.combatAreas.registeredObjects.delete(strongholdId);
-            // @ts-ignore // TODO: TYPES
             Global.get.game.combatAreas.strongholds.registeredObjects.delete(strongholdId);
 
             const index = strongholdAreas.findIndex(stronghold => stronghold.id === strongholdId);
@@ -255,9 +255,7 @@ export class MICSR {
         }
     }
 
-    // @ts-ignore // TODO: TYPES
-    private strongholdSplit(stronghold: Stronghold, tier: StrongholdTier) {
-        // @ts-ignore // TODO: TYPES
+    private strongholdSplit(stronghold: Stronghold, tier: StrongholdTierName) {
         const copy: Stronghold = Object.assign(Object.create(Object.getPrototypeOf(stronghold)), stronghold);
 
         copy._namespace = stronghold._namespace;

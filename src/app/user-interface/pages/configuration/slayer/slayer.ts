@@ -94,14 +94,12 @@ export class SlayerPage extends HTMLElement {
         }
 
         for (const [abyssDepthId, element] of this._abyssDepths) {
-            // @ts-ignore // TODO: TYPES
             const abyssDepth = Lookup.depths.getObjectByID(abyssDepthId);
 
             if (abyssDepth) {
                 const isSelected = settings.abyssDepthCompletion?.includes(abyssDepthId) ?? false;
 
                 element._toggle(isSelected);
-                // @ts-ignore // TODO: TYPES
                 this._updateAbyssDepthCompletion(abyssDepth, isSelected);
             }
         }
@@ -205,7 +203,6 @@ export class SlayerPage extends HTMLElement {
         }
     }
 
-    // @ts-ignore // TODO: TYPES
     private _updateAbyssDepthCompletion(abyssDepth: AbyssDepth, isSelected: boolean) {
         abyssDepth.timesCompleted = isSelected ? 1 : 0;
     }

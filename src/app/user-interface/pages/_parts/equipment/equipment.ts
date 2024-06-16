@@ -34,12 +34,10 @@ export type SlotType =
 
 @LoadTemplate('app/user-interface/pages/_parts/equipment/equipment.html')
 export class Equipment extends HTMLElement {
-    private readonly slots: SlotType[][] = [];
-
     private readonly _content = new DocumentFragment();
 
     private readonly _equipmentContainer: HTMLDivElement;
-    private readonly _equipmentSlots = new Map<SlotType, MCSEquipmentSlot>();
+    private readonly _equipmentSlots = new Map<string, MCSEquipmentSlot>();
 
     constructor() {
         super();
@@ -56,7 +54,6 @@ export class Equipment extends HTMLElement {
     }
 
     public _update() {
-        // @ts-ignore // TODO: TYPES
         for (const slot of Global.game.combat.player.equipment.equippedArray) {
             const element = this._equipmentSlots.get(slot.slot.id);
 
@@ -69,7 +66,6 @@ export class Equipment extends HTMLElement {
     }
 
     private _create() {
-        // @ts-ignore // TODO: TYPES
         const gridSize = EquipmentSlot.getGridSize();
         const numCols = gridSize.cols.max - gridSize.cols.min + 1;
         const numRows = gridSize.rows.max - gridSize.rows.min + 1;
@@ -78,7 +74,6 @@ export class Equipment extends HTMLElement {
         this._equipmentContainer.style.gridTemplateColumns = `repeat(${numCols}, auto)`;
         this._equipmentContainer.style.gridTemplateRows = `repeat(${numRows}, auto)`;
 
-        // @ts-ignore // TODO: TYPES
         Global.game.equipmentSlots.forEach(slot => {
             const equipmentSlot = createElement('mcs-equipment-slot');
 
@@ -89,7 +84,6 @@ export class Equipment extends HTMLElement {
                 equipmentSlot.setAttribute('readonly', '');
             }
 
-            // @ts-ignore // TODO: TYPES
             const equipmentItem = Global.game.combat.player.equipment.equippedItems[slot.id];
 
             if (equipmentItem) {
@@ -106,9 +100,7 @@ export class Equipment extends HTMLElement {
             synergy.setAttribute('readonly', '');
         }
 
-        // @ts-ignore // TODO: TYPES
         synergy.style.gridColumn = `${EquipmentSlot.SUMMONING_SYNERGY_POSITION.col + colOffset}`;
-        // @ts-ignore // TODO: TYPES
         synergy.style.gridRow = `${EquipmentSlot.SUMMONING_SYNERGY_POSITION.row + rowOffset}`;
 
         this._equipmentContainer.appendChild(synergy);

@@ -21,7 +21,7 @@ declare global {
 
 @LoadTemplate('app/user-interface/pages/_parts/equipment/equipment-slot/equipment-slot.html')
 export class EquipmentSlot extends HTMLElement {
-    private _slot: EquipSlot;
+    private _slot: EquippedItem;
     private readonly _content = new DocumentFragment();
 
     private readonly _container: HTMLDivElement;
@@ -73,7 +73,6 @@ export class EquipmentSlot extends HTMLElement {
         );
         this._synergy = Global.userInterface.main.querySelector('mcs-synergy-slot');
 
-        // @ts-ignore // TODO: TYPES
         this._title.textContent = this._slot.slot.localID;
 
         this._search.oninput = event => {
@@ -111,10 +110,8 @@ export class EquipmentSlot extends HTMLElement {
 
         this._unequip.onclick = () => {
             this._clear();
-            // @ts-ignore // TODO: TYPES
             Global.game.combat.player.unequipItem(0, this._slot.slot);
 
-            // @ts-ignore // TODO: TYPES
             if (this._slot.slot.id === 'melvorD:Summon1' || this._slot.slot.id === 'melvorD:Summon2') {
                 this._synergy._toggle(false);
             }
@@ -129,20 +126,16 @@ export class EquipmentSlot extends HTMLElement {
         };
     }
 
-    public _set(slot: EquipSlot) {
+    public _set(slot: EquippedItem) {
         this._slot = slot;
         this._update();
     }
 
     private _update() {
         this._tooltip.innerHTML = this._slot.isEmpty
-            ? // @ts-ignore // TODO: TYPES
-              this._slot.slot.localID
+            ? this._slot.slot.localID
             : EquipmentController.getEquipmentTooltip(this._slot.item);
-        this._image.src = this._slot.isEmpty
-            ? // @ts-ignore // TODO: TYPES
-              this._slot.slot.emptyMedia
-            : this._slot.item.media;
+        this._image.src = this._slot.isEmpty ? this._slot.slot.emptyMedia : this._slot.item.media;
         this._image.classList.toggle('mcs-occupied', this._slot.occupiedBy !== undefined);
     }
 
@@ -153,19 +146,16 @@ export class EquipmentSlot extends HTMLElement {
     }
 
     private _createItems() {
-        // @ts-ignore // TODO: TYPES
         const sections = this._slot.slot.isModded
             ? [
                   {
                       items: Global.game.items.equipment.filter(item =>
-                          // @ts-ignore // TODO: TYPES
                           item.validSlots.some(slot => slot.id === this._slot.slot.id)
                       ),
                       title: 'Items'
                   }
               ]
-            : // @ts-ignore // TODO: TYPES
-              EquipmentController.get(this._slot.slot.id);
+            : EquipmentController.get(this._slot.slot.id);
 
         for (const section of sections) {
             const sectionElement = createElement('div', { classList: ['mcs-equipment-slot-section'] });
@@ -181,7 +171,6 @@ export class EquipmentSlot extends HTMLElement {
                     Global.game.combat.player.equipItem(
                         item as EquipmentItem,
                         undefined,
-                        // @ts-ignore // TODO: TYPES
                         this._slot.slot,
                         undefined,
                         SettingsController.isImporting
@@ -192,25 +181,19 @@ export class EquipmentSlot extends HTMLElement {
                         element._update();
                     }
 
-                    // @ts-ignore // TODO: TYPES
                     if (this._slot.slot.id === 'melvorD:Summon1' || this._slot.slot.id === 'melvorD:Summon2') {
                         if (
-                            // @ts-ignore // TODO: TYPES
                             !Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty &&
-                            // @ts-ignore // TODO: TYPES
                             !Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty
                         ) {
                             const summon1 = Global.melvor.items.equipment.getObjectByID(
-                                // @ts-ignore // TODO: TYPES
                                 Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].item.id
                             );
                             const summon2 = Global.melvor.items.equipment.getObjectByID(
-                                // @ts-ignore // TODO: TYPES
                                 Global.game.combat.player.equipment.equippedItems['melvorD:Summon2'].item.id
                             );
 
                             if (summon1 && summon2) {
-                                // @ts-ignore // TODO: TYPES
                                 const synergyData = Global.melvor.summoning.getSynergy(summon1, summon2);
 
                                 const isEnabled = synergyData

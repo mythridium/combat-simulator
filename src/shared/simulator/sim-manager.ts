@@ -131,7 +131,6 @@ export class SimManager extends CombatManager {
         this.replaceGlobals();
 
         for (const skill of game.skills.allObjects) {
-            // @ts-ignore // TODO: TYPES
             this.registerStatProvider(skill.providedStats);
         }
     }
@@ -303,31 +302,24 @@ export class SimManager extends CombatManager {
     onEnemyDeath(): boolean {
         this.simStats.killCount++;
 
-        // @ts-ignore // TODO: TYPES
         const areaProgress = this.areaProgress;
         const result = super.onEnemyDeath();
 
         // if we targeting a dungeon, reduce the dungeon progress since the enemy death will increment it back to the same monster.
         if (
             this.selectedArea instanceof Dungeon ||
-            // @ts-ignore // TODO: TYPES
             this.selectedArea instanceof AbyssDepth ||
-            // @ts-ignore // TODO: TYPES
             this.selectedArea instanceof Stronghold
         ) {
-            // @ts-ignore // TODO: TYPES
             this.areaProgress = areaProgress;
         }
 
         return result;
     }
 
-    // @ts-ignore // TODO: TYPES
     addCurrency(currency: Currency, baseAmount: number, source: any, modifier = 0) {
-        // @ts-ignore // TODO: TYPES
         modifier += this.getCurrencyModifier(currency);
         let amount = applyModifier(baseAmount, modifier);
-        // @ts-ignore // TODO: TYPES
         amount += this.player.modifiers.getValue('melvorD:flatCurrencyGain', currency.modQuery);
 
         if (amount <= 0) {
@@ -356,7 +348,6 @@ export class SimManager extends CombatManager {
         }
 
         this.preSelection();
-        // @ts-ignore // TODO: TYPES
         this.setCombatArea(area);
         this.selectedMonster = monster;
         this.onSelection();
@@ -407,7 +398,6 @@ export class SimManager extends CombatManager {
     }
 
     spawnEnemy() {
-        // @ts-ignore // TODO: TYPES
         this.removeAllPassives();
 
         super.spawnEnemy();
@@ -453,23 +443,17 @@ export class SimManager extends CombatManager {
         let area = this.game.getMonsterArea(monster);
 
         if (entityId !== undefined) {
-            area = Lookup.getEntity(entityId);
+            area = Lookup.getEntity(entityId) as CombatArea | SlayerArea;
 
-            // @ts-ignore // TODO: TYPES
             if (area instanceof Stronghold) {
-                // @ts-ignore // TODO: TYPES
                 this.strongholdTier = area.mcsTier;
             } else {
-                // @ts-ignore // TODO: TYPES
                 this.strongholdTier = undefined;
             }
 
-            // @ts-ignore // TODO: TYPES
             this.areaProgress = 0;
 
-            // @ts-ignore // TODO: TYPES
             while (area.monsters[this.areaProgress].id !== monsterId) {
-                // @ts-ignore // TODO: TYPES
                 this.areaProgress++;
             }
         }
@@ -486,7 +470,6 @@ export class SimManager extends CombatManager {
                 const category = Lookup.getSlayerTaskForMonster(monsterId);
 
                 if (category) {
-                    // @ts-ignore // TODO: TYPES
                     Global.get.game.combat.slayerTask.category = Lookup.getSlayerTaskForMonster(monsterId);
                     Global.get.game.combat.slayerTask.monster = monster;
                     Global.get.game.combat.slayerTask.killsLeft = Number.MAX_SAFE_INTEGER;
@@ -526,7 +509,6 @@ export class SimManager extends CombatManager {
         this.stopCombat();
 
         const processingTime = performance.now() - startTimeStamp;
-        // @ts-ignore // TODO: TYPES
         const simStats = this.getSimStats(monsterId, entityId, area.realm?.id, success, failMessage);
 
         if (verbose) {
@@ -547,9 +529,7 @@ export class SimManager extends CombatManager {
 
         if (
             monster.hasBarrier &&
-            // @ts-ignore // TODO: TYPES
             this.player.equipment.getItemInSlot('melvorD:Summon1')?.id === 'melvorD:Empty_Equipment' &&
-            // @ts-ignore // TODO: TYPES
             this.player.equipment.getItemInSlot('melvorD:Summon2')?.id === 'melvorD:Empty_Equipment'
         ) {
             success = false;
@@ -568,13 +548,11 @@ export class SimManager extends CombatManager {
             failMessage = 'Missing Slayer Area Requirements';
         }
 
-        // @ts-ignore // TODO: TYPES
         if (this.isCurrentDamageTypeDisallowed(area, false)) {
             success = false;
             failMessage = 'You cannot use your current Damage Type in this area.';
         }
 
-        // @ts-ignore // TODO: TYPES
         if (!this.checkDamageTypeRequirementsForMonster(monster, false)) {
             success = false;
             failMessage = 'This monster is immune to your current Damage Type';

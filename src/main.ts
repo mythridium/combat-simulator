@@ -235,7 +235,6 @@ export abstract class Main {
         const dungeonIds = Lookup.combatAreas.dungeons.map(dungeon => dungeon.id);
         const strongholdIds = Lookup.combatAreas.strongholds.map(stronghold => stronghold.id);
         const depthIds = Lookup.combatAreas.depths.map(depth => depth.id);
-        // @ts-ignore // TODO: TYPES
         const taskIds = Lookup.tasks.allObjects.map(task => task.id);
 
         Global.stores.game.set({ monsterIds, dungeonIds, strongholdIds, depthIds, taskIds });
@@ -243,16 +242,14 @@ export abstract class Main {
 
     private static setWindowObject() {
         self.mcs.modifierDiff = () => {
-            // @ts-ignore // TODO: TYPES
             const mcs = this.diff(Global.game.modifiers.entriesByID, Global.melvor.modifiers.entriesByID);
-            // @ts-ignore // TODO: TYPES
             const melvor = this.diff(Global.melvor.modifiers.entriesByID, Global.game.modifiers.entriesByID);
 
             return { mcs, melvor };
         };
     }
 
-    private static diff(compare: Map<string, string>, to: Map<string, string>) {
+    private static diff(compare: Map<string, ModifierTableEntry[]>, to: Map<string, ModifierTableEntry[]>) {
         const lookup: any = {
             no: [],
             yes: [],

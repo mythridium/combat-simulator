@@ -233,7 +233,6 @@ export class CartographyPage extends HTMLElement {
 
     private _getPointOfInterestTooltip(poi: PointOfInterest) {
         const posMult = Global.game.cartography.hasCarthuluPet ? 2 : 1;
-        // @ts-ignore // TODO: TYPES
         const descriptions = poi.activeStats.describeAsSpans(1, posMult);
 
         let tooltip = `<div class="text-warning mb-1">${poi.name}</div>`;
@@ -249,9 +248,7 @@ export class CartographyPage extends HTMLElement {
     private _getMasteryBonusTooltip(bonus: WorldMapMasteryBonus) {
         let tooltip = `<div class="text-warning mb-1">${bonus.localID} Hexes</div>`;
 
-        // @ts-ignore // TODO: TYPES
         if (bonus.stats?.hasStats) {
-            // @ts-ignore // TODO: TYPES
             const descriptions = bonus.stats.describeAsSpans();
 
             tooltip += '<div class="font-size-xs">';
@@ -271,7 +268,6 @@ export class CartographyPage extends HTMLElement {
 
         const maps =
             Global.game.cartography?.worldMaps.filter(map =>
-                // @ts-ignore // TODO: TYPES
                 map.pointsOfInterest.some(poi => poi.activeStats?.hasStats)
             ) ?? [];
 
@@ -279,7 +275,6 @@ export class CartographyPage extends HTMLElement {
             pointsOfInterest[map.localID] = [];
 
             for (const poi of map.pointsOfInterest.allObjects) {
-                // @ts-ignore // TODO: TYPES
                 if (poi.activeStats?.hasStats) {
                     pointsOfInterest[map.localID].push(poi);
                 }

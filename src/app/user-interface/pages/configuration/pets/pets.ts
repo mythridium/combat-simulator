@@ -138,9 +138,7 @@ export class PetsPage extends HTMLElement {
     private _isCombatPet(pet: Pet) {
         return (
             !pet.activeInRaid &&
-            // @ts-ignore // TODO: TYPES
             (pet.stats.modifiers.some(entry => ModifierHelper.isCombatModifier(entry)) ||
-                // @ts-ignore // TODO: TYPES
                 pet.stats.enemyModifiers?.length)
         );
     }

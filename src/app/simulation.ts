@@ -108,7 +108,6 @@ export class Simulation {
             }
         }
 
-        // @ts-ignore // TODO: TYPES
         for (const task of Lookup.tasks.allObjects.map(task => task.id)) {
             this.slayerTaskMonsters[task] = [];
             this.slayerSimData[task] = this.newSimDataEntry(false);
@@ -237,7 +236,7 @@ export class Simulation {
             Lookup.isDepth(Global.stores.plotter.state.inspectedId)
         ) {
             const entity = Lookup.getEntity(Global.stores.plotter.state.inspectedId);
-            for (const monster of entity.monsters) {
+            for (const monster of (<Dungeon | Stronghold | AbyssDepth>entity).monsters) {
                 const simId = this.simId(monster.id, Global.stores.plotter.state.inspectedId);
 
                 if (!isSignet) {
@@ -303,7 +302,7 @@ export class Simulation {
         ) {
             const entity = Lookup.getEntity(Global.stores.plotter.state.inspectedId);
 
-            for (const monster of entity.monsters) {
+            for (const monster of (<Dungeon | Stronghold | AbyssDepth>entity).monsters) {
                 dataSet.push(this.monsterSimData[this.simId(monster.id, Global.stores.plotter.state.inspectedId)]);
             }
         } else if (Global.stores.plotter.state.inspectedId) {
@@ -327,7 +326,6 @@ export class Simulation {
         let key = Global.stores.plotter.plotType.key;
 
         if (Global.stores.plotter.plotType.isRealmed) {
-            // @ts-ignore // TODO: TYPES
             const realm = Global.game.realms.getObjectByID(data.realmId);
             key = `${key}${realm?.localID}` as PlotKey;
         }
@@ -423,7 +421,6 @@ export class Simulation {
                 if (Lookup.isStronghold(Global.stores.plotter.state.inspectedId)) {
                     const stronghold = Lookup.strongholds.getObjectByID(Global.stores.plotter.state.inspectedId);
 
-                    // @ts-ignore // TODO: TYPES
                     if (!Global.game.combat.canFightInStrongholdTier(stronghold, stronghold.mcsTier)) {
                         for (const monster of monsters) {
                             this.monsterSimData[
@@ -439,10 +436,7 @@ export class Simulation {
                     this.pushMonsterToQueue(monster.id, Global.stores.plotter.state.inspectedId);
                 }
             } else {
-                // @ts-ignore // TODO: TYPES
-                const task = Lookup.tasks.allObjects
-                    // @ts-ignore // TODO: TYPES
-                    .find(task => task.id == Global.stores.plotter.state.inspectedId);
+                const task = Lookup.tasks.allObjects.find(task => task.id == Global.stores.plotter.state.inspectedId);
 
                 for (const monster of monsters) {
                     this.queueSlayerMonster(task, monster);
@@ -479,7 +473,6 @@ export class Simulation {
                 )
             ) {
                 const tryToSim = area.monsters.reduce(
-                    // @ts-ignore // TODO: TYPES
                     (sim, monster) =>
                         (this.monsterSimFilter[monster.id] && !this.monsterSimData[monster.id].inQueue) || sim,
                     false
@@ -516,7 +509,6 @@ export class Simulation {
         // Queue simulation of monsters in strongholds
         for (const stronghold of Lookup.combatAreas.strongholds) {
             if (this.strongholdSimFilter[stronghold.id]) {
-                // @ts-ignore // TODO: TYPES
                 if (!Global.game.combat.canFightInStrongholdTier(stronghold, stronghold.mcsTier)) {
                     continue;
                 }
@@ -618,10 +610,7 @@ export class Simulation {
         if (taskId !== undefined) {
             if (Global.stores.plotter.state.isInspecting || this.slayerSimFilter[taskId]) {
                 if (Global.stores.plotter.barIsSlayerMonster(Global.stores.plotter.state.selectedBar)) {
-                    // @ts-ignore // TODO: TYPES
-                    const task = Lookup.tasks.allObjects
-                        // @ts-ignore // TODO: TYPES
-                        .find(task => task.id === taskId);
+                    const task = Lookup.tasks.allObjects.find(task => task.id === taskId);
                     const monster = Lookup.monsters.getObjectByID(Global.stores.plotter.selectedMonsterId);
 
                     if (!task) {
@@ -673,7 +662,6 @@ export class Simulation {
                 if (filter[entityId]) {
                     const stronghold = Lookup.strongholds.getObjectByID(entityId);
 
-                    // @ts-ignore // TODO: TYPES
                     if (!Global.game.combat.canFightInStrongholdTier(stronghold, stronghold.mcsTier)) {
                         const sim =
                             Global.stores.plotter.state.isInspecting && Global.stores.plotter.state.isBarSelected
@@ -734,7 +722,6 @@ export class Simulation {
     }
 
     private queueSlayerTask(taskId: string, isAll: boolean) {
-        // @ts-ignore // TODO: TYPES
         const task = Lookup.tasks.allObjects.find(task => task.id == taskId);
 
         if (!task) {
@@ -769,26 +756,22 @@ export class Simulation {
         return didQueueAnyMonsters;
     }
 
-    // @ts-ignore // TODO: TYPES
     private queueSlayerMonster(task: SlayerTaskCategory, monster: Monster) {
         if (!monster.canSlayer) {
             return false;
         }
 
-        // @ts-ignore // TODO: TYPES
         const categoryFilter = task.getMonsterFilter();
 
         // check if the area is accessible, this only works for auto slayer
         // without auto slayer you can get some tasks for which you don't wear/own the gear
         let area = Global.game.getMonsterArea(monster);
 
-        // @ts-ignore // TODO: TYPES
         if (area.realm.id !== task.realm.id || area.id === 'melvorD:UnknownArea' || !categoryFilter(monster)) {
             this.monsterSimData[monster.id].reason = 'cannot access area';
             return false;
         }
 
-        // @ts-ignore // TODO: TYPES
         if (!Global.game.combat.checkDamageTypeRequirementsForMonster(monster, false)) {
             this.monsterSimData[monster.id].reason = 'This monster is immune to your current Damage Type';
             return false;
@@ -1001,8 +984,7 @@ export class Simulation {
             let realms = [type.key];
 
             if (type.isRealmed) {
-                // @ts-ignore // TODO: TYPES
-                realms = Global.game.realms.allObjects.map(realm => `${type.key}${realm.localID}`);
+                realms = Global.game.realms.allObjects.map(realm => `${type.key}${realm.localID}` as PlotKey);
             }
 
             for (const key of realms) {

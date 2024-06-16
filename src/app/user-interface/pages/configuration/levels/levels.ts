@@ -83,9 +83,7 @@ export class LevelsPage extends HTMLElement {
             attributes: [
                 ['type', 'number'],
                 ['min', '1'],
-                // @ts-ignore // TODO: TYPES
                 ['max', isAbyssal ? skill.maxAbyssalLevelCap.toString() : skill.maxLevelCap.toString()],
-                // @ts-ignore // TODO: TYPES
                 ['value', isAbyssal ? skill.startingAbyssalLevel.toString() : skill.startingLevel.toString()]
             ]
         });

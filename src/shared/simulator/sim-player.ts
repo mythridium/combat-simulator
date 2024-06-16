@@ -132,13 +132,13 @@ export class SimPlayer extends Player {
         };
     }
 
-    private _attackBar: ProgressBar;
+    private _attackBar: ProgressBarElement;
 
     get attackBar() {
         return this._attackBar;
     }
 
-    private _summonBar: ProgressBar;
+    private _summonBar: ProgressBarElement;
 
     get summonBar() {
         return this._summonBar;
@@ -160,11 +160,6 @@ export class SimPlayer extends Player {
 
     get statElements() {
         return this._statElements;
-    }
-
-    // override getters
-    get activeTriangle() {
-        return this.gamemode.combatTriangle;
     }
 
     get useCombinationRunes() {
@@ -227,14 +222,13 @@ export class SimPlayer extends Player {
 
         Object.defineProperty(this.equipmentStats, 'damageReduction', {
             get: function () {
-                // @ts-ignore // TODO: TYPES
                 return this.getResistance(Global.get.game.normalDamage);
             }
         });
     }
 
     processDeath() {
-        this.removeAllEffects(true);
+        this.removeAllEffects();
         this.setHitpoints(Math.floor(this.stats.maxHitpoints * 0.2));
 
         while (
@@ -249,7 +243,6 @@ export class SimPlayer extends Player {
     // replace globals with properties
     initialize() {
         this.equipmentSets.forEach(e => {
-            // TODO: TYPES
             e.equipment.removeQuantityFromSlot = (slot: any, quantity: number): boolean => {
                 switch (slot) {
                     case 'melvorD:Summon1':
@@ -275,7 +268,6 @@ export class SimPlayer extends Player {
 
     resetToBlankState() {
         this.setDefaultAttackStyles();
-        // @ts-ignore // TODO: TYPES
         this.spellSelection.attack = Global.get.game.attackSpells.firstObject;
         this.spellSelection.curse = undefined;
         this.spellSelection.aurora = undefined;
@@ -292,13 +284,7 @@ export class SimPlayer extends Player {
         this.slayerCoinsMelvor = 0;
         this.slayerCoinsAbyssal = 0;
         this.skillXP = new Map(this.game.skills.allObjects.map(skill => [skill.id, skill.xp]));
-        this.abyssalSkillXP = new Map(
-            this.game.skills.allObjects.map(skill => [
-                skill.id,
-                // @ts-ignore // TODO: TYPES
-                skill.abyssalXP
-            ])
-        );
+        this.abyssalSkillXP = new Map(this.game.skills.allObjects.map(skill => [skill.id, skill.abyssalXP]));
         this.markRolls = {};
         this.petRolls = {};
         this.usedAmmo = 0;
@@ -367,9 +353,7 @@ export class SimPlayer extends Player {
         }, {} as { [index: string]: number });
 
         const abyssalSkillGain = this.game.skills.allObjects.reduce((container, skill) => {
-            // @ts-ignore // TODO: TYPES
             const start = this.abyssalSkillXP.get(skill.id) || 0;
-            // @ts-ignore // TODO: TYPES
             container[skill.id] = (skill.abyssalXP - start) / seconds;
             return container;
         }, {} as { [index: string]: number });
@@ -480,15 +464,14 @@ export class SimPlayer extends Player {
             this.food.setSlot(index);
             this.food.unequipSelected();
         });
+
         // Select first slot
         this.food.setSlot(0);
     }
 
     computeDamageType() {
-        // @ts-ignore // TODO: TYPES
         super.computeDamageType();
 
-        // @ts-ignore // TODO: TYPES
         this.damageType = Global.get.game.damageTypes.getObjectByID(this.damageType.id);
     }
 
@@ -501,9 +484,7 @@ export class SimPlayer extends Player {
     }
 
     getMaxDotDamage() {
-        // @ts-ignore // TODO: TYPES
         const effects = Array.from(this.activeEffects.values()).filter(
-            // @ts-ignore // TODO: TYPES
             effect => effect.effect.damageGroups.total !== undefined
         );
 
@@ -511,7 +492,6 @@ export class SimPlayer extends Player {
             return 0;
         }
 
-        // @ts-ignore // TODO: TYPES
         return effects.map(effect => effect.getDamage('total')).reduce((a, b) => a + b, 0);
     }
 
@@ -535,27 +515,18 @@ export class SimPlayer extends Player {
         this.levels.Ranged = this.getSkillLevel(this.game.ranged);
         this.levels.Magic = this.getSkillLevel(this.game.altMagic);
         this.levels.Prayer = this.getSkillLevel(this.game.prayer);
-        // @ts-ignore // TODO: TYPES
         this.levels.Corruption = this.getSkillLevel(this.game.corruption);
     }
 
     computeAbyssalLevels() {
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
-            // @ts-ignore // TODO: TYPES
             this.abyssalLevels.Hitpoints = this.getSkillAbyssalLevel(this.game.hitpoints);
-            // @ts-ignore // TODO: TYPES
             this.abyssalLevels.Attack = this.getSkillAbyssalLevel(this.game.attack);
-            // @ts-ignore // TODO: TYPES
             this.abyssalLevels.Strength = this.getSkillAbyssalLevel(this.game.strength);
-            // @ts-ignore // TODO: TYPES
             this.abyssalLevels.Defence = this.getSkillAbyssalLevel(this.game.defence);
-            // @ts-ignore // TODO: TYPES
             this.abyssalLevels.Ranged = this.getSkillAbyssalLevel(this.game.ranged);
-            // @ts-ignore // TODO: TYPES
             this.abyssalLevels.Magic = this.getSkillAbyssalLevel(this.game.altMagic);
-            // @ts-ignore // TODO: TYPES
             this.abyssalLevels.Prayer = this.getSkillAbyssalLevel(this.game.prayer);
-            // @ts-ignore // TODO: TYPES
             this.abyssalLevels.Corruption = this.getSkillAbyssalLevel(this.game.corruption);
         }
     }
@@ -566,12 +537,10 @@ export class SimPlayer extends Player {
             return 0;
         }
 
-        // @ts-ignore // TODO: TYPES
         return Math.min(skill.maxLevelCap, this.skillLevel.get(skill.id)) + this.modifiers.getHiddenSkillLevels(skill);
     }
 
     getSkillAbyssalLevel(skill: CombatSkill | AltMagic) {
-        // @ts-ignore // TODO: TYPES
         return Math.min(skill.maxAbyssalLevelCap, this.skillAbyssalLevel.get(skill.id));
     }
 
@@ -588,11 +557,9 @@ export class SimPlayer extends Player {
 
     consumeSoulPoints(amount: number) {
         if (amount > 0) {
-            // @ts-ignore // TODO: TYPES
             amount = this.applyModifiersToSoulPointCost(amount);
             this.usedPrayerPointsAbyssal += amount;
 
-            // @ts-ignore // TODO: TYPES
             const event = new SoulPointConsumptionEvent(amount);
             this._events.emit('soulPointsUsed', event);
         }
@@ -612,14 +579,9 @@ export class SimPlayer extends Player {
 
     updateForEquipmentChange() {
         const hpPercent = this.hitpointsPercent;
-        // @ts-ignore // TODO: TYPES
         this.manager.computeAllStats();
         this.assignEquipmentEventHandlers();
         this.interruptAttack();
-
-        if (this.manager.fightInProgress) {
-            this.target.combatModifierUpdate();
-        }
 
         if (hpPercent !== this.hitpointsPercent) {
             this.setHitpoints(Math.round(this.stats.maxHitpoints * (hpPercent / 100)));
@@ -629,7 +591,7 @@ export class SimPlayer extends Player {
     equipItem(
         item: EquipmentItem,
         set: number = 0,
-        slot: SlotTypes | 'Default' = item.validSlots[0],
+        slot: EquipmentSlot = item.validSlots[0],
         quantity: number = 1,
         isImporting = false
     ): boolean {
@@ -637,7 +599,6 @@ export class SimPlayer extends Player {
             return false;
         }
 
-        // @ts-ignore // TODO: TYPES
         if (!slot.allowQuantity) {
             quantity = 1;
         }
@@ -651,7 +612,6 @@ export class SimPlayer extends Player {
         const existingSlot = this.equipment.getSlotOfItem(item);
 
         if (existingSlot !== undefined) {
-            // @ts-ignore // TODO: TYPES
             if (slot.allowQuantity && existingSlot === slot) {
                 return true;
             } else {
@@ -674,7 +634,6 @@ export class SimPlayer extends Player {
         const itemsToAdd = this.equipment.getItemsAddedOnEquip(item, slot);
         const conflictingItems: EquipmentItem[] = [];
 
-        // @ts-ignore // TODO: TYPES
         for (const conflictingItem of item.cantEquipWith) {
             if (
                 this.equipment.checkForItem(conflictingItem) &&
@@ -696,7 +655,6 @@ export class SimPlayer extends Player {
             return false;
         }
 
-        // @ts-ignore // TODO: TYPES
         this.equipment.equipItem(item, slot, quantity);
 
         if (!isImporting) {
@@ -710,7 +668,7 @@ export class SimPlayer extends Player {
         return true;
     }
 
-    unequipItem(set: number, slot: SlotTypes): boolean {
+    unequipItem(set: number, slot: EquipmentSlot): boolean {
         this.equipment.unequipItem(slot);
         this.updateForEquipmentChange();
         return true;
@@ -726,10 +684,22 @@ export class SimPlayer extends Player {
 
     // don't disable selected spells
     checkMagicUsage() {
-        const allowMagic = this.attackType === 'magic' || this.modifiers.allowAttackAugmentingMagic > 0;
-        this.canAurora = allowMagic;
-        this.canCurse =
-            (allowMagic && !this.usingAncient) || this.equipment.checkForItemID('melvorTotH:Voodoo_Trinket');
+        if (this.attackType === 'magic') {
+            const spell = this.spellSelection.attack;
+
+            if (spell === undefined) {
+                this.canCurse = false;
+                this.canAurora = false;
+            } else {
+                this.canCurse = spell.spellbook.allowCurses;
+                this.canAurora = spell.spellbook.allowAuroras;
+            }
+        } else {
+            const allowMagic = this.modifiers.allowAttackAugmentingMagic > 0;
+
+            this.canCurse = allowMagic || this.modifiers.allowNonMagicCurses > 0;
+            this.canAurora = allowMagic;
+        }
     }
 
     attack(target: Character, attack: SpecialAttack): number {
@@ -911,18 +881,11 @@ export class SimPlayer extends Player {
         });
         Global.get.logger.verbose('decode petUnlocked', Array.from(Global.get.game.petManager.unlocked));
 
-        // @ts-ignore // TODO: TYPES
         Global.get.game.settings.boolData.enablePermaCorruption.currentValue = this.isAutoCorrupt;
 
         this.skillXP = new Map(this.game.skills.allObjects.map(skill => [skill.id, skill.xp]));
 
-        this.abyssalSkillXP = new Map(
-            this.game.skills.allObjects.map(skill => [
-                skill.id,
-                // @ts-ignore // TODO: TYPES
-                skill.abyssalXP
-            ])
-        );
+        this.abyssalSkillXP = new Map(this.game.skills.allObjects.map(skill => [skill.id, skill.abyssalXP]));
     }
 
     public setRenderAll() {}

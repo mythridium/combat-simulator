@@ -1,11 +1,10 @@
 export abstract class ModifierConverter {
-    // @ts-ignore // TODO: TYPES
     public static toData(modifierValues: ModifierValue[]) {
         if (!modifierValues?.length) {
             return undefined;
         }
 
-        const modifierObject: Partial<ModifierObject<SkillModifierData[], number>> = {};
+        const modifierObject: ModifierValuesRecordData = {};
 
         for (const modifierValue of modifierValues) {
             const alias = this.getModifierAliases(modifierValue);
@@ -18,30 +17,26 @@ export abstract class ModifierConverter {
                         : modifierValue.value;
 
                 if (modifierValue.skill) {
-                    // @ts-ignore // TODO: TYPES
                     modifierObject[alias] ??= [];
-                    // @ts-ignore // TODO: TYPES
+                    // @ts-ignore
                     modifierObject[alias].push({ skillID: modifierValue.skill.id, value });
                 } else {
-                    // @ts-ignore // TODO: TYPES
                     modifierObject[alias] = value;
                 }
             } else {
-                const scope = {};
+                const scope: IModifierScope = {};
 
-                // @ts-ignore // TODO: TYPES
                 ModifierScope.copyScope(modifierValue, scope);
 
-                const modifier = { value: modifierValue.value };
+                const modifier: ModifierValueData = { value: modifierValue.value };
 
                 for (const [id, entity] of Object.entries(scope)) {
-                    // @ts-ignore // TODO: TYPES
+                    // @ts-ignore
                     modifier[`${id}ID`] = entity.id;
                 }
 
-                // @ts-ignore // TODO: TYPES
                 modifierObject[modifierValue.modifier.localID] ??= [];
-                // @ts-ignore // TODO: TYPES
+                // @ts-ignore
                 modifierObject[modifierValue.modifier.localID].push(modifier);
             }
         }
@@ -49,14 +44,11 @@ export abstract class ModifierConverter {
         return modifierObject;
     }
 
-    public static fromData(modifiers: ModifierObject<SkillModifierData[], number>, game: Game) {
-        // @ts-ignore // TODO: TYPES
+    public static fromData(modifiers: ModifierValuesRecordData, game: Game) {
         return game.getModifierValuesFromData(modifiers);
     }
 
-    // @ts-ignore // TODO: TYPES
     public static getModifierAliases(modifierValue: ModifierValue) {
-        // @ts-ignore // TODO: TYPES
         const scope = modifierValue.modifier.getScopingFromKey(Modifier.getScopeKey(modifierValue));
         const aliases =
             (modifierValue.isNegative && !modifierValue.modifier.inverted) ||
@@ -68,16 +60,13 @@ export abstract class ModifierConverter {
             return;
         }
 
-        // @ts-ignore // TODO: TYPES
         let matches = aliases.filter(alias => ModifierTable.doesQueryMatchScope(modifierValue, alias));
 
         if (!modifierValue.modifier.hasEmptyScope) {
             return;
         }
 
-        // @ts-ignore // TODO: TYPES
         if (!matches.length && ModifierTable.doesQueryMatchScope(modifierValue, scope.scopes)) {
-            // @ts-ignore // TODO: TYPES
             matches = aliases.filter(alias => ModifierTable.doesQueryMatchScope(alias, modifierValue));
         }
 
@@ -85,7 +74,6 @@ export abstract class ModifierConverter {
             return;
         }
 
-        // @ts-ignore // TODO: TYPES
         return matches.map(alias => alias.key)[0];
     }
 }

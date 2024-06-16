@@ -18,6 +18,7 @@
         "lodash-es": "4.17.21"
     },
     "devDependencies": {
+        "@dagrejs/dagre": "1.1.2",
         "@types/archiver": "6.0.2",
         "@types/jquery": "3.5.19",
         "@types/lodash-es": "4.17.12",
@@ -25,7 +26,7 @@
         "copy-webpack-plugin": "12.0.1",
         "css-loader": "6.9.0",
         "dexie": "3.2.0",
-        "melvor-types": "https://github.com/GamesByMalcsPtyLtd/Melvor-Typing-Project/tarball/0bdf0f7",
+        "melvor-types": "https://github.com/GamesByMalcsPtyLtd/Melvor-Typing-Project/tarball/6e64205",
         "sass": "1.69.7",
         "sass-loader": "14.0.0",
         "style-loader": "3.3.4",

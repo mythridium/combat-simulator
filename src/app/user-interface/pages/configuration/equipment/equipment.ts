@@ -89,12 +89,9 @@ export class EquipmentPage extends HTMLElement {
 
         this._cookingPool._on(isChecked => {
             if (isChecked) {
-                // @ts-ignore // TODO: TYPES
                 const cap = Global.game.cooking.getBaseMasteryPoolCap(Lookup.melvor);
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.melvor, cap);
             } else {
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.melvor, 0);
             }
 
@@ -104,17 +101,14 @@ export class EquipmentPage extends HTMLElement {
 
         this._abyssal25CookingPool._on(isChecked => {
             if (isChecked) {
-                // @ts-ignore // TODO: TYPES
                 let cap = Global.game.cooking.getBaseMasteryPoolCap(Lookup.abyssal);
 
                 if (!this._abyssal95CookingPool._value) {
                     cap = cap * 0.25;
                 }
 
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.abyssal, cap);
             } else {
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.abyssal, 0);
                 this._abyssal95CookingPool._toggle(isChecked);
             }
@@ -125,20 +119,16 @@ export class EquipmentPage extends HTMLElement {
 
         this._abyssal95CookingPool._on(isChecked => {
             if (isChecked) {
-                // @ts-ignore // TODO: TYPES
                 const cap = Global.game.cooking.getBaseMasteryPoolCap(Lookup.abyssal);
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.abyssal, cap);
                 this._abyssal25CookingPool._toggle(isChecked);
             } else {
                 let cap = 0;
 
                 if (this._abyssal25CookingPool._value) {
-                    // @ts-ignore // TODO: TYPES
                     cap = Global.game.cooking.getBaseMasteryPoolCap(Lookup.abyssal) * 0.25;
                 }
 
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.abyssal, cap);
             }
 
@@ -189,7 +179,6 @@ export class EquipmentPage extends HTMLElement {
         Global.game.setAutoEatTier(autoEatTier);
         Global.game.combat.player.equipment.unequipAll();
 
-        // @ts-ignore // TODO: TYPES
         for (const slot of Global.game.equipmentSlots.allObjects) {
             const itemId = equipment.get(slot.id);
 
@@ -213,33 +202,24 @@ export class EquipmentPage extends HTMLElement {
         Global.game.combat.player.isManualEating = isManuallyEating;
 
         if (cookingPool) {
-            // @ts-ignore // TODO: TYPES
             const cap = Global.game.cooking.getBaseMasteryPoolCap(Lookup.melvor);
-            // @ts-ignore // TODO: TYPES
             Global.game.cooking._masteryPoolXP.data.set(Lookup.melvor, cap);
         } else {
-            // @ts-ignore // TODO: TYPES
             Global.game.cooking._masteryPoolXP.data.set(Lookup.melvor, 0);
         }
 
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
             if (abyssal25CookingPool) {
-                // @ts-ignore // TODO: TYPES
                 const cap = Global.game.cooking.getBaseMasteryPoolCap(Lookup.abyssal);
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.abyssal, cap * 0.25);
             } else {
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.abyssal, 0);
             }
 
             if (abyssal95CookingPool) {
-                // @ts-ignore // TODO: TYPES
                 const cap = Global.game.cooking.getBaseMasteryPoolCap(Lookup.abyssal);
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.abyssal, cap);
             } else {
-                // @ts-ignore // TODO: TYPES
                 Global.game.cooking._masteryPoolXP.data.set(Lookup.abyssal, 0);
             }
         }

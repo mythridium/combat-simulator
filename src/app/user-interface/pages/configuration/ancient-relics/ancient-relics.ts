@@ -51,7 +51,6 @@ export class AncientRelicsPage extends HTMLElement {
 
     public _import(settings: [string, string[]][]) {
         for (const skill of Global.game.skills.allObjects) {
-            // @ts-ignore // TODO: TYPES
             for (const [realm, set] of Array.from(skill.ancientRelicSets.entries())) {
                 set.foundRelics.clear();
                 set.foundCount = 0;
@@ -72,7 +71,6 @@ export class AncientRelicsPage extends HTMLElement {
 
                 if (skillAncientRelics && ancientRelics) {
                     for (const [relicId, element] of ancientRelics) {
-                        // @ts-ignore // TODO: TYPES
                         const relicDrop = set.relicDrops.find(drop => drop.relic.id === relicId);
 
                         if (relicDrop && skillAncientRelics[1].includes(relicDrop.relic.id)) {
@@ -108,7 +106,6 @@ export class AncientRelicsPage extends HTMLElement {
                     continue;
                 }
 
-                // @ts-ignore // TODO: TYPES
                 for (const [realm, set] of Array.from(skill.ancientRelicSets.entries())) {
                     if (realm.id === Lookup.melvor.id && !Global.ancientRelicMelvorSkillKeys.includes(skill.localID)) {
                         continue;
@@ -122,11 +119,7 @@ export class AncientRelicsPage extends HTMLElement {
                         continue;
                     }
 
-                    ancientRelicsSelected.push([
-                        `${realm.id}-${skill.id}`,
-                        // @ts-ignore // TODO: TYPES
-                        set.relicDrops.map(drop => drop.relic.id)
-                    ]);
+                    ancientRelicsSelected.push([`${realm.id}-${skill.id}`, set.relicDrops.map(drop => drop.relic.id)]);
                 }
             }
 
@@ -138,7 +131,6 @@ export class AncientRelicsPage extends HTMLElement {
 
     private _hasAnyAncientRelics() {
         return Global.game.skills.some(skill =>
-            // @ts-ignore // TODO: TYPES
             Array.from(skill.ancientRelicSets.values()).some(set => set.isComplete)
         );
     }
@@ -147,7 +139,6 @@ export class AncientRelicsPage extends HTMLElement {
         this._toggleButton.onclick = () => this._toggle();
 
         for (const [realmId, skillSets] of this._getAncientRelics()) {
-            // @ts-ignore // TODO: TYPES
             const realm = Global.game.realms.getObjectByID(realmId);
 
             const header = createElement('div', {
@@ -188,7 +179,6 @@ export class AncientRelicsPage extends HTMLElement {
         this._tabs._init();
     }
 
-    // @ts-ignore // TODO: TYPES
     private _updateAncientRelic(set: AncientRelicSet, relic: AncientRelic, isSelected: boolean) {
         const isMaster = set.completedRelic.id === relic.id;
 
@@ -203,10 +193,8 @@ export class AncientRelicsPage extends HTMLElement {
 
             for (const relicDrop of relics) {
                 if (isSelected) {
-                    // @ts-ignore // TODO: TYPES
                     set.foundRelics.set(relicDrop.relic, 1);
                 } else {
-                    // @ts-ignore // TODO: TYPES
                     set.foundRelics.delete(relicDrop.relic);
                 }
             }
@@ -233,7 +221,6 @@ export class AncientRelicsPage extends HTMLElement {
         }
     }
 
-    // @ts-ignore // TODO: TYPES
     private _createRelic(set: AncientRelicSet, relic: AncientRelic, media: string) {
         const element = createElement('mcs-button-image', {
             attributes: [['data-mcsSrc', media]]
@@ -243,7 +230,6 @@ export class AncientRelicsPage extends HTMLElement {
 
         let tooltip = `<div class="text-warning mb-1">${relic.name}</div>`;
         tooltip += '<div class="font-size-xs">';
-        // @ts-ignore // TODO: TYPES
         tooltip += relic.stats.describeAsSpanHTML();
         tooltip += '</div>';
 
@@ -270,7 +256,6 @@ export class AncientRelicsPage extends HTMLElement {
             .filter(skill => skill.hasAncientRelics)
             .map(skill => ({
                 skill,
-                // @ts-ignore // TODO: TYPES
                 sets: Array.from<any>(skill.ancientRelicSets.entries())
             }));
 

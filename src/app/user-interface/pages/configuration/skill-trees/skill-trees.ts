@@ -57,7 +57,6 @@ export class SkillTreesPage extends HTMLElement {
                 continue;
             }
 
-            // @ts-ignore // TODO: TYPES
             for (const tree of skill.skillTrees.allObjects) {
                 tree.unlockedNodes = [];
 
@@ -89,11 +88,9 @@ export class SkillTreesPage extends HTMLElement {
             for (const skill of Global.game.skills.allObjects) {
                 const trees = new Map<string, string[]>();
 
-                // @ts-ignore // TODO: TYPES
                 for (const tree of skill.skillTrees.allObjects) {
                     trees.set(
                         tree.id,
-                        // @ts-ignore // TODO: TYPES
                         tree.nodes.allObjects.map(node => node.id)
                     );
                 }
@@ -108,15 +105,11 @@ export class SkillTreesPage extends HTMLElement {
     }
 
     private _hasSkillTreeNodes() {
-        return (
-            Global.game.skills
-                .filter(skill => this.combatSkillTrees.includes(skill.id))
-                // @ts-ignore // TODO: TYPES
-                .some(skill =>
-                    // @ts-ignore // TODO: TYPES
-                    skill.skillTrees.allObjects.some(tree => tree.nodes.allObjects.some(node => node.isUnlocked))
-                )
-        );
+        return Global.game.skills
+            .filter(skill => this.combatSkillTrees.includes(skill.id))
+            .some(skill =>
+                skill.skillTrees.allObjects.some(tree => tree.nodes.allObjects.some(node => node.isUnlocked))
+            );
     }
 
     private _init() {
@@ -130,11 +123,9 @@ export class SkillTreesPage extends HTMLElement {
             const header = this._createHeader(skill);
             const content = createElement('div', { attributes: [['slot', 'tab-content']] });
 
-            // @ts-ignore // TODO: TYPES
             if (skill.skillTrees.allObjects.length > 1) {
                 const skillTabs = createElement('mcs-tabs');
 
-                // @ts-ignore // TODO: TYPES
                 for (const tree of skill.skillTrees.allObjects) {
                     const header = this._createHeader(tree);
                     const content = createElement('div', { attributes: [['slot', 'tab-content']] });
@@ -151,7 +142,6 @@ export class SkillTreesPage extends HTMLElement {
                 content.append(skillTabs);
                 skillTabs._init();
             } else {
-                // @ts-ignore // TODO: TYPES
                 for (const tree of skill.skillTrees.allObjects) {
                     const skillTree = createElement('mcs-skill-tree');
 
@@ -168,7 +158,6 @@ export class SkillTreesPage extends HTMLElement {
         this._tabs._init();
     }
 
-    // @ts-ignore // TODO: TYPES
     private _createHeader(entity: AnySkill | SkillTree) {
         const header = createElement('div', {
             attributes: [

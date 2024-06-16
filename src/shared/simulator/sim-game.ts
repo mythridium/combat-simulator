@@ -22,13 +22,9 @@ export class SimGame extends Game {
         this.activeActions.registeredObjects.set(this.combat.id, this.combat);
         this.passiveActions.registeredObjects.set(this.combat.id, this.combat);
 
-        // @ts-ignore // TODO: TYPES
         this.combat.registerStatProvider(this.tokenItemStats);
-        // @ts-ignore // TODO: TYPES
         this.combat.registerStatProvider(this.petManager);
-        // @ts-ignore // TODO: TYPES
         this.combat.registerStatProvider(this.shop);
-        // @ts-ignore // TODO: TYPES
         this.combat.registerStatProvider(this.potions.providedStats);
 
         this.detachGlobals();
@@ -40,32 +36,16 @@ export class SimGame extends Game {
         this.tutorial.complete = true;
         this.settings.boolData.enableOfflineCombat.currentValue = true;
 
-        // @ts-ignore // TODO: TYPES
         for (const course of Array.from(this.agility.courses.values())) {
-            // @ts-ignore // TODO: TYPES
             course.maxObstacles = course.numObstaclesUnlocked = course.obstacleSlots.length;
         }
 
-        if (this.cartography) {
-            // @ts-ignore // TODO: TYPES
-            this.cartography.getUpgradeCharges = () => 0;
-            // @ts-ignore // TODO: TYPES
-            this.cartography.modifyInitialArtefactValue = () => 0;
-        }
         this.township.confirmTownCreation = () => {};
         this.township.startTickTimer = () => {};
         this.township.onTickTimer = () => {};
         this.township.passiveTick = () => {};
         this.township.tick = () => true;
         this.township.tickSeason = () => {};
-        // @ts-ignore // TODO: TYPES
-        this.township.tickAbyssalWave = () => {};
-        this.township.tasks.updateAllTaskProgress = () => {};
-        this.township.tasks.updateTaskProgress = () => {};
-        // @ts-ignore // TODO: TYPES
-        this.slayer.addKill = () => {};
-        // @ts-ignore // TODO: TYPES
-        this.slayer.setTask = () => {};
         this.petManager.unlockPet = () => {};
         this.bank.addItem = () => true;
         this.bank.hasItem = () => true;
@@ -83,7 +63,6 @@ export class SimGame extends Game {
         this.golbinRaid.render = () => {};
         this.golbinRaid.player.render = () => {};
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
-            // @ts-ignore // TODO: TYPES
             this.corruption.corruptionEffects.unlockRow = () => {};
         }
         this.notifications.createErrorNotification = () => {};
@@ -97,7 +76,6 @@ export class SimGame extends Game {
         this.notifications.createSummoningMarkNotification = () => {};
 
         this.combat.player.prayerPoints = Number.MAX_SAFE_INTEGER;
-        // @ts-ignore // TODO: TYPES
         this.combat.player.soulPoints = Number.MAX_SAFE_INTEGER;
 
         this.bank.removeItemQuantity = (item: AnyItem, quantity: number, _: boolean): void => {
@@ -139,12 +117,10 @@ export class SimGame extends Game {
         };
 
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
-            // @ts-ignore // TODO: TYPES
             this.abyssalPieces.add = amount => {
                 this.combat.player.gpAbyssal += amount;
             };
 
-            // @ts-ignore // TODO: TYPES
             this.abyssalSlayerCoins.add = amount => {
                 this.combat.player.slayerCoinsAbyssal += amount;
             };
@@ -153,16 +129,12 @@ export class SimGame extends Game {
         for (const skill of this.skills.allObjects) {
             // Make sure nothing gets called on skill level ups, it tends to try rendering
             skill.levelUp = () => {};
-            // @ts-ignore // TODO: TYPES
             skill.abyssalLevelUp = () => {};
             skill.render = () => {};
             skill.onAncientRelicUnlock = () => {};
-            // @ts-ignore // TODO: TYPES
             skill.onUnlock = () => {};
             skill.setUnlock(true);
-            // @ts-ignore // TODO: TYPES
             skill._currentLevelCap = skill.maxLevelCap;
-            // @ts-ignore // TODO: TYPES
             skill._currentAbyssalLevelCap = skill.maxAbyssalLevelCap;
 
             skill.rollForPets = (interval: number) => {
@@ -242,31 +214,22 @@ export class SimGame extends Game {
         }
     }
 
-    // @ts-ignore // TODO: TYPES
-    registerEquipmentSlotData(namespace: DataNamespace, data: any) {
+    registerEquipmentSlotData(namespace: DataNamespace, data: EquipmentSlotData[]) {
         if (Util.isWebWorker) {
-            // @ts-ignore // TODO: TYPES
             super.registerEquipmentSlotData(namespace, data);
             return;
         }
 
         // cache the current positions
-        // @ts-ignore // TODO: TYPES
         const positions = clone(EquipmentSlot.gridPositions);
-        // @ts-ignore // TODO: TYPES
         const gridColRange = clone(EquipmentSlot.gridColRange);
-        // @ts-ignore // TODO: TYPES
         const gridRowRange = clone(EquipmentSlot.gridRowRange);
 
-        // @ts-ignore // TODO: TYPES
         data.forEach(slotData => {
-            // @ts-ignore // TODO: TYPES
             const slot = new EquipmentSlot(namespace, slotData, this);
 
-            // @ts-ignore // TODO: TYPES
             this.equipmentSlots.registerObject(slot);
 
-            // @ts-ignore // TODO: TYPES
             const melvorSlot = Global.client.melvor.equipmentSlots.getObjectByID(slot.id);
 
             if (melvorSlot) {
@@ -275,29 +238,21 @@ export class SimGame extends Game {
         });
 
         // reset the positions
-        // @ts-ignore // TODO: TYPES
         EquipmentSlot.gridPositions = positions;
-        // @ts-ignore // TODO: TYPES
         EquipmentSlot.gridColRange = gridColRange;
-        // @ts-ignore // TODO: TYPES
         EquipmentSlot.gridRowRange = gridRowRange;
     }
 
-    // @ts-ignore // TODO: TYPES
-    registerModifiers(namespace, data) {
-        // @ts-ignore // TODO: TYPES
-        const newModifiers = [];
-        // @ts-ignore // TODO: TYPES
+    registerModifiers(namespace: DataNamespace, data: ModifierData[]) {
+        const newModifiers: Modifier[] = [];
+
         data.forEach(modifierData => {
-            // @ts-ignore // TODO: TYPES
             const modifier = new Modifier(namespace, modifierData, this);
             newModifiers.push(modifier);
-            // @ts-ignore // TODO: TYPES
             this.modifierRegistry.registerObject(modifier);
         });
 
         if (Util.isWebWorker) {
-            // @ts-ignore // TODO: TYPES
             expressions.updateModifiers(newModifiers);
         }
     }
@@ -311,12 +266,10 @@ export class SimGame extends Game {
 
     onLoad() {
         try {
-            // @ts-ignore // TODO: TYPES
             this.setUpGamemodeOnLoad();
         } catch {}
 
         for (const skill of this.skills.allObjects) {
-            // @ts-ignore // TODO: TYPES
             for (const skillTree of skill.skillTrees.allObjects) {
                 skillTree.unlockedNodes = [];
                 skillTree.onLoad();
@@ -324,11 +277,8 @@ export class SimGame extends Game {
         }
 
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
-            // @ts-ignore // TODO: TYPES
             this.corruption.corruptionEffects.unlockedRows = [];
-            // @ts-ignore // TODO: TYPES
             this.corruption.corruptionEffects.lockedRows = [];
-            // @ts-ignore // TODO: TYPES
             this.corruption.onLoad();
         }
 
@@ -358,13 +308,9 @@ export class SimGame extends Game {
         );
 
         this.shop.upgradesPurchased.clear();
-        // @ts-ignore // TODO: TYPES
         this.shop.modifiers.empty();
-        // @ts-ignore // TODO: TYPES
         this.shop.enemyModifiers.empty();
-        // @ts-ignore // TODO: TYPES
         this.shop.conditionalModifiers = [];
-        // @ts-ignore // TODO: TYPES
         this.shop.combatEffects = [];
 
         for (const set of equipmentSets) {
@@ -374,7 +320,6 @@ export class SimGame extends Game {
 
     resetToBlankState() {
         this.combat.player.prayerPoints = Number.MAX_SAFE_INTEGER;
-        // @ts-ignore // TODO: TYPES
         this.combat.player.soulPoints = Number.MAX_SAFE_INTEGER;
 
         this.combat.resetEventState();
@@ -392,27 +337,20 @@ export class SimGame extends Game {
 
         this.astrology.actions.allObjects.forEach(constellation => {
             for (const modifier of constellation.standardModifiers) {
-                // @ts-ignore // TODO: TYPES
                 modifier.timesBought = 0;
             }
 
             for (const modifier of constellation.uniqueModifiers) {
-                // @ts-ignore // TODO: TYPES
                 modifier.timesBought = 0;
             }
 
-            // @ts-ignore // TODO: TYPES
             for (const modifier of constellation.abyssalModifiers) {
-                // @ts-ignore // TODO: TYPES
                 modifier.timesBought = 0;
             }
         });
 
-        // @ts-ignore // TODO: TYPES
         for (const course of Array.from(this.agility.courses.values())) {
-            // @ts-ignore // TODO: TYPES
             course.builtObstacles.clear();
-            // @ts-ignore // TODO: TYPES
             course.builtPillars.clear();
         }
 
@@ -420,20 +358,14 @@ export class SimGame extends Game {
             skill._level = skill.startingLevel;
             skill._xp = 0;
 
-            // @ts-ignore // TODO: TYPES
             for (const relicSet of Array.from(skill.ancientRelicSets.values())) {
-                // @ts-ignore // TODO: TYPES
                 relicSet.foundCount = 0;
-                // @ts-ignore // TODO: TYPES
                 relicSet.foundRelics.clear();
             }
 
-            // @ts-ignore // TODO: TYPES
-            skill.actionMastery?.clear();
-            // @ts-ignore // TODO: TYPES
-            skill._masteryPoolXP?.data.clear();
+            (<GatheringSkill<any, any>>skill).actionMastery?.clear();
+            (<GatheringSkill<any, any>>skill)._masteryPoolXP?.data.clear();
 
-            // @ts-ignore // TODO: TYPES
             for (const tree of skill.skillTrees.allObjects) {
                 tree.unlockedNodes = [];
 
@@ -443,27 +375,18 @@ export class SimGame extends Game {
             }
         });
 
-        // @ts-ignore // TODO: TYPES
         this.agility._level = this.agility.maxLevelCap;
-        // @ts-ignore // TODO: TYPES
         this.agility._xp = exp.levelToXP(this.agility._level + 1) - 1;
-        // @ts-ignore // TODO: TYPES
         this.agility._abyssalLevel = this.agility.maxAbyssalLevelCap;
-        // @ts-ignore // TODO: TYPES
         this.agility._abyssalXP = abyssalExp.levelToXP(this.agility._abyssalLevel + 1) - 1;
-        // @ts-ignore // TODO: TYPES
         this.agility.courses.forEach(course => (course.numObstaclesUnlocked = course.obstacleSlots.length));
 
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
-            // @ts-ignore // TODO: TYPES
             this.corruption.corruptionEffects.lockedRows.length = 0;
-            // @ts-ignore // TODO: TYPES
             this.corruption.corruptionEffects.unlockedRows.length = 0;
 
-            // @ts-ignore // TODO: TYPES
             for (const row of this.corruption.corruptionEffects.allRows) {
                 row.isUnlocked = false;
-                // @ts-ignore // TODO: TYPES
                 this.corruption.corruptionEffects.lockedRows.push(row);
             }
         }
@@ -511,11 +434,8 @@ export class SimGame extends Game {
                 } else {
                     return true;
                 }
-            // @ts-ignore // TODO: TYPES
             case 'AbyssalLevel':
-                // @ts-ignore // TODO: TYPES
                 if (Global.get.combatAbyssalSkillLocalIds.includes(requirement.skill.localID)) {
-                    // @ts-ignore // TODO: TYPES
                     return this.combat.player.skillAbyssalLevel.get(requirement.skill.id) >= requirement.level;
                 } else {
                     return true;
@@ -525,7 +445,6 @@ export class SimGame extends Game {
             case 'ItemFound':
             case 'ShopPurchase':
             case 'DungeonCompletion':
-            // @ts-ignore // TODO: TYPES
             case 'AbyssDepthCompletion':
                 return checkSlayer ? super.checkRequirement(requirement, false, slayerLevelReq) : true;
             case 'Completion':
@@ -589,19 +508,13 @@ export class SimGame extends Game {
 
         writer.writeUint32(masteredHexes);
 
-        // @ts-ignore // TODO: TYPES
         writer.writeArray(this.abyssDepths.allObjects, (depth, writer) => {
-            // @ts-ignore // TODO: TYPES
             writer.writeNamespacedObject(depth);
-            // @ts-ignore // TODO: TYPES
             writer.writeUint32(depth.timesCompleted);
         });
 
-        // @ts-ignore // TODO: TYPES
         writer.writeArray(this.strongholds.allObjects, (stronghold, writer) => {
-            // @ts-ignore // TODO: TYPES
             writer.writeNamespacedObject(stronghold);
-            // @ts-ignore // TODO: TYPES
             writer.writeUint32(stronghold.timesCompleted);
         });
         // mod.encode(writer);
@@ -671,23 +584,19 @@ export class SimGame extends Game {
         }
 
         reader.getArray(reader => {
-            // @ts-ignore // TODO: TYPES
             const depth = reader.getNamespacedObject(this.abyssDepths);
             const timesCompleted = reader.getUint32();
 
             if (typeof depth !== 'string') {
-                // @ts-ignore // TODO: TYPES
                 depth.timesCompleted = timesCompleted;
             }
         });
 
         reader.getArray(reader => {
-            // @ts-ignore // TODO: TYPES
             const stronghold = reader.getNamespacedObject(this.strongholds);
             const timesCompleted = reader.getUint32();
 
             if (typeof stronghold !== 'string') {
-                // @ts-ignore // TODO: TYPES
                 stronghold.timesCompleted = timesCompleted;
             }
         });

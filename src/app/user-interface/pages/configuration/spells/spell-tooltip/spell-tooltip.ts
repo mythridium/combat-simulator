@@ -42,9 +42,7 @@ export class SpellTooltip extends HTMLElement {
                 requirements += `<div>Level: <span class="text-white">${spell.level}</span></div>`;
             }
 
-            // @ts-ignore // TODO: TYPES
             if (spell.abyssalLevel) {
-                // @ts-ignore // TODO: TYPES
                 requirements += `<div>Abyssal Level: <span class="text-white">${spell.abyssalLevel}</span></div>`;
             }
 

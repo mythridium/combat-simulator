@@ -68,21 +68,17 @@ export class SummaryPage extends HTMLElement {
     }
 
     private _init() {
-        // @ts-ignore // TODO: TYPES
         for (const realm of Array.from(Global.game.agility.courses.keys()).reverse()) {
             const container = createElement('div', {
-                // @ts-ignore // TODO: TYPES
                 classList: ['mcs-summary-agility-container', `mcs-summary-agility-${realm._localID.toLowerCase()}`]
             });
 
             container.append(
-                // @ts-ignore // TODO: TYPES
                 createElement('div', { classList: ['mcs-summary-agility-course-name'], text: `${realm.name} Course` })
             );
 
             const agilityCourse = createElement('mcs-agility-course', {
                 attributes: [
-                    // @ts-ignore // TODO: TYPES
                     ['data-mcsRealmId', realm.id],
                     ['readonly', '']
                 ]
@@ -148,9 +144,7 @@ export class SummaryPage extends HTMLElement {
 
         if (Global.game.combat.player.attackType === 'magic') {
             container.append(
-                // @ts-ignore // TODO: TYPES
                 this._lineItem(Global.game.combat.player.spellSelection.attack.name, [
-                    // @ts-ignore // TODO: TYPES
                     Global.game.combat.player.spellSelection.attack.media
                 ])
             );
@@ -176,7 +170,6 @@ export class SummaryPage extends HTMLElement {
 
         if (cloudManager.hasAoDEntitlementAndIsEnabled) {
             for (const map of Global.game.cartography.worldMaps.allObjects) {
-                // @ts-ignore // TODO: TYPES
                 if (!map.pointsOfInterest.allObjects.some(poi => poi.activeStats?.hasStats)) {
                     continue;
                 }
@@ -185,7 +178,6 @@ export class SummaryPage extends HTMLElement {
                     this._lineItem(`${map.name} - ${map.masteredHexes} Hexes`, [Global.game.cartography.media])
                 );
 
-                // @ts-ignore // TODO: TYPES
                 if (map.playerPosition?.pointOfInterest?.activeStats?.hasStats) {
                     container.append(
                         this._lineItem(map.playerPosition.pointOfInterest.name, [
@@ -264,7 +256,6 @@ export class SummaryPage extends HTMLElement {
             container.append(
                 this._lineItem('Corrupted', [
                     Global.game.combat.player.isAutoCorrupt ? this.enabled : this.disabled,
-                    // @ts-ignore // TODO: TYPES
                     Global.game.corruption.media
                 ])
             );

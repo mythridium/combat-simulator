@@ -451,17 +451,13 @@ export class Plotter extends HTMLElement {
         if (task.active && task.autoSlayer && task.monster?.id === Global.melvor.combat.selectedMonster?.id) {
             // slayer
             index = Global.stores.plotter.state.bars.monsterIds.findIndex(
-                // @ts-ignore // TODO: TYPES
                 id => id === Global.melvor.combat.slayerTask.category.id
             );
-            // @ts-ignore // TODO: TYPES
         } else if (Global.melvor.combat.selectedArea instanceof Stronghold) {
             // stronghold
             index = Global.stores.plotter.state.bars.monsterIds.findIndex(
-                // @ts-ignore // TODO: TYPES
                 id => id === `${Global.melvor.combat.selectedArea.id}_${Global.melvor.combat.strongholdTier}`
             );
-            // @ts-ignore // TODO: TYPES
         } else if (Global.melvor.combat.selectedArea instanceof AbyssDepth) {
             // depth
             index = Global.stores.plotter.state.bars.monsterIds.findIndex(

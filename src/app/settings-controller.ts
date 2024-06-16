@@ -101,18 +101,13 @@ export abstract class SettingsController {
         let isSynergyUnlocked = false;
 
         if (
-            // @ts-ignore // TODO: TYPES
             !Global.melvor.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty &&
-            // @ts-ignore // TODO: TYPES
             !Global.melvor.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty
         ) {
-            // @ts-ignore // TODO: TYPES
             const summon1 = Global.melvor.combat.player.equipment.equippedItems['melvorD:Summon1'].item;
-            // @ts-ignore // TODO: TYPES
             const summon2 = Global.melvor.combat.player.equipment.equippedItems['melvorD:Summon2'].item;
 
             if (summon1 && summon2) {
-                // @ts-ignore // TODO: TYPES
                 const synergyData = Global.melvor.summoning.getSynergy(summon1, summon2);
 
                 isSynergyUnlocked = synergyData
@@ -127,7 +122,6 @@ export abstract class SettingsController {
             astrologyModifiers: this.getAstrology(Global.melvor),
             equipment: this.getEquipment(Global.melvor, Global.melvor.combat.player.equipmentSets[index].equipment),
             levels: new Map(Global.melvor.skills.allObjects.map(skill => [skill.id, skill.level])),
-            // @ts-ignore // TODO: TYPES
             abyssalLevels: new Map(Global.melvor.skills.allObjects.map(skill => [skill.id, skill.abyssalLevel])),
             petUnlocked: Array.from(Global.melvor.petManager.unlocked).map(pet => pet.id),
             styles: {
@@ -142,7 +136,6 @@ export abstract class SettingsController {
             spells: {
                 aurora: Global.melvor.combat.player.equipmentSets[index].spellSelection.aurora?.id ?? '',
                 curse: Global.melvor.combat.player.equipmentSets[index].spellSelection.curse?.id ?? '',
-                // @ts-ignore // TODO: TYPES
                 attack: Global.melvor.combat.player.equipmentSets[index].spellSelection.attack?.id ?? ''
             },
             slayer: this.getSlayerData(Global.melvor),
@@ -151,20 +144,17 @@ export abstract class SettingsController {
             cookingPool:
                 Lookup.getMasteryPoolBonus(
                     Global.melvor.cooking,
-                    // @ts-ignore // TODO: TYPES
                     Global.melvor.realms.getObjectByID('melvorD:Melvor')
                 ) >= 3,
             abyssal25CookingPool: cloudManager.hasItAEntitlementAndIsEnabled
                 ? Lookup.getMasteryPoolBonus(
                       Global.melvor.cooking,
-                      // @ts-ignore // TODO: TYPES
                       Global.melvor.realms.getObjectByID('melvorItA:Abyssal')
                   ) >= 1
                 : false,
             abyssal95CookingPool: cloudManager.hasItAEntitlementAndIsEnabled
                 ? Lookup.getMasteryPoolBonus(
                       Global.melvor.cooking,
-                      // @ts-ignore // TODO: TYPES
                       Global.melvor.realms.getObjectByID('melvorItA:Abyssal')
                   ) >= 3
                 : false,
@@ -178,7 +168,6 @@ export abstract class SettingsController {
             isSynergyUnlocked: isSynergyUnlocked,
             ignoreAllSlayerRequirements: Global.game.combat.player.ignoreAllSlayerRequirements,
             isSlayerTask: Global.game.combat.player.isSlayerTask,
-            // @ts-ignore // TODO: TYPES
             isAutoCorrupt: Global.melvor.settings.enablePermaCorruption,
             potionID: Global.melvor.items.potions.find(
                 potion => potion.action.localID === 'Combat' && Global.melvor.potions.isPotionActive(potion)
@@ -194,10 +183,8 @@ export abstract class SettingsController {
                 ? Global.melvor.cartography.worldMaps.allObjects.map(map => [map.id, map.masteredHexes])
                 : [],
             corruptionEffectIds:
-                // @ts-ignore // TODO: TYPES
                 cloudManager.hasItAEntitlementAndIsEnabled && Global.melvor.corruption.isUnlocked
-                    ? // @ts-ignore // TODO: TYPES
-                      Global.melvor.corruption.corruptionEffects.unlockedRows.map(row => row.effect.id)
+                    ? Global.melvor.corruption.corruptionEffects.unlockedRows.map(row => row.effect.id)
                     : [],
             skillTreeIds: cloudManager.hasItAEntitlementAndIsEnabled ? this.getSkillTrees(Global.melvor) : new Map(),
             townshipBuildings: this.getTownshipCombatBuildings(Global.melvor),
@@ -233,7 +220,6 @@ export abstract class SettingsController {
 
                 settings.equipment = new Map<string, string>();
 
-                // @ts-ignore // TODO: TYPES
                 for (const [index, slot] of Global.game.combat.player.equipment.equippedArray.entries()) {
                     const itemId = equipmentSettings[index];
 
@@ -288,7 +274,6 @@ export abstract class SettingsController {
             Global.userInterface.main.querySelector('mcs-potions')._import(settings.potionID);
 
             for (const course of settings.agility ?? []) {
-                // @ts-ignore // TODO: TYPES
                 const realm = Global.game.realms.getObjectByID(course.realmId);
 
                 Global.userInterface.main.querySelector('mcs-agility')._import(realm, course.obstacles, course.pillars);
@@ -357,7 +342,6 @@ export abstract class SettingsController {
             spells: {
                 aurora: Global.game.combat.player.spellSelection.aurora?.id ?? '',
                 curse: Global.game.combat.player.spellSelection.curse?.id ?? '',
-                // @ts-ignore // TODO: TYPES
                 attack: Global.game.combat.player.spellSelection.attack?.id ?? ''
             },
             slayer: this.getSlayerData(Global.game),
@@ -393,8 +377,7 @@ export abstract class SettingsController {
                 ? Global.game.cartography.worldMaps.allObjects.map(map => [map.id, map.masteredHexes])
                 : [],
             corruptionEffectIds: cloudManager.hasItAEntitlementAndIsEnabled
-                ? // @ts-ignore // TODO: TYPES
-                  Global.game.corruption.corruptionEffects.unlockedRows.map(row => row.effect.id)
+                ? Global.game.corruption.corruptionEffects.unlockedRows.map(row => row.effect.id)
                 : [],
             skillTreeIds: cloudManager.hasItAEntitlementAndIsEnabled ? this.getSkillTrees(Global.game) : new Map(),
             townshipBuildings: this.getTownshipCombatBuildings(Global.game),
@@ -404,12 +387,10 @@ export abstract class SettingsController {
         return settings;
     }
 
-    private static getEquipment(game: Game, equipmentSet: unknown) {
+    private static getEquipment(game: Game, equipmentSet: Equipment) {
         const equipment = new Map<string, string>();
 
-        // @ts-ignore // TODO: TYPES
         for (const slot of game.equipmentSlots.allObjects) {
-            // @ts-ignore // TODO: TYPES
             const item = equipmentSet.equippedItems[slot.id]?.item;
 
             if (item?.id !== 'melvorD:Empty_Equipment') {
@@ -426,11 +407,9 @@ export abstract class SettingsController {
         for (const skill of game.skills.allObjects) {
             const trees = new Map<string, string[]>();
 
-            // @ts-ignore // TODO: TYPES
             for (const tree of skill.skillTrees.allObjects) {
                 trees.set(
                     tree.id,
-                    // @ts-ignore // TODO: TYPES
                     tree.nodes.allObjects.filter(node => node.isUnlocked).map(node => node.id)
                 );
             }
@@ -447,11 +426,8 @@ export abstract class SettingsController {
 
         for (const constellation of game.astrology.actions.allObjects) {
             astrologyModifiers.set(constellation.id, {
-                // @ts-ignore // TODO: TYPES
                 standardModsBought: constellation.standardModifiers.map(modifier => modifier.timesBought),
-                // @ts-ignore // TODO: TYPES
                 uniqueModsBought: constellation.uniqueModifiers.map(modifier => modifier.timesBought),
-                // @ts-ignore // TODO: TYPES
                 abyssalModsBought: constellation.abyssalModifiers.map(modifier => modifier.timesBought)
             });
         }
@@ -460,17 +436,15 @@ export abstract class SettingsController {
     }
 
     private static getAgility(game: Game) {
-        // @ts-ignore // TODO: TYPES
         const agility: AgilitySettings[] = Array.from(game.agility.courses.entries()).map(([realm, course]) => {
-            const obstacles = Array.from(course.builtObstacles.entries()).map(([category, obstacle]) => {
-                // @ts-ignore // TODO: TYPES
-                const mastery = game.agility.actionMastery.get(obstacle);
-                // @ts-ignore // TODO: TYPES
-                return [obstacle.id, category, (mastery?.level ?? 0) >= 99];
-            });
+            const obstacles: [string, number, boolean][] = Array.from(course.builtObstacles.entries()).map(
+                ([category, obstacle]) => {
+                    const mastery = game.agility.actionMastery.get(obstacle);
+                    return [obstacle.id, category, (mastery?.level ?? 0) >= 99];
+                }
+            );
 
-            // @ts-ignore // TODO: TYPES
-            const pillars = Array.from(course.builtPillars.entries()).map(([category, pillar]) => [
+            const pillars: [string, number][] = Array.from(course.builtPillars.entries()).map(([category, pillar]) => [
                 pillar.id,
                 category
             ]);
@@ -482,10 +456,7 @@ export abstract class SettingsController {
     }
 
     private static getTownshipCombatBuildings(game: Game) {
-        const buildings = game.township.buildings.filter(building =>
-            // @ts-ignore // TODO: TYPES
-            ModifierHelper.hasCombatModifiers(building.stats)
-        );
+        const buildings = game.township.buildings.filter(building => ModifierHelper.hasCombatModifiers(building.stats));
 
         const townshipBuildings = new Map<string, [number, number]>();
 
@@ -516,7 +487,6 @@ export abstract class SettingsController {
                     continue;
                 }
 
-                // @ts-ignore // TODO: TYPES
                 for (const [realm, set] of Array.from(skill.ancientRelicSets.entries())) {
                     if (realm.id === Lookup.melvor.id && !Global.ancientRelicMelvorSkillKeys.includes(skill.localID)) {
                         continue;
@@ -532,7 +502,6 @@ export abstract class SettingsController {
 
                     ancientRelicsSelected.push([
                         `${realm.id}-${skill.id}`,
-                        // @ts-ignore // TODO: TYPES
                         Array.from(set.foundRelics.keys()).map(relic => relic.id)
                     ]);
                 }
@@ -544,7 +513,6 @@ export abstract class SettingsController {
 
     public static getSlayerRequirementData(game: Game) {
         const dungeonSet = new Set<Dungeon>();
-        // @ts-ignore // TODO: TYPES
         const abyssDepthSet = new Set<AbyssDepth>();
         const purchaseSet = new Set<ShopPurchase>();
         const itemsFoundSet = new Set<AnyItem>();
@@ -557,9 +525,7 @@ export abstract class SettingsController {
                 });
 
             area.entryRequirements
-                // @ts-ignore // TODO: TYPES
                 ?.filter(requirement => requirement.type === 'AbyssDepthCompletion')
-                // @ts-ignore // TODO: TYPES
                 .forEach((requirement: AbyssDepthRequirement) => {
                     abyssDepthSet.add(requirement.depth);
                 });

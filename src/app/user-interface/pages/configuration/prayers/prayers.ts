@@ -52,7 +52,6 @@ export class PrayersPage extends HTMLElement {
                 const element = this._create(prayer);
                 this._unholyPrayers.set(prayer.id, element);
                 this._unholyPrayerContainer.appendChild(element);
-                // @ts-ignore // TODO: TYPES
             } else if (prayer.isAbyssal) {
                 const element = this._create(prayer);
                 this._abyssalPrayers.set(prayer.id, element);
@@ -150,12 +149,10 @@ export class PrayersPage extends HTMLElement {
             return;
         }
 
-        // @ts-ignore // TODO: TYPES
         if (!prayer.canUseWithDamageType(Global.game.combat.player.damageType)) {
             element._toggle(false);
             // Incompatible damage type
             Notify.message(
-                // @ts-ignore // TODO: TYPES
                 `This Prayer cannot be used with ${Global.game.combat.player.damageType.name}`,
                 'danger',
                 Global.game.prayer.media
@@ -188,7 +185,6 @@ export class PrayersPage extends HTMLElement {
 
         if (prayer.isUnholy) {
             element = this._unholyPrayers.get(prayer.id);
-            // @ts-ignore // TODO: TYPES
         } else if (prayer.isAbyssal) {
             element = this._abyssalPrayers.get(prayer.id);
         } else {
@@ -202,17 +198,14 @@ export class PrayersPage extends HTMLElement {
         const isUnholy = this._isUnholy();
         const isAbyssal = this._isAbyssal();
 
-        // @ts-ignore // TODO: TYPES
         if (isUnholy && (prayer.isAbyssal || !prayer.isUnholy)) {
             return true;
         }
 
-        // @ts-ignore // TODO: TYPES
         if (isAbyssal && (prayer.isUnholy || !prayer.isAbyssal)) {
             return true;
         }
 
-        // @ts-ignore // TODO: TYPES
         if (!isUnholy && !isAbyssal && (prayer.isUnholy || prayer.isAbyssal)) {
             return true;
         }
@@ -234,7 +227,6 @@ export class PrayersPage extends HTMLElement {
         let isAbyssal = false;
 
         for (const prayer of Global.game.combat.player.activePrayers) {
-            // @ts-ignore // TODO: TYPES
             isAbyssal = prayer.isAbyssal;
         }
 

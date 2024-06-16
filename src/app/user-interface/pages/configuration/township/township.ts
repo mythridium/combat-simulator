@@ -146,7 +146,6 @@ export class TownshipPage extends HTMLElement {
     }
 
     private _getBuildings() {
-        // @ts-ignore // TODO: TYPES
         return Global.game.township.buildings.filter(building => ModifierHelper.hasCombatModifiers(building.stats));
     }
 
@@ -213,23 +212,16 @@ export class TownshipPage extends HTMLElement {
     }
 
     private _update(building: TownshipBuilding) {
-        // @ts-ignore // TODO: TYPES
         Global.game.township.setBuildingProvidedStatsMultiplier(building);
 
         const [_field, _input, stats] = this._buildings.get(building.id);
 
-        // @ts-ignore // TODO: TYPES
         stats.innerHTML = StatObject.formatDescriptions(
-            // @ts-ignore // TODO: TYPES
             building.stats,
-            // @ts-ignore // TODO: TYPES
             getElementDescriptionFormatter('div', 'mb-1'),
-            // @ts-ignore // TODO: TYPES
             building.providedStatMultiplier.neg,
-            // @ts-ignore // TODO: TYPES
             building.providedStatMultiplier.pos
         )
-            // @ts-ignore // TODO: TYPES
             .map(element => element.outerHTML)
             .join('');
     }

@@ -138,17 +138,13 @@ export class OutOfCombatStats extends HTMLElement {
             Global.stores.stats.state.autoEatThreshold
         )}`;
 
-        // @ts-ignore // TODO: TYPES
         let damageReduction = Global.game.combat.player.equipmentStats.getResistance(Lookup.normalDamage);
-        // @ts-ignore // TODO: TYPES
         damageReduction = Global.game.combat.player.modifyResistance(Lookup.normalDamage, damageReduction);
 
         this._uncappedDamageReduction.textContent = `Uncapped Damage Reduction: ${this._format(damageReduction)}`;
 
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
-            // @ts-ignore // TODO: TYPES
             let abyssalResistance = Global.game.combat.player.equipmentStats.getResistance(Lookup.abyssalDamage);
-            // @ts-ignore // TODO: TYPES
             abyssalResistance = Global.game.combat.player.modifyResistance(Lookup.abyssalDamage, abyssalResistance);
 
             this._uncappedAbyssalResistance.textContent = `Uncapped Abyssal Resistance: ${this._format(

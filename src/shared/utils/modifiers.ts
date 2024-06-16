@@ -17,16 +17,13 @@ export abstract class ModifierHelper {
     public static get activeModifiers() {
         const modifiers: ActiveModifier[] = [];
 
-        // @ts-ignore // TODO: TYPES
         for (const [_, entries] of Global.get.game.combat.player.modifiers.entriesByID) {
-            // @ts-ignore // TODO: TYPES
-            if (!entries?.length || !entries.some(entry => this.isCombatModifier(entry.data.scope))) {
+            if (!entries?.length || !entries.some(entry => this.isCombatModifier(entry.data.scope as ModifierValue))) {
                 continue;
             }
 
             // remove currency related action skill modifiers.
             const modifierEntries = entries.filter(
-                // @ts-ignore // TODO: TYPES
                 entry => !(entry.data.scope.skill && entry.data.scope.action && entry.data.scope.currency)
             );
 
@@ -35,42 +32,34 @@ export abstract class ModifierHelper {
             }
 
             // special handling for action related modifiers
-            // @ts-ignore // TODO: TYPES
             if (modifierEntries.some(entry => entry.data.scope.action !== undefined)) {
                 const actionEntries = modifierEntries
-                    // @ts-ignore // TODO: TYPES
                     .filter(entry => entry.data.scope.action !== undefined)
-                    // @ts-ignore // TODO: TYPES
                     .map(entry => ({
                         entry,
-                        // @ts-ignore // TODO: TYPES
                         modifier: new ModifierValue(entry.data.modifier, entry.data.value, entry.data.scope)
                     }));
 
                 const entry = actionEntries[0];
 
                 const description = this.getDescription(
-                    // @ts-ignore // TODO: TYPES
                     new ModifierValue(entry.entry.data.modifier, entry.entry.data.value)
                 );
 
-                description[0] += ` (For ${actionEntries.length} Actions)`;
+                description.text += ` (For ${actionEntries.length} Actions)`;
 
                 modifiers.push({
                     description,
-                    // @ts-ignore // TODO: TYPES
                     value: actionEntries.reduce((sum, current) => (sum += current.entry.data.value), 0),
-                    // @ts-ignore // TODO: TYPES
                     sources: actionEntries.map(({ entry, modifier }) => ({
                         name: entry.data.source.name,
-                        media: entry.data.source.media ?? entry.data.scope.action.media,
+                        media: (<any>entry.data.source).media ?? (<any>entry.data.scope.action).media,
                         value: entry.data.value,
                         description: this.getDescription(modifier)
                     }))
                 });
             }
 
-            // @ts-ignore // TODO: TYPES
             const grouped = new Map<string | number, ModifierTableEntry[]>();
 
             for (const entry of modifierEntries) {
@@ -99,12 +88,11 @@ export abstract class ModifierHelper {
                 let modifier;
 
                 for (const entry of group) {
-                    if (!this.isCombatModifier(entry.data.scope)) {
+                    if (!this.isCombatModifier(entry.data.scope as ModifierValue)) {
                         continue;
                     }
 
                     if (modifier === undefined) {
-                        // @ts-ignore // TODO: TYPES
                         modifier = new ModifierValue(entry.data.modifier, entry.data.value, entry.data.scope);
                     } else {
                         modifier.value += entry.data.value;
@@ -112,7 +100,6 @@ export abstract class ModifierHelper {
 
                     sources.push({
                         entry,
-                        // @ts-ignore // TODO: TYPES
                         modifier: new ModifierValue(entry.data.modifier, entry.data.value, entry.data.scope)
                     });
                 }
@@ -132,29 +119,22 @@ export abstract class ModifierHelper {
         return modifiers;
     }
 
-    // @ts-ignore // TODO: TYPES
     public static hasCombatModifiers(stats: StatObject): boolean {
         if (!stats?.hasStats) {
             return false;
         }
 
-        // @ts-ignore // TODO: TYPES
         const modifiers = stats.modifiers?.some(modifier => this.isCombatModifier(modifier));
-        // @ts-ignore // TODO: TYPES
         const enemyModifiers = stats.enemyModifiers?.some(modifier => this.isCombatModifier(modifier));
         const conditionalModifiers = stats.conditionalModifiers?.some(
-            // @ts-ignore // TODO: TYPES
             cond =>
-                // @ts-ignore // TODO: TYPES
                 cond.modifiers?.some(modifier => this.isCombatModifier(modifier)) ||
-                // @ts-ignore // TODO: TYPES
                 cond.enemyModifiers?.some(modifier => this.isCombatModifier(modifier))
         );
 
-        return modifiers || enemyModifiers || conditionalModifiers || stats.combatEffects?.length;
+        return modifiers || enemyModifiers || conditionalModifiers || stats.combatEffects?.length > 0;
     }
 
-    // @ts-ignore // TODO: TYPES
     public static isCombatModifier(entry: ModifierValue): boolean {
         if (entry.modifier.isCombat) {
             return true;
@@ -165,33 +145,32 @@ export abstract class ModifierHelper {
         );
     }
 
-    // @ts-ignore // TODO: TYPES
     private static getDescription(value: ModifierValue) {
         let description = value.print();
 
         if (description?.text.includes('Error:')) {
-            // @ts-ignore // TODO: TYPES
-            description = new ModifierValue(value.modifier, 1, 0).print(0, 0);
+            description = new ModifierValue(value.modifier, 1, {}).print(0, 0);
         }
 
         return description;
     }
 
-    // @ts-ignore // TODO: TYPES
     private static toSource({ entry, modifier }: { entry: ModifierTableEntry; modifier: any }): ActiveModifierSource {
         const source: ActiveModifierSource = {
             name: entry.data.source.name,
-            media: entry.data.source.media ?? entry.data.scope?.skill?.media ?? entry.data.source?.skill?.media,
+            media:
+                (<any>entry.data.source).media ??
+                entry.data.scope?.skill?.media ??
+                (<any>entry.data.source)?.skill?.media,
             value: entry.data.value,
             description: this.getDescription(modifier)
         };
 
-        if (entry.data.source.originalSource) {
-            source.name = entry.data.source.originalSource.name;
-            source.media = entry.data.source.originalSource.media;
+        if ((<any>entry.data.source).originalSource) {
+            source.name = (<any>entry.data.source).originalSource.name;
+            source.media = (<any>entry.data.source).originalSource.media;
         }
 
-        // @ts-ignore // TODO: TYPES
         if (entry.data.source instanceof SkillTree) {
             source.name = `${entry.data.source.name} ${entry.data.source.skill.name} Skill Tree`;
             source.media = entry.data.source.skill.media;
@@ -208,12 +187,10 @@ export abstract class ModifierHelper {
         return source;
     }
 
-    // @ts-ignore // TODO: TYPES
     private static withKey(modifier: Modifier, key: string) {
         return modifier.id === key;
     }
 
-    // @ts-ignore // TODO: TYPES
     private static isCombatSkillScope(modifier: ModifierValue) {
         // asume a modifier without a skill is global
         if (!modifier.skill) {

@@ -35,6 +35,10 @@ export function EmptySkillFactory(name: string, media: string) {
             return '';
         }
 
+        public isMasteryActionUnlocked() {
+            return false;
+        }
+
         public registerData(namespace: DataNamespace, data: any) {
             delete data.masteryLevelUnlocks;
             delete data.masteryPoolBonuses;

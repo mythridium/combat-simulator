@@ -10,9 +10,7 @@ declare global {
 }
 
 interface Edge {
-    // @ts-ignore // TODO: TYPES
     from: SkillTreeNode;
-    // @ts-ignore // TODO: TYPES
     to: SkillTreeNode;
     path: SVGPathElement;
 }
@@ -24,7 +22,6 @@ export class SkillTreeInterface extends HTMLElement {
     private readonly _container: HTMLDivElement;
     private readonly _edgeContainer: SVGSVGElement;
 
-    // @ts-ignore // TODO: TYPES
     private _tree: SkillTree;
     private readonly _nodes = new Map<string, HTMLDivElement>();
     private readonly _edges: Edge[] = [];
@@ -48,7 +45,6 @@ export class SkillTreeInterface extends HTMLElement {
         this.appendChild(this._content);
     }
 
-    // @ts-ignore // TODO: TYPES
     public _set(tree: SkillTree) {
         this._tree = tree;
         this._setSkillTree(tree);
@@ -60,7 +56,6 @@ export class SkillTreeInterface extends HTMLElement {
         }
 
         for (const node of nodes) {
-            // @ts-ignore // TODO: TYPES
             const skillNode = this._tree.nodes.find(skillNode => skillNode.id === node);
             const element = this._nodes.get(node);
 
@@ -70,11 +65,9 @@ export class SkillTreeInterface extends HTMLElement {
             }
         }
 
-        // @ts-ignore // TODO: TYPES
         this._tree.unlockedNodes = this._tree.nodes.filter(node => node.isUnlocked);
 
         for (const edge of this._edges) {
-            // @ts-ignore // TODO: TYPES
             skillTreeMenu.updateEdge(edge);
         }
     }
@@ -92,15 +85,12 @@ export class SkillTreeInterface extends HTMLElement {
         }
     }
 
-    // @ts-ignore // TODO: TYPES
     private _onClick(node: SkillTreeNode) {
         node.isUnlocked = !node.isUnlocked;
         this._toggleChain(node, node.isUnlocked);
-        // @ts-ignore // TODO: TYPES
         this._tree.unlockedNodes = this._tree.nodes.allObjects.filter(node => node.isUnlocked);
 
         for (const edge of this._edges) {
-            // @ts-ignore // TODO: TYPES
             skillTreeMenu.updateEdge(edge);
         }
 
@@ -108,7 +98,6 @@ export class SkillTreeInterface extends HTMLElement {
         Global.userInterface.main.querySelectorAll('mcs-food-slot').forEach(element => element._update());
     }
 
-    // @ts-ignore // TODO: TYPES
     private _toggleChain(node: SkillTreeNode, toggle: boolean) {
         if (toggle) {
             if (node.parents) {
@@ -133,15 +122,12 @@ export class SkillTreeInterface extends HTMLElement {
         element.classList.toggle('mcs-is-unlocked', node.isUnlocked);
     }
 
-    // @ts-ignore // TODO: TYPES
     private _setTooltip(tooltip: HTMLDivElement, node: SkillTreeNode) {
         tooltip.innerHTML = `<div class="text-warning">${
             node._name
-            // @ts-ignore // TODO: TYPES
         }</div><small>${node.stats.describeLineBreak()}</small>`;
     }
 
-    // @ts-ignore // TODO: TYPES
     private _setSkillTree(tree: SkillTree) {
         const layout = this._getLayout(tree);
         const graph = layout.graph();
@@ -166,25 +152,21 @@ export class SkillTreeInterface extends HTMLElement {
 
             element.onclick = () => this._onClick(node);
             this._nodes.set(node.id, element);
-            // @ts-ignore // TODO: TYPES
-            skillTreeMenu.setIconPosition(element, layout.node(node.id));
+            skillTreeMenu.setIconPosition(element as any, layout.node(node.id));
             this._container.append(element);
         }
 
-        // @ts-ignore // TODO: TYPES
         layout.edges().forEach(graphEdge => {
             const from = tree.nodes.getObjectByID(graphEdge.v);
             const to = tree.nodes.getObjectByID(graphEdge.w);
             const { points } = layout.edge(graphEdge);
 
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            // @ts-ignore // TODO: TYPES
             path.setAttribute('d', skillTreeMenu.computeEdgePath(points));
             path.classList.add('stroke-width-3x');
             path.setAttribute('fill', 'none');
 
             const edge = { from, to, path };
-            // @ts-ignore // TODO: TYPES
             skillTreeMenu.updateEdge(edge);
             this._edgeContainer.append(path);
             this._edges.push(edge);
@@ -195,9 +177,7 @@ export class SkillTreeInterface extends HTMLElement {
         this._container.style.height = `${GRAPH_HEIGHT}px`;
     }
 
-    // @ts-ignore // TODO: TYPES
     private _getLayout(tree: SkillTree) {
-        // @ts-ignore // TODO: TYPES
         const g = new dagre.graphlib.Graph();
 
         g.setGraph({
@@ -217,7 +197,6 @@ export class SkillTreeInterface extends HTMLElement {
             }
         }
 
-        // @ts-ignore // TODO: TYPES
         dagre.layout(g);
         return g;
     }

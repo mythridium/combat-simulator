@@ -51,9 +51,7 @@ export class PrayerTooltip extends HTMLElement {
                 requirements += `<div>Level: <span class="text-white">${prayer.level}</span></div>`;
             }
 
-            // @ts-ignore // TODO: TYPES
             if (prayer.abyssalLevel) {
-                // @ts-ignore // TODO: TYPES
                 requirements += `<div>Abyssal Level: <span class="text-white">${prayer.abyssalLevel}</span></div>`;
             }
 

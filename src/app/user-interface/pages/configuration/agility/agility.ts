@@ -32,7 +32,6 @@ export class AgilityPage extends HTMLElement {
         this._init();
     }
 
-    // @ts-ignore // TODO: TYPES
     public _import(realm: Realm, obstacles: [string, number, boolean][], pillars: [string, number][]) {
         const course = this._courses.get(realm.id);
 
@@ -46,10 +45,8 @@ export class AgilityPage extends HTMLElement {
     }
 
     private _init() {
-        // @ts-ignore // TODO: TYPES
         const realms = Array.from(Global.game.agility.courses.keys());
 
-        // @ts-ignore // TODO: TYPES
         for (const realm of realms) {
             const header = createElement('div', {
                 attributes: [
@@ -58,21 +55,17 @@ export class AgilityPage extends HTMLElement {
                 ]
             });
 
-            // @ts-ignore // TODO: TYPES
             header.appendChild(createElement('img', { attributes: [['src', realm.media]] }));
             header.appendChild(
-                // @ts-ignore // TODO: TYPES
                 createElement('div', { attributes: [['data-mcsTooltipContent', '']], text: `${realm.name} Course` })
             );
 
-            // @ts-ignore // TODO: TYPES
             const course = createElement('mcs-agility-course', { attributes: [['data-mcsRealmId', realm.id]] });
 
             if (this.getAttribute('readonly') !== null) {
                 course.setAttribute('readonly', '');
             }
 
-            // @ts-ignore // TODO: TYPES
             this._courses.set(realm.id, course);
 
             const content = createElement('div', { attributes: [['slot', 'tab-content']] });

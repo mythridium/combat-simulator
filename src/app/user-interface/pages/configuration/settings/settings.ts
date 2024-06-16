@@ -166,7 +166,6 @@ export class SettingsPage extends HTMLElement {
 
         // reset existing gamemode modifiers
         for (const modifier of Global.game.currentGamemode.disabledModifiers) {
-            // @ts-ignore // TODO: TYPES
             modifier.disabled = false;
         }
 
@@ -175,7 +174,6 @@ export class SettingsPage extends HTMLElement {
 
         // disable new gamemode modifiers
         for (const modifier of Global.game.currentGamemode.disabledModifiers) {
-            // @ts-ignore // TODO: TYPES
             modifier.disabled = true;
         }
 

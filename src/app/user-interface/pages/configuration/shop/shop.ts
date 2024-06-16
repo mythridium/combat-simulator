@@ -93,9 +93,7 @@ export class ShopPage extends HTMLElement {
             purchase =>
                 purchase.category.id !== 'melvorD:GolbinRaid' &&
                 !this.blacklist.some(blacklist => purchase.id.includes(blacklist)) &&
-                // @ts-ignore // TODO: TYPES
                 purchase.contains?.stats !== undefined &&
-                // @ts-ignore // TODO: TYPES
                 ModifierHelper.hasCombatModifiers(purchase.contains.stats)
         );
     }

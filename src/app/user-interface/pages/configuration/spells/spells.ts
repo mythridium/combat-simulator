@@ -47,11 +47,8 @@ export class SpellsPage extends HTMLElement {
     }
 
     public _import(settings: SpellSettings, useCombinationRunes: boolean) {
-        // @ts-ignore // TODO: TYPES
         Global.game.combat.player.spellSelection.attack = this._getSpell(
-            // @ts-ignore // TODO: TYPES
             settings.attack ?? Global.game.attackSpells.firstObject.id
-            // @ts-ignore // TODO: TYPES
         ) as AttackSpell;
         Global.game.combat.player.spellSelection.curse = this._getSpell(settings.curse) as CurseSpell;
         Global.game.combat.player.spellSelection.aurora = this._getSpell(settings.aurora) as AuroraSpell;
@@ -63,12 +60,10 @@ export class SpellsPage extends HTMLElement {
     }
 
     public _update() {
-        // @ts-ignore // TODO: TYPES
         this._validate(Global.game.combat.player.spellSelection.attack);
         this._validate(Global.game.combat.player.spellSelection.curse);
         this._validate(Global.game.combat.player.spellSelection.aurora);
 
-        // @ts-ignore // TODO: TYPES
         this._updateSpells(this._attack, Global.game.attackSpells);
         this._updateSpells(this._curses, Global.game.curseSpells);
         this._updateSpells(this._auroras, Global.game.auroraSpells);
@@ -82,9 +77,7 @@ export class SpellsPage extends HTMLElement {
         }
 
         if (!this._canEquip(spell)) {
-            // @ts-ignore // TODO: TYPES
             if (spell instanceof AttackSpell) {
-                // @ts-ignore // TODO: TYPES
                 Global.game.combat.player.spellSelection.attack = Global.game.attackSpells.firstObject;
             }
 
@@ -108,7 +101,6 @@ export class SpellsPage extends HTMLElement {
             }
 
             element._toggle(
-                // @ts-ignore // TODO: TYPES
                 Global.game.combat.player.spellSelection.attack === spell ||
                     Global.game.combat.player.spellSelection.curse === spell ||
                     Global.game.combat.player.spellSelection.aurora === spell
@@ -124,11 +116,9 @@ export class SpellsPage extends HTMLElement {
         }
 
         if (
-            // @ts-ignore // TODO: TYPES
             spell instanceof AttackSpell &&
             (spell.requiredItem === undefined ||
                 !Global.game.combat.player.equipment.checkForItem(spell.requiredItem)) &&
-            // @ts-ignore // TODO: TYPES
             !spell.spellbook.canUseWithDamageType(Global.game.combat.player.damageType)
         ) {
             return false;
@@ -167,7 +157,6 @@ export class SpellsPage extends HTMLElement {
             Global.game.combat.player.useCombinationRunes = isSelected;
         });
 
-        // @ts-ignore // TODO: TYPES
         for (const spellBook of Global.game.attackSpellbooks.allObjects.reverse()) {
             const content = createElement('div', {
                 attributes: [['slot', 'tab-content']]
@@ -253,35 +242,27 @@ export class SpellsPage extends HTMLElement {
     }
 
     private _toggle(spell: CombatSpell) {
-        // @ts-ignore // TODO: TYPES
         if (spell instanceof AttackSpell) {
-            // @ts-ignore // TODO: TYPES
             if (spell.spellbook.id === 'melvorF:Ancient') {
                 Global.game.combat.player.spellSelection.curse = undefined;
             }
 
-            // @ts-ignore // TODO: TYPES
             if (!spell.spellbook.canUseWithDamageType(Global.game.combat.player.damageType)) {
                 Notify.message(
-                    // @ts-ignore // TODO: TYPES
                     `This spell cannot be used with ${Global.game.combat.player.damageType.name}`,
                     'danger',
                     Global.game.altMagic.media
                 );
             } else {
-                // @ts-ignore // TODO: TYPES
                 if (Global.game.combat.player.spellSelection.attack === spell) {
-                    // @ts-ignore // TODO: TYPES
                     Global.game.combat.player.spellSelection.attack = Global.game.attackSpells.firstObject;
                 } else {
-                    // @ts-ignore // TODO: TYPES
                     Global.game.combat.player.spellSelection.attack = spell;
                 }
             }
         }
 
         if (spell instanceof CurseSpell) {
-            // @ts-ignore // TODO: TYPES
             if (Global.game.combat.player.spellSelection.attack?.spellbook?.id === 'melvorF:Ancient') {
                 Global.game.combat.player.spellSelection.curse = undefined;
                 Notify.message(getLangString('TOASTS_NO_CURSES_WITH_ANCIENT'), 'danger', Global.game.altMagic.media);
@@ -308,7 +289,6 @@ export class SpellsPage extends HTMLElement {
             return;
         }
 
-        // @ts-ignore // TODO: TYPES
         const attack = Global.game.attackSpells.getObjectByID(spellId);
 
         if (attack) {
@@ -328,25 +308,6 @@ export class SpellsPage extends HTMLElement {
         }
 
         Global.logger.error(`Invalid spell id`, spellId);
-    }
-
-    private _getSpellElement(spell: CombatSpell | undefined) {
-        if (!spell) {
-            return;
-        }
-
-        // @ts-ignore // TODO: TYPES
-        if (spell instanceof AttackSpell) {
-            return this._attack.get(spell.id);
-        }
-
-        if (spell instanceof CurseSpell) {
-            return this._curses.get(spell.id);
-        }
-
-        if (spell instanceof AuroraSpell) {
-            return this._auroras.get(spell.id);
-        }
     }
 }
 

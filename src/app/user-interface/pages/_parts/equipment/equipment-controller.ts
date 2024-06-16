@@ -90,7 +90,7 @@ interface Section {
 }
 
 export type Sections = {
-    [key in SlotType | 'Food']: Section[];
+    [key in string]: Section[];
 };
 
 type GearSlotTypes = 'Helmet' | 'Platebody' | 'Gloves' | 'Platelegs' | 'Boots' | 'Shield';
@@ -192,7 +192,6 @@ export abstract class EquipmentController {
                     }
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Passive')) {
                     const isPassiveSlayer = this.isPassiveSlayer(item);
                     const isGear = this.isGear(item);
@@ -210,17 +209,14 @@ export abstract class EquipmentController {
                     }
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Amulet')) {
                     result.amulet.push(item);
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Ring')) {
                     result.ring.push(item);
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Consumable')) {
                     const player = ['PlayerAttack', 'PlayerSummonAttack', 'PrayerPointConsumption', 'RuneConsumption'];
                     const monster = ['EnemyAttack', 'MonsterKilled', 'MonsterSpawned'];
@@ -241,35 +237,28 @@ export abstract class EquipmentController {
                     }
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Gem')) {
                     result.gem.push(item);
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Enhancement1')) {
                     result.enhancement1.push(item);
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Enhancement2')) {
                     result.enhancement2.push(item);
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Enhancement3')) {
                     result.enhancement3.push(item);
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Cape')) {
                     result.cape.push(item);
                 }
 
                 if (
-                    // @ts-ignore // TODO: TYPES
                     item.validSlots.some(slot => slot.id === 'melvorD:Summon1') ||
-                    // @ts-ignore // TODO: TYPES
                     item.validSlots.some(slot => slot.id === 'melvorD:Summon2')
                 ) {
                     const key = this.isCombatSummon(item) ? 'combat' : 'nonCombat';
@@ -278,7 +267,6 @@ export abstract class EquipmentController {
 
                 if (this.isGear(item)) {
                     for (const slotName of this.gearSlots) {
-                        // @ts-ignore // TODO: TYPES
                         if (item.validSlots.some(slot => slot.localID === slotName)) {
                             const key = this.toLowerCaseKey(slotName);
                             const type = this.getGearType(item);
@@ -304,18 +292,15 @@ export abstract class EquipmentController {
                     }
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Quiver')) {
                     if (item.ammoType === undefined || item.ammoType === AmmoTypeID.None) {
                         result.quiver.other.push(item);
                     }
 
-                    // @ts-ignore // TODO: TYPES
                     if (item.ammoType === AmmoTypeID.Arrows || item.ammoType === AmmoTypeID.AbyssalArrows) {
                         result.quiver.arrows.push(item);
                     }
 
-                    // @ts-ignore // TODO: TYPES
                     if (item.ammoType === AmmoTypeID.Bolts || item.ammoType === AmmoTypeID.AbyssalBolts) {
                         result.quiver.bolts.push(item);
                     }
@@ -396,24 +381,25 @@ export abstract class EquipmentController {
         this.sections = this.getSections(categories);
     }
 
-    public static get(key: SlotType | 'Food') {
+    public static get(key: string) {
         return this.sections[key];
     }
 
     public static getEquipmentTooltip(item: EquipmentItem) {
         let tooltip = `<div class="text-left mt-1 mb-1"><div class="text-warning mb-2">${item.name}</div><small class="text-left">`;
 
-        // @ts-ignore // TODO: TYPES
         if (item.validSlots.some(slot => slot.id === 'melvorD:Weapon')) {
-            // @ts-ignore // TODO: TYPES
-            tooltip += `<div class="mb-1">Deals <img class="skill-icon-xxs mr-1" src="${item.damageType.media}"><span class="font-w600" style="color:${item.damageType.spanColour}">${item.damageType.name}</span></div>`;
+            tooltip += `<div class="mb-1">Deals <img class="skill-icon-xxs mr-1" src="${
+                (<WeaponItem>item).damageType.media
+            }"><span class="${(<WeaponItem>item).damageType.spanClass}">${
+                (<WeaponItem>item).damageType.name
+            }</span></div>`;
         }
 
         if (item.hasDescription) {
             let description = item.description;
 
             try {
-                // @ts-ignore // TODO: TYPES
                 item._modifiedDescription = undefined;
                 description = item.modifiedDescription;
             } catch {}
@@ -424,7 +410,6 @@ export abstract class EquipmentController {
         tooltip += getItemSpecialAttackInformation(item);
 
         const pushBonus = (list: [string, string, string?, string?][], header = '', footer = '', multiplier = 1) => {
-            // @ts-ignore // TODO: TYPES
             if (!item.equipmentStats) {
                 return;
             }
@@ -434,10 +419,8 @@ export abstract class EquipmentController {
             for (const [name, tag, suffix, damageType] of list) {
                 let value = item.equipmentStats
                     .filter(statPair =>
-                        // @ts-ignore // TODO: TYPES
                         damageType
-                            ? // @ts-ignore // TODO: TYPES
-                              statPair.key === tag && statPair.damageType?.id === damageType
+                            ? statPair.key === tag && (<any>statPair).damageType?.id === damageType
                             : statPair.key === tag
                     )
                     .reduce((acc, statPair) => acc + statPair.value, 0);
@@ -504,9 +487,7 @@ export abstract class EquipmentController {
             ) as SkillLevelRequirement[];
 
             const abyssalLevelRequirements = item.equipRequirements.filter(
-                // @ts-ignore // TODO: TYPES
                 requirement => requirement.type === 'AbyssalLevel'
-                // @ts-ignore // TODO: TYPES
             ) as AbyssalLevelRequirement[];
 
             for (const requirement of levelRequirements.filter((_, index) => index <= 4)) {
@@ -551,7 +532,6 @@ export abstract class EquipmentController {
             isMatch = true;
         }
 
-        // @ts-ignore // TODO: TYPES
         if (item instanceof WeaponItem && item.damageType.name.toLowerCase().includes(search)) {
             isMatch = true;
         }
@@ -577,14 +557,10 @@ export abstract class EquipmentController {
             if (special.toLowerCase().includes(search)) {
                 if (
                     item instanceof WeaponItem &&
-                    // @ts-ignore // TODO: TYPES
                     Global.game.damageTypes.allObjects
-                        // @ts-ignore // TODO: TYPES
                         .map(type => type.name.toLowerCase())
-                        // @ts-ignore // TODO: TYPES
                         .some(damageType => damageType.includes(search))
                 ) {
-                    // @ts-ignore // TODO: TYPES
                     if (item.damageType.name.toLowerCase().includes(search)) {
                         isMatch = true;
                     }
@@ -594,11 +570,8 @@ export abstract class EquipmentController {
             }
         }
 
-        // @ts-ignore // TODO: TYPES
-        const stats = Array.from(item.equipmentStats?.values() ?? [])
-            // @ts-ignore // TODO: TYPES
+        const stats = Array.from((<EquipmentItem>item).equipmentStats?.values() ?? [])
             .filter(stat => stat.value > 0)
-            // @ts-ignore // TODO: TYPES
             .map(stat => Equipment.getEquipStatDescription(stat))
             .join(' ');
 
@@ -612,11 +585,9 @@ export abstract class EquipmentController {
     private static getSections(categories: Categories) {
         const sections: Sections = {} as any;
 
-        // @ts-ignore // TODO: TYPES
         for (const slot of Global.game.combat.player.equipment.equippedArray.map(slot => slot.slot)) {
             const slotSections = this.createSections(slot.localID, categories);
 
-            // @ts-ignore // TODO: TYPES
             sections[slot.id] = slotSections.map(section => {
                 this.sort(section.items, section.sortBy, section.ignoreExpansionSort);
 
@@ -635,10 +606,7 @@ export abstract class EquipmentController {
         return sections;
     }
 
-    private static createSections(
-        slot: SlotTypes | 'Food' | 'Enhancement1' | 'Enhancement2' | 'Enhancement3',
-        categories: Categories
-    ) {
+    private static createSections(slot: string, categories: Categories) {
         const sections: CategorySection[] = [];
 
         switch (slot) {
@@ -869,7 +837,7 @@ export abstract class EquipmentController {
         return keyA - keyB;
     }
 
-    private static sortBySkill(skill: SkillName) {
+    private static sortBySkill(skill: string) {
         return (a: EquipmentItem, b: EquipmentItem) => {
             const skillA = this.getItemLevelRequirement(a, skill);
             const skillB = this.getItemLevelRequirement(b, skill);
@@ -887,13 +855,12 @@ export abstract class EquipmentController {
         };
     }
 
-    private static toLowerCaseKey(key: SlotTypes) {
+    private static toLowerCaseKey(key: string) {
         return key.toLowerCase() as Lowercase<GearSlotTypes>;
     }
 
     private static isGear(item: EquipmentItem) {
-        // @ts-ignore // TODO: TYPES
-        return item.validSlots.some(slot => this.gearSlots.includes(slot.localID));
+        return item.validSlots.some(slot => this.gearSlots.includes(slot.localID as GearSlotTypes));
     }
 
     private static getGearType(item: EquipmentItem) {
@@ -931,17 +898,15 @@ export abstract class EquipmentController {
         return requirement.type === 'SkillLevel';
     }
 
-    // @ts-ignore // TODO: TYPES
     private static isAbyssalRequirement(requirement: AnyRequirement): requirement is AbyssalLevelRequirement {
-        // @ts-ignore // TODO: TYPES
         return requirement.type === 'AbyssalLevel';
     }
 
-    private static isRequirementFor(requirement: AnyRequirement, stat: SkillName) {
+    private static isRequirementFor(requirement: AnyRequirement, stat: string) {
         return this.isSkillRequirement(requirement) && requirement.skill.localID === stat;
     }
 
-    private static getItemLevelRequirement(item: EquipmentItem, skill: SkillName) {
+    private static getItemLevelRequirement(item: EquipmentItem, skill: string) {
         if (skill === Global.game.summoning.localID) {
             return Global.game.summoning.recipesByProduct.get(item)?.level ?? 0;
         }
@@ -957,7 +922,7 @@ export abstract class EquipmentController {
         return skillRequirement?.level ?? 0;
     }
 
-    private static getItemAbyssalLevelRequirement(item: EquipmentItem, skill: SkillName) {
+    private static getItemAbyssalLevelRequirement(item: EquipmentItem, skill: string) {
         if (skill === Global.game.summoning.localID) {
             return Global.game.summoning.recipesByProduct.get(item)?.level ?? 0;
         }
@@ -967,9 +932,7 @@ export abstract class EquipmentController {
         }
 
         const abyssalRequirment = item.equipRequirements.find(
-            // @ts-ignore // TODO: TYPES
             requirement => this.isAbyssalRequirement(requirement) && requirement.skill.localID === skill
-            // @ts-ignore // TODO: TYPES
         ) as AbyssalLevelRequirement;
 
         return abyssalRequirment?.level ?? 0;
@@ -1009,23 +972,21 @@ export abstract class EquipmentController {
 
         const hasModifierQuery = this.hasAnyModifierQuery(
             item,
-            // @ts-ignore // TODO: TYPES
-            entry => entry.modifier.id === 'melvorD:skillXP' && entry.skill === Global.game.slayer,
-            // @ts-ignore // TODO: TYPES
-            entry => entry.modifier.id === 'melvorD:currencyGain' && entry.currency?.id === 'melvorD:SlayerCoins'
+            entry => (<any>entry).modifier.id === 'melvorD:skillXP' && (<any>entry).skill === Global.game.slayer,
+            entry =>
+                (<any>entry).modifier.id === 'melvorD:currencyGain' &&
+                (<any>entry).currency?.id === 'melvorD:SlayerCoins'
         );
 
         return hasModifier || hasModifierQuery;
     }
 
     private static hasModifier(item: EquipmentItem, ...keys: string[]) {
-        // @ts-ignore // TODO: TYPES
         return item.modifiers.some(entry => keys.includes(entry.modifier.id));
     }
 
     private static hasAnyModifierQuery(item: EquipmentItem, ...predicates: ((item: EquipmentItem) => boolean)[]) {
-        // @ts-ignore // TODO: TYPES
-        return item.modifiers.some(entry => predicates.some(predicate => predicate(entry)));
+        return item.modifiers.some(entry => predicates.some(predicate => predicate(<any>entry)));
     }
 
     private static isWeapon(item: EquipmentItem): item is WeaponItem {
@@ -1033,7 +994,6 @@ export abstract class EquipmentController {
     }
 
     private static is2Hand(item: WeaponItem) {
-        // @ts-ignore // TODO: TYPES
         return item.occupiesSlots.some(slot => slot.id === 'melvorD:Shield');
     }
 

@@ -76,7 +76,6 @@ export class AstrologyPage extends HTMLElement {
                 this._toggleBought(constellation, constellationSettings.standardModsBought, ModifierType.Standard);
 
                 for (const [index, bought] of constellationSettings.standardModsBought.entries()) {
-                    // @ts-ignore // TODO: TYPES
                     constellation.standardModifiers[index].timesBought = bought;
                 }
             }
@@ -85,18 +84,14 @@ export class AstrologyPage extends HTMLElement {
                 this._toggleBought(constellation, constellationSettings.uniqueModsBought, ModifierType.Unique);
 
                 for (const [index, bought] of constellationSettings.uniqueModsBought.entries()) {
-                    // @ts-ignore // TODO: TYPES
                     constellation.uniqueModifiers[index].timesBought = bought;
                 }
             }
 
-            // @ts-ignore // TODO: TYPES
             if (constellation.abyssalModifiers.length) {
                 this._toggleBought(constellation, constellationSettings.abyssalModsBought, ModifierType.Abyssal);
 
-                // @ts-ignore // TODO: TYPES
                 for (const [index, bought] of constellationSettings.abyssalModsBought.entries()) {
-                    // @ts-ignore // TODO: TYPES
                     constellation.abyssalModifiers[index].timesBought = bought;
                 }
             }
@@ -126,7 +121,6 @@ export class AstrologyPage extends HTMLElement {
     }
 
     private _updateTooltip(constellation: AstrologyRecipe, type: ModifierType) {
-        // @ts-ignore // TODO: TYPES
         for (const [index, modifier] of constellation[`${type}Modifiers`].entries()) {
             const elements = this._modifiers.get(`${constellation.id}-${type}-${index}`);
 
@@ -146,15 +140,12 @@ export class AstrologyPage extends HTMLElement {
         if (type === ToggleType.Melvor) {
             for (const constellation of Global.game.astrology.actions.allObjects) {
                 astrologyModifiers.set(constellation.id, {
-                    // @ts-ignore // TODO: TYPES
                     standardModsBought: constellation.standardModifiers.map(modifier =>
                         this._hasConstellations(type) ? 0 : modifier.maxCount
                     ),
-                    // @ts-ignore // TODO: TYPES
                     uniqueModsBought: constellation.uniqueModifiers.map(modifier =>
                         this._hasConstellations(type) ? 0 : modifier.maxCount
                     ),
-                    // @ts-ignore // TODO: TYPES
                     abyssalModsBought: constellation.abyssalModifiers.map(modifier => modifier.timesBought)
                 });
             }
@@ -163,11 +154,8 @@ export class AstrologyPage extends HTMLElement {
         if (type === ToggleType.Abyssal) {
             for (const constellation of Global.game.astrology.actions.allObjects) {
                 astrologyModifiers.set(constellation.id, {
-                    // @ts-ignore // TODO: TYPES
                     standardModsBought: constellation.standardModifiers.map(modifier => modifier.timesBought),
-                    // @ts-ignore // TODO: TYPES
                     uniqueModsBought: constellation.uniqueModifiers.map(modifier => modifier.timesBought),
-                    // @ts-ignore // TODO: TYPES
                     abyssalModsBought: constellation.abyssalModifiers.map(modifier =>
                         this._hasConstellations(type) ? 0 : modifier.maxCount
                     )
@@ -184,9 +172,7 @@ export class AstrologyPage extends HTMLElement {
         if (type === ToggleType.Melvor) {
             return Global.game.astrology.actions.allObjects.some(action => {
                 return (
-                    // @ts-ignore // TODO: TYPES
                     action.standardModifiers.some(modifier => modifier.timesBought) ||
-                    // @ts-ignore // TODO: TYPES
                     action.uniqueModifiers.some(modifier => modifier.timesBought)
                 );
             });
@@ -194,10 +180,7 @@ export class AstrologyPage extends HTMLElement {
 
         if (type === ToggleType.Abyssal) {
             return Global.game.astrology.actions.allObjects.some(action => {
-                return (
-                    // @ts-ignore // TODO: TYPES
-                    action.abyssalModifiers.some(modifier => modifier.timesBought)
-                );
+                return action.abyssalModifiers.some(modifier => modifier.timesBought);
             });
         }
 
@@ -237,14 +220,12 @@ export class AstrologyPage extends HTMLElement {
                 container.appendChild(this._createModifier(constellation, modifier, index, ModifierType.Unique));
             }
 
-            // @ts-ignore // TODO: TYPES
             for (const [index, modifier] of constellation.abyssalModifiers.entries()) {
                 container.appendChild(this._createModifier(constellation, modifier, index, ModifierType.Abyssal));
             }
 
             content.appendChild(container);
 
-            // @ts-ignore // TODO: TYPES
             const tab = this._getContainer(constellation.realm);
 
             tab.appendChild(header);
@@ -257,7 +238,6 @@ export class AstrologyPage extends HTMLElement {
         }
     }
 
-    // @ts-ignore // TODO: TYPES
     private _getContainer(realm: Realm) {
         if (!this._tabs.has(realm.id)) {
             this._tabs.set(realm.id, createElement('mcs-tabs'));
@@ -315,7 +295,6 @@ export class AstrologyPage extends HTMLElement {
                     modifierElement._toggle(false);
                 }
 
-                // @ts-ignore // TODO: TYPES
                 if (constellation[`${type}Modifiers`][index].timesBought !== i + 1) {
                     for (const [index, modifierElement] of modifierElements.entries()) {
                         if (index <= i) {
@@ -324,9 +303,7 @@ export class AstrologyPage extends HTMLElement {
                     }
                 }
 
-                // @ts-ignore // TODO: TYPES
                 constellation[`${type}Modifiers`][index].timesBought =
-                    // @ts-ignore // TODO: TYPES
                     constellation[`${type}Modifiers`][index].timesBought === i + 1 ? 0 : i + 1;
 
                 Global.game.astrology.actionMastery.set(constellation, { xp: 13034432, level: 99 });
@@ -353,7 +330,6 @@ export class AstrologyPage extends HTMLElement {
         constellation: AstrologyRecipe
     ) {
         const multi =
-            // @ts-ignore // TODO: TYPES
             Global.game.astrology.hasMasterRelic(Global.game.defaultRealm) &&
             Global.game.astrology.isConstellationComplete(constellation)
                 ? 2
@@ -361,11 +337,8 @@ export class AstrologyPage extends HTMLElement {
 
         const modValue = buyCount * modifier.incrementValue * multi;
 
-        // @ts-ignore // TODO: TYPES
         const mods = StatObject.formatDescriptions(
-            // @ts-ignore // TODO: TYPES
             modifier.stats,
-            // @ts-ignore // TODO: TYPES
             getElementDescriptionFormatter('div', 'mb-1'),
             modValue,
             modValue

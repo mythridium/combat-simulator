@@ -24,7 +24,6 @@ export abstract class Drops {
     }
 
     private static get chanceForNoLoot() {
-        // @ts-ignore // TODO: TYPES
         return 1 - Global.game.combat.player.modifiers.noCombatDropChance / 100;
     }
 
@@ -357,9 +356,7 @@ export abstract class Drops {
             return;
         }
 
-        const isNotAbyssal =
-            // @ts-ignore // TODO: TYPES
-            Global.game.combat.player.damageType?.id !== 'melvorItA:Abyssal';
+        const isNotAbyssal = Global.game.combat.player.damageType?.id !== 'melvorItA:Abyssal';
 
         if (!isNotAbyssal) {
             return 0;
@@ -541,7 +538,6 @@ export abstract class Drops {
 
     private static getChanceForPet(data: SimulationData, skillLevel: number, timeMultiplier: number) {
         const interval = data.petRolls[Global.skillIds[Global.stores.plotter.state.selectedSkill]];
-        // @ts-ignore // TODO: TYPES
         const increasedChance = 1 - Global.game.combat.player.modifiers.skillPetLocationChance / 100;
 
         // this is the percentage chance to drop within one second
@@ -601,7 +597,6 @@ export abstract class Drops {
             const timeMultiplier =
                 Global.stores.plotter.timeMultiplier === -1 ? data.killTimeS : Global.stores.plotter.timeMultiplier;
 
-            // @ts-ignore // TODO: TYPES
             data.markChance = this.getChanceForMarkSkill(data, skill, area.realm, timeMultiplier);
         }
 
@@ -626,7 +621,6 @@ export abstract class Drops {
                     Global.stores.plotter.timeMultiplier === -1 ? data.killTimeS : Global.stores.plotter.timeMultiplier;
 
                 const area = Global.game.getMonsterArea(monster);
-                // @ts-ignore // TODO: TYPES
                 data.markChance = this.getChanceForMarkSkill(data, skill, area.realm, timeMultiplier);
                 chanceForMark += data.markChance;
             }
@@ -634,7 +628,6 @@ export abstract class Drops {
             dungeonData.markChance = chanceForMark / dungeon.monsters.length;
         }
 
-        // @ts-ignore // TODO: TYPES
         for (const task of Lookup.tasks.allObjects.map(task => task.id)) {
             const data = Global.simulation.slayerSimData[task];
 
@@ -655,7 +648,6 @@ export abstract class Drops {
                     Global.stores.plotter.timeMultiplier === -1 ? data.killTimeS : Global.stores.plotter.timeMultiplier;
 
                 const area = Global.game.getMonsterArea(monster);
-                // @ts-ignore // TODO: TYPES
                 chanceForMark += this.getChanceForMarkSkill(data, skill, area.realm, timeMultiplier);
             }
 
@@ -666,12 +658,10 @@ export abstract class Drops {
     public static getChanceForMarkBreakdown(
         data: SimulationData,
         skill: AnySkill,
-        // @ts-ignore // TODO: TYPES
         realm: Realm,
         timeMultiplier: number
     ) {
         const interval = data.markRolls && !Number.isNaN(data.markRolls[skill.id]) ? data.markRolls[skill.id] ?? 0 : 0;
-        // @ts-ignore // TODO: TYPES
         const recipes = Array.from(Global.game.summoning.recipesBySkillAndRealm.get(skill).get(realm));
 
         const markRolls: { [index: string]: { markId: string; percentage: number }[] } = {};
@@ -682,9 +672,7 @@ export abstract class Drops {
             }
 
             markRolls[skill.id].push({
-                // @ts-ignore // TODO: TYPES
                 markId: mark.id,
-                // @ts-ignore // TODO: TYPES
                 percentage: this.getChanceForMark(mark, skill, interval, timeMultiplier)
             });
         }
@@ -692,13 +680,10 @@ export abstract class Drops {
         return markRolls;
     }
 
-    // @ts-ignore // TODO: TYPES
     private static getChanceForMarkSkill(data: SimulationData, skill: AnySkill, realm: Realm, timeMultiplier: number) {
         const interval = data.markRolls[skill.id] ?? 0;
-        // @ts-ignore // TODO: TYPES
         const recipes = Array.from(Global.game.summoning.recipesBySkillAndRealm.get(skill).get(realm));
 
-        // @ts-ignore // TODO: TYPES
         const probabilities = recipes.map(mark => this.getChanceForMark(mark, skill, interval, timeMultiplier) / 100);
         const probabilityOfNone = probabilities.reduce((sum, probability) => sum * (1 - probability), 1);
 
@@ -795,7 +780,6 @@ export abstract class Drops {
                 const value = this.getItemValue(drop.item);
                 const herb = Global.game.farming.getHerbFromSeed(drop.item);
 
-                // @ts-ignore // TODO: TYPES
                 if (Global.game.combat.player.modifiers.seedDropConversionChance > 0 && herb) {
                     averageQuantity += 3;
                     const herbValue = this.getItemValue(herb);
@@ -804,7 +788,6 @@ export abstract class Drops {
 
                     gpWeight[value.currency.id] +=
                         value.quantity *
-                        // @ts-ignore // TODO: TYPES
                         (1 - Global.game.combat.player.modifiers.seedDropConversionChance) *
                         drop.weight *
                         averageQuantity;
@@ -812,7 +795,6 @@ export abstract class Drops {
                     gpWeight[herbValue.currency.id] ??= 0;
                     gpWeight[herbValue.currency.id] +=
                         herbValue.quantity *
-                        // @ts-ignore // TODO: TYPES
                         (1 - Global.game.combat.player.modifiers.seedDropConversionChance) *
                         drop.weight *
                         averageQuantity;
@@ -1138,21 +1120,18 @@ export abstract class Drops {
         return depthValue;
     }
 
-    // TODO: TYPES
     private static getItemValue(item: AnyItem): { currency: Currency & { id: string }; quantity: number } {
         if (item === undefined) {
             Global.logger.error(`Unexpected item ${item} in Drops.getItemValue`);
             return { currency: Global.game.gp as Currency & { id: string }, quantity: 0 };
         }
 
-        // @ts-ignore // TODO: TYPES
         return item.sellsFor;
     }
 
     private static emptyGPValue() {
         const weight: GPValue = {};
 
-        // @ts-ignore // TODO: TYPES
         weight[Global.game.gp.id] = 0;
 
         return weight;
@@ -1188,7 +1167,6 @@ export abstract class Drops {
         return (dropCount * itemDoubleChance) / data.killTimeS;
     }
 
-    // @ts-ignore // TODO: TYPES
     private static getStrongholdDropChance(stronghold: Stronghold, data: SimulationData) {
         if (!data) {
             return;
@@ -1258,14 +1236,12 @@ export abstract class Drops {
         return averageDropAmt;
     }
 
-    // @ts-ignore // TODO: TYPES
     private static getStrongholdAverageDropAmount(stronghold: Stronghold) {
         let averageDropAmt = 0;
 
         const rewards = stronghold.tiers[stronghold.mcsTier].rewards;
 
         const expected = this.addLoot({
-            // TODO: TYPES
             drops: rewards.items.map((reward: any) => ({
                 weight: rewards.chance,
                 item: reward.item,
@@ -1318,9 +1294,8 @@ export abstract class Drops {
         }
 
         const enemy = new SimClasses.SimEnemy(Global.game.combat, Global.game);
-        // @ts-ignore // TODO: TYPES
+
         enemy.modifiers.init(Global.game);
-        // @ts-ignore // TODO: TYPES
         enemy.setNewMonster(monster);
 
         return Math.max(Math.floor(enemy.stats.maxBarrier / numberMultiplier / 20), 1);

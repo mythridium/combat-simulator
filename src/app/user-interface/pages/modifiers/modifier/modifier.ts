@@ -44,7 +44,6 @@ export class ModifiersModifier extends HTMLElement {
 
         this._header.append(createElement('i', { classList: ['fa', 'mcs-modifiers-modifier-header-icon'] }));
 
-        // @ts-ignore // TODO: TYPES
         const header = getElementDescriptionFormatter('div', '')(this._modifier.description);
         this._header.append(header);
         this._header.append(createElement('div', { classList: ['mcs-flex-space'] }));
@@ -71,7 +70,6 @@ export class ModifiersModifier extends HTMLElement {
 
             container.append(createElement('div', { classList: ['mcs-modifier-source-name'], text: source.name }));
 
-            // @ts-ignore // TODO: TYPES
             const element = getElementDescriptionFormatter('div', 'mcs-modifier-source-text')(source.description);
             container.append(element);
 

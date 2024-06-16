@@ -31,14 +31,11 @@ export abstract class StatsController {
             100,
             Math.max(
                 0,
-                // @ts-ignore // TODO: TYPES
                 Global.game.combat.player.modifiers.combatLootDoublingChance +
-                    // @ts-ignore // TODO: TYPES
                     Global.game.combat.player.modifiers.globalItemDoublingChance
             )
         );
 
-        // @ts-ignore // TODO: TYPES
         const gpBonus = Util.averageDoubleMultiplier(Global.game.combat.getCurrencyModifier(Global.game.gp));
 
         const stats = Global.game.combat.player.stats;
@@ -60,22 +57,17 @@ export abstract class StatsController {
             summoningMaxHit: summonMaxHit,
             summoningBarrierMaxHit: barrierMaxHit,
             critChance: Global.game.combat.player.modifiers.getCritChance(Global.game.combat.player.attackType),
-            // @ts-ignore // TODO: TYPES
             critDamage: 150 + Global.game.combat.player.modifiers.critMultiplier,
             maxDefRoll: stats.evasion.melee,
             maxRngDefRoll: stats.evasion.ranged,
             maxMagDefRoll: stats.evasion.magic,
-            // @ts-ignore // TODO: TYPES
             damageReduction: stats.getResistance(Lookup.normalDamage),
             abyssalResistance: cloudManager.hasItAEntitlementAndIsEnabled
-                ? // @ts-ignore // TODO: TYPES
-                  stats.getResistance(Lookup.abyssalDamage)
+                ? stats.getResistance(Lookup.abyssalDamage)
                 : 0,
             maxHitpoints: Global.game.combat.player.stats.maxHitpoints,
             autoEatThreshold: Math.floor(Global.game.combat.player.autoEatThreshold),
-            // @ts-ignore // TODO: TYPES
             slayerAreaNegation: Global.game.combat.player.modifiers.flatSlayerAreaEffectNegation,
-            // @ts-ignore // TODO: TYPES
             abyssalSlayerAreaNegation: Global.game.combat.player.modifiers.flatAbyssalSlayerAreaEffectNegation,
             gpBonus,
             lootBonusPercent

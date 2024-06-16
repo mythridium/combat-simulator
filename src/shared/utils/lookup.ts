@@ -1,12 +1,10 @@
 import { Global } from 'src/shared/global';
 
 function forGameMode(area: CombatArea) {
-    // @ts-ignore // TODO: TYPES
     if (!area.allowedGamemodes?.size) {
         return true;
     }
 
-    // @ts-ignore // TODO: TYPES
     return Array.from(area.allowedGamemodes).some(gamemode => gamemode.id === Global.get.currentGamemodeId);
 }
 
@@ -14,30 +12,24 @@ export abstract class Lookup {
     private static _combatAreas: {
         combatAreas: CombatArea[];
         dungeons: Dungeon[];
-        // @ts-ignore // TODO: TYPES
         depths: AbyssDepth[];
         slayer: SlayerArea[];
-        // @ts-ignore // TODO: TYPES
         strongholds: Stronghold[];
     };
 
     public static get melvor() {
-        // @ts-ignore // TODO: TYPES
         return Global.get.game.realms.getObjectByID('melvorD:Melvor');
     }
 
     public static get abyssal() {
-        // @ts-ignore // TODO: TYPES
         return Global.get.game.realms.getObjectByID('melvorItA:Abyssal');
     }
 
     public static get normalDamage() {
-        // @ts-ignore // TODO: TYPES
         return Global.get.game.damageTypes.getObjectByID('melvorD:Normal');
     }
 
     public static get abyssalDamage() {
-        // @ts-ignore // TODO: TYPES
         return Global.get.game.damageTypes.getObjectByID('melvorItA:Abyssal');
     }
 
@@ -50,36 +42,29 @@ export abstract class Lookup {
     }
 
     public static get depths() {
-        // @ts-ignore // TODO: TYPES
         return Global.get.game.abyssDepths;
     }
 
     public static get strongholds() {
-        // @ts-ignore // TODO: TYPES
         return Global.get.game.strongholds;
     }
 
-    // @ts-ignore // TODO: TYPES
-    public static get tasks(): SlayerTaskCategory {
-        // @ts-ignore // TODO: TYPES
+    public static get tasks() {
         return Global.get.game.combat.slayerTask.categories;
     }
 
     public static get combatAreas() {
-        // @ts-ignore // TODO: TYPES
         const categories = Global.get.game.combatAreaCategories;
 
         const combatAreas: CombatArea[] = categories.getObjectByID('melvorD:CombatAreas')?.areas ?? [];
         const abyssalCombatAreas: CombatArea[] = categories.getObjectByID('melvorItA:AbyssalCombatAreas')?.areas ?? [];
-        const dungeons: Dungeon[] = categories.getObjectByID('melvorD:Dungeons')?.areas ?? [];
-        // @ts-ignore // TODO: TYPES
-        const depths: AbyssDepth[] = categories.getObjectByID('melvorItA:TheAbyss')?.areas ?? [];
-        const slayer: SlayerArea[] = categories.getObjectByID('melvorF:SlayerAreas')?.areas ?? [];
-        const abyssalSlayer: SlayerArea[] = categories.getObjectByID('melvorItA:AbyssalSlayerAreas')?.areas ?? [];
-        // @ts-ignore // TODO: TYPES
-        const strongholds: Stronghold[] = categories.getObjectByID('melvorF:Strongholds')?.areas ?? [];
-        // @ts-ignore // TODO: TYPES
-        const abyssalStrongholds: Stronghold[] = categories.getObjectByID('melvorItA:AbyssalStrongholds')?.areas ?? [];
+        const dungeons = (categories.getObjectByID('melvorD:Dungeons')?.areas as Dungeon[]) ?? [];
+        const depths = (categories.getObjectByID('melvorItA:TheAbyss')?.areas as AbyssDepth[]) ?? [];
+        const slayer = (categories.getObjectByID('melvorF:SlayerAreas')?.areas as SlayerArea[]) ?? [];
+        const abyssalSlayer = (categories.getObjectByID('melvorItA:AbyssalSlayerAreas')?.areas as SlayerArea[]) ?? [];
+        const strongholds = (categories.getObjectByID('melvorF:Strongholds')?.areas as Stronghold[]) ?? [];
+        const abyssalStrongholds =
+            (categories.getObjectByID('melvorItA:AbyssalStrongholds')?.areas as Stronghold[]) ?? [];
 
         this._combatAreas = {
             combatAreas: combatAreas.concat(abyssalCombatAreas).filter(forGameMode),
@@ -92,11 +77,8 @@ export abstract class Lookup {
         return this._combatAreas;
     }
 
-    // @ts-ignore // TODO: TYPES
-    public static getMasteryPoolBonus(skill: AnySkill, realm: Realm) {
-        // @ts-ignore // TODO: TYPES
+    public static getMasteryPoolBonus(skill: GatheringSkill<any, any>, realm: Realm) {
         const xp = skill.getMasteryPoolXP(realm);
-        // @ts-ignore // TODO: TYPES
         return skill.getActiveMasteryPoolBonusCount(realm, xp);
     }
 
@@ -206,7 +188,6 @@ export abstract class Lookup {
 
             const area = Global.get.game.getMonsterArea(monster);
 
-            // @ts-ignore // TODO: TYPES
             if (area.realm.id !== task.realm.id || area.id === 'melvorD:UnknownArea' || !categoryFilter(monster)) {
                 continue;
             }
@@ -218,7 +199,8 @@ export abstract class Lookup {
     }
 
     public static getSlayerTaskForMonster(monsterId: string) {
-        // @ts-ignore // TODO: TYPES
-        return this.tasks.find(task => this.getSlayerTaskMonsters(task.id).find(monster => monster.id === monsterId));
+        return this.tasks.find(
+            task => this.getSlayerTaskMonsters(task.id).find(monster => monster.id === monsterId) !== undefined
+        );
     }
 }

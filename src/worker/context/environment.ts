@@ -70,7 +70,6 @@ export abstract class Environment {
             currentGamemodeId: data.currentGamemodeId
         });
 
-        // @ts-ignore // TODO: TYPES
         Global.game.agility.courses.forEach(course => {
             course.numObstaclesUnlocked = course.obstacleSlots.length;
         });

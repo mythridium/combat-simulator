@@ -114,22 +114,22 @@ export class LootPage extends HTMLElement {
                 const entity = Lookup.getEntity(selectedTarget);
 
                 if (Lookup.isDungeon(entity.id)) {
-                    const boss = entity.monsters[entity.monsters.length - 1];
+                    const boss = (<Dungeon>entity).monsters[(<Dungeon>entity).monsters.length - 1];
 
                     this._addToLootMap(boss);
-                    this._addToLootMap(entity);
+                    this._addToLootMap(<Dungeon>entity);
                 }
 
                 if (Lookup.isStronghold(entity.id)) {
-                    for (const monster of entity.monsters) {
+                    for (const monster of (<Stronghold>entity).monsters) {
                         this._addToLootMap(monster);
                     }
 
-                    this._addToLootMap(entity);
+                    this._addToLootMap(<Stronghold>entity);
                 }
 
                 if (Lookup.isDepth(entity.id)) {
-                    this._addToLootMap(entity);
+                    this._addToLootMap(<AbyssDepth>entity);
                 }
 
                 if (Lookup.isSlayerTask(entity.id)) {
@@ -140,7 +140,7 @@ export class LootPage extends HTMLElement {
                     }
                 }
 
-                this._addToLootMap(entity);
+                this._addToLootMap(<Monster>entity);
             }
         } else {
             for (const monster of Lookup.monsters.allObjects) {
@@ -166,9 +166,7 @@ export class LootPage extends HTMLElement {
         return options;
     }
 
-    // @ts-ignore // TODO: TYPES
-    private _addToLootMap(source: Monster | Dungeon | Stronghold | Depth) {
-        // @ts-ignore // TODO: TYPES
+    private _addToLootMap(source: Monster | Dungeon | Stronghold | AbyssDepth) {
         if (source instanceof Stronghold) {
             const rewards = source.tiers[source.mcsTier].rewards;
 

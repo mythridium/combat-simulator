@@ -1,7 +1,7 @@
 import './agility-course.scss';
 import { LoadTemplate } from 'src/app/user-interface/template';
 import { Global } from 'src/app/global';
-import { Dropdown } from 'src/app/user-interface/_parts/dropdown/dropdown';
+import { Dropdown, DropdownOption } from 'src/app/user-interface/_parts/dropdown/dropdown';
 import { Drops } from 'src/app/drops';
 import { StatsController } from 'src/app/user-interface/pages/_parts/out-of-combat-stats/stats-controller';
 import { ButtonImage } from 'src/app/user-interface/_parts/button-image/button-image';
@@ -53,7 +53,6 @@ export class AgilityCourse extends HTMLElement {
 
     public _import(obstacles: [string, number, boolean][], pillars: [string, number][]) {
         const masteryToRemove = Array.from(Global.game.agility.actionMastery.keys()).filter(
-            // @ts-ignore // TODO: TYPES
             obstacle => obstacle.realm.id === this._realm.id
         );
 
@@ -63,9 +62,7 @@ export class AgilityCourse extends HTMLElement {
 
         const course = this._course;
 
-        // @ts-ignore // TODO: TYPES
         course.builtObstacles.clear();
-        // @ts-ignore // TODO: TYPES
         course.builtPillars.clear();
 
         for (const [obstacleId, category, isMastered] of obstacles) {
@@ -274,7 +271,6 @@ export class AgilityCourse extends HTMLElement {
         const options = this._blueprints.size
             ? [
                   { text: 'None', value: Drops.noneItem },
-                  // @ts-ignore // TODO: TYPES
                   ...Array.from(this._blueprints.entries()).map(([index, blueprint]) => ({
                       text: blueprint.name,
                       value: index.toString()
@@ -291,7 +287,6 @@ export class AgilityCourse extends HTMLElement {
         });
     }
 
-    // @ts-ignore // TODO: TYPES
     private _onBlueprintChange(option: DropdownOption) {
         if (option.value === Drops.noneItem) {
             this._import([], []);
@@ -302,17 +297,12 @@ export class AgilityCourse extends HTMLElement {
         const blueprint = this._blueprints.get(parseInt(option.value));
 
         const course: [string, number, boolean][] = Array.from(blueprint.obstacles.values()).map((obstacle, index) => {
-            // @ts-ignore // TODO: TYPES
             const mastery = Global.melvor.agility.actionMastery.get(obstacle);
-            // @ts-ignore // TODO: TYPES
             return [obstacle.id, index, (mastery?.level ?? 0) >= 99];
         });
 
-        // @ts-ignore // TODO: TYPES
         const pillars: [string, number][] = Array.from(blueprint.pillars.values()).map(pillar => [
-            // @ts-ignore // TODO: TYPES
             pillar.id,
-            // @ts-ignore // TODO: TYPES
             pillar.category
         ]);
 
@@ -324,31 +314,26 @@ export class AgilityCourse extends HTMLElement {
         const realm = this._realm;
 
         return Global.game.agility.actions.filter(
-            // @ts-ignore // TODO: TYPES
             obstacle => obstacle.category === category && obstacle.realm.id === realm.id
         );
     }
 
     private get _course() {
-        // @ts-ignore // TODO: TYPES
         return Global.game.agility.courses.get(this._realm);
     }
 
     private get _realm() {
-        // @ts-ignore // TODO: TYPES
         return Global.game.realms.getObjectByID(this.dataset.mcsrealmid);
     }
 
     private get _blueprints() {
-        // @ts-ignore // TODO: TYPES
         const melvorRealm = Global.melvor.realms.getObjectByID(this._realm.id);
 
         if (!melvorRealm) {
-            return new Map();
+            return new Map<number, AgilityBlueprintData>();
         }
 
-        // @ts-ignore // TODO: TYPES
-        return Global.melvor.agility.courses.get(melvorRealm)?.blueprints ?? new Map();
+        return Global.melvor.agility.courses.get(melvorRealm)?.blueprints ?? new Map<number, AgilityBlueprintData>();
     }
 }
 

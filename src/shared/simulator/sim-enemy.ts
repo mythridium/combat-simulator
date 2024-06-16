@@ -4,7 +4,7 @@ export class SimEnemy extends Enemy {
         return {
             container: undefined,
             renderedEffects: new Map(),
-            removalQueue: new Set<RenderData>(),
+            removalQueue: new Set<ActiveCombatEffect>(),
             queueRemoval: () => {},
             queueRemoveAll: () => {},
             removeEffects: () => {},

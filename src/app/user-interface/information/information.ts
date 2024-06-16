@@ -268,13 +268,11 @@ export class Information extends HTMLElement {
                 let hasMultipleRealms = false;
 
                 if (plotType.isRealmed) {
-                    // @ts-ignore // TODO: TYPES
                     const realms: { key: PlotKey; realm: Realm }[] = Global.game.realms.allObjects.map(realm => ({
-                        key: `${key}${realm.localID}`,
+                        key: `${key}${realm.localID}` as PlotKey,
                         realm
                     }));
 
-                    // @ts-ignore // TODO: TYPES
                     const realmData: { value: number; realm: Realm }[] = [];
 
                     for (const { key, realm } of realms) {
@@ -310,7 +308,6 @@ export class Information extends HTMLElement {
                         }
                     }
 
-                    // @ts-ignore // TODO: TYPES
                     const currentRealm = Global.game.realms.getObjectByID(information.data.realmId);
 
                     key = `${key}${currentRealm?.localID}` as PlotKey;
@@ -375,7 +372,6 @@ export class Information extends HTMLElement {
 
             deathRate.element.style.color = information.data.deathRate > 0 ? 'red' : '';
 
-            // @ts-ignore // TODO: TYPES
             const currentRealm = Global.game.realms.getObjectByID(information.data.realmId);
 
             prayer.tooltip.innerHTML += this._getPrayerTooltip(
@@ -454,7 +450,7 @@ export class Information extends HTMLElement {
         if (Lookup.isDungeon(entity.id)) {
             return {
                 title: Format.replaceApostrophe(entity.name),
-                media: entity.media,
+                media: (<Dungeon>entity).media,
                 data: Global.simulation.dungeonSimData[entity.id]
             };
         }
@@ -462,7 +458,7 @@ export class Information extends HTMLElement {
         if (Lookup.isStronghold(entity.id)) {
             return {
                 title: Format.replaceApostrophe(entity.name),
-                media: entity.media,
+                media: (<Stronghold>entity).media,
                 data: Global.simulation.strongholdSimData[entity.id]
             };
         }
@@ -470,7 +466,7 @@ export class Information extends HTMLElement {
         if (Lookup.isDepth(entity.id)) {
             return {
                 title: Format.replaceApostrophe(entity.name),
-                media: entity.media,
+                media: (<AbyssDepth>entity).media,
                 data: Global.simulation.depthSimData[entity.id]
             };
         }
@@ -583,8 +579,9 @@ export class Information extends HTMLElement {
 
         const monster = Lookup.monsters.getObjectByID(data.monsterId);
 
-        // @ts-ignore // TODO: TYPES
-        const realm = monster ? Global.game.getMonsterArea(monster).realm : Lookup.getEntity(data.entityId).realm;
+        const realm = monster
+            ? Global.game.getMonsterArea(monster).realm
+            : (<Dungeon | Stronghold | AbyssDepth>Lookup.getEntity(data.entityId)).realm;
 
         const breakdown = Drops.getChanceForMarkBreakdown(data, skill, realm, dataMultiplier);
         const marks = breakdown[skill.id];

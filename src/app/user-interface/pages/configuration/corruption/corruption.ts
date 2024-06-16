@@ -40,7 +40,6 @@ export class CorruptionPage extends HTMLElement {
 
         this._toggleButton.onclick = () => this._toggle();
 
-        // @ts-ignore // TODO: TYPES
         for (const effect of Global.game.corruption?.corruptionEffects?.allRows ?? []) {
             const element = createElement('mcs-button-image', {
                 attributes: [
@@ -74,9 +73,7 @@ export class CorruptionPage extends HTMLElement {
 
     public _import(effectsIds: string[], isAutoCorrupt: boolean) {
         for (const [effectId, element] of this._effects) {
-            // @ts-ignore // TODO: TYPES
             const effect = Global.game.corruption.corruptionEffects.allRows.find(
-                // @ts-ignore // TODO: TYPES
                 effect => effect.effect.id === effectId
             );
             const isSelected = effectsIds.includes(effectId);
@@ -94,7 +91,6 @@ export class CorruptionPage extends HTMLElement {
             this._import([], Global.game.combat.player.isAutoCorrupt);
         } else {
             this._import(
-                // @ts-ignore // TODO: TYPES
                 Global.game.corruption.corruptionEffects.lockedRows.map(row => row.effect.id),
                 Global.game.combat.player.isAutoCorrupt
             );
@@ -104,37 +100,29 @@ export class CorruptionPage extends HTMLElement {
     }
 
     private _hasCorruptionEffects() {
-        // @ts-ignore // TODO: TYPES
         return Global.game.corruption.corruptionEffects.unlockedRows.length > 0;
     }
 
-    // TODO: TYPES
     private _update(effect: any, isSelected: boolean) {
         if (isSelected) {
-            // @ts-ignore // TODO: TYPES
             const index = Global.game.corruption.corruptionEffects.lockedRows.findIndex(row => row === effect);
 
             if (index === -1) {
                 return;
             }
 
-            // @ts-ignore // TODO: TYPES
             Global.game.corruption.corruptionEffects.lockedRows.splice(index, 1);
-            // @ts-ignore // TODO: TYPES
             Global.game.corruption.corruptionEffects.unlockedRows.push(effect);
 
             effect.isUnlocked = true;
         } else {
-            // @ts-ignore // TODO: TYPES
             const index = Global.game.corruption.corruptionEffects.unlockedRows.findIndex(row => row === effect);
 
             if (index === -1) {
                 return;
             }
 
-            // @ts-ignore // TODO: TYPES
             Global.game.corruption.corruptionEffects.unlockedRows.splice(index, 1);
-            // @ts-ignore // TODO: TYPES
             Global.game.corruption.corruptionEffects.lockedRows.push(effect);
 
             effect.isUnlocked = false;

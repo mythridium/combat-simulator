@@ -133,13 +133,13 @@ export class AgilitySlot extends HTMLElement {
             if (!obstacle) {
                 this._course.builtPillars.delete(category);
             } else {
-                this._course.builtPillars.set(category, obstacle);
+                this._course.builtPillars.set(category, obstacle as AgilityPillar);
             }
         } else {
             if (!obstacle) {
                 this._course.builtObstacles.delete(category);
             } else {
-                this._course.builtObstacles.set(category, obstacle);
+                this._course.builtObstacles.set(category, obstacle as AgilityObstacle);
             }
         }
 
@@ -238,22 +238,16 @@ export class AgilitySlot extends HTMLElement {
 
     private _getTooltip(obstacle: AgilityObstacle | AgilityPillar) {
         let negativeMultiplier = 1;
-        // @ts-ignore // TODO: TYPES
         const query = Global.game.agility.getActionModifierQuery(obstacle);
-        // @ts-ignore // TODO: TYPES
         let modifier = Global.game.modifiers.getValue('melvorD:halveAgilityObstacleNegatives', query);
         negativeMultiplier = modifier > 0 ? 0.5 : 1;
 
-        // @ts-ignore // TODO: TYPES
         if (Global.game.agility.hasMasterRelic(Global.game.defaultRealm)) {
             negativeMultiplier = 0;
         }
 
-        // @ts-ignore // TODO: TYPES
         const mods = StatObject.formatDescriptions(
-            // @ts-ignore // TODO: TYPES
             obstacle,
-            // @ts-ignore // TODO: TYPES
             getElementDescriptionFormatter('div', 'mb-1'),
             negativeMultiplier,
             1,
@@ -270,7 +264,6 @@ export class AgilitySlot extends HTMLElement {
     }
 
     private get _course() {
-        // @ts-ignore // TODO: TYPES
         return Global.game.agility.courses.get(this._realm);
     }
 
@@ -281,12 +274,10 @@ export class AgilitySlot extends HTMLElement {
 
         if (this.dataset.mcstype === 'pillar') {
             obstacles = Global.game.agility.pillars.filter(
-                // @ts-ignore // TODO: TYPES
                 pillar => pillar.realm.id === this._realm.id && pillar.category === category
             );
         } else {
             obstacles = Global.game.agility.actions.filter(
-                // @ts-ignore // TODO: TYPES
                 obstacle => obstacle.realm.id === this._realm.id && obstacle.category === category
             );
         }
@@ -295,9 +286,7 @@ export class AgilitySlot extends HTMLElement {
 
         for (const obstacle of obstacles) {
             if (
-                // @ts-ignore // TODO: TYPES
                 obstacle.modifiers.some(entry => ModifierHelper.isCombatModifier(entry)) ||
-                // @ts-ignore // TODO: TYPES
                 obstacle.enemyModifiers !== undefined
             ) {
                 result.combat.push(obstacle);
@@ -328,7 +317,6 @@ export class AgilitySlot extends HTMLElement {
     }
 
     private get _realm() {
-        // @ts-ignore // TODO: TYPES
         return Global.game.realms.getObjectByID(this.dataset.mcsrealm);
     }
 }
