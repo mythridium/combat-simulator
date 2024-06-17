@@ -1,3 +1,7 @@
+v3.0.73
+    fixed swiper error without into the abyss purchased
+    fixed incorrect combat stat calculations within the simulator without into the abyss
+
 v3.0.72
     added mod api that returns currently registered namespaces, this may be inaccurate due to mod load order and when they register with combat sim
 

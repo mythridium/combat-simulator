@@ -515,7 +515,9 @@ export class SimPlayer extends Player {
         this.levels.Ranged = this.getSkillLevel(this.game.ranged);
         this.levels.Magic = this.getSkillLevel(this.game.altMagic);
         this.levels.Prayer = this.getSkillLevel(this.game.prayer);
-        this.levels.Corruption = this.getSkillLevel(this.game.corruption);
+        this.levels.Corruption = cloudManager.hasItAEntitlementAndIsEnabled
+            ? this.getSkillLevel(this.game.corruption)
+            : 0;
     }
 
     computeAbyssalLevels() {
@@ -528,6 +530,15 @@ export class SimPlayer extends Player {
             this.abyssalLevels.Magic = this.getSkillAbyssalLevel(this.game.altMagic);
             this.abyssalLevels.Prayer = this.getSkillAbyssalLevel(this.game.prayer);
             this.abyssalLevels.Corruption = this.getSkillAbyssalLevel(this.game.corruption);
+        } else {
+            this.abyssalLevels.Hitpoints = 0;
+            this.abyssalLevels.Attack = 0;
+            this.abyssalLevels.Strength = 0;
+            this.abyssalLevels.Defence = 0;
+            this.abyssalLevels.Ranged = 0;
+            this.abyssalLevels.Magic = 0;
+            this.abyssalLevels.Prayer = 0;
+            this.abyssalLevels.Corruption = 0;
         }
     }
 

@@ -18,9 +18,9 @@ export class Simulator {
                 origin: payload.origin,
                 scripts: payload.scripts,
                 entitlements: {
-                    toth: cloudManager.hasTotHEntitlement,
-                    aod: cloudManager.hasAoDEntitlement,
-                    ita: cloudManager.hasItAEntitlement,
+                    toth: cloudManager.hasTotHEntitlementAndIsEnabled,
+                    aod: cloudManager.hasAoDEntitlementAndIsEnabled,
+                    ita: cloudManager.hasItAEntitlementAndIsEnabled,
                     aprilFools2024: cloudManager.isAprilFoolsEvent2024Active(),
                     birthday2023: cloudManager.isBirthdayEvent2023Active()
                 },

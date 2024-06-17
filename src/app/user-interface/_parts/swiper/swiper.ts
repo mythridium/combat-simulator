@@ -24,7 +24,7 @@ interface SnapPoints {
     summaryEquipment: HTMLElement;
     summarySkills: HTMLElement;
     summaryMelvorAgility: HTMLElement;
-    summaryAbyssalAgility: HTMLElement;
+    summaryAbyssalAgility?: HTMLElement;
 }
 
 @LoadTemplate('app/user-interface/_parts/swiper/swiper.html')
@@ -59,9 +59,13 @@ export class Swiper extends HTMLElement {
             informationSummary: Global.userInterface.main.querySelector('.mcs-summary-information'),
             summaryEquipment: Global.userInterface.main.querySelector('.mcs-summary-equipment-container'),
             summarySkills: Global.userInterface.main.querySelector('.mcs-summary-skill-container'),
-            summaryMelvorAgility: Global.userInterface.main.querySelector('.mcs-summary-agility-melvor'),
-            summaryAbyssalAgility: Global.userInterface.main.querySelector('.mcs-summary-agility-abyssal')
+            summaryMelvorAgility: Global.userInterface.main.querySelector('.mcs-summary-agility-melvor')
         };
+
+        if (cloudManager.hasItAEntitlementAndIsEnabled) {
+            this._elements.summaryAbyssalAgility =
+                Global.userInterface.main.querySelector('.mcs-summary-agility-abyssal');
+        }
 
         PageController.on(pageId => {
             this._snapPoints = this._getSnapPoints().reverse();

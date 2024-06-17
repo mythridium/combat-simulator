@@ -28,3 +28,5 @@ This needs to be done before the `onInterfaceReady` context callback as that's w
 Custom skills are not supported and mocked inside the simulator to prevent errors, patched functions are not supported, this is purely custom data, such as items, prayers, equipment slots, etc will flow into combat sim.
 
 You can use `mod.api.mythCombatSimulator?.registeredNamespaces()` to return the list of current mods that have registered with combat sim. Note, that this may be inaccurate depending on when you call it, if you call it before another mod has registered, it won't show in the list. Probably the safest time to call is during `onInterfaceAvailable`, this is the last callback before `onInterfaceReady` when combat sim executes the registrations.
+
+Note that the api returns the namespaces in all lowercase.
