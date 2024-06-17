@@ -12,9 +12,8 @@ import { DialogController } from './app/user-interface/_parts/dialog/dialog-cont
 import { Lookup } from './shared/utils/lookup';
 import { Bugs } from './app/user-interface/bugs/bugs';
 import { SettingsController, Settings } from './app/settings-controller';
-import { cloneDeep } from 'lodash-es';
+import { clone, cloneDeep } from 'lodash-es';
 import { SaveSlot } from './app/utils/save-slot';
-import { StorageKey } from './app/utils/account-storage';
 
 export abstract class Main {
     private static loading = false;
@@ -38,7 +37,8 @@ export abstract class Main {
                 if (namespace && typeof namespace === 'string') {
                     this.registeredNamespaces.push(namespace.toLowerCase());
                 }
-            }
+            },
+            registeredNamespaces: () => clone(this.registeredNamespaces)
         });
 
         Global.userInterface = new UserInterface();

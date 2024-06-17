@@ -1,3 +1,6 @@
+v3.0.72
+    added mod api that returns currently registered namespaces, this may be inaccurate due to mod load order and when they register with combat sim
+
 v3.0.71
     adjusted modded data opt in logic to be less strict about when mods opted in
 
