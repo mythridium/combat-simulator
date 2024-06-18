@@ -1,6 +1,7 @@
 import 'src/shared/constants';
 import { MICSR } from './shared/micsr';
 import { SimClasses } from 'src/shared/simulator/sim';
+import type { SimGame } from 'src/shared/simulator/sim-game';
 import { Global as SharedGlobal } from 'src/shared/global';
 import { Global } from './app/global';
 import { Simulation } from './app/simulation';
@@ -48,6 +49,14 @@ export abstract class Main {
         } catch (error) {
             Global.logger.error('Failed to initialise indexeddb', error);
         }
+
+        Global.context
+            .patch(CombatSkillProgressTableElement, 'updateLevelCapButtons')
+            .replace((original, game: SimGame) => {
+                if (!game.isMcsGame) {
+                    return original(game);
+                }
+            });
 
         Global.context.onInterfaceReady(async () => {
             try {

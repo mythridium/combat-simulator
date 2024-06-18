@@ -1,3 +1,6 @@
+v3.0.74
+    fixed adventure mode level cap increases being hidden in the game
+
 v3.0.73
     fixed swiper error without into the abyss purchased
     fixed incorrect combat stat calculations within the simulator without into the abyss

@@ -9,6 +9,8 @@ import { emptyActionEventMatcherFactory } from 'src/shared/empty-skill';
 export class SimGame extends Game {
     declare combat: SimManager;
 
+    public readonly isMcsGame = true;
+
     autoEatTiers: string[];
     itemFoundFromSlayer = new Set<AnyItem>();
 
