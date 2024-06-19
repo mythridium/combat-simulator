@@ -189,6 +189,7 @@ export class SimGame extends Game {
     public purchaseSkillLevelCaps() {}
     public purchaseAbyssalSkillLevelCaps() {}
     public checkSteamAchievements() {}
+    public increaseSkillLevelCaps() {}
     public isAchievementMet() {
         return false;
     }

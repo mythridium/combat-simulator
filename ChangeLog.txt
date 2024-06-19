@@ -1,3 +1,7 @@
+v3.0.75
+    fixed error when level caps increase during simulation
+    fixed zoom issues on certain devices
+
 v3.0.74
     fixed adventure mode level cap increases being hidden in the game
 

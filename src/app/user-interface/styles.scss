@@ -61,11 +61,11 @@ body.mcs-is-open {
 
 #mcs-backdrop {
     display: none;
-    position: absolute;
-    top: -10000px;
-    bottom: -10000px;
-    left: -10000px;
-    right: -10000px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: black;
     opacity: 0.7;
     z-index: 9999;
