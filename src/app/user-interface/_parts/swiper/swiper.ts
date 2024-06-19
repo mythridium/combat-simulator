@@ -109,9 +109,9 @@ export class Swiper extends HTMLElement {
                     if (interest.ratio === max && !selected) {
                         selected = true;
                         indicators[ofInterest.length - 1 - index].style.background =
-                            interest.ratio > 0 ? 'white' : 'grey';
+                            interest.ratio > 0 ? 'var(--mcs-swiper-dot-focus)' : 'var(--mcs-swiper-dot-unfocus)';
                     } else {
-                        indicators[ofInterest.length - 1 - index].style.background = 'grey';
+                        indicators[ofInterest.length - 1 - index].style.background = 'var(--mcs-swiper-dot-unfocus)';
                     }
                 });
             },

@@ -11,7 +11,7 @@
         .dropdown-menu.show {
             display: flex;
             flex-direction: column;
-            background: #6f6c68 !important;
+            background: var(--mcs-form-control-background-color) !important;
             border-radius: 0;
             max-height: 500px;
             overflow: hidden;
@@ -23,11 +23,11 @@
             }
 
             .dropdown-item {
-                background: #6f6c68 !important;
+                background: var(--mcs-form-control-background-color) !important;
                 outline: none;
 
                 &:hover {
-                    background: darken(#6f6c68, 10%) !important;
+                    background: var(--mcs-dropdown-form-control-hover) !important;
                 }
             }
         }
@@ -42,19 +42,19 @@
             margin: 0.5rem;
 
             input.msc-dropdown-search-input {
-                background: #595959 !important;
+                background: var(--mcs-dropdown-input-background-color) !important;
             }
         }
 
         .mcs-dropdown-button {
-            background: #6f6c68;
-            color: #f5f5f5;
+            background: var(--mcs-form-control-background-color);
+            color: var(--mcs-dropdown-button-color);
             outline: none;
             display: inline-block;
             text-align: center;
             vertical-align: middle;
             user-select: none;
-            border: 1px solid #f5f5f5;
+            border: 1px solid var(--mcs-dropdown-button-color);
             padding: 0.375rem 0.75rem;
             font-size: 1rem;
             line-height: 1.5;

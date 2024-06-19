@@ -1,21 +1,24 @@
+import { Global } from 'src/app/global';
 import type { Dialog } from './dialog';
+
+type Callback = () => void;
 
 export abstract class DialogController {
     public static get isOpen() {
         return this.current !== undefined;
     }
 
-    private static readonly queue: Dialog[] = [];
-    private static current?: Dialog;
+    private static readonly queue: { dialog: Dialog; callback?: Callback; allowBackdropClose: boolean }[] = [];
+    private static current?: { dialog: Dialog; callback?: Callback; allowBackdropClose: boolean };
 
-    public static open(dialog: Dialog) {
+    public static open(dialog: Dialog, callback: Callback = undefined, allowBackdropClose = true) {
         if (this.isOpen) {
-            this.queue.push(dialog);
+            this.queue.push({ dialog, callback, allowBackdropClose });
             return;
         }
 
-        this.current = dialog;
-        this.current.classList.add('is-open');
+        this.current = { dialog, callback, allowBackdropClose };
+        this.current.dialog.classList.add('is-open');
         document.getElementById('mcs-dialog-backdrop').classList.add('is-open');
     }
 
@@ -24,12 +27,22 @@ export abstract class DialogController {
             return;
         }
 
-        this.current.classList.remove('is-open');
+        if (this.current.callback) {
+            try {
+                this.current.callback();
+            } catch (error) {
+                Global.logger.error(`Failed to execute dialog callback.`, error);
+            }
+        }
+
+        this.current.dialog.classList.remove('is-open');
         this.current = undefined;
         document.getElementById('mcs-dialog-backdrop').classList.remove('is-open');
 
         if (this.queue.length) {
-            this.open(this.queue.shift());
+            const { dialog, callback, allowBackdropClose } = this.queue.shift();
+
+            this.open(dialog, callback, allowBackdropClose);
         }
     }
 }

@@ -74,6 +74,14 @@ export interface Settings {
     purchaseIds: string[];
 }
 
+export interface SettingsSelection {
+    pets: boolean;
+    astrology: boolean;
+    corruption: boolean;
+    skillTrees: boolean;
+    ancientRelics: boolean;
+}
+
 export abstract class SettingsController {
     public static get isImporting() {
         return this._isImporting;
@@ -195,7 +203,35 @@ export abstract class SettingsController {
     }
 
     public static importFromString(value: string) {
-        const settings: Settings = this.toJson(value);
+        const settings = this.toJson(value);
+
+        this.import(settings);
+    }
+
+    public static importFromStringWithSelection(value: string, selection: SettingsSelection) {
+        const settings = this.toJson(value);
+        const current = this.export();
+
+        if (selection.pets) {
+            settings.petUnlocked = current.petUnlocked;
+        }
+
+        if (selection.astrology) {
+            settings.astrologyModifiers = current.astrologyModifiers;
+        }
+
+        if (selection.corruption && cloudManager.hasItAEntitlementAndIsEnabled) {
+            settings.corruptionEffectIds = current.corruptionEffectIds;
+            settings.isAutoCorrupt = current.isAutoCorrupt;
+        }
+
+        if (selection.skillTrees && cloudManager.hasItAEntitlementAndIsEnabled) {
+            settings.skillTreeIds = current.skillTreeIds;
+        }
+
+        if (selection.ancientRelics && Global.game.currentGamemode.allowAncientRelicDrops) {
+            settings.ancientRelicsSelected = current.ancientRelicsSelected;
+        }
 
         this.import(settings);
     }

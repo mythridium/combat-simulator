@@ -2,12 +2,65 @@
     <mcs-dialog id="mcs-settings-import-dialog" class="mcs-settings-import-dialog">
         <div slot="header">Import</div>
 
-        <div slot="content">
+        <div slot="content" class="mcs-with-textarea">
             <div>Paste a configuration to import.</div>
             <textarea id="mcs-settings-import-dialog-textarea" class="form-control mcs-code" rows="4"></textarea>
             <pre id="mcs-settings-import-dialog-pre" class="mcs-settings-import-dialog-pre">
                 <code id="mcs-settings-import-dialog-failure" class="mcs-settings-import-dialog-failure"></code>
             </pre>
+
+            <div id="mcs-settings-import-advanced-selection" class="mcs-settings-import-advanced-selection">
+                <div id="mcs-settings-import-expandable-header" class="mcs-expandable-header">
+                    <i class="fa"></i>
+                    <div>Advanced Import Settings</div>
+                </div>
+                <div id="mcs-settings-import-expandable-body" class="mcs-expandable-body">
+                    <div class="mcs-settings-import-information">
+                        Use the toggles to accept the configuration from the import or to keep your current
+                        configuration.
+                    </div>
+
+                    <mcs-switch
+                        id="mcs-settings-import-pets"
+                        class="mcs-settings-import-pets"
+                        data-mcsName="<img src='assets/media/pets/hitpoints.png' /> Pets"
+                        data-mcsOnText="Keep current configuration"
+                        data-mcsOffText="Import"
+                    ></mcs-switch>
+
+                    <mcs-switch
+                        id="mcs-settings-import-astrology"
+                        class="mcs-settings-import-astrology"
+                        data-mcsName="<img src='assets/media/skills/astrology/astrology.svg' /> Astrology"
+                        data-mcsOnText="Keep current configuration"
+                        data-mcsOffText="Import"
+                    ></mcs-switch>
+
+                    <mcs-switch
+                        id="mcs-settings-import-corruption"
+                        class="mcs-settings-import-corruption"
+                        data-mcsName="<img src='assets/media/skills/corruption/corruption.png' /> Corruption"
+                        data-mcsOnText="Keep current configuration"
+                        data-mcsOffText="Import"
+                    ></mcs-switch>
+
+                    <mcs-switch
+                        id="mcs-settings-import-skill-trees"
+                        class="mcs-settings-import-skill-trees"
+                        data-mcsName="<img src='assets/media/main/skill_tree.svg' /> Skill Trees"
+                        data-mcsOnText="Keep current configuration"
+                        data-mcsOffText="Import"
+                    ></mcs-switch>
+
+                    <mcs-switch
+                        id="mcs-settings-import-ancient-relics"
+                        class="mcs-settings-import-ancient-relics"
+                        data-mcsName="<img src='assets/media/main/gamemode_ancient_relic.png' /> Ancient Relics"
+                        data-mcsOnText="Keep current configuration"
+                        data-mcsOffText="Import"
+                    ></mcs-switch>
+                </div>
+            </div>
         </div>
 
         <div slot="footer">

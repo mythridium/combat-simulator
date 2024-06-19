@@ -23,6 +23,7 @@ export class SimulatePage extends HTMLElement {
     private readonly _plotter: Plotter;
     private readonly _toggleMonsters: ButtonImage;
     private readonly _toggleBarrierMonsters: ButtonImage;
+    private readonly _toggleAbyssalMonsters: ButtonImage;
     private readonly _toggleDungeons: ButtonImage;
     private readonly _toggleStrongholds: ButtonImage;
     private readonly _toggleDepths: ButtonImage;
@@ -52,6 +53,11 @@ export class SimulatePage extends HTMLElement {
         this._toggleBarrierMonsters = getElementFromFragment(
             this._content,
             'mcs-toggle-barrier-monsters',
+            'mcs-button-image'
+        );
+        this._toggleAbyssalMonsters = getElementFromFragment(
+            this._content,
+            'mcs-toggle-abyssal-monsters',
             'mcs-button-image'
         );
         this._toggleDungeons = getElementFromFragment(this._content, 'mcs-toggle-dungeons', 'mcs-button-image');
@@ -90,6 +96,11 @@ export class SimulatePage extends HTMLElement {
 
         this._toggleBarrierMonsters._on(() => {
             this._plotter._toggleBarrierMonsters();
+            this._updateToggles();
+        });
+
+        this._toggleAbyssalMonsters._on(() => {
+            this._plotter._toggleAbyssalMonsters();
             this._updateToggles();
         });
 
@@ -238,6 +249,7 @@ export class SimulatePage extends HTMLElement {
     private _updateToggles() {
         this._toggleMonsters._toggle(this._plotter.monstersToggled);
         this._toggleBarrierMonsters._toggle(this._plotter.barrierMonstersToggled);
+        this._toggleAbyssalMonsters._toggle(this._plotter.abyssalMonstersToggled);
         this._toggleDungeons._toggle(this._plotter.dungeonsToggled);
         this._toggleStrongholds._toggle(this._plotter.strongholdsToggled);
         this._toggleDepths._toggle(this._plotter.depthsToggled);

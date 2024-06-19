@@ -46,6 +46,7 @@ interface Elements {
 export class Plotter extends HTMLElement {
     public monstersToggled = true;
     public barrierMonstersToggled = true;
+    public abyssalMonstersToggled = true;
     public dungeonsToggled = false;
     public strongholdsToggled = false;
     public depthsToggled = false;
@@ -296,6 +297,10 @@ export class Plotter extends HTMLElement {
                 continue;
             }
 
+            if (Lookup.monsters.getObjectByID(monsterId)?.damageType.id === Lookup.abyssalDamage.id) {
+                continue;
+            }
+
             Global.simulation.monsterSimFilter[monsterId] = this.monstersToggled;
         }
 
@@ -312,6 +317,25 @@ export class Plotter extends HTMLElement {
             }
 
             Global.simulation.monsterSimFilter[monsterId] = this.barrierMonstersToggled;
+        }
+
+        this._updateData();
+        this._updateCrosses();
+    }
+
+    public _toggleAbyssalMonsters() {
+        this.abyssalMonstersToggled = !this.abyssalMonstersToggled;
+
+        for (const monsterId of Global.stores.game.state.monsterIds) {
+            if (Lookup.monsters.getObjectByID(monsterId)?.hasBarrier) {
+                continue;
+            }
+
+            if (Lookup.monsters.getObjectByID(monsterId)?.damageType.id !== Lookup.abyssalDamage.id) {
+                continue;
+            }
+
+            Global.simulation.monsterSimFilter[monsterId] = this.abyssalMonstersToggled;
         }
 
         this._updateData();
@@ -1008,7 +1032,7 @@ export class Plotter extends HTMLElement {
             const failureText = Global.simulation.getSimFailureText(raw[dataIndex]);
 
             if (failureText) {
-                tooltip += `<br><span style="color:red;">${failureText}</span>`;
+                tooltip += `<br><span style="color: var(--mcs-simulate-failure-color);">${failureText}</span>`;
             }
             // close tooltip
             tooltip += '</div>';

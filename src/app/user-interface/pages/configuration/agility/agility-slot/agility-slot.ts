@@ -71,14 +71,17 @@ export class AgilitySlot extends HTMLElement {
                 this._createItems();
 
                 TooltipController.hide();
-                DialogController.open(this._dialog);
+                DialogController.open(this._dialog, () => {
+                    this._agilityContainer.innerHTML = '';
+                    this._items.clear();
+                });
             };
         }
 
-        this._cancel.onclick = () => this._clear();
+        this._cancel.onclick = () => DialogController.close();
 
         this._unequip.onclick = () => {
-            this._clear();
+            DialogController.close();
             this._setObstacle(undefined);
             this._update();
             StatsController.update();
@@ -104,12 +107,6 @@ export class AgilitySlot extends HTMLElement {
 
     public _off(callback: Callback) {
         this._callbacks.delete(callback);
-    }
-
-    private _clear() {
-        DialogController.close();
-        this._agilityContainer.innerHTML = '';
-        this._items.clear();
     }
 
     private get isEmpty() {
@@ -213,7 +210,7 @@ export class AgilitySlot extends HTMLElement {
         itemContainer.onclick = () => {
             this._setObstacle(obstacle);
 
-            this._clear();
+            DialogController.close();
             this._update();
 
             TooltipController.hide();

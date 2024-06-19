@@ -19,7 +19,7 @@ export abstract class Bugs {
         }
 
         dialog.innerHTML += `
-                <div slot="content">
+                <div slot="content" class="mcs-with-textarea">
                     <div>Copy the following information and report it to Mythridium on the Melvor Discord or at <a href="https://github.com/mythridium/combat-simulator/issues" target="_blank">https://github.com/mythridium/combat-simulator</a></div>
                     <br />
                     <div>The following information contains your save file and a copy of your combat sim configuration if possible.</div>
@@ -78,6 +78,6 @@ Sim String:
 
         document.body.appendChild(dialog);
 
-        DialogController.open(dialog);
+        DialogController.open(dialog, undefined, false);
     }
 }

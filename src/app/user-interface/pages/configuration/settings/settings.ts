@@ -177,9 +177,10 @@ export class SettingsPage extends HTMLElement {
             modifier.disabled = true;
         }
 
-        this._toggleMenuItems('.mcs-ancient-relics-menu', Global.game.currentGamemode.allowAncientRelicDrops, () =>
-            Global.userInterface.main.querySelector('mcs-ancient-relics')._import([])
-        );
+        this._toggleMenuItems('.mcs-ancient-relics-menu', Global.game.currentGamemode.allowAncientRelicDrops, () => {
+            Global.userInterface.main.querySelector('mcs-ancient-relics')._import([]);
+            this._importDialog._update();
+        });
 
         StatsController.update();
 
@@ -196,8 +197,8 @@ export class SettingsPage extends HTMLElement {
         const menuItems = Global.userInterface.main.querySelectorAll<HTMLElement>(selector);
 
         if (menuItems.length) {
-            for (const ancientRelic of Array.from(menuItems)) {
-                ancientRelic.style.display = toggle ? '' : 'none';
+            for (const element of Array.from(menuItems)) {
+                element.style.display = toggle ? '' : 'none';
             }
         }
 

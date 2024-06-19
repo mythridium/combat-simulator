@@ -90,7 +90,7 @@ export class Switch extends HTMLElement {
 
     private toggleText(element: HTMLElement, text: string) {
         if (text) {
-            element.innerText = text;
+            element.innerHTML = text;
             element.style.display = 'block';
         } else {
             element.style.display = 'none';

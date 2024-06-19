@@ -200,7 +200,7 @@ export abstract class Main {
             document.body.appendChild(backdrop);
             document.body.appendChild(dialog);
 
-            DialogController.open(dialog);
+            DialogController.open(dialog, undefined, false);
         } else {
             resolve({ isWrongVersion, tryLoad: true });
         }

@@ -203,7 +203,7 @@ export class SummaryPage extends HTMLElement {
         const melvor = createElement('div', { classList: ['mcs-summary-melvor-skill-levels'] });
         const abyssal = createElement('div', {
             classList: ['mcs-summary-abyssal-skill-levels'],
-            attributes: [['style', `color: #e56767`]]
+            attributes: [['style', `color: var(--mcs-summary-abyssal-level-color)`]]
         });
 
         for (const skillId of Global.combatSkillLocalIds) {

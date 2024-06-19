@@ -2,10 +2,9 @@ mcs-header {
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    background: #6f6c68;
+    background: var(--mcs-header-background-color);
 
     .mcs-header-close {
-        color: white;
         opacity: 0.7;
 
         &:hover {

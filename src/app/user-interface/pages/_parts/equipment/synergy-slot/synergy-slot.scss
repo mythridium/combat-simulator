@@ -1,8 +1,8 @@
 mcs-synergy-slot {
     display: block;
     cursor: pointer;
-    border: solid 2px #b5afa6;
-    background: #555555;
+    border: solid 2px var(--mcs-slot-container-border-color);
+    background: var(--mcs-slot-container-background-color);
     padding: 5px;
     margin: 5px;
     width: 50px;

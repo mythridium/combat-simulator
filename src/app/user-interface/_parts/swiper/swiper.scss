@@ -5,7 +5,7 @@ mcs-swiper {
     display: flex;
     width: 100%;
     justify-content: center;
-    z-index: 20000;
+    z-index: 10001;
     pointer-events: none;
 
     .mcs-scroll-indicator {
@@ -16,7 +16,7 @@ mcs-swiper {
             width: 10px;
             height: 10px;
             border-radius: 10px;
-            background: white;
+            background: var(--mcs-swiper-dot-focus);
         }
     }
 }

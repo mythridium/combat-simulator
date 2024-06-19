@@ -1,9 +1,9 @@
 #mcs-bugs {
     a {
-        color: #54a196;
+        color: var(--mcs-button-background-color);
 
         &:hover {
-            color: darken(#54a196, 5%);
+            color: var(--mcs-button-background-hover-color);
             text-decoration: underline;
         }
     }
@@ -11,8 +11,8 @@
     .mcs-bugs-content {
         resize: none;
         user-select: all;
-        background: #6f6c68 !important;
-        border-color: #ababab;
+        background: var(--mcs-form-control-background-color) !important;
+        border-color: var(--mcs-form-control-border-color);
         border-radius: 0;
         font-size: 0.875rem;
 
@@ -21,11 +21,11 @@
         }
 
         &::placeholder {
-            color: darken(#f5f5f5, 20%);
+            color: var(--mcs-form-control-placeholder-color);
         }
 
         &::selection {
-            background: #54a196;
+            background: var(--mcs-form-control-selection-color);
         }
     }
 }

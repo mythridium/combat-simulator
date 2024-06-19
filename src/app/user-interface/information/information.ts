@@ -291,7 +291,7 @@ export class Information extends HTMLElement {
                     hasMultipleRealms = realmData.length > 1;
 
                     if (hasMultipleRealms) {
-                        stat.element.style.color = '#6cceff';
+                        stat.element.style.color = 'var(--mcs-information-multiple-realms-color)';
                         stat.element.parentElement.toggleAttribute('data-mcsTooltipDisabled', false);
 
                         stat.tooltip.innerHTML =
@@ -355,14 +355,14 @@ export class Information extends HTMLElement {
 
             highestReflect.element.style.color =
                 information.data.highestReflectDamageTaken >= Global.game.combat.player.stats.maxHitpoints
-                    ? 'orange'
+                    ? 'var(--mcs-information-warning-color)'
                     : '';
 
             if (this._isNearDeath(information.data, information.monsters)) {
-                highestDamageTaken.element.style.color = 'orange';
-                lowestHitpoints.element.style.color = 'orange';
-                highestDamageTaken.tooltip.style.color = 'orange';
-                lowestHitpoints.tooltip.style.color = 'orange';
+                highestDamageTaken.element.style.color = 'var(--mcs-information-warning-color)';
+                lowestHitpoints.element.style.color = 'var(--mcs-information-warning-color)';
+                highestDamageTaken.tooltip.style.color = 'var(--mcs-information-warning-color)';
+                lowestHitpoints.tooltip.style.color = 'var(--mcs-information-warning-color)';
             } else {
                 highestDamageTaken.element.style.color = '';
                 lowestHitpoints.element.style.color = '';
@@ -370,7 +370,7 @@ export class Information extends HTMLElement {
                 lowestHitpoints.tooltip.style.color = '';
             }
 
-            deathRate.element.style.color = information.data.deathRate > 0 ? 'red' : '';
+            deathRate.element.style.color = information.data.deathRate > 0 ? 'var(--mcs-information-death-color)' : '';
 
             const currentRealm = Global.game.realms.getObjectByID(information.data.realmId);
 

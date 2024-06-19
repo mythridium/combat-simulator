@@ -1,15 +1,21 @@
 mcs-dialog {
     z-index: 10003;
-    color: white;
+    color: var(--mcs-main-text-color);
     visibility: hidden;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
 
     &.is-open {
         visibility: visible;
+    }
+
+    [slot='content'].mcs-with-textarea {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+
+        textarea {
+            min-height: 10em;
+        }
     }
 
     [slot='footer'] {
@@ -24,11 +30,17 @@ mcs-dialog {
     left: -30px;
     bottom: -30px;
     right: -30px;
-    background: black;
+    background: var(--mcs-backdrop-color);
     opacity: 0.3;
     z-index: 10002;
 
     &.is-open {
         display: block;
+    }
+}
+
+@media (max-width: 500px) {
+    mcs-dialog [slot='content'].mcs-with-textarea textarea {
+        height: 100%;
     }
 }

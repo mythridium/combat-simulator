@@ -4,8 +4,8 @@ mcs-equipment-slot {
     .mcs-equipment-slot-container {
         display: block;
         cursor: pointer;
-        border: solid 2px #b5afa6;
-        background: #555555;
+        border: solid 2px var(--mcs-slot-container-border-color);
+        background: var(--mcs-slot-container-background-color);
         padding: 5px;
         width: 50px;
         height: 50px;
@@ -39,7 +39,7 @@ mcs-equipment-slot {
             cursor: pointer;
             width: 40px;
             height: 40px;
-            border: solid 1px #6f6c68;
+            border: solid 1px var(--mcs-slot-item-border-color);
             padding: 3px;
             display: flex;
             align-items: center;
@@ -62,6 +62,6 @@ mcs-equipment-slot {
 
 @media (hover: hover) {
     mcs-equipment-slot .mcs-equipment-slot-item:hover {
-        background: #3c3d3c;
+        background: var(--mcs-slot-item-hover-color);
     }
 }

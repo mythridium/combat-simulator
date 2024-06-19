@@ -262,7 +262,7 @@ export class Tooltip extends HTMLElement {
     }
 
     private _getArrowBorder(placement: string) {
-        const border = 'solid 1px #b3b3b3';
+        const border = 'solid 1px var(--mcs-tooltip-border-color)';
 
         const borders = {
             borderTop: '',

@@ -1,51 +1,14 @@
 mcs-modifiers-modifier {
-    &.mcs-is-open {
-        .mcs-modifiers-modifier-body {
-            display: flex;
-        }
-
-        .mcs-modifiers-modifier-header-icon:before {
-            content: '\f077';
-        }
-    }
-
-    .mcs-modifiers-modifier-header-icon:before {
-        content: '\f078';
-    }
-
-    .mcs-modifiers-modifier-header {
-        padding: 7px 10px;
-        background: #4f4f4f;
-        cursor: pointer;
+    .mcs-modifier-source {
         display: flex;
+        gap: 5px;
         align-items: center;
-        gap: 7px;
-
-        &:hover {
-            outline: solid 2px white;
-            outline-offset: -2px;
-        }
     }
 
-    .mcs-modifiers-modifier-body {
-        display: none;
-        flex-direction: column;
-        gap: 5px;
-        padding: 10px;
-        border: solid 2px #4f4f4f;
-        border-top: 0;
-
-        .mcs-modifier-source {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-
-        .mcs-modifier-source-image,
-        .mcs-modifier-source-space {
-            width: 20px;
-            height: 20px;
-        }
+    .mcs-modifier-source-image,
+    .mcs-modifier-source-space {
+        width: 20px;
+        height: 20px;
     }
 
     .mcs-source-amount {

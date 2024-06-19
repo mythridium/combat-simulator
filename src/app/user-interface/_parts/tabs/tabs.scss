@@ -6,10 +6,10 @@ mcs-tabs {
         min-width: 70px;
         padding: 5px;
         cursor: pointer;
-        background: #6f6c68;
+        background: var(--mcs-form-control-background-color);
 
         &.is-selected {
-            background: #54a196;
+            background: var(--mcs-form-control-selected-color);
         }
 
         img {

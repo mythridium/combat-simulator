@@ -2,11 +2,11 @@ mcs-switch {
     .mcs-switch-description {
         display: block;
         font-size: 70%;
-        margin-bottom: 4px;
-        color: #b5b5b5;
+        color: var(--mcs-descriptive-text-color);
     }
 
     .mcs-switch-toggle-container {
+        margin-top: 4px;
         display: flex;
         align-items: center;
     }
@@ -36,11 +36,11 @@ mcs-switch {
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
+            background-color: var(--mcs-switch-untoggled-background-color);
             border-radius: 24px;
 
             &:hover {
-                background-color: darken(#ccc, 5%);
+                background-color: var(--mcs-switch-untoggled-background-hover-color);
             }
 
             &:before {
@@ -50,16 +50,16 @@ mcs-switch {
                 width: 16px;
                 left: 4px;
                 bottom: 4px;
-                background-color: white;
+                background-color: var(--mcs-switch-untoggled-indicator-color);
                 border-radius: 50%;
             }
         }
 
         input:checked + .mcs-slider {
-            background-color: #54a196;
+            background-color: var(--mcs-switch-toggled-background-color);
 
             &:hover {
-                background-color: darken(#54a196, 5%);
+                background-color: var(--mcs-switch-toggled-background-hover-color);
             }
         }
 

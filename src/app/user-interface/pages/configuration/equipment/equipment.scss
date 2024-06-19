@@ -33,7 +33,7 @@ mcs-equipment-page {
         gap: 10px;
         margin: 0px -20px;
         padding: 20px;
-        background: #6f6c68;
+        background: var(--mcs-button-container-background-color);
     }
 
     .mcs-equipment-import-wrapper {

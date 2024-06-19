@@ -96,7 +96,10 @@ export class EquipmentSlot extends HTMLElement {
                 this._createItems();
 
                 TooltipController.hide();
-                DialogController.open(this._dialog);
+                DialogController.open(this._dialog, () => {
+                    this._equipmentContainer.innerHTML = '';
+                    this._items.clear();
+                });
 
                 setTimeout(() => {
                     if (!nativeManager.isMobile) {
@@ -106,10 +109,10 @@ export class EquipmentSlot extends HTMLElement {
             };
         }
 
-        this._cancel.onclick = () => this._clear();
+        this._cancel.onclick = () => DialogController.close();
 
         this._unequip.onclick = () => {
-            this._clear();
+            DialogController.close();
             Global.game.combat.player.unequipItem(0, this._slot.slot);
 
             if (this._slot.slot.id === 'melvorD:Summon1' || this._slot.slot.id === 'melvorD:Summon2') {
@@ -139,12 +142,6 @@ export class EquipmentSlot extends HTMLElement {
         this._image.classList.toggle('mcs-occupied', this._slot.occupiedBy !== undefined);
     }
 
-    private _clear() {
-        DialogController.close();
-        this._equipmentContainer.innerHTML = '';
-        this._items.clear();
-    }
-
     private _createItems() {
         const sections = this._slot.slot.isModded
             ? [
@@ -167,7 +164,7 @@ export class EquipmentSlot extends HTMLElement {
                 });
 
                 itemContainer.onclick = () => {
-                    this._clear();
+                    DialogController.close();
                     Global.game.combat.player.equipItem(
                         item as EquipmentItem,
                         undefined,

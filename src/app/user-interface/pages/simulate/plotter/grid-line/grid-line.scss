@@ -5,6 +5,6 @@ mcs-plotter-grid-line {
         left: 0px;
         border-bottom-style: solid;
         border-bottom-width: thin;
-        border-color: lightgray;
+        border-color: var(--mcs-plotter-grid-line);
     }
 }

@@ -4,7 +4,7 @@ mcs-sidebar {
     display: flex;
     flex-direction: column;
     overflow: auto;
-    border-right: solid 2px #4c4c4c;
+    border-right: solid 2px var(--mcs-main-border-color);
 
     .mcs-configuration-menu {
         display: none;

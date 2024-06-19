@@ -32,7 +32,8 @@ export class ModifiersModifier extends HTMLElement {
 
         this._header.onclick = () => {
             this._isOpen = !this._isOpen;
-            this.classList.toggle('mcs-is-open', this._isOpen);
+            this._header.classList.toggle('mcs-is-open', this._isOpen);
+            this._body.classList.toggle('mcs-is-open', this._isOpen);
         };
     }
 
@@ -42,7 +43,7 @@ export class ModifiersModifier extends HTMLElement {
         this._header.innerHTML = '';
         this._body.innerHTML = '';
 
-        this._header.append(createElement('i', { classList: ['fa', 'mcs-modifiers-modifier-header-icon'] }));
+        this._header.append(createElement('i', { classList: ['fa'] }));
 
         const header = getElementDescriptionFormatter('div', '')(this._modifier.description);
         this._header.append(header);
@@ -77,7 +78,8 @@ export class ModifiersModifier extends HTMLElement {
         }
 
         this._isOpen = isOpen;
-        this.classList.toggle('mcs-is-open', this._isOpen);
+        this._header.classList.toggle('mcs-is-open', this._isOpen);
+        this._body.classList.toggle('mcs-is-open', this._isOpen);
     }
 }
 

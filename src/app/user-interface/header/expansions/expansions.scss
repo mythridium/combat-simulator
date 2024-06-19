@@ -10,15 +10,15 @@
         border-radius: 50%;
 
         &.toth {
-            background: #8a79fc;
+            background: var(--mcs-toth);
         }
 
         &.aod {
-            background: #ffbb53;
+            background: var(--mcs-aod);
         }
 
         &.ita {
-            background: #e52f24;
+            background: var(--mcs-ita);
         }
     }
 }

@@ -76,7 +76,10 @@ export class FoodSlot extends HTMLElement {
                 this._createItems();
 
                 TooltipController.hide();
-                DialogController.open(this._dialog);
+                DialogController.open(this._dialog, () => {
+                    this._equipmentContainer.innerHTML = '';
+                    this._items.clear();
+                });
 
                 setTimeout(() => {
                     if (!nativeManager.isMobile) {
@@ -86,10 +89,10 @@ export class FoodSlot extends HTMLElement {
             };
         }
 
-        this._cancel.onclick = () => this._clear();
+        this._cancel.onclick = () => DialogController.close();
 
         this._unequip.onclick = () => {
-            this._clear();
+            DialogController.close();
             Global.game.combat.player.unequipFood();
             this._update();
             StatsController.update();
@@ -102,12 +105,6 @@ export class FoodSlot extends HTMLElement {
             : this.getFoodTooltip(Global.game.combat.player.food.currentSlot.item);
 
         this._image.src = Global.game.combat.player.food.currentSlot.item.media;
-    }
-
-    private _clear() {
-        DialogController.close();
-        this._equipmentContainer.innerHTML = '';
-        this._items.clear();
     }
 
     private get isEmpty() {
@@ -129,7 +126,7 @@ export class FoodSlot extends HTMLElement {
                 itemContainer.onclick = () => {
                     Global.game.combat.player.equipFood(item as FoodItem, 0);
 
-                    this._clear();
+                    DialogController.close();
                     this._update();
 
                     TooltipController.hide();

@@ -12,9 +12,9 @@ mcs-tooltip {
         position: absolute;
         top: 0;
         left: 0;
-        background: #3d3d3d;
-        border: solid 1px #b3b3b3;
-        color: white;
+        background: var(--mcs-tooltip-background-color);
+        border: solid 1px var(--mcs-tooltip-border-color);
+        color: var(--mcs-tooltip-text-color);
         border-radius: 4px;
         font-size: 14px;
         z-index: 10010;
@@ -28,7 +28,7 @@ mcs-tooltip {
 
     .mcs-tooltip-arrow {
         position: absolute;
-        background: #3d3d3d;
+        background: var(--mcs-tooltip-background-color);
         width: 8px;
         height: 8px;
         transform: rotate(45deg);

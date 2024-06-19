@@ -3,7 +3,7 @@ mcs-information {
     padding: 20px;
     min-width: 270px;
     width: 270px;
-    border-left: solid 2px #4c4c4c;
+    border-left: solid 2px var(--mcs-main-border-color);
     overflow-y: auto;
 
     .mcs-monster-information {
@@ -12,10 +12,10 @@ mcs-information {
         .mcs-monster-note {
             font-size: 80%;
             padding: 10px 0;
-            color: red;
+            color: var(--mcs-information-monster-note);
 
             .mcs-monster-note-hint {
-                color: yellow;
+                color: var(--mcs-information-monster-note-hint);
             }
         }
 

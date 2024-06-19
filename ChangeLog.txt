@@ -1,3 +1,12 @@
+v3.0.76
+    converted all css colours to css variables to assist with modded themes
+    adjusted the text area inside dialogs on mobile to fill the available space
+    fixed swiper dots sitting on top of open dialogs
+    added the ability for modal dialogs to be closed by clicking the backdrop, certain dialogs cannot be closed by clicking the backdrop
+    added advanced import settings allowing you to select categories to accept the import for or to keep your current configuration
+    added a separate toggle for non barrier abyssal monsters
+    normal non barrier monster toggle no longer affects abyssal monsters
+
 v3.0.75
     fixed error when level caps increase during simulation
     fixed zoom issues on certain devices

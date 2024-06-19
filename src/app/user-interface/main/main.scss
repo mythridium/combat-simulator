@@ -1,14 +1,14 @@
 #mcs-combat-simulator {
     display: flex;
     flex-direction: column;
-    color: white;
+    color: var(--mcs-main-text-color);
     position: fixed;
     top: 20px;
     bottom: 20px;
     left: 20px;
     right: 20px;
-    background: #3c3c3c;
-    border: solid 2px #4c4c4c;
+    background: var(--mcs-main-background-color);
+    border: solid 2px var(--mcs-main-border-color);
     z-index: 10000;
 
     &.is-closed {
@@ -31,7 +31,7 @@
         display: none;
         width: 100%;
         height: 100%;
-        background: #3c3c3c;
+        background: var(--mcs-main-background-color);
         overflow: auto;
 
         mcs-configuration-menu {

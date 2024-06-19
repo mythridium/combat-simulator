@@ -3,7 +3,7 @@ mcs-import-dialog {
         display: none;
         margin-top: 10px;
         padding: 10px;
-        color: red;
+        color: var(--mcs-import-error);
         user-select: all;
         white-space: normal;
 
@@ -16,5 +16,36 @@ mcs-import-dialog {
         margin-top: 20px;
         width: 100%;
         resize: none;
+    }
+
+    .mcs-expandable-header {
+        margin-top: 20px;
+    }
+
+    .mcs-settings-import-information {
+        font-size: 85%;
+        margin-bottom: 5px;
+    }
+
+    mcs-switch {
+        &:not(:last-child) {
+            margin-bottom: 5px;
+        }
+
+        .mcs-switch-name {
+            display: flex !important;
+            align-items: center;
+            gap: 5px;
+
+            img {
+                height: 12px;
+            }
+        }
+    }
+}
+
+@media (max-width: 500px) {
+    mcs-import-dialog .mcs-settings-import-advanced-selection.mcs-is-open {
+        padding-bottom: 20px;
     }
 }

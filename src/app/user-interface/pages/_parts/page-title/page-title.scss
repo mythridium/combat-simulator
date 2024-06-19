@@ -3,7 +3,7 @@ mcs-page-title {
     margin-bottom: 20px;
 
     .mcs-page-description {
-        color: #c7c7c7;
+        color: var(--mcs-page-description);
         font-size: 80%;
     }
 }
