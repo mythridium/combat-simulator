@@ -1,3 +1,6 @@
+v3.0.77
+    fixed polyfill script error on certain devices
+
 v3.0.76
     converted all css colours to css variables to assist with modded themes
     adjusted the text area inside dialogs on mobile to fill the available space

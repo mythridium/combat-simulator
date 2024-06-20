@@ -13,7 +13,7 @@ export abstract class Environment {
             MelvorDatabase = class MelvorDatabase {}
         `);
 
-        importScripts(...data.scripts);
+        importScripts(...this.tryRiskyScripts(data.scripts));
 
         const cloudManager: CloudManager = {
             hasFullVersionEntitlement: true,
@@ -75,6 +75,34 @@ export abstract class Environment {
         });
 
         Global.simulator = new Simulator();
+    }
+
+    /**
+     * Polyfill keeps failing to load along with dexie due to private variables being parsed
+     * for some reason. I don't know if we need these, so I don't want to blindy exclude them
+     * for now, just attempt to load and if it fails, so be it.
+     */
+    private static tryRiskyScripts(scripts: string[]) {
+        const dataScripts: string[] = [];
+
+        try {
+            const risky = ['dexie', 'db.js', 'polyfill.io'];
+            const found: string[] = [];
+
+            for (const script of scripts) {
+                if (risky.some(lookup => script.toLowerCase().includes(lookup.toLowerCase()))) {
+                    found.push(script);
+                } else {
+                    dataScripts.push(script);
+                }
+            }
+
+            importScripts(...found);
+        } catch (error) {
+            Global.logger.error(`Failed to load scripts.`, error);
+        }
+
+        return dataScripts;
     }
 
     private static async loadGameData(origin: string) {
