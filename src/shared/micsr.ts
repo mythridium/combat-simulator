@@ -3,7 +3,6 @@ import { EmptySkillFactory } from './empty-skill';
 import { InitGameData } from './transport/type/init';
 import { Global } from './global';
 import { GamemodeConverter } from './converter/gamemode';
-import { AgilityConverter } from './converter/agility';
 import { Lookup } from './utils/lookup';
 import { cloneDeep } from 'lodash-es';
 import { Util } from './util';
@@ -102,35 +101,16 @@ export class MICSR {
             Global.get.game.registerDataPackage(cloneDeep(dataPackage));
         }
 
-        // All agility and gamemodes - even base game to account for bypass agility cost mod and modifications of core gamemodes.
-        Global.get.game.gamemodes = new NamespaceRegistry(Global.get.game.registeredNamespaces, Gamemode.name);
-        Global.get.game.agility.actions = new NamespaceRegistry(
-            Global.get.game.registeredNamespaces,
-            AgilityObstacle.name
-        );
-        Global.get.game.agility.pillars = new NamespaceRegistry(
-            Global.get.game.registeredNamespaces,
-            AgilityPillar.name
-        );
+        Global.get.game.gamemodes.registeredObjects.delete('melvorD:Unset');
 
-        for (const gamemode of data.gamemodes) {
-            gamemode.gamemode.initialLevelCaps = undefined;
-            gamemode.gamemode.initialAbyssalLevelCaps = undefined;
-            Global.get.game.gamemodes.registerObject(GamemodeConverter.fromData(Global.get.game, gamemode));
-        }
+        for (const gamemode of Global.get.game.gamemodes.allObjects) {
+            const gamemodeData = data.gamemodes.find(gm => gm.id === gamemode.id);
 
-        const { obstacles, pillars } = AgilityConverter.fromData(
-            Global.get.game,
-            data.agility.obstacles,
-            data.agility.pillars
-        );
-
-        for (const obstacle of obstacles) {
-            Global.get.game.agility.actions.registerObject(obstacle);
-        }
-
-        for (const pillar of pillars) {
-            Global.get.game.agility.pillars.registerObject(pillar);
+            if (gamemodeData) {
+                gamemode.initialLevelCaps = undefined;
+                gamemode.initialAbyssalLevelCaps = undefined;
+                GamemodeConverter.set(Global.get.game, gamemode, gamemodeData);
+            }
         }
 
         const pillarMedia = [

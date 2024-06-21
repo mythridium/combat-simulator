@@ -44,7 +44,7 @@ export abstract class ModifierConverter {
         return modifierObject;
     }
 
-    public static fromData(modifiers: ModifierValuesRecordData, game: Game) {
+    public static fromData(game: Game, modifiers: ModifierValuesRecordData) {
         return game.getModifierValuesFromData(modifiers);
     }
 

@@ -6,7 +6,6 @@ import { Global as SharedGlobal } from 'src/shared/global';
 import { Global } from './app/global';
 import { Simulation } from './app/simulation';
 import { UserInterface } from './app/user-interface/user-interface';
-import { AgilityConverter } from './shared/converter/agility';
 import { GamemodeConverter } from './shared/converter/gamemode';
 import { EquipmentController } from './app/user-interface/pages/_parts/equipment/equipment-controller';
 import { DialogController } from './app/user-interface/_parts/dialog/dialog-controller';
@@ -215,13 +214,7 @@ export abstract class Main {
             namespaces: Array.from(Global.melvor.registeredNamespaces.registeredNamespaces.values()).filter(
                 namespace => namespace.isModded
             ),
-            agility: AgilityConverter.toData(
-                Global.melvor.agility.actions.allObjects,
-                Global.melvor.agility.pillars.allObjects
-            ),
-            gamemodes: Global.melvor.gamemodes.allObjects
-                .filter(gamemode => gamemode.id !== 'melvorD:Unset')
-                .map(gamemode => GamemodeConverter.toData(gamemode)),
+            gamemodes: Global.melvor.gamemodes.allObjects.map(gamemode => GamemodeConverter.get(gamemode)),
             currentGamemodeId: Global.melvor.currentGamemode.id
         });
 

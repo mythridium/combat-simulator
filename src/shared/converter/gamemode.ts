@@ -1,35 +1,43 @@
 import type { SimGame } from 'src/shared/simulator/sim-game';
 import { ModifierConverter } from './modifier';
+import { Global } from 'src/shared/global';
 
 export interface GamemodeConvertedData {
     namespace: DataNamespace;
     gamemode: GamemodeData;
 }
 
+export interface GamemodeModifiedData {
+    id: string;
+    isPermaDeath: boolean;
+    hitpointMultiplier: number;
+    overrideMaxHitpoints: number;
+    hasRegen: boolean;
+    disablePreservation: boolean;
+    disableItemDoubling: boolean;
+    allowAncientRelicDrops: boolean;
+    enableInstantActions: boolean;
+    playerModifiers: ModifierValuesRecordData;
+    enemyModifiers: ModifierValuesRecordData;
+    playerCombatEffects: TriggeredCombatEffectApplicatorData[];
+    enemyCombatEffects: TriggeredCombatEffectApplicatorData[];
+    disabledModifiers: string[];
+    enemyPassives: string[];
+    enemySpecialAttacks: string[];
+}
+
 export abstract class GamemodeConverter {
-    public static toData(gamemode: Gamemode): GamemodeConvertedData {
-        const data: GamemodeData = {
-            id: gamemode._localID,
-            name: gamemode._name,
-            media: gamemode._media,
-            description: gamemode._description,
-            rules: gamemode._rules,
-            textClass: gamemode.textClass,
-            btnClass: gamemode.btnClass,
+    public static get(gamemode: Gamemode): GamemodeModifiedData {
+        return {
+            id: gamemode.id,
             isPermaDeath: gamemode.isPermaDeath,
-            isEvent: gamemode.isEvent,
-            startDate: gamemode.startDate,
-            endDate: gamemode.endDate,
-            combatTriangle: gamemode._combatTriangle,
             hitpointMultiplier: gamemode.hitpointMultiplier,
             overrideMaxHitpoints: gamemode.overrideMaxHitpoints,
             hasRegen: gamemode.hasRegen,
-            capNonCombatSkillLevels: gamemode.capNonCombatSkillLevels,
-            startingPage: gamemode.startingPage.id,
-            startingItems: gamemode.startingItems.map(map => ({ id: map.item.id, quantity: map.quantity })),
-            allowSkillUnlock: gamemode.allowSkillUnlock,
-            startingSkills: Array.from(gamemode.startingSkills?.values() ?? []).map(skill => skill.id),
-            skillUnlockCost: gamemode.skillUnlockCost,
+            disablePreservation: gamemode.disablePreservation,
+            disableItemDoubling: gamemode.disableItemDoubling,
+            allowAncientRelicDrops: gamemode.allowAncientRelicDrops,
+            enableInstantActions: gamemode.enableInstantActions,
             playerModifiers: ModifierConverter.toData(gamemode.playerModifiers),
             enemyModifiers: ModifierConverter.toData(gamemode.enemyModifiers),
             playerCombatEffects: gamemode.playerCombatEffects?.map(effect => ({
@@ -44,66 +52,100 @@ export abstract class GamemodeConverter {
                 // @ts-ignore // TODO: TYPES
                 effectID: effect.effect.id
             })),
-            disabledModifiers: gamemode.disabledModifiers.map(modifier => modifier.id),
-            hasTutorial: gamemode.hasTutorial,
-            defaultInitialLevelCap: gamemode.defaultInitialLevelCap,
-            initialLevelCaps: gamemode.initialLevelCaps?.map(cap => ({ skillID: cap.skill.id, value: cap.value })),
-            defaultInitialAbyssalLevelCap: gamemode.defaultInitialAbyssalLevelCap,
-            initialAbyssalLevelCaps: gamemode.initialAbyssalLevelCaps?.map(cap => ({
-                skillID: cap.skill.id,
-                value: cap.value
-            })),
-            levelCapIncreases: gamemode.levelCapIncreases.map(levelCapIncrease => levelCapIncrease.id),
-            levelCapCost: this.toLevelCapCost(gamemode.levelCapCost),
-            abyssalLevelCapCost: this.toLevelCapCost(gamemode.abyssalLevelCapCost),
-            allowXPOverLevelCap: gamemode.allowXPOverLevelCap,
-            disablePreservation: gamemode.disablePreservation,
-            disableItemDoubling: gamemode.disableItemDoubling,
-            hasActiveGameplay: gamemode.hasActiveGameplay,
-            allowAncientRelicDrops: gamemode.allowAncientRelicDrops,
-            pre99RollConversion: gamemode.pre99RollConversion?.id,
-            post99RollConversion: gamemode.post99RollConversion?.id,
+            disabledModifiers: gamemode.disabledModifiers?.map(modifier => modifier.id),
             enemyPassives: gamemode.enemyPassives?.map(passive => passive.id),
-            enemySpecialAttacks: gamemode.enemySpecialAttacks?.map(special => special.attack.id),
-            requireLocalStorageKey: gamemode.requireLocalStorageKey,
-            enableInstantActions: gamemode.enableInstantActions,
-            enabledLangs: gamemode.enabledLangs,
-            useDefaultSkillUnlockRequirements: gamemode.useDefaultSkillUnlockRequirements
+            enemySpecialAttacks: gamemode.enemySpecialAttacks?.map(special => special.attack?.id)
         };
-
-        return { namespace: gamemode._namespace, gamemode: data };
     }
 
-    public static fromData(game: SimGame, { namespace, gamemode }: GamemodeConvertedData) {
-        const gm = new Gamemode(namespace, gamemode, game);
+    public static set(game: Game, gamemode: Gamemode, data: GamemodeModifiedData) {
+        gamemode.isPermaDeath = data.isPermaDeath;
+        gamemode.hitpointMultiplier = data.hitpointMultiplier;
+        gamemode.overrideMaxHitpoints = data.overrideMaxHitpoints;
+        gamemode.hasRegen = data.hasRegen;
+        gamemode.disablePreservation = data.disablePreservation;
+        gamemode.disableItemDoubling = data.disableItemDoubling;
+        gamemode.allowAncientRelicDrops = data.allowAncientRelicDrops;
+        gamemode.enableInstantActions = data.enableInstantActions;
 
-        gm.registerSoftDependencies(gamemode, game);
+        gamemode.disabledModifiers = [];
 
-        return gm;
-    }
+        if (data.disabledModifiers?.length) {
+            for (const disabledModifier of data.disabledModifiers) {
+                try {
+                    const id = Modifier.getIdFromKey(disabledModifier);
+                    const modifier = game.modifierRegistry.getObjectByID(id);
 
-    private static toLevelCapCost(
-        levelCapCost: LevelCapIncreaseCost | undefined
-    ): LevelCapIncreaseCostData | undefined {
-        if (!levelCapCost) {
-            return;
+                    if (modifier !== undefined) {
+                        gamemode.disabledModifiers.push(modifier);
+                    }
+                } catch (error) {
+                    Global.get.logger.error(
+                        `Failed to construct disabled modifier. '${gamemode.id}' - '${disabledModifier}'`,
+                        error
+                    );
+                }
+            }
         }
 
-        return {
-            increase: levelCapCost.increase,
-            baseCost: {
-                currencies: levelCapCost.baseCost.currencies?.map(currency => ({
-                    id: currency.currency.id,
-                    quantity: currency.quantity
-                })),
-                items: levelCapCost.baseCost.items?.map(item => ({
-                    id: item.item.id,
-                    quantity: item.quantity
-                }))
-            },
-            scalingFactor: levelCapCost.scalingFactor,
-            maxCostScaling: levelCapCost.maxCostScaling,
-            skillLevelGates: levelCapCost.skillLevelGates.map(skill => skill.id)
-        };
+        try {
+            if (data.enemyPassives?.length) {
+                gamemode.enemyPassives = game.combatPassives.getArrayFromIds(data.enemyPassives);
+            }
+        } catch (error) {
+            Global.get.logger.error(`Failed to construct gamemode enemy passives. '${gamemode.id}'`, error);
+        }
+
+        try {
+            if (data.enemySpecialAttacks?.length) {
+                gamemode.enemySpecialAttacks = data.enemySpecialAttacks.map(attackID => {
+                    const attack = game.specialAttacks.getObjectSafe(attackID);
+                    const chance = attack.defaultChance;
+
+                    return {
+                        attack,
+                        chance
+                    };
+                });
+            }
+        } catch (error) {
+            Global.get.logger.error(`Failed to construct gamemode enemy passives. '${gamemode.id}'`, error);
+        }
+
+        try {
+            if (data.playerModifiers) {
+                gamemode.playerModifiers = ModifierConverter.fromData(game, data.playerModifiers);
+            }
+        } catch (error) {
+            Global.get.logger.error(`Failed to construct gamemode player modifiers. '${gamemode.id}'`, error);
+        }
+
+        try {
+            if (data.enemyModifiers) {
+                gamemode.enemyModifiers = ModifierConverter.fromData(game, data.enemyModifiers);
+            }
+        } catch (error) {
+            Global.get.logger.error(`Failed to construct gamemode enemy modifiers. '${gamemode.id}'`, error);
+        }
+
+        try {
+            if (data.playerCombatEffects !== undefined) {
+                gamemode.playerCombatEffects = game.getCombatEffectApplicatorsWithTriggersFromData(
+                    data.playerCombatEffects
+                );
+            }
+        } catch (error) {
+            Global.get.logger.error(`Failed to construct gamemode player combat effects. '${gamemode.id}'`, error);
+        }
+
+        try {
+            if (data.enemyCombatEffects !== undefined) {
+                gamemode.enemyCombatEffects = game.getCombatEffectApplicatorsWithTriggersFromData(
+                    data.enemyCombatEffects
+                );
+            }
+        } catch (error) {
+            Global.get.logger.error(`Failed to construct gamemode enemy combat effects. '${gamemode.id}'`, error);
+        }
     }
 }

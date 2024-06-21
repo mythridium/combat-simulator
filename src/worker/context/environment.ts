@@ -65,7 +65,6 @@ export abstract class Environment {
             namespaces: data.namespaces,
             skills: data.skills,
             dataPackage: data.dataPackage,
-            agility: data.agility,
             gamemodes: data.gamemodes,
             currentGamemodeId: data.currentGamemodeId
         });

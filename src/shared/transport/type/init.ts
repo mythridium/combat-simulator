@@ -1,5 +1,4 @@
-import { AgilityConvertedData } from 'src/shared/converter/agility';
-import { GamemodeConvertedData } from 'src/shared/converter/gamemode';
+import { GamemodeModifiedData } from 'src/shared/converter/gamemode';
 
 export interface InitRequest extends InitGameData {
     origin: string;
@@ -18,6 +17,5 @@ export interface InitGameData {
     dataPackage: GameDataPackage[];
     skills: { name: string; namespace: DataNamespace; media: string }[];
     namespaces: DataNamespace[];
-    agility: AgilityConvertedData;
-    gamemodes: GamemodeConvertedData[];
+    gamemodes: GamemodeModifiedData[];
 }

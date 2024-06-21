@@ -3,7 +3,6 @@ import { InitPayload } from './payload/init';
 import { WebWorker } from './web-worker';
 import { SimulateRequest } from 'src/shared/transport/type/simulate';
 import { Global } from 'src/app/global';
-import { AgilityConverter } from 'src/shared/converter/agility';
 import { GamemodeConverter } from 'src/shared/converter/gamemode';
 
 export class Simulator {
@@ -29,13 +28,7 @@ export class Simulator {
                 namespaces: Array.from(Global.melvor.registeredNamespaces.registeredNamespaces.values()).filter(
                     namespace => namespace.isModded
                 ),
-                agility: AgilityConverter.toData(
-                    Global.melvor.agility.actions.allObjects,
-                    Global.melvor.agility.pillars.allObjects
-                ),
-                gamemodes: Global.melvor.gamemodes.allObjects
-                    .filter(gamemode => gamemode.id !== 'melvorD:Unset')
-                    .map(gamemode => GamemodeConverter.toData(gamemode)),
+                gamemodes: Global.melvor.gamemodes.allObjects.map(gamemode => GamemodeConverter.get(gamemode)),
                 currentGamemodeId: Global.melvor.currentGamemode.id
             }
         });
