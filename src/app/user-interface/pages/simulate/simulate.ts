@@ -81,6 +81,7 @@ export class SimulatePage extends HTMLElement {
 
         if (!cloudManager.hasItAEntitlementAndIsEnabled) {
             this._toggleDepths.style.display = 'none';
+            this._toggleAbyssalMonsters.style.display = 'none';
         }
 
         if (!cloudManager.hasAoDEntitlementAndIsEnabled) {

@@ -297,8 +297,10 @@ export class Plotter extends HTMLElement {
                 continue;
             }
 
-            if (Lookup.monsters.getObjectByID(monsterId)?.damageType.id === Lookup.abyssalDamage.id) {
-                continue;
+            if (cloudManager.hasItAEntitlementAndIsEnabled) {
+                if (Lookup.monsters.getObjectByID(monsterId)?.damageType.id === Lookup.abyssalDamage.id) {
+                    continue;
+                }
             }
 
             Global.simulation.monsterSimFilter[monsterId] = this.monstersToggled;

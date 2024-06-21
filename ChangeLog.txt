@@ -1,3 +1,7 @@
+v3.0.79
+    fixed toggle normal monsters throwing an error without owning ita
+    fixed toggle abyssal monsters being displayed without owning ita
+
 v3.0.78
     adjusted logic of pushing gamemode data into combat sim
 
