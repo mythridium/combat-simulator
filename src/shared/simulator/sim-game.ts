@@ -477,7 +477,14 @@ export class SimGame extends Game {
         //     writer.writeNamespacedObject(this.pausedAction);
         // writer.writeBoolean(this._isPaused);
         writer.writeBoolean(this.merchantsPermitRead);
-        writer.writeNamespacedObject(this.currentGamemode);
+
+        // gamemode doesn't exist in combat sim, fallback to standard
+        if (!Global.get.game.gamemodes.find(gamemode => gamemode.id === this.currentGamemode.id)) {
+            writer.writeNamespacedObject(Global.get.game.gamemodes.getObjectByID('melvorD:Standard'));
+        } else {
+            writer.writeNamespacedObject(this.currentGamemode);
+        }
+
         // writer.writeString(this.characterName);
         // this.bank.encode(writer);
         this.combat.encode(writer);

@@ -1,3 +1,6 @@
+v3.0.80
+    added messaging when a gamemode has not been registered with combat simulator
+
 v3.0.79
     fixed toggle normal monsters throwing an error without owning ita
     fixed toggle abyssal monsters being displayed without owning ita

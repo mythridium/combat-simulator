@@ -14,6 +14,7 @@ import { Bugs } from './app/user-interface/bugs/bugs';
 import { SettingsController, Settings } from './app/settings-controller';
 import { clone, cloneDeep } from 'lodash-es';
 import { SaveSlot } from './app/utils/save-slot';
+import type { Switch } from './app/user-interface/_parts/switch/switch';
 
 export abstract class Main {
     private static loading = false;
@@ -101,10 +102,6 @@ export abstract class Main {
                     Global.game = new SimClasses.SimGame();
                     Global.melvor = game;
 
-                    const saveString = Global.melvor.generateSaveString();
-                    const reader = new SaveWriter('Read', 1);
-                    const saveVersion = reader.setDataFromSaveString(saveString);
-
                     await Global.micsr.fetchData();
                     await Global.micsr.initialize();
 
@@ -120,12 +117,25 @@ export abstract class Main {
 
                     Global.simulation = new Simulation();
 
+                    const isRegistered = this.invalidGamemodeCheck();
+
+                    let saveString = Global.melvor.generateSaveString();
+
+                    if (!isRegistered) {
+                        const temporary = Global.melvor.currentGamemode;
+                        Global.melvor.currentGamemode = Global.melvor.gamemodes.getObjectByID('melvorD:Standard');
+                        saveString = Global.melvor.generateSaveString();
+                        Global.melvor.currentGamemode = temporary;
+                    }
+
+                    const reader = new SaveWriter('Read', 1);
+                    const saveVersion = reader.setDataFromSaveString(saveString);
+
                     Global.game.decode(reader, saveVersion);
                     Global.game.onLoad();
                     Global.game.resetToBlankState();
 
                     EquipmentController.init();
-
                     Global.userInterface.init();
                 });
 
@@ -205,6 +215,59 @@ export abstract class Main {
         }
 
         return wait;
+    }
+
+    private static invalidGamemodeCheck() {
+        const gamemodeRegistered =
+            Global.game.gamemodes.find(gamemode => gamemode.id === Global.melvor.currentGamemode.id) !== undefined;
+
+        const ignore = localStorage.getItem('mcs-ignore-gamemode-warning') === 'true';
+
+        if (!gamemodeRegistered && !ignore) {
+            const backdrop = createElement('div', { id: 'mcs-dialog-backdrop' });
+            const dialog = createElement('mcs-dialog', { id: 'mcs-invalid-gamemode' });
+
+            dialog.innerHTML = `
+                <div slot="header">[Combat Simulator] Gamemode not registered</div>
+
+                <div slot="content">
+                    <div>Your gamemode '${Global.melvor.currentGamemode.name}' has not been registered with Combat Simulator.</div>
+                    <br />
+                    <div>Please contact the author of '${Global.melvor.currentGamemode.name}' and ask them to register their mod with Combat Simulator. Your gamemode will default to Standard within Combat Simulator.</div>
+                    <mcs-switch
+                        id="mcs-invalid-gamemode-ignore"
+                        style="margin-top: 20px; display: block;"
+                        data-mcsOnText="Yes"
+                        data-mcsOffText="No"
+                        data-mcsName="Ignore future invalid gamemode warnings">
+                    </mcs-switch>
+                </div>
+
+                <div slot="footer">
+                    <button id="mcs-no-gamemode-ok" class="mcs-button">Ok</button>
+                </div>
+            `;
+
+            const ok = dialog.querySelector<HTMLButtonElement>('#mcs-no-gamemode-ok');
+            const ignore = dialog.querySelector<Switch>('#mcs-invalid-gamemode-ignore');
+
+            ok.onclick = () => {
+                DialogController.close();
+                dialog.remove();
+                backdrop.remove();
+            };
+
+            ignore._on(isChecked => {
+                localStorage.setItem('mcs-ignore-gamemode-warning', isChecked ? 'true' : 'false');
+            });
+
+            document.body.appendChild(backdrop);
+            document.body.appendChild(dialog);
+
+            DialogController.open(dialog, undefined, false);
+        }
+
+        return gamemodeRegistered;
     }
 
     private static setup() {

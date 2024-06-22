@@ -124,6 +124,12 @@ export abstract class SettingsController {
             }
         }
 
+        let currentGamemodeID = Global.melvor.currentGamemode.id;
+
+        if (!Global.game.gamemodes.find(gamemode => gamemode.id === Global.melvor.currentGamemode.id)) {
+            currentGamemodeID = 'melvorD:Standard';
+        }
+
         const settings: Settings = {
             version: Global.context.version,
             agility: this.getAgility(Global.melvor),
@@ -166,7 +172,7 @@ export abstract class SettingsController {
                       Global.melvor.realms.getObjectByID('melvorItA:Abyssal')
                   ) >= 3
                 : false,
-            currentGamemodeID: Global.melvor.currentGamemode.id,
+            currentGamemodeID,
             foodSelected: Global.melvor.combat.player.food.currentSlot.item.id,
             isManualEating: Global.game.combat.player.isManualEating,
             isSolarEclipse: Global.melvor.township.townData.season === Lookup.getSolarEclipse(Global.melvor.township),

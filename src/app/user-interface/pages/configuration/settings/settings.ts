@@ -132,6 +132,12 @@ export class SettingsPage extends HTMLElement {
     public _import(gamemodeId: string) {
         const gamemode = Global.game.gamemodes.getObjectByID(gamemodeId);
 
+        if (!gamemode) {
+            throw new Error(
+                `Tried to import gamemode with id '${gamemodeId}', but that gamemode has not been registered.`
+            );
+        }
+
         this._gamemode._select(gamemode.id);
     }
 
