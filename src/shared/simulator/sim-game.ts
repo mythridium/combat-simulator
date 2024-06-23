@@ -161,6 +161,12 @@ export class SimGame extends Game {
             });
         }
 
+        const shopCompute = this.shop.computeProvidedStats.bind(this.shop);
+        this.shop.computeProvidedStats = (updatePlayer: boolean) => {
+            this.shop.conditionalModifiers = [];
+            shopCompute(updatePlayer);
+        };
+
         const constructMatcher = this.events.constructMatcher;
 
         this.events.constructMatcher = (data: GameEventMatcherData) => {
@@ -190,6 +196,7 @@ export class SimGame extends Game {
     public purchaseAbyssalSkillLevelCaps() {}
     public checkSteamAchievements() {}
     public increaseSkillLevelCaps() {}
+    public validateRandomLevelCapIncreases() {}
     public isAchievementMet() {
         return false;
     }
@@ -269,6 +276,8 @@ export class SimGame extends Game {
 
     onLoad() {
         try {
+            this.activeLevelCapIncreases = [];
+            this.currentGamemode.levelCapIncreases = [];
             this.setUpGamemodeOnLoad();
         } catch {}
 

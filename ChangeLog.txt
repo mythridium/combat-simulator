@@ -1,3 +1,6 @@
+v3.0.81
+    fixed performance degradation after performing multiple simulations
+
 v3.0.80
     added messaging when a gamemode has not been registered with combat simulator
 
