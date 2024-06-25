@@ -1,3 +1,7 @@
+v3.0.83
+    fixed shop purchase modifiers not being applied
+    fixed equipment error on load
+
 v3.0.82
     added support for game version ?11516
 

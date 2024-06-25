@@ -26,7 +26,8 @@ export class SimGame extends Game {
 
         this.combat.registerStatProvider(this.tokenItemStats);
         this.combat.registerStatProvider(this.petManager);
-        this.combat.registerStatProvider(this.shop);
+        // @ts-ignore // TODO: TYPES
+        this.combat.registerStatProvider(this.shop.providedStats);
         this.combat.registerStatProvider(this.potions.providedStats);
 
         this.detachGlobals();
@@ -288,7 +289,6 @@ export class SimGame extends Game {
             this.corruption.onLoad();
         }
 
-        GameStats.compute();
         this.combat.initialize();
 
         const potion = this.combat.player.potion;
@@ -314,8 +314,6 @@ export class SimGame extends Game {
         );
 
         this.shop.upgradesPurchased.clear();
-        // @ts-ignore // TODO: TYPES
-        this.shop.providedStats.reset();
 
         for (const set of equipmentSets) {
             this.shop.upgradesPurchased.set(set, 1);
