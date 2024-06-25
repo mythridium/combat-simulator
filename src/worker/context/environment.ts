@@ -69,6 +69,10 @@ export abstract class Environment {
             currentGamemodeId: data.currentGamemodeId
         });
 
+        delete data.dataPackage;
+        delete data.skills;
+        delete data.namespaces;
+
         Global.game.agility.courses.forEach(course => {
             course.numObstaclesUnlocked = course.obstacleSlots.length;
         });

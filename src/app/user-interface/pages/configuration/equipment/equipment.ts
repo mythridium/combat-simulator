@@ -28,6 +28,7 @@ export class EquipmentPage extends HTMLElement {
     private readonly _abyssal25CookingPool: Switch;
     private readonly _abyssal95CookingPool: Switch;
     private readonly _cookingMastery: Switch;
+    private readonly _tooltipHint: HTMLDivElement;
 
     private readonly _equipmentSetContainer: HTMLDivElement;
 
@@ -53,6 +54,7 @@ export class EquipmentPage extends HTMLElement {
             'mcs-switch'
         );
         this._cookingMastery = getElementFromFragment(this._content, 'mcs-equipment-cooking-mastery', 'mcs-switch');
+        this._tooltipHint = getElementFromFragment(this._content, 'mcs-settings-tooltip-hint', 'div');
 
         this._equipmentSetContainer = getElementFromFragment(this._content, 'mcs-equipment-import-container', 'div');
     }
@@ -156,6 +158,10 @@ export class EquipmentPage extends HTMLElement {
         if (!cloudManager.hasItAEntitlementAndIsEnabled) {
             this._abyssal25CookingPool.style.display = 'none';
             this._abyssal95CookingPool.style.display = 'none';
+        }
+
+        if (nativeManager.isMobile) {
+            this._tooltipHint.style.display = 'none';
         }
     }
 

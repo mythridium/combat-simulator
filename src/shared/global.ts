@@ -112,7 +112,10 @@ export abstract class Global {
         }
 
         this._client = global;
-        self.mcs.global = this._client;
+
+        if (self.mcs.isDebug) {
+            self.mcs.global = this._client;
+        }
     }
 
     public static setWorker(global: typeof GlobalWorker) {
@@ -121,6 +124,9 @@ export abstract class Global {
         }
 
         this._worker = global;
-        self.mcs.global = this._worker;
+
+        if (self.mcs.isDebug) {
+            self.mcs.global = this._worker;
+        }
     }
 }

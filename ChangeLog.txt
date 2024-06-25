@@ -1,3 +1,7 @@
+v3.0.87
+    experimental adjustments to reduce memory usage
+    moved hint for scrolling tooltips on desktop from the settings page to the equipment page
+
 v3.0.86
     fixed effect applicator error
 

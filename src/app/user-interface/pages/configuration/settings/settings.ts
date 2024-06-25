@@ -30,7 +30,6 @@ export class SettingsPage extends HTMLElement {
     private readonly _importDialog: ImportDialog;
     private readonly _exportButton: HTMLButtonElement;
     private readonly _exportDialog: ExportDialog;
-    private readonly _tooltipHint: HTMLDivElement;
 
     private _plotter: Plotter;
 
@@ -62,7 +61,6 @@ export class SettingsPage extends HTMLElement {
         this._importDialog = getElementFromFragment(this._content, 'mcs-import-dialog', 'mcs-import-dialog');
         this._exportButton = getElementFromFragment(this._content, 'mcs-settings-export', 'button');
         this._exportDialog = getElementFromFragment(this._content, 'mcs-export-dialog', 'mcs-export-dialog');
-        this._tooltipHint = getElementFromFragment(this._content, 'mcs-settings-tooltip-hint', 'div');
     }
 
     public connectedCallback() {
@@ -142,10 +140,6 @@ export class SettingsPage extends HTMLElement {
             Global.context.accountStorage.getItem(StorageKey.Ticks) ?? Global.stores.simulator.state.ticks.toString();
 
         Global.stores.simulator.set({ trials: parseInt(this._trials.value), ticks: parseInt(this._ticks.value) });
-
-        if (nativeManager.isMobile) {
-            this._tooltipHint.style.display = 'none';
-        }
     }
 
     public _import(gamemodeId: string) {

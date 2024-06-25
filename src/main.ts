@@ -149,6 +149,9 @@ export abstract class Main {
                     localStorage.setItem(this.versionKey, gameVersion);
                 }
 
+                delete Global.dataPackages;
+                delete Global.skills;
+
                 Global.logger.log(`Initialised in ${duration} ms [${Global.context.version}]`);
             } catch (error) {
                 Global.logger.error(
