@@ -1,3 +1,6 @@
+v3.0.86
+    fixed effect applicator error
+
 v3.0.85
     added a new setting for an alternate equipment selector
         this selector removes tooltips when selecting items and instead opens items in a popup on selection to view the details

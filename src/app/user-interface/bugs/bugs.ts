@@ -69,8 +69,8 @@ export abstract class Bugs {
             }
         }
 
-        textarea.value += `Melvor Version: ${gameVersion}
-Sim Version: ${Global.context.version}${gameFileVersion}
+        textarea.value += `Melvor Version: ${gameVersion}${gameFileVersion}
+Sim Version: ${Global.context.version}
 
 Expansions Enabled: ${expansionsOwned.join(', ')}
 

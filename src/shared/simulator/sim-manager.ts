@@ -376,12 +376,12 @@ export class SimManager extends CombatManager {
             this.spawnTimer.stop();
         }
 
+        GameStats.compute();
+
         if (this.enemy.state !== EnemyState.Dead) {
-            this.enemy.computeCombatStats();
             this.enemy.processDeath();
         }
 
-        GameStats.compute();
         this.player.removeAllEffects();
         this.loot.removeAll();
         this.selectedArea = undefined;
