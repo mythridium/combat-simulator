@@ -21,6 +21,7 @@ export class SettingsPage extends HTMLElement {
 
     private readonly _trials: HTMLInputElement;
     private readonly _ticks: HTMLInputElement;
+    private readonly _alternateEquipmentSelector: Switch;
     private readonly _smallPlotter: Switch;
     private readonly _filterTargetDropdown: Switch;
     private readonly _importOnFirstOpen: Switch;
@@ -40,6 +41,11 @@ export class SettingsPage extends HTMLElement {
 
         this._trials = getElementFromFragment(this._content, 'mcs-settings-trials', 'input');
         this._ticks = getElementFromFragment(this._content, 'mcs-settings-ticks', 'input');
+        this._alternateEquipmentSelector = getElementFromFragment(
+            this._content,
+            'mcs-settings-alternate-equipment-selector',
+            'mcs-switch'
+        );
         this._smallPlotter = getElementFromFragment(this._content, 'mcs-settings-small-plotter', 'mcs-switch');
         this._filterTargetDropdown = getElementFromFragment(
             this._content,
@@ -66,6 +72,19 @@ export class SettingsPage extends HTMLElement {
 
         this._trials.oninput = event => this._onChange(event, 'trials');
         this._ticks.oninput = event => this._onChange(event, 'ticks');
+
+        const isAlternateEquipmentSelector =
+            Global.context.accountStorage.getItem(StorageKey.AlternateEquipmentSelector) ??
+            Global.stores.equipment.state.isAlternateEquipmentSelector;
+
+        this._alternateEquipmentSelector._toggle(isAlternateEquipmentSelector);
+
+        Global.stores.equipment.set({ isAlternateEquipmentSelector });
+
+        this._alternateEquipmentSelector._on(isChecked => {
+            Global.stores.equipment.set({ isAlternateEquipmentSelector: isChecked });
+            Global.context.accountStorage.setItem(StorageKey.AlternateEquipmentSelector, isChecked);
+        });
 
         const isSmallPlotter =
             Global.context.accountStorage.getItem(StorageKey.SmallPlotter) ?? Global.stores.plotter.state.smallPlotter;

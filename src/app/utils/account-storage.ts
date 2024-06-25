@@ -1,4 +1,5 @@
 export enum StorageKey {
+    AlternateEquipmentSelector = 'alternate-equipment-selector',
     SmallPlotter = 'small-plotter',
     FilterTargetDropdown = 'filter-target-dropdown',
     Trials = 'trials',

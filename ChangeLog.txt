@@ -1,3 +1,8 @@
+v3.0.85
+    added a new setting for an alternate equipment selector
+        this selector removes tooltips when selecting items and instead opens items in a popup on selection to view the details
+        this setting is persisted across all characters and devices
+
 v3.0.84
     fixed effect applicator error when loading while the game was in combat
     fixed bug reporter not displaying selected text colour

@@ -12,6 +12,8 @@ export class Dialog extends HTMLElement {
     private readonly _content = new DocumentFragment();
     private readonly _shadowRoot: ShadowRoot;
 
+    private _dialogContent: HTMLDivElement;
+
     constructor() {
         super();
 
@@ -21,6 +23,16 @@ export class Dialog extends HTMLElement {
 
     public connectedCallback() {
         this._shadowRoot.appendChild(this._content);
+
+        this._dialogContent = this._shadowRoot.querySelector('.mcs-dialog-content');
+    }
+
+    public _getScrollTop() {
+        return this._dialogContent.scrollTop;
+    }
+
+    public _setScrollTop(scrollTop: number) {
+        this._dialogContent.scrollTop = scrollTop;
     }
 }
 

@@ -97,6 +97,7 @@ export class EquipmentSlot extends HTMLElement {
 
                 TooltipController.hide();
                 DialogController.open(this._dialog, () => {
+                    this._toggleItemContainer(true);
                     this._equipmentContainer.innerHTML = '';
                     this._items.clear();
                 });
@@ -158,77 +159,86 @@ export class EquipmentSlot extends HTMLElement {
             const sectionElement = createElement('div', { classList: ['mcs-equipment-slot-section'] });
 
             for (const item of section.items) {
+                const attributes: [string, string][] = Global.stores.equipment.state.isAlternateEquipmentSelector
+                    ? undefined
+                    : [['data-mcsTooltip', '']];
+
                 const itemContainer = createElement('div', {
                     classList: ['mcs-equipment-slot-item'],
-                    attributes: [['data-mcsTooltip', '']]
+                    attributes
                 });
 
+                const tooltipAttributes: [string, string][] = Global.stores.equipment.state.isAlternateEquipmentSelector
+                    ? undefined
+                    : [['data-mcsTooltipContent', '']];
+
+                const itemTooltip = createElement('div', { attributes: tooltipAttributes });
+                itemTooltip.innerHTML = EquipmentController.getEquipmentTooltip(item as EquipmentItem);
+
                 itemContainer.onclick = () => {
-                    DialogController.close();
-                    Global.game.combat.player.equipItem(
-                        item as EquipmentItem,
-                        undefined,
-                        this._slot.slot,
-                        undefined,
-                        SettingsController.isImporting
-                    );
-                    this._update();
+                    if (Global.stores.equipment.state.isAlternateEquipmentSelector) {
+                        const scrollPosition = this._dialog._getScrollTop();
 
-                    for (const element of this._equipmentSlots) {
-                        element._update();
+                        this._equipmentContainer.innerHTML = '';
+                        this._items.clear();
+                        this._toggleItemContainer(false);
+
+                        const equipmentSelector = createElement('div', { classList: ['mcs-equipment-selector-popup'] });
+                        const header = createElement('div', { classList: ['mcs-equipment-selector-header'] });
+
+                        const equip = createElement('button', { classList: ['mcs-button'], text: 'Equip' });
+                        const back = createElement('button', { classList: ['mcs-button-secondary'], text: 'Back' });
+
+                        equip.onclick = () => {
+                            this._toggleItemContainer(true);
+                            this._createItems();
+                            this._equipItem(item as EquipmentItem);
+                            this._dialog._setScrollTop(scrollPosition);
+                        };
+
+                        back.onclick = () => {
+                            this._toggleItemContainer(true);
+                            this._createItems();
+                            equipmentSelector.remove();
+                            this._dialog._setScrollTop(scrollPosition);
+                        };
+
+                        header.append(equip, back);
+
+                        const content = createElement('div', { classList: ['mcs-equipment-selector-content'] });
+                        const itemImage = createElement('img', {
+                            attributes: [['src', item.media]],
+                            classList: ['mt-1', 'mb-1', 'mcs-equipment-selector-item-image']
+                        });
+
+                        content.append(itemImage, itemTooltip);
+
+                        equipmentSelector.append(header, content);
+
+                        this._equipmentContainer.appendChild(equipmentSelector);
+                    } else {
+                        this._equipItem(item as EquipmentItem);
                     }
-
-                    if (this._slot.slot.id === 'melvorD:Summon1' || this._slot.slot.id === 'melvorD:Summon2') {
-                        if (
-                            !Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty &&
-                            !Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty
-                        ) {
-                            const summon1 = Global.melvor.items.equipment.getObjectByID(
-                                Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].item.id
-                            );
-                            const summon2 = Global.melvor.items.equipment.getObjectByID(
-                                Global.game.combat.player.equipment.equippedItems['melvorD:Summon2'].item.id
-                            );
-
-                            if (summon1 && summon2) {
-                                const synergyData = Global.melvor.summoning.getSynergy(summon1, summon2);
-
-                                const isEnabled = synergyData
-                                    ? Global.melvor.summoning.isSynergyUnlocked.call(
-                                          Global.melvor.summoning,
-                                          synergyData
-                                      )
-                                    : true;
-
-                                this._synergy._toggle(isEnabled);
-                            }
-                        } else {
-                            this._synergy._toggle(false);
-                        }
-                    }
-
-                    this._spells._update();
-                    this._prayers._update();
-                    TooltipController.hide();
-                    StatsController.update();
-
-                    this._equipment._setAttackStyleDropdown();
-                    this._equipment['_food']._update();
                 };
 
                 const itemImage = createElement('img');
                 itemImage.style.clipPath = 'inset(2.6px)';
 
-                const itemTooltip = createElement('div', { attributes: [['data-mcsTooltipContent', '']] });
-                itemTooltip.innerHTML = EquipmentController.getEquipmentTooltip(item as EquipmentItem);
-
                 this._items.set(item, itemContainer);
 
+                if (this._search.value && !EquipmentController.isMatch(item, this._search.value)) {
+                    itemContainer.style.display = 'none';
+                }
+
                 ImageLoader.register(itemImage, item.media);
-                TooltipController.init(itemContainer);
 
                 itemContainer.appendChild(itemImage);
-                itemContainer.appendChild(itemTooltip);
+
+                if (!Global.stores.equipment.state.isAlternateEquipmentSelector) {
+                    TooltipController.init(itemContainer);
+                    itemContainer.appendChild(itemTooltip);
+                }
+
                 sectionElement.appendChild(itemContainer);
             }
 
@@ -237,6 +247,60 @@ export class EquipmentSlot extends HTMLElement {
             );
             this._equipmentContainer.appendChild(sectionElement);
         }
+    }
+
+    private _equipItem(item: EquipmentItem) {
+        DialogController.close();
+        Global.game.combat.player.equipItem(
+            item,
+            undefined,
+            this._slot.slot,
+            undefined,
+            SettingsController.isImporting
+        );
+        this._update();
+
+        for (const element of this._equipmentSlots) {
+            element._update();
+        }
+
+        if (this._slot.slot.id === 'melvorD:Summon1' || this._slot.slot.id === 'melvorD:Summon2') {
+            if (
+                !Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty &&
+                !Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty
+            ) {
+                const summon1 = Global.melvor.items.equipment.getObjectByID(
+                    Global.game.combat.player.equipment.equippedItems['melvorD:Summon1'].item.id
+                );
+                const summon2 = Global.melvor.items.equipment.getObjectByID(
+                    Global.game.combat.player.equipment.equippedItems['melvorD:Summon2'].item.id
+                );
+
+                if (summon1 && summon2) {
+                    const synergyData = Global.melvor.summoning.getSynergy(summon1, summon2);
+
+                    const isEnabled = synergyData
+                        ? Global.melvor.summoning.isSynergyUnlocked.call(Global.melvor.summoning, synergyData)
+                        : true;
+
+                    this._synergy._toggle(isEnabled);
+                }
+            } else {
+                this._synergy._toggle(false);
+            }
+        }
+
+        this._spells._update();
+        this._prayers._update();
+        TooltipController.hide();
+        StatsController.update();
+
+        this._equipment._setAttackStyleDropdown();
+        this._equipment['_food']._update();
+    }
+
+    private _toggleItemContainer(visible: boolean) {
+        this._search.style.display = visible ? '' : 'none';
     }
 }
 

@@ -65,3 +65,22 @@ mcs-equipment-slot {
         background: var(--mcs-slot-item-hover-color);
     }
 }
+
+.mcs-equipment-selector-popup {
+    .mcs-equipment-selector-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .mcs-equipment-selector-content {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+
+        .mcs-equipment-selector-item-image {
+            width: 60px;
+            height: 60px;
+        }
+    }
+}

@@ -8,6 +8,7 @@ import { SimulatorStore } from './stores/simulator.store';
 import { SimGame } from 'src/shared/simulator/sim-game';
 import { MICSR } from 'src/shared/micsr';
 import { StatsStore } from './stores/stats.store';
+import { EquipmentStore } from './stores/equipment.store';
 
 export abstract class Global extends SharedGlobal {
     public static logger = new Logger({ entity: 'Client', color: Color.Green });
@@ -27,6 +28,7 @@ export abstract class Global extends SharedGlobal {
         plotter: new PlotterStore(),
         game: new GameStore(),
         simulator: new SimulatorStore(),
+        equipment: new EquipmentStore(),
         stats: new StatsStore()
     };
 

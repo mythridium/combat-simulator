@@ -7,14 +7,16 @@ mcs-dialog {
         visibility: visible;
     }
 
-    [slot='content'].mcs-with-textarea {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 100%;
+    [slot='content'] {
+        .mcs-with-textarea {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
 
-        textarea {
-            min-height: 10em;
+            textarea {
+                min-height: 10em;
+            }
         }
     }
 

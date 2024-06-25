@@ -77,6 +77,7 @@ export class FoodSlot extends HTMLElement {
 
                 TooltipController.hide();
                 DialogController.open(this._dialog, () => {
+                    this._toggleItemContainer(true);
                     this._equipmentContainer.innerHTML = '';
                     this._items.clear();
                 });
@@ -118,34 +119,86 @@ export class FoodSlot extends HTMLElement {
             const sectionElement = createElement('div', { classList: ['mcs-food-slot-section'] });
 
             for (const item of section.items) {
+                const attributes: [string, string][] = Global.stores.equipment.state.isAlternateEquipmentSelector
+                    ? undefined
+                    : [['data-mcsTooltip', '']];
+
                 const itemContainer = createElement('div', {
                     classList: ['mcs-food-slot-item'],
-                    attributes: [['data-mcsTooltip', '']]
+                    attributes
                 });
 
+                const tooltipAttributes: [string, string][] = Global.stores.equipment.state.isAlternateEquipmentSelector
+                    ? undefined
+                    : [['data-mcsTooltipContent', '']];
+
+                const itemTooltip = createElement('div', { attributes: tooltipAttributes });
+                itemTooltip.innerHTML = this.getFoodTooltip(item as FoodItem);
+
                 itemContainer.onclick = () => {
-                    Global.game.combat.player.equipFood(item as FoodItem, 0);
+                    if (Global.stores.equipment.state.isAlternateEquipmentSelector) {
+                        const scrollPosition = this._dialog._getScrollTop();
 
-                    DialogController.close();
-                    this._update();
+                        this._equipmentContainer.innerHTML = '';
+                        this._items.clear();
+                        this._toggleItemContainer(false);
 
-                    TooltipController.hide();
-                    StatsController.update();
+                        const equipmentSelector = createElement('div', { classList: ['mcs-equipment-selector-popup'] });
+                        const header = createElement('div', { classList: ['mcs-equipment-selector-header'] });
+
+                        const equip = createElement('button', { classList: ['mcs-button'], text: 'Equip' });
+                        const back = createElement('button', { classList: ['mcs-button-secondary'], text: 'Back' });
+
+                        equip.onclick = () => {
+                            this._toggleItemContainer(true);
+                            this._createItems();
+                            this._equipItem(item as FoodItem);
+                            this._dialog._setScrollTop(scrollPosition);
+                        };
+
+                        back.onclick = () => {
+                            this._toggleItemContainer(true);
+                            this._createItems();
+                            equipmentSelector.remove();
+                            this._dialog._setScrollTop(scrollPosition);
+                        };
+
+                        header.append(equip, back);
+
+                        const content = createElement('div', { classList: ['mcs-equipment-selector-content'] });
+                        const itemImage = createElement('img', {
+                            attributes: [['src', item.media]],
+                            classList: ['mt-1', 'mb-1', 'mcs-equipment-selector-item-image']
+                        });
+
+                        content.append(itemImage, itemTooltip);
+
+                        equipmentSelector.append(header, content);
+
+                        this._equipmentContainer.appendChild(equipmentSelector);
+                    } else {
+                        this._equipItem(item as FoodItem);
+                    }
                 };
 
                 const itemImage = createElement('img');
                 itemImage.style.clipPath = 'inset(2.6px)';
 
-                const itemTooltip = createElement('div', { attributes: [['data-mcsTooltipContent', '']] });
-                itemTooltip.innerHTML = this.getFoodTooltip(item as FoodItem);
-
                 this._items.set(item as FoodItem, itemContainer);
 
+                if (this._search.value && !EquipmentController.isMatch(item, this._search.value)) {
+                    itemContainer.style.display = 'none';
+                }
+
                 ImageLoader.register(itemImage, item.media);
-                TooltipController.init(itemContainer);
 
                 itemContainer.appendChild(itemImage);
-                itemContainer.appendChild(itemTooltip);
+
+                if (!Global.stores.equipment.state.isAlternateEquipmentSelector) {
+                    TooltipController.init(itemContainer);
+                    itemContainer.appendChild(itemTooltip);
+                }
+
                 sectionElement.appendChild(itemContainer);
             }
 
@@ -177,6 +230,20 @@ export class FoodSlot extends HTMLElement {
         tooltip += '</small></div>';
 
         return tooltip;
+    }
+
+    private _equipItem(item: FoodItem) {
+        Global.game.combat.player.equipFood(item, 0);
+
+        DialogController.close();
+        this._update();
+
+        TooltipController.hide();
+        StatsController.update();
+    }
+
+    private _toggleItemContainer(visible: boolean) {
+        this._search.style.display = visible ? '' : 'none';
     }
 }
 
