@@ -44,11 +44,35 @@ export abstract class Bugs {
         textarea.onclick = () => textarea.setSelectionRange(0, textarea.value.length);
 
         if (error) {
-            textarea.value += `${error.message}\n\n${error.stack}\n\n`;
+            textarea.value += `Message: ${error.message}\n\n---\n\n${error.stack}\n\n`;
+        }
+
+        let expansionsOwned = [];
+
+        if (
+            !cloudManager.hasTotHEntitlementAndIsEnabled &&
+            !cloudManager.hasAoDEntitlementAndIsEnabled &&
+            !cloudManager.hasItAEntitlementAndIsEnabled
+        ) {
+            expansionsOwned.push('None');
+        } else {
+            if (cloudManager.hasTotHEntitlementAndIsEnabled) {
+                expansionsOwned.push(`TotH`);
+            }
+
+            if (cloudManager.hasAoDEntitlementAndIsEnabled) {
+                expansionsOwned.push(`AoD`);
+            }
+
+            if (cloudManager.hasItAEntitlementAndIsEnabled) {
+                expansionsOwned.push(`ItA`);
+            }
         }
 
         textarea.value += `Melvor Version: ${gameVersion}
 Sim Version: ${Global.context.version}
+
+Expansions Enabled: ${expansionsOwned.join(', ')}
 
 Mod List:
 `;

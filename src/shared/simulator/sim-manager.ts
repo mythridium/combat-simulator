@@ -5,6 +5,7 @@ import { SimClasses } from './sim';
 import { Util } from 'src/shared/util';
 import { Global } from 'src/shared/global';
 import { Lookup } from 'src/shared/utils/lookup';
+import { GameStats } from 'src/shared/utils/game-stats';
 
 export interface SimulationGains {
     gpMelvor: number;
@@ -376,9 +377,11 @@ export class SimManager extends CombatManager {
         }
 
         if (this.enemy.state !== EnemyState.Dead) {
+            this.enemy.computeCombatStats();
             this.enemy.processDeath();
         }
 
+        GameStats.compute();
         this.player.removeAllEffects();
         this.loot.removeAll();
         this.selectedArea = undefined;

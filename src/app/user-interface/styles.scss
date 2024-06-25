@@ -56,7 +56,7 @@ body.mcs-is-open {
         }
 
         &::selection {
-            background: --mcs-form-control-selection-color;
+            background: var(--mcs-form-control-selected-color);
         }
     }
 }

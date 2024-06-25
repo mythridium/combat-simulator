@@ -1,3 +1,8 @@
+v3.0.84
+    fixed effect applicator error when loading while the game was in combat
+    fixed bug reporter not displaying selected text colour
+    added enabled expansions to bug reporter
+
 v3.0.83
     fixed shop purchase modifiers not being applied
     fixed equipment error on load
