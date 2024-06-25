@@ -161,12 +161,6 @@ export class SimGame extends Game {
             });
         }
 
-        const shopCompute = this.shop.computeProvidedStats.bind(this.shop);
-        this.shop.computeProvidedStats = (updatePlayer: boolean) => {
-            this.shop.conditionalModifiers = [];
-            shopCompute(updatePlayer);
-        };
-
         const constructMatcher = this.events.constructMatcher;
 
         this.events.constructMatcher = (data: GameEventMatcherData) => {
@@ -320,10 +314,8 @@ export class SimGame extends Game {
         );
 
         this.shop.upgradesPurchased.clear();
-        this.shop.modifiers.empty();
-        this.shop.enemyModifiers.empty();
-        this.shop.conditionalModifiers = [];
-        this.shop.combatEffects = [];
+        // @ts-ignore // TODO: TYPES
+        this.shop.providedStats.reset();
 
         for (const set of equipmentSets) {
             this.shop.upgradesPurchased.set(set, 1);

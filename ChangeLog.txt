@@ -1,3 +1,6 @@
+v3.0.82
+    added support for game version ?11516
+
 v3.0.81
     fixed performance degradation after performing multiple simulations
 

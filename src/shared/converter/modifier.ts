@@ -1,7 +1,7 @@
 export abstract class ModifierConverter {
     public static toData(modifierValues: ModifierValue[]) {
         if (!modifierValues?.length) {
-            return undefined;
+            return {};
         }
 
         const modifierObject: ModifierValuesRecordData = {};
