@@ -133,8 +133,11 @@ export class SimGame extends Game {
             // Make sure nothing gets called on skill level ups, it tends to try rendering
             skill.levelUp = () => {};
             skill.abyssalLevelUp = () => {};
+            skill.onLevelUp = () => {};
+            skill.onAbyssalLevelUp = () => {};
             skill.render = () => {};
             skill.onAncientRelicUnlock = () => {};
+            skill.onAnyLevelUp = () => {};
             skill.onUnlock = () => {};
             skill.setUnlock(true);
             skill._currentLevelCap = skill.maxLevelCap;
@@ -215,6 +218,12 @@ export class SimGame extends Game {
                 if (requirement.type === 'ItemFound') {
                     this.itemFoundFromSlayer.add(requirement.item);
                 }
+            }
+        }
+
+        for (const skill of this.skills.allObjects) {
+            for (const skillTree of skill.skillTrees.allObjects) {
+                skillTree.addPoints = () => {};
             }
         }
     }
