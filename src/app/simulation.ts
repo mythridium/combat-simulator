@@ -449,7 +449,7 @@ export class Simulation {
         // Queue simulation of monsters in combat areas
         for (const area of Lookup.combatAreas.combatAreas) {
             for (const monster of area.monsters) {
-                if (this.monsterSimFilter[monster.id]) {
+                if (this.monsterSimFilter[monster.id] && this.validateSlayerMonster(monster)) {
                     this.pushMonsterToQueue(monster.id, undefined);
                 }
             }
@@ -490,7 +490,7 @@ export class Simulation {
             }
 
             for (const monster of area.monsters) {
-                if (this.monsterSimFilter[monster.id]) {
+                if (this.monsterSimFilter[monster.id] && this.validateSlayerMonster(monster)) {
                     this.pushMonsterToQueue(monster.id, undefined);
                 }
             }
@@ -577,6 +577,15 @@ export class Simulation {
             !Global.stores.plotter.state.isInspecting &&
             Global.stores.plotter.barIsMonster(Global.stores.plotter.state.selectedBar)
         ) {
+            const monster = Lookup.getEntity(Global.stores.plotter.selectedMonsterId) as Monster;
+
+            if (this.validateSlayerMonster(monster)) {
+                this.pushMonsterToQueue(Global.stores.plotter.selectedMonsterId, undefined);
+            } else {
+                Notify.message('You do not have the requirements to fight this monster.', 'danger');
+                return;
+            }
+
             if (this.monsterSimFilter[Global.stores.plotter.selectedMonsterId]) {
                 this.pushMonsterToQueue(Global.stores.plotter.selectedMonsterId, undefined);
             } else {
@@ -765,7 +774,12 @@ export class Simulation {
 
         // check if the area is accessible, this only works for auto slayer
         // without auto slayer you can get some tasks for which you don't wear/own the gear
-        let area = Global.game.getMonsterArea(monster);
+        const area = Global.game.getMonsterArea(monster);
+
+        if (!(area instanceof SlayerArea) && !this.validateSlayerMonster(monster)) {
+            this.monsterSimData[monster.id].reason = 'cannot access area';
+            return false;
+        }
 
         if (area.realm.id !== task.realm.id || area.id === 'melvorD:UnknownArea' || !categoryFilter(monster)) {
             this.monsterSimData[monster.id].reason = 'cannot access area';
@@ -792,6 +806,18 @@ export class Simulation {
         // all checks passed
         this.pushMonsterToQueue(monster.id);
         return true;
+    }
+
+    private validateSlayerMonster(monster: Monster) {
+        if (!monster.canSlayer) {
+            return true;
+        }
+
+        const area = Global.game.getMonsterArea(monster);
+
+        const requirements = area.entryRequirements.filter(requirement => requirement.type === 'AbyssDepthCompletion');
+
+        return Global.game.checkRequirements(requirements, undefined, undefined, true);
     }
 
     private async initializeQueue() {

@@ -1,3 +1,6 @@
+v3.0.89
+    into the abyss monsters that are part of slayer tasks and not in slayer areas now check their abyss dungeon completion requirement
+
 v3.0.88
     fixed skill tree renderQueue error
 
