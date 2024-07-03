@@ -1,3 +1,6 @@
+v3.0.90
+    fixed importScript error
+
 v3.0.89
     into the abyss monsters that are part of slayer tasks and not in slayer areas now check their abyss dungeon completion requirement
 

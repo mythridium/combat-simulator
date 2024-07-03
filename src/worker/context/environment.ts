@@ -89,7 +89,7 @@ export abstract class Environment {
         const dataScripts: string[] = [];
 
         try {
-            const risky = ['dexie', 'db.js', 'polyfill.io'];
+            const risky = ['dexie', 'db.js', 'polyfill'];
             const found: string[] = [];
 
             for (const script of scripts) {
