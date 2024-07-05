@@ -67,6 +67,8 @@ export class SimGame extends Game {
         this.golbinRaid.player.render = () => {};
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
             this.corruption.corruptionEffects.unlockRow = () => {};
+            // @ts-ignore
+            this.corruption.corruptionEffects.NEW_EFFECT_CHANCE = 0;
         }
         this.notifications.createErrorNotification = () => {};
         this.notifications.createGPNotification = () => {};
@@ -295,7 +297,14 @@ export class SimGame extends Game {
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
             this.corruption.corruptionEffects.unlockedRows = [];
             this.corruption.corruptionEffects.lockedRows = [];
-            this.corruption.onLoad();
+            this.corruption.corruptionEffects.allRows.forEach(row => {
+                if (row.isUnlocked) {
+                    this.corruption.corruptionEffects.unlockedRows.push(row);
+                } else {
+                    this.corruption.corruptionEffects.lockedRows.push(row);
+                }
+            });
+            this.corruption.corruptionEffects.selectedUnlockRows.clear();
         }
 
         this.combat.initialize();

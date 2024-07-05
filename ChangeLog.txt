@@ -1,3 +1,6 @@
+v3.0.91
+    disabled corruption effect unlocks during combat simulation
+
 v3.0.90
     fixed importScript error
 
