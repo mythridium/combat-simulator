@@ -47,6 +47,7 @@ export class PotionsPage extends HTMLElement {
 
     public _import(potionId: string | undefined) {
         this._clear();
+        Global.game.combat.player.setPotion(undefined);
 
         if (!potionId) {
             return;
