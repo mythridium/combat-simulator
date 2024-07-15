@@ -1,3 +1,6 @@
+v3.0.94
+    fixed negative xp being shown when simming a gamemode that caps xp on a save that does not cap xp and the save was over the xp cap
+
 v3.0.93
     fixed gp not showing raw gp if kill time is infinite
     fixed gold topaz ring being calculated as a drop for abyssal monsters

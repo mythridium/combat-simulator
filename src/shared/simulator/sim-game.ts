@@ -142,6 +142,8 @@ export class SimGame extends Game {
             skill.onAnyLevelUp = () => {};
             skill.onUnlock = () => {};
             skill.setUnlock(true);
+            skill.capXPForGamemode = () => {};
+            skill.capAXPForGamemode = () => {};
             skill._currentLevelCap = skill.maxLevelCap;
             skill._currentAbyssalLevelCap = skill.maxAbyssalLevelCap;
 
