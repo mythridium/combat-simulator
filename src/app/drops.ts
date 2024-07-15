@@ -747,6 +747,10 @@ export abstract class Drops {
     }
 
     private static getGpPerSeconds(rawGp: number, value: number, killTime: number) {
+        if (killTime === Infinity) {
+            return rawGp;
+        }
+
         const baseGp = rawGp + value / killTime;
 
         return (baseGp * killTime) / killTime;
@@ -845,16 +849,20 @@ export abstract class Drops {
             monsterValue[id] ??= 0;
             monsterValue[id] += value;
 
-            if (Global.game.combat.player.modifiers.allowSignetDrops && realmId !== 'melvorItA:Abyssal') {
-                const signetValue = this.getItemValue(Global.game.items.getObjectByID('melvorD:Signet_Ring_Half_B'));
+            if (realmId !== 'melvorItA:Abyssal') {
+                if (Global.game.combat.player.modifiers.allowSignetDrops) {
+                    const signetValue = this.getItemValue(
+                        Global.game.items.getObjectByID('melvorD:Signet_Ring_Half_B')
+                    );
 
-                monsterValue[signetValue.currency.id] ??= 0;
-                monsterValue[signetValue.currency.id] += signetValue.quantity * signetDropRate;
-            } else {
-                const topazValue = this.getItemValue(Global.game.items.getObjectByID('melvorD:Gold_Topaz_Ring'));
+                    monsterValue[signetValue.currency.id] ??= 0;
+                    monsterValue[signetValue.currency.id] += signetValue.quantity * signetDropRate;
+                } else {
+                    const topazValue = this.getItemValue(Global.game.items.getObjectByID('melvorD:Gold_Topaz_Ring'));
 
-                monsterValue[topazValue.currency.id] ??= 0;
-                monsterValue[topazValue.currency.id] += topazValue.quantity * signetDropRate;
+                    monsterValue[topazValue.currency.id] ??= 0;
+                    monsterValue[topazValue.currency.id] += topazValue.quantity * signetDropRate;
+                }
             }
 
             monsterValue[id] *= this.computeLootChance(monsterId);

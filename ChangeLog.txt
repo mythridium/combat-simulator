@@ -1,3 +1,8 @@
+v3.0.93
+    fixed gp not showing raw gp if kill time is infinite
+    fixed gold topaz ring being calculated as a drop for abyssal monsters
+    fixed ancient relics import looking at the games gamemode instead of the imported gamemode when checking to import ancient relics
+
 v3.0.92
     fixed potions remaining active while being visually disabled when having a potion selected and importing a set without a potion
 

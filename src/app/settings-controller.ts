@@ -306,7 +306,7 @@ export abstract class SettingsController {
                     );
             }
 
-            if (Global.melvor.currentGamemode.allowAncientRelicDrops) {
+            if (Global.game.currentGamemode.allowAncientRelicDrops) {
                 Global.userInterface.main.querySelector('mcs-ancient-relics')._import(settings.ancientRelicsSelected);
             }
 
