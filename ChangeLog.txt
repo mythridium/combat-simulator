@@ -1,3 +1,6 @@
+v3.0.95
+    fixed mark breakdown throwing an error when the selected plotter skill does not have the combat realm available to lookup from
+
 v3.0.94
     fixed negative xp being shown when simming a gamemode that caps xp on a save that does not cap xp and the save was over the xp cap
 

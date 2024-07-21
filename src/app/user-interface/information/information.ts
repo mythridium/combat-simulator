@@ -588,11 +588,15 @@ export class Information extends HTMLElement {
 
         let tooltip = '';
 
-        for (const { markId, percentage } of marks) {
-            const mark = Global.game.summoning.actions.getObjectByID(markId);
-            tooltip += `<div class="mcs-mark-line-item"><img class="mcs-mark-image" src="${
-                mark.media
-            }" /><span>${percentage.toFixed(2)}%</span></div>`;
+        if (marks?.length) {
+            for (const { markId, percentage } of marks) {
+                const mark = Global.game.summoning.actions.getObjectByID(markId);
+                tooltip += `<div class="mcs-mark-line-item"><img class="mcs-mark-image" src="${
+                    mark.media
+                }" /><span>${percentage.toFixed(2)}%</span></div>`;
+            }
+        } else {
+            tooltip += `No marks available.`;
         }
 
         return tooltip;

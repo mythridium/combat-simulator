@@ -662,7 +662,8 @@ export abstract class Drops {
         timeMultiplier: number
     ) {
         const interval = data.markRolls && !Number.isNaN(data.markRolls[skill.id]) ? data.markRolls[skill.id] ?? 0 : 0;
-        const recipes = Array.from(Global.game.summoning.recipesBySkillAndRealm.get(skill).get(realm));
+        const realmRecipes = Global.game.summoning.recipesBySkillAndRealm.get(skill)?.get(realm) ?? [];
+        const recipes = Array.from(realmRecipes);
 
         const markRolls: { [index: string]: { markId: string; percentage: number }[] } = {};
 
