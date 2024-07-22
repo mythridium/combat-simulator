@@ -82,7 +82,9 @@ export class PrayersPage extends HTMLElement {
                 continue;
             }
 
-            const isBelowSkillLevel = prayer.level > Global.game.combat.player.skillLevel.get(Global.game.prayer.id);
+            const isBelowSkillLevel = prayer.isAbyssal
+                ? prayer.abyssalLevel > Global.game.combat.player.skillAbyssalLevel.get(Global.game.prayer.id)
+                : prayer.level > Global.game.combat.player.skillLevel.get(Global.game.prayer.id);
 
             if (isBelowSkillLevel && Global.game.combat.player.activePrayers.has(prayer)) {
                 Global.game.combat.player.activePrayers.delete(prayer);
@@ -92,6 +94,8 @@ export class PrayersPage extends HTMLElement {
 
             element._toggle(Global.game.combat.player.activePrayers.has(prayer));
         }
+
+        StatsController.update();
     }
 
     public _import(prayerIds: string[]) {

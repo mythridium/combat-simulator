@@ -144,10 +144,17 @@ export class SpellsPage extends HTMLElement {
     }
 
     private _isUnlocked(spell: CombatSpell) {
-        const level = Global.game.combat.player.skillLevel.get(Global.game.altMagic.id);
+        let isSkillLevelHigher = false;
+
+        if (spell instanceof AttackSpell && spell.spellbook.id === 'melvorItA:Abyssal') {
+            isSkillLevelHigher =
+                Global.game.combat.player.skillAbyssalLevel.get(Global.game.altMagic.id) >= spell.abyssalLevel;
+        } else {
+            isSkillLevelHigher = Global.game.combat.player.skillLevel.get(Global.game.altMagic.id) >= spell.level;
+        }
 
         return (
-            level >= spell.level &&
+            isSkillLevelHigher &&
             (spell.requiredItem === undefined || Global.game.combat.player.equipment.checkForItem(spell.requiredItem))
         );
     }

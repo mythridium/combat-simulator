@@ -1,3 +1,6 @@
+v3.0.96
+    fixed abyssal spells and prayers not updating if abyssal skill levels are changed
+
 v3.0.95
     fixed mark breakdown throwing an error when the selected plotter skill does not have the combat realm available to lookup from
 
