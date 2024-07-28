@@ -219,7 +219,7 @@ export abstract class EquipmentController {
 
                 if (item.validSlots.some(slot => slot.id === 'melvorD:Consumable')) {
                     const player = ['PlayerAttack', 'PlayerSummonAttack', 'PrayerPointConsumption', 'RuneConsumption'];
-                    const monster = ['EnemyAttack', 'MonsterKilled', 'MonsterSpawned'];
+                    const monster = ['EnemyAttack', 'MonsterKilled', 'MonsterSpawned', 'BoneDrop'];
 
                     const isPlayer = item.consumesOn?.some(consume => player.includes(consume.type));
                     const isMonster = item.consumesOn?.some(consume => monster.includes(consume.type));

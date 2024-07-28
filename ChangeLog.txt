@@ -1,3 +1,6 @@
+v3.0.97
+    fixed soul harvesting consumables being listed as non combat
+
 v3.0.96
     fixed abyssal spells and prayers not updating if abyssal skill levels are changed
 
