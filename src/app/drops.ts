@@ -711,6 +711,10 @@ export abstract class Drops {
             skills.push('Slayer');
         }
 
+        if (Global.game.combat.player.isAutoCorrupt) {
+            skills.push('Corruption');
+        }
+
         switch (Global.game.combat.player.attackType) {
             case 'melee':
                 switch (Global.game.combat.player.attackStyles.melee.localID) {

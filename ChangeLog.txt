@@ -1,3 +1,6 @@
+v3.0.98
+    fixed corruption pet and marks not displaying results, now displays results when auto corrupt is enabled
+
 v3.0.97
     fixed soul harvesting consumables being listed as non combat
 
