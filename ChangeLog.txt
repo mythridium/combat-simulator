@@ -1,3 +1,6 @@
+v3.0.99
+    added support for game version ?11742
+
 v3.0.98
     fixed corruption pet and marks not displaying results, now displays results when auto corrupt is enabled
 

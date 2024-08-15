@@ -271,7 +271,8 @@ export class SimGame extends Game {
         });
 
         if (Util.isWebWorker) {
-            expressions.updateModifiers(newModifiers);
+            // @ts-ignore // TODO TYPES
+            expressions.updateModifiers(namespace, newModifiers);
         }
     }
 
