@@ -1,3 +1,8 @@
+v3.0.100
+    fixed necromancer crown doubling non bone drops
+    fixed doubling chance against damage type modifier not working
+    fixed error thrown when skill filter set to corruption and you sim a non abyssal monster
+
 v3.0.99
     added support for game version ?11742
 

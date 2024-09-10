@@ -19,10 +19,6 @@ export abstract class Drops {
         'melvorF:Fire_God_Dungeon'
     ];
 
-    private static get doubling() {
-        return Util.averageDoubleMultiplier(Global.stores.stats.state.lootBonusPercent);
-    }
-
     private static get chanceForNoLoot() {
         return 1 - Global.game.combat.player.modifiers.noCombatDropChance / 100;
     }
@@ -683,7 +679,8 @@ export abstract class Drops {
 
     private static getChanceForMarkSkill(data: SimulationData, skill: AnySkill, realm: Realm, timeMultiplier: number) {
         const interval = data.markRolls[skill.id] ?? 0;
-        const recipes = Array.from(Global.game.summoning.recipesBySkillAndRealm.get(skill).get(realm));
+        const realmRecipes = Global.game.summoning.recipesBySkillAndRealm.get(skill)?.get(realm) ?? [];
+        const recipes = Array.from(realmRecipes);
 
         const probabilities = recipes.map(mark => this.getChanceForMark(mark, skill, interval, timeMultiplier) / 100);
         const probabilityOfNone = probabilities.reduce((sum, probability) => sum * (1 - probability), 1);
@@ -772,7 +769,8 @@ export abstract class Drops {
     }
 
     private static computeMonsterLootTableValue(monsterId: string) {
-        const lootTable = Lookup.monsters.getObjectByID(monsterId).lootTable;
+        const monster = Lookup.monsters.getObjectByID(monsterId);
+        const lootTable = monster.lootTable;
         let gpWeight: GPValue = {};
 
         for (const drop of lootTable.drops) {
@@ -815,7 +813,7 @@ export abstract class Drops {
         }
 
         for (const [id, value] of Object.entries(gpWeight)) {
-            gpWeight[id] = (value / lootTable.totalWeight) * this.doubling * this.chanceForNoLoot;
+            gpWeight[id] = (value / lootTable.totalWeight) * this.getLootDoublingChance(monster) * this.chanceForNoLoot;
         }
 
         return gpWeight;
@@ -833,7 +831,6 @@ export abstract class Drops {
 
             gpWeight[value.currency.id] ??= 0;
             gpWeight[value.currency.id] += this.averageQuantity(drop) * value.quantity * drop.weight;
-            //gpWeight += this.averageQuantity(drop) * this.getItemValue(drop.item) * drop.weight;
         }
 
         for (const [id, value] of Object.entries(gpWeight)) {
@@ -872,24 +869,14 @@ export abstract class Drops {
 
             monsterValue[id] *= this.computeLootChance(monsterId);
             monsterValue[id] *= this.chanceForNoLoot;
-
-            // removed selling bones - leaving here incase people want it back TODO
-            // bones drops are not affected by loot chance
-            /* const bones = Lookup.monsters.getObjectByID(monsterId).bones;
-
-            if (this.sellBones && !this.modifiers.autoBurying && bones) {
-                const boneValue = this.getItemValue(bones.item);
-
-                monsterValue[boneValue.currency.id] ??= 0;
-                monsterValue[boneValue.currency.id] += boneValue.quantity * this.lootBonus * this.noLoot * bones.quantity;
-            } */
         }
 
         return monsterValue;
     }
 
     private static computeDungeonMonsterValue(monsterId: string) {
-        const shard = Lookup.monsters.getObjectByID(monsterId).bones;
+        const monster = Lookup.monsters.getObjectByID(monsterId);
+        const shard = monster.bones;
 
         if (!shard?.item) {
             return this.emptyGPValue();
@@ -913,7 +900,9 @@ export abstract class Drops {
 
                         for (const [id, value] of Object.entries(chestValue)) {
                             gpValue[id] ??= 0;
-                            gpValue[id] += ((boneQty * this.doubling * this.chanceForNoLoot) / required) * value;
+                            gpValue[id] +=
+                                ((boneQty * this.getLootDoublingChance(monster) * this.chanceForNoLoot) / required) *
+                                value;
                         }
                     }
                 }
@@ -921,7 +910,8 @@ export abstract class Drops {
                 const shardValue = this.getItemValue(shard.item);
 
                 gpValue[shardValue.currency.id] ??= 0;
-                gpValue[shardValue.currency.id] += boneQty * this.doubling * this.chanceForNoLoot * shardValue.quantity;
+                gpValue[shardValue.currency.id] +=
+                    boneQty * this.getLootDoublingChance(monster) * this.chanceForNoLoot * shardValue.quantity;
             }
         }
 
@@ -977,13 +967,15 @@ export abstract class Drops {
 
                 for (const [id, value] of Object.entries(chestValue)) {
                     dungeonValue[id] ??= 0;
-                    dungeonValue[id] += value * this.doubling * this.chanceForNoLoot;
+                    dungeonValue[id] +=
+                        value * this.getLootDoublingChance(this.getLastMonster(dungeon)) * this.chanceForNoLoot;
                 }
             } else {
                 const value = this.getItemValue(reward);
 
                 dungeonValue[value.currency.id] ??= 0;
-                dungeonValue[value.currency.id] += value.quantity * this.doubling * this.chanceForNoLoot;
+                dungeonValue[value.currency.id] +=
+                    value.quantity * this.getLootDoublingChance(this.getLastMonster(dungeon)) * this.chanceForNoLoot;
             }
         }
 
@@ -993,11 +985,8 @@ export abstract class Drops {
             const shard = dungeon.monsters[0].bones?.item;
 
             for (const monster of dungeon.monsters) {
-                shardCount += monster.bones.quantity;
+                shardCount += monster.bones.quantity * this.getLootDoublingChance(monster) * this.chanceForNoLoot;
             }
-
-            shardCount *= this.doubling;
-            shardCount *= this.chanceForNoLoot;
 
             if (Global.stores.plotter.state.shardsToChests && shard) {
                 const shardItem = game.items.getObjectByID(shard.id);
@@ -1059,13 +1048,17 @@ export abstract class Drops {
 
                 for (const [id, value] of Object.entries(chestValue)) {
                     strongholdValue[id] ??= 0;
-                    strongholdValue[id] += value * this.doubling * this.chanceForNoLoot;
+                    strongholdValue[id] +=
+                        value * this.getLootDoublingChance(this.getLastMonster(stronghold)) * this.chanceForNoLoot;
                 }
             } else {
                 const itemValue = this.getItemValue(reward.item);
 
                 strongholdValue[itemValue.currency.id] ??= 0;
-                strongholdValue[itemValue.currency.id] += itemValue.quantity * this.doubling * this.chanceForNoLoot;
+                strongholdValue[itemValue.currency.id] +=
+                    itemValue.quantity *
+                    this.getLootDoublingChance(this.getLastMonster(stronghold)) *
+                    this.chanceForNoLoot;
             }
         }
 
@@ -1104,13 +1097,15 @@ export abstract class Drops {
 
                 for (const [id, value] of Object.entries(chestValue)) {
                     depthValue[id] ??= 0;
-                    depthValue[id] += value * this.doubling * this.chanceForNoLoot;
+                    depthValue[id] +=
+                        value * this.getLootDoublingChance(this.getLastMonster(depth)) * this.chanceForNoLoot;
                 }
             } else {
                 const itemValue = this.getItemValue(reward);
 
                 depthValue[itemValue.currency.id] ??= 0;
-                depthValue[itemValue.currency.id] += itemValue.quantity * this.doubling * this.chanceForNoLoot;
+                depthValue[itemValue.currency.id] +=
+                    itemValue.quantity * this.getLootDoublingChance(this.getLastMonster(depth)) * this.chanceForNoLoot;
             }
         }
 
@@ -1150,19 +1145,52 @@ export abstract class Drops {
         return weight;
     }
 
+    private static getLootDoublingChance(monster: Monster) {
+        let chance = Global.game.combat.player.modifiers.globalItemDoublingChance;
+        chance += Global.game.combat.player.modifiers.combatLootDoublingChance;
+
+        if (monster) {
+            chance += Global.game.combat.player.modifiers.getValue(
+                'melvorD:doubleItemsChanceAgainstDamageType',
+                monster.damageType.modQuery
+            );
+
+            if (monster.bones?.item instanceof SoulItem) {
+                chance += Global.game.combat.player.modifiers.doubleSoulDropChance;
+            }
+        }
+
+        return Util.averageDoubleMultiplier(chance);
+    }
+
+    private static getLastMonster(entity: Dungeon | Stronghold) {
+        try {
+            const monster = entity.monsters[entity.monsters.length - 1];
+
+            return monster;
+        } catch (error) {
+            Global.logger.error(`Was not able to locate entity last monster. '${entity.id}'`, error);
+        }
+    }
+
     private static getMonsterDropChance(monsterId: string, data: SimulationData) {
         if (!data) {
             return;
         }
 
+        const monster = Lookup.monsters.getObjectByID(monsterId);
+
+        if (!monster) {
+            return;
+        }
+
         if (Global.stores.plotter.state.selectedDrop === this.noneItem) {
-            return (this.doubling * this.chanceForNoLoot) / data.killTimeS;
+            return (this.getLootDoublingChance(monster) * this.chanceForNoLoot) / data.killTimeS;
         }
 
         const dropCount = this.getAverageDropAmount(monsterId);
-        const itemDoubleChance = this.doubling * this.chanceForNoLoot;
 
-        return (dropCount * itemDoubleChance) / data.killTimeS;
+        return dropCount / data.killTimeS;
     }
 
     private static getDungeonDropChance(dungeon: Dungeon, data: SimulationData) {
@@ -1171,11 +1199,11 @@ export abstract class Drops {
         }
 
         if (Global.stores.plotter.state.selectedDrop === Drops.noneItem) {
-            return (this.doubling * this.chanceForNoLoot) / data.killTimeS;
+            return (this.getLootDoublingChance(this.getLastMonster(dungeon)) * this.chanceForNoLoot) / data.killTimeS;
         }
 
         const dropCount = this.getDungeonAverageDropAmount(dungeon);
-        const itemDoubleChance = this.doubling * this.chanceForNoLoot;
+        const itemDoubleChance = this.getLootDoublingChance(this.getLastMonster(dungeon)) * this.chanceForNoLoot;
 
         return (dropCount * itemDoubleChance) / data.killTimeS;
     }
@@ -1186,11 +1214,13 @@ export abstract class Drops {
         }
 
         if (Global.stores.plotter.state.selectedDrop === Drops.noneItem) {
-            return (this.doubling * this.chanceForNoLoot) / data.killTimeS;
+            return (
+                (this.getLootDoublingChance(this.getLastMonster(stronghold)) * this.chanceForNoLoot) / data.killTimeS
+            );
         }
 
         const dropCount = this.getStrongholdAverageDropAmount(stronghold);
-        const itemDoubleChance = this.doubling * this.chanceForNoLoot;
+        const itemDoubleChance = this.getLootDoublingChance(this.getLastMonster(stronghold)) * this.chanceForNoLoot;
 
         return (dropCount * itemDoubleChance) / data.killTimeS;
     }
@@ -1275,7 +1305,9 @@ export abstract class Drops {
         // get expected loot per drop
         const expected = this.addLoot(monster.lootTable);
 
-        return expected * this.computeLootChance(monsterId);
+        return (
+            expected * this.computeLootChance(monsterId) * this.getLootDoublingChance(monster) * this.chanceForNoLoot
+        );
     }
 
     private static getAverageBoneDropAmount(monsterId: string) {
@@ -1287,16 +1319,19 @@ export abstract class Drops {
 
         let amount = monster.bones.quantity ?? 1;
 
-        if (Global.game.combat.player.modifiers.doubleBoneDrops > 0) {
-            amount *= 2;
+        if (monster.bones.item instanceof BoneItem) {
+            if (Global.game.combat.player.modifiers.doubleBoneDrops > 0) {
+                amount *= 2;
+            }
+        } else if (monster.bones.item instanceof SoulItem) {
+            amount *= Math.pow(2, Global.game.combat.player.modifiers.doubleSoulDrops);
         }
 
         if (monster.bones.item.id === Global.stores.plotter.state.selectedDrop) {
-            return amount;
+            return amount * this.getLootDoublingChance(monster) * this.chanceForNoLoot;
         }
 
         return 0;
-        // TODO: some bones are upgradable, e.g. Earth_Shard
     }
 
     private static getAverageBarrierDustDropAmount(monsterId: string) {
@@ -1311,7 +1346,9 @@ export abstract class Drops {
         enemy.modifiers.init(Global.game);
         enemy.setNewMonster(monster);
 
-        return Math.max(Math.floor(enemy.stats.maxBarrier / numberMultiplier / 20), 1);
+        const quantity = Math.max(Math.floor(enemy.stats.maxBarrier / numberMultiplier / 20), 1);
+
+        return quantity * this.getLootDoublingChance(monster) * this.chanceForNoLoot;
     }
 
     private static addLoot(lootTable: Partial<DropTable>) {
