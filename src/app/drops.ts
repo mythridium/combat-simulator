@@ -1160,6 +1160,8 @@ export abstract class Drops {
             }
         }
 
+        chance = Math.min(Math.max(chance, 0), 100);
+
         return Util.averageDoubleMultiplier(chance);
     }
 

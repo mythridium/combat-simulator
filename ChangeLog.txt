@@ -1,3 +1,6 @@
+v3.0.101
+    fixed loot doubling not being bound between 0% and 100% when calculating drops
+
 v3.0.100
     fixed necromancer crown doubling non bone drops
     fixed doubling chance against damage type modifier not working
