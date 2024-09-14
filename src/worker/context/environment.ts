@@ -13,7 +13,27 @@ export abstract class Environment {
             MelvorDatabase = class MelvorDatabase {}
         `);
 
-        importScripts(...this.tryRiskyScripts(data.scripts));
+        const remainingScripts = this.tryRiskyScripts(data.scripts);
+        const failures: { script: string; error: Error }[] = [];
+
+        for (const script of remainingScripts) {
+            const failure = this.importScript(script);
+
+            if (failure) {
+                failures.push({ script: failure.script, error: failure.error });
+            }
+        }
+
+        if (failures.length) {
+            throw new Error(
+                `The following scripts failed to load:\n\n${failures
+                    .map(
+                        failure =>
+                            `Script: ${failure.script}\nMessage: ${failure.error.message}\n\nStack: ${failure.error.stack}\n\n`
+                    )
+                    .join('')}`
+            );
+        }
 
         const cloudManager: CloudManager = {
             hasFullVersionEntitlement: true,
@@ -106,6 +126,15 @@ export abstract class Environment {
         }
 
         return dataScripts;
+    }
+
+    private static importScript(script: string) {
+        try {
+            importScripts(script);
+        } catch (error) {
+            Global.logger.error(`Failed to load script - '${script}'`, error);
+            return { script, error };
+        }
     }
 
     private static async loadGameData(origin: string) {

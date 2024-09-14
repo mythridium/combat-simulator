@@ -38,7 +38,13 @@ export abstract class WorkerMock {
             sessionStorage: new StorageMock(),
             setInterval: Global.this.setInterval.bind(Global.this),
             setTimeout: Global.this.setTimeout.bind(Global.this),
-            clearTimeout: Global.this.clearTimeout.bind(Global.this)
+            clearTimeout: Global.this.clearTimeout.bind(Global.this),
+            matchMedia: () => {
+                return {
+                    addEventListener: () => {},
+                    removeEventListener: () => {}
+                };
+            }
         } as any;
 
         Global.this.localStorage = Global.this.window.localStorage;

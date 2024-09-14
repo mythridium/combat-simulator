@@ -16,10 +16,16 @@ import { clone, cloneDeep } from 'lodash-es';
 import { SaveSlot } from './app/utils/save-slot';
 import type { Switch } from './app/user-interface/_parts/switch/switch';
 
+interface GameVersion {
+    major: number;
+    minor: number;
+    patch: number;
+}
+
 export abstract class Main {
     private static loading = false;
     private static versionKey = 'MICSR-gameVersion';
-    private static gameVersion = 'v1.3';
+    private static gameVersion: GameVersion = { major: 1, minor: 3, patch: 1 };
     private static registeredNamespaces: string[] = [];
 
     public static init(context: Modding.ModContext) {
@@ -168,7 +174,7 @@ export abstract class Main {
     }
 
     private static tryToLoad() {
-        const isWrongVersion = gameVersion !== this.gameVersion;
+        const isWrongVersion = !this.isGameVersionSupported(this.getGameVersion(), this.gameVersion);
 
         let resolve: (result: { isWrongVersion: boolean; tryLoad: boolean }) => void;
         const wait = new Promise<{ isWrongVersion: boolean; tryLoad: boolean }>(_ => (resolve = _));
@@ -181,7 +187,7 @@ export abstract class Main {
                 <div slot="header">Incompatible Game Version</div>
 
                 <div slot="content">
-                    <div>This version of Combat Simulator has been tested for ${this.gameVersion}, but Melvor is running ${gameVersion}. There is no guarantee that Combat Simulator will work as expected. </div>
+                    <div>This version of Combat Simulator has been tested for v${this.gameVersion.major}.${this.gameVersion.minor}.${this.gameVersion.patch}, but Melvor is running ${gameVersion}. There is no guarantee that Combat Simulator will work as expected. </div>
                     <br />
                     <div>Do you want to try loading the simulator anyway?</div>
                 </div>
@@ -218,6 +224,35 @@ export abstract class Main {
         }
 
         return wait;
+    }
+
+    private static getGameVersion() {
+        const version = gameVersion
+            .replace('v', '')
+            .split('.')
+            .map(version => parseInt(version, 10));
+
+        return {
+            major: version[0] ?? 0,
+            minor: version[1] ?? 0,
+            patch: version[2] ?? 0
+        };
+    }
+
+    private static isGameVersionSupported(current: GameVersion, supported: GameVersion) {
+        if (current.major > supported.major) {
+            return false;
+        }
+
+        if (current.minor > supported.minor) {
+            return false;
+        }
+
+        if (current.patch > supported.patch) {
+            return false;
+        }
+
+        return true;
     }
 
     private static invalidGamemodeCheck() {

@@ -1,3 +1,7 @@
+v3.1.0
+    added support for game version 1.3.1
+    improved script failure logging
+
 v3.0.101
     fixed loot doubling not being bound between 0% and 100% when calculating drops
 
