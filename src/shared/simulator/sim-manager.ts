@@ -533,10 +533,11 @@ export class SimManager extends CombatManager {
         if (
             monster.hasBarrier &&
             this.player.equipment.getItemInSlot('melvorD:Summon1')?.id === 'melvorD:Empty_Equipment' &&
-            this.player.equipment.getItemInSlot('melvorD:Summon2')?.id === 'melvorD:Empty_Equipment'
+            this.player.equipment.getItemInSlot('melvorD:Summon2')?.id === 'melvorD:Empty_Equipment' &&
+            this.player.modifiers.flatBarrierDamage <= 0
         ) {
             success = false;
-            failMessage = 'You have no summoning tablets equipped';
+            failMessage = 'You have no summoning damage equipped';
         }
 
         const hasRequirement = this.game.checkRequirements(

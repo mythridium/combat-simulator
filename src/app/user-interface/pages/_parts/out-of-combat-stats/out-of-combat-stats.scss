@@ -11,7 +11,17 @@ mcs-out-of-combat-stats {
 
         .mcs-simulate-buttons {
             font-size: 13px;
+
+            .mcs-simulate-all {
+                flex-grow: 1;
+            }
         }
+    }
+
+    .mcs-active-target {
+        width: 100%;
+        font-size: 11.05px;
+        margin-top: 5px;
     }
 
     &.is-open {

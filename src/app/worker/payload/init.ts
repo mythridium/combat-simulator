@@ -20,6 +20,7 @@ export class InitPayload {
         'Sortable',
         'sweetalert2',
         'tippy-bundle',
+        'fuse',
         'blob:'
     ];
 

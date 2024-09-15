@@ -42,6 +42,8 @@ export class OutOfCombatStats extends HTMLElement {
     private readonly _uncappedDamageReduction: HTMLDivElement;
     private readonly _uncappedAbyssalResistance: HTMLDivElement;
 
+    private readonly _activeTarget: HTMLButtonElement;
+
     private readonly onLoad = this._onLoad.bind(this);
 
     constructor() {
@@ -91,6 +93,8 @@ export class OutOfCombatStats extends HTMLElement {
             'mcs-stat-uncapped-abyssal-resistance',
             'div'
         );
+
+        this._activeTarget = getElementFromFragment(this._content, 'mcs-active-target', 'button');
     }
 
     public connectedCallback() {
@@ -101,6 +105,14 @@ export class OutOfCombatStats extends HTMLElement {
             this.querySelector<LineItem>('.mcs-stat-abyssal-resistance-container').style.display = 'none';
             this.querySelector<LineItem>('.mcs-stat-abyssal-slayer-area-negation-container').style.display = 'none';
         }
+
+        this._activeTarget.onclick = () => {
+            const plotter = Global.userInterface.main.querySelector('mcs-plotter');
+
+            if (plotter) {
+                plotter._selectActiveTarget();
+            }
+        };
     }
 
     public disconnectedCallback() {
