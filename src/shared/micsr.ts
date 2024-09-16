@@ -8,7 +8,7 @@ import { cloneDeep } from 'lodash-es';
 import { Util } from './util';
 
 export class MICSR {
-    private readonly dataPackage: IDataPackage = {};
+    private dataPackage: IDataPackage = {};
 
     async fetchData() {
         await this.fetchDataPackage('Demo', `/assets/data/melvorDemo.json?${DATA_VERSION}`);
@@ -56,6 +56,8 @@ export class MICSR {
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
             Global.get.game.registerDataPackage(this.dataPackage['ItA']);
         }
+
+        delete this.dataPackage;
     }
 
     async fetchDataPackage(id: PackageTypes, url: string) {

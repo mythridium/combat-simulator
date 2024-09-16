@@ -1,3 +1,6 @@
+v3.1.2
+    removed an unnecessary object from memory after its usage
+
 v3.1.1
     fixed fuse script error
     fixed barrier monsters being skipped when no tablets are equipped but the player has barrier damage equipped
