@@ -1155,7 +1155,10 @@ export abstract class Drops {
                 monster.damageType.modQuery
             );
 
-            if (monster.bones?.item instanceof SoulItem) {
+            if (
+                Global.stores.plotter.state.selectedDrop === monster.bones?.item.id &&
+                monster.bones?.item instanceof SoulItem
+            ) {
                 chance += Global.game.combat.player.modifiers.doubleSoulDropChance;
             }
         }
