@@ -556,6 +556,7 @@ export abstract class ModifierHelper {
         'melvorD:flatSlayerAreaEffectNegation',
         'melvorD:doubleSoulDropChance',
         'melvorD:reducedTargetDamageRedcutionIfBleeding',
-        'melvorD:doubleActiveModifiersCartography'
+        'melvorD:doubleActiveModifiersCartography',
+        'melvorD:damageDealtToMonstersInArea'
     ];
 }

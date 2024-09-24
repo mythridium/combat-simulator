@@ -1,3 +1,6 @@
+v3.1.4
+    fixed pets that modified damage to specific categories not showing
+
 v3.1.3
     fixed double soul drop modifier applying to non soul drops for monsters that drop soul drops
 
