@@ -1,3 +1,6 @@
+v3.1.5
+    combat sim will no longer attempt to load script tags that do not include .js
+
 v3.1.4
     fixed pets that modified damage to specific categories not showing
 

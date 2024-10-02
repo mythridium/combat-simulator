@@ -42,6 +42,10 @@ export class InitPayload {
         for (const script of allScripts) {
             const src = script.src.toLowerCase();
 
+            if (!src.includes('.js')) {
+                continue;
+            }
+
             if (this.matches(this.include, src) && !this.matches(this.exclude, src)) {
                 scripts.push(script.src);
             }
