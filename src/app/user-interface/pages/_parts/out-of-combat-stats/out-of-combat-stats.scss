@@ -30,7 +30,8 @@ mcs-out-of-combat-stats {
 }
 
 #mcs-combat-simulator.summary-open {
-    mcs-out-of-combat-stats mcs-simulate-buttons {
+    mcs-out-of-combat-stats mcs-simulate-buttons,
+    mcs-out-of-combat-stats .mcs-active-target {
         display: none;
     }
 }

@@ -1,3 +1,6 @@
+v3.1.6
+    fixed select active target button showing on the summary
+
 v3.1.5
     combat sim will no longer attempt to load script tags that do not include .js
 
