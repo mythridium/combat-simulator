@@ -1,3 +1,6 @@
+v3.1.7
+    added skill tree node costs to node tooltips
+
 v3.1.6
     fixed select active target button showing on the summary
 

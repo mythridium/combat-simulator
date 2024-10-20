@@ -126,6 +126,52 @@ export class SkillTreeInterface extends HTMLElement {
         tooltip.innerHTML = `<div class="text-warning">${
             node._name
         }</div><small>${node.stats.describeLineBreak()}</small>`;
+
+        const costs = this._getNodeCosts(this._tree, node).innerHTML;
+
+        if (costs) {
+            tooltip.innerHTML += `<br /><small><div class="text-warning mt-2">Requires:</div>${costs}</small>`;
+        }
+    }
+
+    private _getNodeCosts(tree: SkillTree, node: SkillTreeNode) {
+        const costs = tree.getNodeCosts(node);
+
+        const costElement = createElement('div');
+
+        if (node.costs.points) {
+            createElement('span', {
+                innerHTML:
+                    node.costs.points > 1
+                        ? `<span>Skill Tree Points: </span><span class="text-warning">${node.costs.points}</span>`
+                        : `<span>Skill Tree Point: </span><span class="text-warning">${node.costs.points}</span>`,
+                parent: costElement
+            });
+        }
+
+        for (const { item, quantity } of costs.getItemQuantityArray()) {
+            costElement.append(this._createCost(item.media, `${numberWithCommas(quantity)} ${item.name}`));
+        }
+
+        for (const { currency, quantity } of costs.getCurrencyQuantityArray()) {
+            costElement.append(this._createCost(currency.media, currency.formatAmount(formatNumber(quantity))));
+        }
+
+        return costElement;
+    }
+
+    private _createCost(media: string, text: string) {
+        const elem = createElement('span');
+
+        createElement('img', {
+            className: 'skill-icon-xs mr-2',
+            attributes: [['src', media]],
+            parent: elem
+        });
+
+        elem.append(text);
+
+        return elem;
     }
 
     private _setSkillTree(tree: SkillTree) {
