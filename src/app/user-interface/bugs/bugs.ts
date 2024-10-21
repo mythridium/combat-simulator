@@ -5,6 +5,12 @@ import { DialogController } from 'src/app/user-interface/_parts/dialog/dialog-co
 
 export abstract class Bugs {
     public static report(isLoaded: boolean, error?: Error) {
+        let isWillIDie = false;
+
+        try {
+            isWillIDie = error && !isLoaded && mod.manager.getLoadedModList().includes('Will I Die?');
+        } catch {}
+
         if (error) {
             Global.logger.error(error);
         }
@@ -12,28 +18,47 @@ export abstract class Bugs {
         const backdrop = createElement('div', { id: 'mcs-dialog-backdrop' });
         const dialog = createElement('mcs-dialog', { id: 'mcs-bugs' });
 
-        if (error) {
-            dialog.innerHTML += `<div slot="header">Combat Simulator Error</div>`;
-        } else {
-            dialog.innerHTML += `<div slot="header">Found a bug?</div>`;
-        }
-
-        dialog.innerHTML += `
+        if (isWillIDie) {
+            dialog.innerHTML += `<div slot="header">Remove Will I Die</div>
                 <div slot="content" class="mcs-with-textarea">
-                    <div>Copy the following information and report it to Mythridium on the Melvor Discord or at <a href="https://github.com/mythridium/combat-simulator/issues" target="_blank">https://github.com/mythridium/combat-simulator</a></div>
+                    <div>You have Will I Die installed!</div>
                     <br />
-                    <div>The following information contains your save file and a copy of your combat sim configuration if possible.</div>
+                    <div>This mod has not been updated for the current version of the game and should be removed. This outdated version of Will I Die results in Combat Simulator failing to run.</div>
                     <br />
+                    <div>Please review ALL your mods and disable any that are not updated.</div>
                     <textarea readonly="readonly" class="mcs-bugs-content form-control mcs-code" rows="4"></textarea>
                 </div>
 
                 <div slot="footer">
                     <button id="mcs-bugs-done" class="mcs-button">Done</button>
                 </div>
-            `;
+                `;
+        } else {
+            if (error) {
+                dialog.innerHTML += `<div slot="header">Combat Simulator Error</div>`;
+            } else {
+                dialog.innerHTML += `<div slot="header">Found a bug?</div>`;
+            }
+
+            dialog.innerHTML += `
+                    <div slot="content" class="mcs-with-textarea">
+                        <div>Copy the following information and report it to Mythridium on the Melvor Discord or at <a href="https://github.com/mythridium/combat-simulator/issues" target="_blank">https://github.com/mythridium/combat-simulator</a></div>
+                        <br />
+                        <div>The following information contains your save file and a copy of your combat sim configuration if possible.</div>
+                        <br />
+                        <textarea readonly="readonly" class="mcs-bugs-content form-control mcs-code" rows="4"></textarea>
+                    </div>
+
+                    <div slot="footer">
+                        <button id="mcs-bugs-done" class="mcs-button">Done</button>
+                    </div>
+                `;
+        }
 
         const textarea = dialog.querySelector<HTMLTextAreaElement>('.mcs-bugs-content');
         const done = dialog.querySelector<HTMLButtonElement>('#mcs-bugs-done');
+
+        textarea.style.display = 'none';
 
         done.onclick = () => {
             DialogController.close();

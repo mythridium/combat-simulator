@@ -1,6 +1,6 @@
 {
     "name": "myth-combat-simulator",
-    "version": "3.1.7",
+    "version": "3.1.8",
     "description": "A Melvor Idle mod that adds a combat simulator to the game",
     "scripts": {
         "zip": "node --import=tsimp/import tools/zip.mts",
