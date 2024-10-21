@@ -23,9 +23,9 @@ export abstract class Bugs {
                 <div slot="content" class="mcs-with-textarea">
                     <div>You have Will I Die installed!</div>
                     <br />
-                    <div>This mod has not been updated for the current version of the game and should be removed. This outdated version of Will I Die results in Combat Simulator failing to run.</div>
+                    <div>This mod has not been updated for the current version of the game and should be disabled. This outdated version of Will I Die results in Combat Simulator failing to run.</div>
                     <br />
-                    <div>Please review ALL your mods and disable any that are not updated.</div>
+                    <div>Please review ALL your mods!</div>
                     <textarea readonly="readonly" class="mcs-bugs-content form-control mcs-code" rows="4"></textarea>
                 </div>
 

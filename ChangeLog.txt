@@ -1,3 +1,6 @@
+v3.1.9
+    minor text adjustment on the will i die error message
+
 v3.1.8
     improved messaging when will i die is installed and an error is thrown
 
