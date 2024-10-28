@@ -1,3 +1,7 @@
+v3.1.10
+    fixed bug reporter not showing textarea with debug information
+    fixed erroneous agility course showing in game version v1.3.1
+
 v3.1.9
     minor text adjustment on the will i die error message
 

@@ -68,7 +68,7 @@ export class SummaryPage extends HTMLElement {
     }
 
     private _init() {
-        for (const realm of Array.from(Global.game.agility.courses.keys()).reverse()) {
+        for (const realm of Global.game.agility.getRealmOptions().reverse()) {
             const container = createElement('div', {
                 classList: ['mcs-summary-agility-container', `mcs-summary-agility-${realm._localID.toLowerCase()}`]
             });

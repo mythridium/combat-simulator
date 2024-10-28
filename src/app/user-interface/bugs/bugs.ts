@@ -58,7 +58,9 @@ export abstract class Bugs {
         const textarea = dialog.querySelector<HTMLTextAreaElement>('.mcs-bugs-content');
         const done = dialog.querySelector<HTMLButtonElement>('#mcs-bugs-done');
 
-        textarea.style.display = 'none';
+        if (isWillIDie) {
+            textarea.style.display = 'none';
+        }
 
         done.onclick = () => {
             DialogController.close();
