@@ -1,5 +1,9 @@
 /** SimEnemy class, allows creation of a functional Enemy object without affecting the game */
 export class SimEnemy extends Enemy {
+    public get name() {
+        return this.monster?._name ?? 'enemy';
+    }
+
     public get effectRenderer() {
         return {
             container: undefined,

@@ -1043,9 +1043,15 @@ export class Plotter extends HTMLElement {
             // set tooltip content
             tooltipContent.innerHTML = tooltip;
 
+            let deathRate = raw[dataIndex].deathRate;
+
+            if (isNaN(deathRate)) {
+                deathRate = 0;
+            }
+
             // color the bar based on death rate
             const base = maxBars.includes(barIndex) ? [215, 180, 0] : [70, 130, 180];
-            const gradient = this.colourGradient(raw[dataIndex].deathRate, base).join(',');
+            const gradient = this.colourGradient(deathRate, base).join(',');
             this._elements.bars[barIndex]._set({ color: `rgb(${gradient})` });
         }
 

@@ -58,6 +58,10 @@ export class SimPlayer extends Player {
     ignoreAllSlayerRequirements: boolean;
     _isAttackingEnemy = false;
 
+    public get name() {
+        return 'player';
+    }
+
     public get potion() {
         return this.game.potions.getActivePotionForAction(this.game.combat);
     }

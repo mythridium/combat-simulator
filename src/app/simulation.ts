@@ -201,7 +201,7 @@ export class Simulation {
 
     public getDataSet() {
         const dataSet: number[] = [];
-        const isSignet = key === PlotKey.Signet;
+        const isSignet = Global.stores.plotter.plotType.key === PlotKey.Signet;
 
         if (!Global.stores.plotter.state.isInspecting) {
             // Compile data from monsters in combat zones
