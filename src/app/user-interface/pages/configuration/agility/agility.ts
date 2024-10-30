@@ -45,7 +45,7 @@ export class AgilityPage extends HTMLElement {
     }
 
     private _init() {
-        const realms = Global.game.agility.getRealmOptions();
+        const realms = Array.from(Global.game.agility.courses.keys());
 
         for (const realm of realms) {
             const header = createElement('div', {
@@ -72,8 +72,10 @@ export class AgilityPage extends HTMLElement {
 
             content.appendChild(course);
 
-            this._tabs.appendChild(header);
-            this._tabs.appendChild(content);
+            if (Global.game.agility.getRealmOptions().includes(realm)) {
+                this._tabs.appendChild(header);
+                this._tabs.appendChild(content);
+            }
         }
 
         this._tabs._init();

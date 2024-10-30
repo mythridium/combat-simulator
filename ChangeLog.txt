@@ -1,3 +1,6 @@
+v3.1.11
+    fixed error being thrown when importing equipment sets
+
 v3.1.10
     fixed bug reporter not showing textarea with debug information
     fixed erroneous agility course showing in game version v1.3.1
