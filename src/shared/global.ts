@@ -60,6 +60,7 @@ export abstract class SharedGlobal {
         'Thieving',
         'Fletching',
         'Summoning',
+        'Astrology',
         'Runecrafting',
         'Herblore',
         'Corruption'

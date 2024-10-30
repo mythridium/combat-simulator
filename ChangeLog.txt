@@ -1,3 +1,6 @@
+v3.1.13
+    fixed abyssal astrology ancient relics not being available
+
 v3.1.12
     fixed plotter bars having no colour when death rate is n/a
 
