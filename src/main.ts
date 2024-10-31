@@ -15,6 +15,7 @@ import { SettingsController, Settings } from './app/settings-controller';
 import { clone, cloneDeep } from 'lodash-es';
 import { SaveSlot } from './app/utils/save-slot';
 import type { Switch } from './app/user-interface/_parts/switch/switch';
+import { Api } from './app/api';
 
 interface GameVersion {
     major: number;
@@ -26,7 +27,6 @@ export abstract class Main {
     private static loading = false;
     private static versionKey = 'MICSR-gameVersion';
     private static gameVersion: GameVersion = { major: 1, minor: 3, patch: 1 };
-    private static registeredNamespaces: string[] = [];
 
     public static init(context: Modding.ModContext) {
         SharedGlobal.setClient(Global);
@@ -36,17 +36,7 @@ export abstract class Main {
             this.setWindowObject();
         } catch {}
 
-        Global.context.api({
-            isLoaded: Global.isLoaded,
-            import: (settings: Settings) => SettingsController.import(settings),
-            export: () => SettingsController.export(),
-            registerNamespace: (namespace: string) => {
-                if (namespace && typeof namespace === 'string') {
-                    this.registeredNamespaces.push(namespace.toLowerCase());
-                }
-            },
-            registeredNamespaces: () => clone(this.registeredNamespaces)
-        });
+        Global.context.api(Api.init());
 
         Global.userInterface = new UserInterface();
 
@@ -72,6 +62,7 @@ export abstract class Main {
 
                 await this.load();
                 Global.loaded(true);
+                Global.isLoadedSync = true;
             } catch (error) {
                 Global.loaded(false);
                 Bugs.report(false, error);
@@ -112,11 +103,11 @@ export abstract class Main {
                     await Global.micsr.initialize();
 
                     Global.dataPackages = Global.dataPackages.filter(dataPackage =>
-                        this.registeredNamespaces.includes(dataPackage.namespace.toLowerCase())
+                        Global.registeredNamespaces.includes(dataPackage.namespace.toLowerCase())
                     );
 
                     Global.skills = Global.skills.filter(skill =>
-                        this.registeredNamespaces.includes(skill.namespace.name.toLowerCase())
+                        Global.registeredNamespaces.includes(skill.namespace.name.toLowerCase())
                     );
 
                     this.setup();

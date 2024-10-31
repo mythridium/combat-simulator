@@ -11,9 +11,11 @@ import { StatsStore } from './stores/stats.store';
 import { EquipmentStore } from './stores/equipment.store';
 
 export abstract class Global extends SharedGlobal {
+    public static isLoadedSync = false;
     public static logger = new Logger({ entity: 'Client', color: Color.Green });
     public static context: Modding.ModContext;
     public static simulation: Simulation;
+    public static registeredNamespaces: string[] = [];
 
     public static loaded: (result: boolean) => void;
     public static isLoaded = new Promise<boolean>(resolve => {

@@ -6,6 +6,7 @@ import { StatsController } from 'src/app/user-interface/pages/_parts/out-of-comb
 import { Global } from 'src/app/global';
 import { SettingsController } from 'src/app/settings-controller';
 import { StorageKey } from 'src/app/utils/account-storage';
+import { Api } from 'src/app/api';
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -34,6 +35,17 @@ export class Main extends HTMLElement {
         PageController.goTo(PageId.Equipment);
 
         StatsController.update();
+
+        const menus = this.querySelectorAll('mcs-configuration-menu');
+        const page = this.querySelector('mcs-pages');
+
+        for (const [namespace, definition] of Api.modDefinitions) {
+            for (const menu of Array.from(menus)) {
+                menu.addModDefinition(namespace, definition);
+            }
+
+            page.addModDefinition(namespace, definition);
+        }
     }
 
     public toggle() {

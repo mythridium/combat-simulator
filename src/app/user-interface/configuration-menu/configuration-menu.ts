@@ -2,6 +2,7 @@ import './configuration-menu.scss';
 import { LoadTemplate } from 'src/app/user-interface/template';
 import { PageController, PageId } from 'src/app/user-interface/pages/page-controller';
 import { Bugs } from 'src/app/user-interface/bugs/bugs';
+import type { ModDefinition } from 'src/app/api';
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -98,6 +99,22 @@ export class ConfigurationMenu extends HTMLElement {
         this._history.onclick = () => PageController.goTo(PageId.History);
         this._settings.onclick = () => PageController.goTo(PageId.Settings);
         this._foundABug.onclick = () => Bugs.report(true);
+    }
+
+    public addModDefinition(namespace: string, definition: ModDefinition) {
+        const button = createElement('button', {
+            id: `mcs-mod-configuration-${namespace}`,
+            className: `mcs-mod-${namespace}-menu mcs-navigation-button`
+        });
+
+        const context = mod.getContext(namespace);
+
+        button.append(createElement('img', { attributes: [['src', context.getResourceUrl(definition.icon)]] }));
+        button.append(createElement('span', { text: definition.name }));
+
+        button.onclick = () => PageController.goTo(`mcs-mod-${namespace}` as PageId);
+
+        this._astrology.insertAdjacentElement('afterend', button);
     }
 }
 
