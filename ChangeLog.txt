@@ -1,3 +1,6 @@
+v3.1.14
+    fixed enemy damage type override persisting from the real game when importing an equipment set
+
 v3.1.13
     fixed abyssal astrology ancient relics not being available
 

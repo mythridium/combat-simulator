@@ -310,6 +310,7 @@ export class SimGame extends Game {
             this.corruption.corruptionEffects.selectedUnlockRows.clear();
         }
 
+        this.combat.enemy.overrideDamageType = undefined;
         this.combat.initialize();
 
         const potion = this.combat.player.potion;
