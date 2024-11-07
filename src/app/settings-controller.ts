@@ -108,15 +108,12 @@ export abstract class SettingsController {
 
         let isSynergyUnlocked = false;
 
-        if (
-            !Global.melvor.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty &&
-            !Global.melvor.combat.player.equipment.equippedItems['melvorD:Summon1'].isEmpty
-        ) {
-            const summon1 = Global.melvor.combat.player.equipment.equippedItems['melvorD:Summon1'].item;
-            const summon2 = Global.melvor.combat.player.equipment.equippedItems['melvorD:Summon2'].item;
+        const summon1 = Global.melvor.combat.player.equipmentSets[index]?.equipment.equippedItems['melvorD:Summon1'];
+        const summon2 = Global.melvor.combat.player.equipmentSets[index]?.equipment.equippedItems['melvorD:Summon2'];
 
-            if (summon1 && summon2) {
-                const synergyData = Global.melvor.summoning.getSynergy(summon1, summon2);
+        if (!summon1?.isEmpty && !summon2?.isEmpty) {
+            if (summon1.item && summon2.item) {
+                const synergyData = Global.melvor.summoning.getSynergy(summon1.item, summon2.item);
 
                 isSynergyUnlocked = synergyData
                     ? Global.melvor.summoning.isSynergyUnlocked.call(Global.melvor.summoning, synergyData)
