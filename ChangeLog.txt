@@ -1,3 +1,6 @@
+v3.1.18
+    fixed import error when a mod adds a new realm but does not register with combat sim
+
 v3.1.17
     added support for melvor offline client
 

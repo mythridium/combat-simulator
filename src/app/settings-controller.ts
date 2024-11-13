@@ -475,21 +475,22 @@ export abstract class SettingsController {
     }
 
     private static getAgility(game: Game) {
-        const agility: AgilitySettings[] = Array.from(game.agility.courses.entries()).map(([realm, course]) => {
-            const obstacles: [string, number, boolean][] = Array.from(course.builtObstacles.entries()).map(
-                ([category, obstacle]) => {
-                    const mastery = game.agility.actionMastery.get(obstacle);
-                    return [obstacle.id, category, (mastery?.level ?? 0) >= 99];
-                }
-            );
+        const agility: AgilitySettings[] = Array.from(game.agility.courses.entries())
+            .filter(([realm]) => Global.game.realms.getObjectByID(realm.id))
+            .map(([realm, course]) => {
+                const obstacles: [string, number, boolean][] = Array.from(course.builtObstacles.entries()).map(
+                    ([category, obstacle]) => {
+                        const mastery = game.agility.actionMastery.get(obstacle);
+                        return [obstacle.id, category, (mastery?.level ?? 0) >= 99];
+                    }
+                );
 
-            const pillars: [string, number][] = Array.from(course.builtPillars.entries()).map(([category, pillar]) => [
-                pillar.id,
-                category
-            ]);
+                const pillars: [string, number][] = Array.from(course.builtPillars.entries()).map(
+                    ([category, pillar]) => [pillar.id, category]
+                );
 
-            return { realmId: realm.id, obstacles, pillars };
-        });
+                return { realmId: realm.id, obstacles, pillars };
+            });
 
         return agility;
     }
