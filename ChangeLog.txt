@@ -1,3 +1,6 @@
+v3.1.16
+    fixed barrier dust drop count not accounting for max hitpoint reductions on enemies
+
 v3.1.15
     fixed imported summoning synergy disabled state being based off the current equipment set instead of the imported equipment set
 

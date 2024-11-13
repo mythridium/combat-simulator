@@ -1348,8 +1348,12 @@ export abstract class Drops {
 
         const enemy = new SimClasses.SimEnemy(Global.game.combat, Global.game);
 
+        Global.game.combat.fightInProgress = true;
         enemy.modifiers.init(Global.game);
+        enemy.computePreConditionalStats();
+        enemy.computeModifiersAndEffects();
         enemy.setNewMonster(monster);
+        Global.game.combat.fightInProgress = false;
 
         const quantity = Math.max(Math.floor(enemy.stats.maxBarrier / numberMultiplier / 20), 1);
 

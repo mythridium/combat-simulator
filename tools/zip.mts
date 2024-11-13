@@ -2,7 +2,7 @@ import { existsSync, createWriteStream } from 'fs';
 import { rm, mkdir } from 'fs/promises';
 import { resolve } from 'path';
 import archiver from 'archiver';
-import pkg from '../package.json' assert { type: 'json' };
+import pkg from '../package.json' with { type: 'json' };
 
 abstract class Zip {
     public static async run(output: string, src: string, name: string) {
