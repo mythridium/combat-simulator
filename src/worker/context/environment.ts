@@ -3,6 +3,7 @@ import { Global } from 'src/worker/global';
 import { SimClasses } from 'src/shared/simulator/sim';
 import { MICSR } from 'src/shared/micsr';
 import { Simulator } from 'src/worker/simulator';
+import { Util } from 'src/shared/util';
 
 export abstract class Environment {
     public static async init(data: InitRequest) {
@@ -138,28 +139,63 @@ export abstract class Environment {
     }
 
     private static async loadGameData(origin: string) {
-        const url = (file: string) => `${origin}/assets/data/${file}.json?${DATA_VERSION}`;
+        const url = (file: string) =>
+            Util.hasOfflineCapability()
+                ? `${origin}/assets/data/${file}.v${DATA_VERSION}.json`
+                : `${origin}/assets/data/${file}.json?${DATA_VERSION}`;
 
-        await Global.game.fetchAndRegisterDataPackage(url('melvorDemo'));
+        if (Util.hasOfflineCapability()) {
+            Global.game.registerDataPackage(await this.getDataPackage(url('melvorDemo')));
 
-        if (Global.this.cloudManager.hasFullVersionEntitlement) {
-            await Global.game.fetchAndRegisterDataPackage(url('melvorFull'));
+            if (Global.this.cloudManager.hasFullVersionEntitlement) {
+                Global.game.registerDataPackage(await this.getDataPackage(url('melvorFull')));
 
-            if (Global.this.cloudManager.isAprilFoolsEvent2024Active()) {
-                await Global.game.fetchAndRegisterDataPackage(url('melvorAprilFools2024'));
+                if (Global.this.cloudManager.isAprilFoolsEvent2024Active()) {
+                    Global.game.registerDataPackage(await this.getDataPackage(url('melvorAprilFools2024')));
+                }
+
+                if (Global.this.cloudManager.hasTotHEntitlementAndIsEnabled) {
+                    Global.game.registerDataPackage(await this.getDataPackage(url('melvorTotH')));
+                }
+
+                if (Global.this.cloudManager.hasAoDEntitlementAndIsEnabled) {
+                    Global.game.registerDataPackage(await this.getDataPackage(url('melvorExpansion2')));
+                }
+
+                if (Global.this.cloudManager.hasItAEntitlementAndIsEnabled) {
+                    Global.game.registerDataPackage(await this.getDataPackage(url('melvorItA')));
+                }
             }
+        } else {
+            await Global.game.fetchAndRegisterDataPackage(url('melvorDemo'));
 
-            if (Global.this.cloudManager.hasTotHEntitlementAndIsEnabled) {
-                await Global.game.fetchAndRegisterDataPackage(url('melvorTotH'));
-            }
+            if (Global.this.cloudManager.hasFullVersionEntitlement) {
+                await Global.game.fetchAndRegisterDataPackage(url('melvorFull'));
 
-            if (Global.this.cloudManager.hasAoDEntitlementAndIsEnabled) {
-                await Global.game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
-            }
+                if (Global.this.cloudManager.isAprilFoolsEvent2024Active()) {
+                    await Global.game.fetchAndRegisterDataPackage(url('melvorAprilFools2024'));
+                }
 
-            if (Global.this.cloudManager.hasItAEntitlementAndIsEnabled) {
-                await Global.game.fetchAndRegisterDataPackage(url('melvorItA'));
+                if (Global.this.cloudManager.hasTotHEntitlementAndIsEnabled) {
+                    await Global.game.fetchAndRegisterDataPackage(url('melvorTotH'));
+                }
+
+                if (Global.this.cloudManager.hasAoDEntitlementAndIsEnabled) {
+                    await Global.game.fetchAndRegisterDataPackage(url('melvorExpansion2'));
+                }
+
+                if (Global.this.cloudManager.hasItAEntitlementAndIsEnabled) {
+                    await Global.game.fetchAndRegisterDataPackage(url('melvorItA'));
+                }
             }
+        }
+    }
+
+    private static async getDataPackage(url: string) {
+        const response = await fetch(url);
+
+        if (response.ok) {
+            return response.json();
         }
     }
 

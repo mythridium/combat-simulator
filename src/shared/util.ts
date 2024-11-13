@@ -43,6 +43,22 @@ export class Util {
         return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
     }
 
+    static fileVersion() {
+        if (typeof gameFileVersion !== 'undefined') {
+            return gameFileVersion;
+        }
+
+        if (typeof SCRIPT_VERSION !== 'undefined') {
+            return SCRIPT_VERSION.toString();
+        }
+
+        return '(no version)';
+    }
+
+    static hasOfflineCapability() {
+        return typeof offline !== 'undefined';
+    }
+
     static getOrigin() {
         const expected = ['/assets/css/oneui.css', '/assets/css/game.css', '/assets/css/fireworks.css'];
         const mainCss = Array.from(document.head.querySelectorAll<HTMLLinkElement>('#css-main'))
@@ -50,7 +66,7 @@ export class Util {
                 let origin = css.href;
 
                 for (const url of expected) {
-                    origin = origin.replace(url, '').replace(gameFileVersion, '');
+                    origin = origin.replace(url, '').replace(this.fileVersion(), '');
                 }
 
                 return origin;

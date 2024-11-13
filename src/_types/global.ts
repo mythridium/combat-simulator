@@ -29,6 +29,10 @@ declare global {
         hideAll: HideAll;
         createSingleton: CreateSingleton;
     }
+
+    // TODO: Remove when types update
+    const offline: any;
+    const SCRIPT_VERSION: string;
 }
 
 export {};

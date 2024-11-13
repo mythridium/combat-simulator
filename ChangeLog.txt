@@ -1,3 +1,6 @@
+v3.1.17
+    added support for melvor offline client
+
 v3.1.16
     fixed barrier dust drop count not accounting for max hitpoint reductions on enemies
 

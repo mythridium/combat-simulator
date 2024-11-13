@@ -11,26 +11,29 @@ export class MICSR {
     private dataPackage: IDataPackage = {};
 
     async fetchData() {
-        await this.fetchDataPackage('Demo', `/assets/data/melvorDemo.json?${DATA_VERSION}`);
+        const constructUrl = (url: string) =>
+            Util.hasOfflineCapability() ? `${url}.v${DATA_VERSION}.json` : `${url}.json?${DATA_VERSION}`;
+
+        await this.fetchDataPackage('Demo', constructUrl('/assets/data/melvorDemo'));
 
         if (cloudManager.hasFullVersionEntitlement) {
-            await this.fetchDataPackage('Full', `/assets/data/melvorFull.json?${DATA_VERSION}`);
+            await this.fetchDataPackage('Full', constructUrl('/assets/data/melvorFull'));
         }
 
         if (cloudManager.isAprilFoolsEvent2024Active()) {
-            await this.fetchDataPackage('AprilFools2024', `/assets/data/melvorAprilFools2024.json?${DATA_VERSION}`);
+            await this.fetchDataPackage('AprilFools2024', constructUrl('/assets/data/melvorAprilFools2024'));
         }
 
         if (cloudManager.hasTotHEntitlementAndIsEnabled) {
-            await this.fetchDataPackage('TotH', `/assets/data/melvorTotH.json?${DATA_VERSION}`);
+            await this.fetchDataPackage('TotH', constructUrl('/assets/data/melvorTotH'));
         }
 
         if (cloudManager.hasAoDEntitlementAndIsEnabled) {
-            await this.fetchDataPackage('AoD', `/assets/data/melvorExpansion2.json?${DATA_VERSION}`);
+            await this.fetchDataPackage('AoD', constructUrl('/assets/data/melvorExpansion2'));
         }
 
         if (cloudManager.hasItAEntitlementAndIsEnabled) {
-            await this.fetchDataPackage('ItA', `/assets/data/melvorItA.json?${DATA_VERSION}`);
+            await this.fetchDataPackage('ItA', constructUrl('/assets/data/melvorItA'));
         }
     }
 

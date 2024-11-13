@@ -2,6 +2,7 @@ import './bugs.scss';
 import { Global } from 'src/app/global';
 import { SettingsController } from 'src/app/settings-controller';
 import { DialogController } from 'src/app/user-interface/_parts/dialog/dialog-controller';
+import { Util } from 'src/shared/util';
 
 export abstract class Bugs {
     public static report(isLoaded: boolean, error?: Error) {
@@ -96,7 +97,13 @@ export abstract class Bugs {
             }
         }
 
-        textarea.value += `Melvor Version: ${gameVersion}${gameFileVersion}
+        let version = Util.fileVersion();
+
+        if (!version.startsWith('?')) {
+            version = `?${version}`;
+        }
+
+        textarea.value += `Melvor Version: ${gameVersion}${version}
 Sim Version: ${Global.context.version}
 
 Expansions Enabled: ${expansionsOwned.join(', ')}
