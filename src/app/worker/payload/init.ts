@@ -21,7 +21,8 @@ export class InitPayload {
         'sweetalert2',
         'tippy-bundle',
         'fuse',
-        'blob:'
+        'blob:',
+        'email-decode'
     ];
 
     constructor() {

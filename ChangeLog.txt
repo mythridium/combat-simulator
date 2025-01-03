@@ -1,3 +1,6 @@
+v3.1.19
+    fixed email-decode script error
+
 v3.1.18
     fixed import error when a mod adds a new realm but does not register with combat sim
 
