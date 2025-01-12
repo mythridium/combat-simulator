@@ -43,7 +43,7 @@ export abstract class Bugs {
 
             dialog.innerHTML += `
                     <div slot="content" class="mcs-with-textarea">
-                        <div>Copy the following information and report it to Mythridium on the Melvor Discord or at <a href="https://github.com/mythridium/combat-simulator/issues" target="_blank">https://github.com/mythridium/combat-simulator</a></div>
+                        <div>Please reach out on the Melvor Discord mod bug reports channel for assistance.</div>
                         <br />
                         <div>The following information contains your save file and a copy of your combat sim configuration if possible.</div>
                         <br />

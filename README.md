@@ -10,7 +10,7 @@ The latest fork in a line of great but no longer maintained forks by [broderickh
 - Create a backup of your save file before using this extension, in particular after a recent game or extension update.
 
 ## Bug reports
-Raise an [issue](https://github.com/mythridium/combat-simulator/issues) here on GitHub
+Please reach out on the Melvor Discord mod bug reports channel for assistance.
 
 ### Instructions
 1. Open the simulator through the game's sidebar.

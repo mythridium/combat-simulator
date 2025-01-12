@@ -1,3 +1,6 @@
+v3.1.20
+    update bug information
+
 v3.1.19
     fixed email-decode script error
 
