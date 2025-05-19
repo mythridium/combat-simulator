@@ -153,22 +153,22 @@ export class Simulation {
     public getSimFailureText(data: SimulationData, includeHints = false) {
         const prefix = 'No valid simulation data';
 
-        if (includeHints && Lookup.isDungeon(data.dungeonId)) {
-            if (data.dungeonId === 'melvorTotH:Lair_of_the_Spider_Queen') {
+        if (includeHints && Lookup.isDungeon(data.entityId)) {
+            if (data.entityId === 'melvorTotH:Lair_of_the_Spider_Queen') {
                 return `This dungeons results are not accurate.<br /><a class="mcs-monster-note-hint">Hover for more information.</a>
                 <div data-mcsTooltipContent>
                     Lair of the Spider Queen contains randomly generated monsters and bosses. Inspect the dungeon to see all possible monsters you may fight, however this is not reflective of the actual dungeon.
                 </div>`;
             }
 
-            if (data.dungeonId === 'melvorF:Into_the_Mist') {
+            if (data.entityId === 'melvorF:Into_the_Mist') {
                 return `This dungeons results are not accurate.<br /><a class="mcs-monster-note-hint">Hover for more information.</a>
                 <div data-mcsTooltipContent>
                     Into the Mists contains randomly generated monsters before the final boss. Inspect the dungeon to see all possible monsters you may fight, however this is not reflective of the actual dungeon.
                 </div>`;
             }
 
-            if (data.dungeonId === 'melvorF:Impending_Darkness') {
+            if (data.entityId === 'melvorF:Impending_Darkness') {
                 return `This dungeons results are not accurate.<br /><a class="mcs-monster-note-hint">Hover for more information.</a>
                 <div data-mcsTooltipContent>
                    Impending Darkness contains randomly selected modifiers which cannot be accounted for, in addition the boss attack style is randomly chosen. Inspect the dungeon to see all possible attack styles of the boss, however this is not reflective of the actual dungeon.
