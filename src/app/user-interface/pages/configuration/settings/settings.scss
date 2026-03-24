@@ -4,6 +4,38 @@ mcs-settings {
         flex-direction: column;
         gap: 10px;
         margin-bottom: 20px;
+
+        #mcs-settings-toggle-keybind {
+            &.mcs-is-capturing {
+                border-color: #3f8efc;
+                box-shadow: 0 0 0 1px #3f8efc;
+            }
+
+            &.mcs-is-invalid {
+                border-color: #e25d5d;
+                box-shadow: 0 0 0 1px #e25d5d;
+            }
+
+            &.mcs-is-valid {
+                border-color: #4aa76e;
+                box-shadow: 0 0 0 1px #4aa76e;
+            }
+        }
+
+        .mcs-settings-toggle-keybind-feedback {
+            min-height: 18px;
+            margin-top: -4px;
+            font-size: 12px;
+            color: #b8bec9;
+
+            &.mcs-is-invalid {
+                color: #e25d5d;
+            }
+
+            &.mcs-is-valid {
+                color: #4aa76e;
+            }
+        }
     }
 
     .mcs-settings-alternate-equipment-selector,

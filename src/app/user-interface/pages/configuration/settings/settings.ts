@@ -8,6 +8,11 @@ import type { ExportDialog } from './export-dialog/export-dialog';
 import { Switch } from 'src/app/user-interface/_parts/switch/switch';
 import { Plotter } from 'src/app/user-interface/pages/simulate/plotter/plotter';
 import { StorageKey } from 'src/app/utils/account-storage';
+import {
+    DEFAULT_TOGGLE_PANEL_KEYBIND,
+    eventToShortcut,
+    normalizeShortcutInput
+} from 'src/app/utils/keyboard-shortcut';
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -21,6 +26,8 @@ export class SettingsPage extends HTMLElement {
 
     private readonly _trials: HTMLInputElement;
     private readonly _ticks: HTMLInputElement;
+    private readonly _toggleKeybind: HTMLInputElement;
+    private readonly _toggleKeybindFeedback: HTMLDivElement;
     private readonly _alternateEquipmentSelector: Switch;
     private readonly _smallPlotter: Switch;
     private readonly _filterTargetDropdown: Switch;
@@ -32,6 +39,7 @@ export class SettingsPage extends HTMLElement {
     private readonly _exportDialog: ExportDialog;
 
     private _plotter: Plotter;
+    private _toggleKeybindFeedbackTimeout?: number;
 
     constructor() {
         super();
@@ -40,6 +48,12 @@ export class SettingsPage extends HTMLElement {
 
         this._trials = getElementFromFragment(this._content, 'mcs-settings-trials', 'input');
         this._ticks = getElementFromFragment(this._content, 'mcs-settings-ticks', 'input');
+        this._toggleKeybind = getElementFromFragment(this._content, 'mcs-settings-toggle-keybind', 'input');
+        this._toggleKeybindFeedback = getElementFromFragment(
+            this._content,
+            'mcs-settings-toggle-keybind-feedback',
+            'div'
+        );
         this._alternateEquipmentSelector = getElementFromFragment(
             this._content,
             'mcs-settings-alternate-equipment-selector',
@@ -70,6 +84,60 @@ export class SettingsPage extends HTMLElement {
 
         this._trials.oninput = event => this._onChange(event, 'trials');
         this._ticks.oninput = event => this._onChange(event, 'ticks');
+
+        const storedKeybind = Global.context.accountStorage.getItem(StorageKey.TogglePanelKeybind);
+        const toggleKeybind = normalizeShortcutInput(storedKeybind) ?? DEFAULT_TOGGLE_PANEL_KEYBIND;
+
+        this._toggleKeybind.value = toggleKeybind;
+        this._setToggleKeybindFeedback('Shortcut ready.', 'neutral');
+
+        if (!storedKeybind) {
+            Global.context.accountStorage.setItem(StorageKey.TogglePanelKeybind, toggleKeybind);
+            this._setToggleKeybindFeedback(`Default shortcut set to ${toggleKeybind}.`, 'valid', 1200);
+        }
+
+        this._toggleKeybind.onfocus = () => {
+            this._toggleKeybind.value = 'Press keys...';
+            this._toggleKeybind.select();
+            this._toggleKeybind.classList.add('mcs-is-capturing');
+            this._toggleKeybind.classList.remove('mcs-is-invalid', 'mcs-is-valid');
+            this._setToggleKeybindFeedback('Press any key or chord.', 'neutral');
+        };
+
+        this._toggleKeybind.onblur = () => {
+            this._toggleKeybind.value =
+                normalizeShortcutInput(Global.context.accountStorage.getItem(StorageKey.TogglePanelKeybind)) ??
+                DEFAULT_TOGGLE_PANEL_KEYBIND;
+
+            this._toggleKeybind.classList.remove('mcs-is-capturing');
+        };
+
+        this._toggleKeybind.onkeydown = event => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const shortcut = eventToShortcut(event);
+
+            if (!shortcut) {
+                this._toggleKeybind.value =
+                    normalizeShortcutInput(Global.context.accountStorage.getItem(StorageKey.TogglePanelKeybind)) ??
+                    DEFAULT_TOGGLE_PANEL_KEYBIND;
+
+                this._toggleKeybind.classList.remove('mcs-is-valid');
+                this._toggleKeybind.classList.add('mcs-is-invalid');
+                this._setToggleKeybindFeedback('Invalid shortcut. Use at least one non-modifier key.', 'invalid', 1700);
+                return;
+            }
+
+            this._toggleKeybind.value = shortcut;
+            Global.context.accountStorage.setItem(StorageKey.TogglePanelKeybind, shortcut);
+
+            this._toggleKeybind.classList.remove('mcs-is-invalid');
+            this._toggleKeybind.classList.add('mcs-is-valid');
+            this._setToggleKeybindFeedback(`Shortcut saved: ${shortcut}.`, 'valid', 1400);
+
+            this._toggleKeybind.blur();
+        };
 
         const isAlternateEquipmentSelector =
             Global.context.accountStorage.getItem(StorageKey.AlternateEquipmentSelector) ??
@@ -222,6 +290,37 @@ export class SettingsPage extends HTMLElement {
         }
 
         callback();
+    }
+
+    private _setToggleKeybindFeedback(
+        message: string,
+        type: 'neutral' | 'valid' | 'invalid',
+        resetAfterMs?: number
+    ) {
+        if (this._toggleKeybindFeedbackTimeout) {
+            clearTimeout(this._toggleKeybindFeedbackTimeout);
+            this._toggleKeybindFeedbackTimeout = undefined;
+        }
+
+        this._toggleKeybindFeedback.textContent = message;
+        this._toggleKeybindFeedback.classList.remove('mcs-is-valid', 'mcs-is-invalid');
+
+        if (type === 'valid') {
+            this._toggleKeybindFeedback.classList.add('mcs-is-valid');
+        }
+
+        if (type === 'invalid') {
+            this._toggleKeybindFeedback.classList.add('mcs-is-invalid');
+        }
+
+        if (resetAfterMs && resetAfterMs > 0) {
+            this._toggleKeybindFeedbackTimeout = window.setTimeout(() => {
+                this._toggleKeybind.classList.remove('mcs-is-valid', 'mcs-is-invalid');
+                this._toggleKeybindFeedback.classList.remove('mcs-is-valid', 'mcs-is-invalid');
+                this._toggleKeybindFeedback.textContent = 'Shortcut ready.';
+                this._toggleKeybindFeedbackTimeout = undefined;
+            }, resetAfterMs);
+        }
     }
 }
 
