@@ -101,7 +101,7 @@ export class SettingsPage extends HTMLElement {
             this._toggleKeybind.select();
             this._toggleKeybind.classList.add('mcs-is-capturing');
             this._toggleKeybind.classList.remove('mcs-is-invalid', 'mcs-is-valid');
-            this._setToggleKeybindFeedback('Press any key or chord.', 'neutral');
+            this._setToggleKeybindFeedback('Press any key.', 'neutral');
         };
 
         this._toggleKeybind.onblur = () => {
