@@ -116,6 +116,17 @@ export class SettingsPage extends HTMLElement {
             event.preventDefault();
             event.stopPropagation();
 
+            if (event.key === 'Escape' || event.key === 'Esc') {
+                this._toggleKeybind.value =
+                    normalizeShortcutInput(Global.context.accountStorage.getItem(StorageKey.TogglePanelKeybind)) ??
+                    DEFAULT_TOGGLE_PANEL_KEYBIND;
+
+                this._toggleKeybind.classList.remove('mcs-is-valid', 'mcs-is-invalid');
+                this._setToggleKeybindFeedback('Shortcut capture cancelled.', 'neutral', 1200);
+                this._toggleKeybind.blur();
+                return;
+            }
+
             const shortcut = eventToShortcut(event);
 
             if (!shortcut) {

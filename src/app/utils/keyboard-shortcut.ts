@@ -49,6 +49,10 @@ export function normalizeShortcutInput(value: string): string | null {
         }
 
         key = canonicalPart;
+
+        if (isDisallowedBindableKey(key)) {
+            return null;
+        }
     }
 
     if (!key) {
@@ -162,4 +166,8 @@ function canonicalizeKey(value: string): string | null {
 
 function isModifierKey(key: string): boolean {
     return key === 'Ctrl' || key === 'Alt' || key === 'Shift' || key === 'Meta';
+}
+
+function isDisallowedBindableKey(key: string): boolean {
+    return key === 'Escape';
 }
