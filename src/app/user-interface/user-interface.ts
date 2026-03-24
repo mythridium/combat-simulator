@@ -2,12 +2,37 @@ import 'src/app/user-interface/elements';
 import './styles.scss';
 import type { Main } from './main/main';
 import { DialogController } from './_parts/dialog/dialog-controller';
+import { StorageKey } from '../utils/account-storage';
+import {
+    DEFAULT_TOGGLE_PANEL_KEYBIND,
+    doesEventMatchShortcut,
+    isEditableTarget,
+    normalizeShortcutInput
+} from '../utils/keyboard-shortcut';
+import { Global } from '../global';
 
 export class UserInterface {
-    public main: Main;
+    public main!: Main;
+    private readonly _onDocumentKeydown = (event: KeyboardEvent) => {
+        if (isEditableTarget(event.target)) {
+            return;
+        }
+
+        const shortcut =
+            normalizeShortcutInput(Global.context.accountStorage.getItem(StorageKey.TogglePanelKeybind)) ??
+            DEFAULT_TOGGLE_PANEL_KEYBIND;
+
+        if (!doesEventMatchShortcut(event, shortcut)) {
+            return;
+        }
+
+        event.preventDefault();
+        this.main.toggle();
+    };
 
     public init() {
         this.main = createElement('mcs-main', { classList: ['is-closed'] });
+        document.addEventListener('keydown', this._onDocumentKeydown);
 
         document.body.append(createElement('mcs-tooltip'));
         document.body.append(this.main);
