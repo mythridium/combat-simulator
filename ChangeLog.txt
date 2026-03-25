@@ -1,3 +1,6 @@
+v3.2.0
+    added support for keybind to open/close combat simulator [Contributed by EffBureau, thanks!]
+
 v3.1.21
     fix random dungeon hint
 
