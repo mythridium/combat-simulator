@@ -14,6 +14,20 @@ import { Global } from '../global';
 export class UserInterface {
     public main!: Main;
     private readonly _onDocumentKeydown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape' || event.key === 'Esc') {
+            const isCapturingToggleKeybind =
+                document.activeElement instanceof HTMLInputElement &&
+                document.activeElement.id === 'mcs-settings-toggle-keybind' &&
+                document.activeElement.classList.contains('mcs-is-capturing');
+
+            if (!isCapturingToggleKeybind && this.main.isOpen) {
+                event.preventDefault();
+                this.main.toggle();
+            }
+
+            return;
+        }
+
         if (isEditableTarget(event.target)) {
             return;
         }
