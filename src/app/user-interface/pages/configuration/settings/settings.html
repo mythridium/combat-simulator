@@ -23,6 +23,16 @@
                 </span>
             </mcs-hint>
         </mcs-field>
+
+        <mcs-field data-mcssmall>
+            <span slot="text">Toggle Keybind</span>
+            <input id="mcs-settings-toggle-keybind" type="text" class="form-control" readonly />
+            <mcs-hint slot="hint">
+                <span data-mcsTooltipContent>Click the field and press a key to set the toggle shortcut.</span>
+            </mcs-hint>
+        </mcs-field>
+
+        <div id="mcs-settings-toggle-keybind-feedback" class="mcs-settings-toggle-keybind-feedback">Shortcut ready.</div>
     </div>
 
     <mcs-dropdown id="mcs-gamemode" class="mcs-gamemode"></mcs-dropdown>
